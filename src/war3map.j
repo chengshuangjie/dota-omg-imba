@@ -406,6 +406,9 @@ integer array XYSR
 integer array XYMJ
 integer array Dragon_Unit
 integer array CHOUJIANGSTATE
+// Human K test probability: reset once per candidate-pool build/refresh; AI never reads these flags.
+boolean array K_POOL_ROLLED
+boolean array K_POOL_HIT
 // v1.3 welfare button (凯哥发福利): per-pid per-match claim mark + rate-limited logs
 boolean array LOTTERY_CLAIMED
 integer array LOTTERY_OPEN_LOG
@@ -748,7 +751,7 @@ boolean BP_MODE=false
 boolean XM_MODE=false
 constant real IMBA_POWER=2.
 constant boolean XOMG_IMBA_ENABLED=true
-constant string XOMG_VERSION="v1.4-K-loadfix5"
+constant string XOMG_VERSION="v1.5-LotteryFix-K50"
 integer imbaMult=2
 integer XOMG_DAMAGE_LOG_COUNT=0
 boolean imbaB67DpsExclude=false
@@ -25000,6 +25003,11 @@ set b891Pick=b891Pick+1
 endif
 return GetUnitPointValueByType(K24[b891Pick])
 endfunction
+// Human fallback pool excludes both Miao at slot 39 and K at slot 40.
+// K is injected once per human candidate-pool build by an explicit 50% roll.
+function B891RandomAgilityNoK takes nothing returns integer
+return GetUnitPointValueByType(K24[GetRandomInt(1,K_4-2)])
+endfunction
 function UR7 takes integer hI returns nothing
 call hi(hI,Z7[1])
 call hi(hI,Z7[2])
@@ -32119,7 +32127,7 @@ endfunction
 function L27 takes nothing returns nothing
 call CreateQuestBJ(2,"投票踢人","真人玩家输入 -kick 楼层 发起投票。不能踢自己、AI、已退出或不存在的楼层。\n\n投票开始后30秒内，其他真人输入“同意”或“不同意”；目标玩家的输入无效，发起者默认同意，每人只能投一次。\n\n5名及以上真人需要总计3票同意；3至4名真人需要总计2票同意；只有1至2名真人时不能发起。达到票数立即踢出，30秒内不能再次发起。","ReplaceableTextures\\CommandButtons\\BTNBootsOfSpeed.blp")
 call CreateQuestBJ(0,"游戏机制(必看)","-本图没有法球冲突\n-按F11队友之间可以互相转钱\n-点击物品栏的卷轴可以一键合成\n-右键连续点击四次物品可以拆分\n-大药小净化不会被普通单位打断\n-信使可以直接出售物品\n-不朽盾不占用物品栏\n-XM模式每隔30秒刷新野怪\n-其他请自行发现","ReplaceableTextures\\CommandButtons\\BTNScrollOfHaste.blp")
-call CreateQuestBJ(2,"福利与抽属性","入口：输入 -archive 或选中达拉然泉水旁存档商店(nAS6)，对话框内「凯哥发福利」「双杰抽属性」；能量圈「凯哥发福利」为备用入口，两者共用同一领取状态、防重复。\n\n「凯哥发福利」：每人每局一次，同步随机获得1-1000当前局金币，不抽装备、不写存档、不调存档交易。\n\n「双杰抽属性」：每次消耗1000当前局金币，无限次抽取，当局有效，不写存档。10%概率全属性+20（大奖，浮字「恭喜发财」）；其余90%按1-10各9%概率全属性+1至+10。先校验英雄与金币，金币不足或无英雄不扣费。","ReplaceableTextures\\CommandButtons\\BTNGoldenCoin.blp")
+call CreateQuestBJ(2,"福利与抽属性","泉水能量圈保留原初始化抽奖：每局一次，50%从价格不低于1000的真实成品装备池获得装备，否则获得1000-1500金币。\n\n存档商店入口：输入 -archive 或选中达拉然泉水旁存档商店(nAS6)，对话框内「凯哥发福利」「双杰抽属性」；与能量圈抽奖相互独立。\n\n「凯哥发福利」：每人每局一次，同步随机获得1-1000当前局金币，不抽装备、不写存档、不调存档交易。\n\n「双杰抽属性」：每次消耗1000当前局金币，无限次抽取，当局有效，不写存档。10%概率全属性+20（大奖，浮字「恭喜发财」）；其余90%按1-10各9%概率全属性+1至+10。先校验英雄与金币，金币不足或无英雄不扣费。","ReplaceableTextures\\CommandButtons\\BTNGoldenCoin.blp")
 call CreateQuestBJ(2,"官方信息","地图官方QQ群：1070032670\n地图官网：https://dotaaiomg.cn/","ReplaceableTextures\\CommandButtons\\BTNManual3.blp")
 call CreateQuestBJ(2,"装备预购","按住 Shift 左键点击商店装备，可加入或移出预购栏；双击预购图标，将自动购买缺少的配件并尝试合成。成品未获得前，图标会保留。","ReplaceableTextures\\CommandButtons\\BTNChestOfGold.blp")
 call CreateQuestBJ(2,"Alt键功能","按住 Alt 左键点击技能，可向队友发送技能冷却信息；按住 Alt 还可查看防御塔攻击范围和野怪活动范围。","ReplaceableTextures\\CommandButtons\\BTNBansheeMaster.blp")
@@ -38170,14 +38178,14 @@ call TriggerRegisterUnitEvent(Tri_skill,u,EVENT_UNIT_SPELL_CAST)
 if IsUnitAlly(u, GetLocalPlayer()) then
 	call MHUnit_EnableViewSkill(u , GetLocalPlayer())
 endif
-// v1.3: 凯哥发福利 (A4DK) visible to a human player as soon as they enter; no XM/archive gate, no 17s warm-up lock.
-if CHOUJIANGSTATE[rJ]==1 and not LOTTERY_CLAIMED[rJ] and GetPlayerController(p)==MAP_CONTROL_USER then
+// Fountain energy-circle keeps the original one-time equipment/gold lottery.
+if CHOUJIANGSTATE[rJ]==1 and XOMG_IMBA_ENABLED then
 set lotteryCircle=SuijiTavernB295_GetEnergyCircle(rJ)
 if lotteryCircle!=null and GetUnitTypeId(lotteryCircle)!=0 then
-// v1.3: A4DK energy circle is the BACKUP welfare entry; shares LOTTERY_CLAIMED with the
-// archive-dialog row so the same player cannot claim twice. Attribute button lives in the
-// archive dialog; no draftable skill (心炎/Y0AV) is hijacked.
 call UnitAddAbility(lotteryCircle,'A4DK')
+if GetGameTime()<17 then
+call YDWESetUnitAbilityState(lotteryCircle, 'A4DK', 1, 17-GetGameTime())
+endif
 endif
 endif
 //设置皮肤DEMO，且单位不是皮肤英雄
@@ -60937,6 +60945,59 @@ endloop
 set J[QB9]=true
 return QB9
 endfunction
+// Human candidate pools use an agility fallback which excludes K.
+function QZ9HumanNoK takes integer QA9 returns integer
+local integer QB9
+if QA9==1 then
+set QB9=B891RandomAgilityNoK()
+elseif QA9==2 then
+set QB9=GetUnitPointValueByType(M44[GetRandomInt(1,M74)])
+elseif QA9==3 then
+set QB9=GetUnitPointValueByType(M84[GetRandomInt(1,M94)])
+endif
+return QB9
+endfunction
+function QC9HumanNoK takes integer Q39,integer Q69,integer QA9 returns integer
+local integer QB9=QZ9HumanNoK(QA9)
+if X8 and Q39!=QB9 and Q69!=QB9 then
+return QB9
+endif
+loop
+exitwhen J[QB9]==false and Q39!=QB9 and Q69!=QB9
+set QB9=QZ9HumanNoK(QA9)
+endloop
+set J[QB9]=true
+return QB9
+endfunction
+function QC9ForPlayer takes player p,integer Q39,integer Q69,integer QA9 returns integer
+if GetPlayerController(p)==MAP_CONTROL_USER then
+return QC9HumanNoK(Q39,Q69,QA9)
+endif
+return QC9(Q39,Q69,QA9)
+endfunction
+// Called from every agility slot, but rolls only once per human candidate-pool build.
+// Hit: inject K (hero index 118) in the first available agility slot. Miss/follow-ups: fallback excludes K.
+function QC9HumanFirstAgility takes player p,integer Q39,integer Q69 returns integer
+local integer id=GetPlayerId(p)
+if GetPlayerController(p)!=MAP_CONTROL_USER then
+return QC9(Q39,Q69,1)
+endif
+if not K_POOL_ROLLED[id] then
+set K_POOL_ROLLED[id]=true
+set K_POOL_HIT[id]=GetRandomInt(1,100)<=50
+if K_POOL_HIT[id] then
+call XOMG_LogEvent("K_POOL_ROLL pid="+I2S(id)+" hit=1 hero=118 ver="+XOMG_VERSION)
+else
+call XOMG_LogEvent("K_POOL_ROLL pid="+I2S(id)+" hit=0 hero=0 ver="+XOMG_VERSION)
+endif
+endif
+if K_POOL_HIT[id] and Q39!=118 and Q69!=118 then
+set J[118]=true
+set K_POOL_HIT[id]=false
+return 118
+endif
+return QC9HumanNoK(Q39,Q69,1)
+endfunction
 function ShowShop takes boolean b returns nothing
     call ShowUnit(I34,b)
     call ShowUnit(I_4,b)
@@ -61004,6 +61065,8 @@ set p=Z7[i]
 set Q39=0
 set Q69=0
 set QL9=0
+set K_POOL_ROLLED[GetPlayerId(p)]=false
+set K_POOL_HIT[GetPlayerId(p)]=false
 if TY7(p)then
 call UnitRemoveAbility(KU4[GetPlayerId(p)],'A331')
 // call UnitRemoveAbility(KU4[GetPlayerId(p)],'A4AL')
@@ -61024,19 +61087,19 @@ call UnitAddAbility(KU4[GetPlayerId(p)],'A4EP') //刷新英雄
 if SPEPLAYER[GetPlayerId(p)]==58 then
 set Q39=99
 else
-set Q39=QC9(Q39,Q69,1)
+set Q39=QC9HumanFirstAgility(p,Q39,Q69)
 endif
 if SPEPLAYER[GetPlayerId(p)]==27 then
 	set Q69=106
 else
-	set Q69=QC9(Q39,Q69,2)
+	set Q69=QC9ForPlayer(p,Q39,Q69,2)
 endif
 if SPEPLAYER[GetPlayerId(p)]==1 then
     set QL9=53
 elseif SPEPLAYER[GetPlayerId(p)]==20 then
     set QL9=94
 else
-    set QL9=QC9(Q39,Q69,3)
+    set QL9=QC9ForPlayer(p,Q39,Q69,3)
 endif
 call SaveInteger(TABLE_XJ,(GetHandleId(KU4[GetPlayerId(p)])),(1),(K34[Q39]))
 call SaveInteger(TABLE_XJ,(GetHandleId(KU4[GetPlayerId(p)])),(2),(K34[Q69]))
@@ -61047,9 +61110,9 @@ call AddUnitToStock(KU4[GetPlayerId(p)],K34[Q69],1,1)
 //call QY9(p,K34[Q69])
 call AddUnitToStock(KU4[GetPlayerId(p)],K34[QL9],1,1)
 //call QY9(p,K34[QL9])
-set Q39=QC9(Q39,Q69,1)
-set Q69=QC9(Q39,Q69,2)
-set QL9=QC9(Q39,Q69,3)
+set Q39=QC9HumanFirstAgility(p,Q39,Q69)
+set Q69=QC9ForPlayer(p,Q39,Q69,2)
+set QL9=QC9ForPlayer(p,Q39,Q69,3)
 call SaveInteger(TABLE_XJ,(GetHandleId(KU4[GetPlayerId(p)])),(4),(K34[Q39]))
 call SaveInteger(TABLE_XJ,(GetHandleId(KU4[GetPlayerId(p)])),(5),(K34[Q69]))
 call SaveInteger(TABLE_XJ,(GetHandleId(KU4[GetPlayerId(p)])),(6),(K34[QL9]))
@@ -61059,8 +61122,8 @@ call AddUnitToStock(KU4[GetPlayerId(p)],K34[Q69],1,1)
 //call QY9(p,K34[Q69])
 call AddUnitToStock(KU4[GetPlayerId(p)],K34[QL9],1,1)
 //call QY9(p,K34[QL9])
-set Q39=QC9(Q39,Q69,1)
-set Q69=QC9(Q39,Q69,3)
+set Q39=QC9HumanFirstAgility(p,Q39,Q69)
+set Q69=QC9ForPlayer(p,Q39,Q69,3)
 call SaveInteger(TABLE_XJ,(GetHandleId(KU4[GetPlayerId(p)])),(7),(K34[Q39]))
 call SaveInteger(TABLE_XJ,(GetHandleId(KU4[GetPlayerId(p)])),(8),(K34[Q69]))
 call SaveInteger(TABLE_XJ,(GetHandleId(KU4[GetPlayerId(p)])),(100),3)
@@ -61079,6 +61142,8 @@ set p=A7[i]
 set Q39=0
 set Q69=0
 set QL9=0
+set K_POOL_ROLLED[GetPlayerId(p)]=false
+set K_POOL_HIT[GetPlayerId(p)]=false
 if TY7(p)then
 call UnitRemoveAbility(KU4[GetPlayerId(p)],'A331')
 // call UnitRemoveAbility(KU4[GetPlayerId(p)],'A4AL')
@@ -61098,13 +61163,13 @@ call UnitAddAbility(KU4[GetPlayerId(p)],'A4EP')
 if SPEPLAYER[GetPlayerId(p)]==58 then
 set Q39=99
 else
-set Q39=QC9(Q39,Q69,1)
+set Q39=QC9HumanFirstAgility(p,Q39,Q69)
 endif
-set Q69=QC9(Q39,Q69,2)
+set Q69=QC9ForPlayer(p,Q39,Q69,2)
 if SPEPLAYER[GetPlayerId(p)]==20 then
     set QL9=94
 else
-    set QL9=QC9(Q39,Q69,3)
+    set QL9=QC9ForPlayer(p,Q39,Q69,3)
 endif
 call SaveInteger(TABLE_XJ,(GetHandleId(KU4[GetPlayerId(p)])),(1),(K34[Q39]))
 call SaveInteger(TABLE_XJ,(GetHandleId(KU4[GetPlayerId(p)])),(2),(K34[Q69]))
@@ -61115,9 +61180,9 @@ call AddUnitToStock(KU4[GetPlayerId(p)],K34[Q69],1,1)
 //call QY9(p,K34[Q69])
 call AddUnitToStock(KU4[GetPlayerId(p)],K34[QL9],1,1)
 //call QY9(p,K34[QL9])
-set Q39=QC9(Q39,Q69,1)
-set Q69=QC9(Q39,Q69,2)
-set QL9=QC9(Q39,Q69,3)
+set Q39=QC9HumanFirstAgility(p,Q39,Q69)
+set Q69=QC9ForPlayer(p,Q39,Q69,2)
+set QL9=QC9ForPlayer(p,Q39,Q69,3)
 call SaveInteger(TABLE_XJ,(GetHandleId(KU4[GetPlayerId(p)])),(4),(K34[Q39]))
 call SaveInteger(TABLE_XJ,(GetHandleId(KU4[GetPlayerId(p)])),(5),(K34[Q69]))
 call SaveInteger(TABLE_XJ,(GetHandleId(KU4[GetPlayerId(p)])),(6),(K34[QL9]))
@@ -61127,8 +61192,8 @@ call AddUnitToStock(KU4[GetPlayerId(p)],K34[Q69],1,1)
 //call QY9(p,K34[Q69])
 call AddUnitToStock(KU4[GetPlayerId(p)],K34[QL9],1,1)
 //call QY9(p,K34[QL9])
-set Q39=QC9(Q39,Q69,1)
-set Q69=QC9(Q39,Q69,3)
+set Q39=QC9HumanFirstAgility(p,Q39,Q69)
+set Q69=QC9ForPlayer(p,Q39,Q69,3)
 call SaveInteger(TABLE_XJ,(GetHandleId(KU4[GetPlayerId(p)])),(7),(K34[Q39]))
 call SaveInteger(TABLE_XJ,(GetHandleId(KU4[GetPlayerId(p)])),(8),(K34[Q69]))
 call SaveInteger(TABLE_XJ,(GetHandleId(KU4[GetPlayerId(p)])),(100),3)
@@ -172176,6 +172241,8 @@ local integer Q69=0
 local integer QL9=0
 local integer left=LoadInteger(TABLE_XJ,I97,100)
 local boolean freeRandom=SpecialTitle_HasFreeRandom(p)
+set K_POOL_ROLLED[i]=false
+set K_POOL_HIT[i]=false
 if freeRandom==false and GetPlayerState(p,PLAYER_STATE_RESOURCE_GOLD)<100 then
 call X37(p,"刷新英雄需要100金币")
 set p=null
@@ -172202,9 +172269,9 @@ set J[GetUnitPointValueByType(LoadInteger(TABLE_XJ,(I97),(5)))]=false
 set J[GetUnitPointValueByType(LoadInteger(TABLE_XJ,(I97),(6)))]=false
 set J[GetUnitPointValueByType(LoadInteger(TABLE_XJ,(I97),(7)))]=false
 set J[GetUnitPointValueByType(LoadInteger(TABLE_XJ,(I97),(8)))]=false
-set Q39=QC9(Q39,Q69,1)
-set Q69=QC9(Q39,Q69,2)
-set QL9=QC9(Q39,Q69,3)
+set Q39=QC9HumanFirstAgility(p,Q39,Q69)
+set Q69=QC9ForPlayer(p,Q39,Q69,2)
+set QL9=QC9ForPlayer(p,Q39,Q69,3)
 call SaveInteger(TABLE_XJ,(I97),(1),(K34[Q39]))
 call SaveInteger(TABLE_XJ,(I97),(2),(K34[Q69]))
 call SaveInteger(TABLE_XJ,(I97),(3),(K34[QL9]))
@@ -172214,9 +172281,9 @@ call AddUnitToStock(u,K34[Q69],1,1)
 //call QY9(p,K34[Q69])
 call AddUnitToStock(u,K34[QL9],1,1)
 //call QY9(p,K34[QL9])
-set Q39=QC9(Q39,Q69,1)
-set Q69=QC9(Q39,Q69,2)
-set QL9=QC9(Q39,Q69,3)
+set Q39=QC9HumanFirstAgility(p,Q39,Q69)
+set Q69=QC9ForPlayer(p,Q39,Q69,2)
+set QL9=QC9ForPlayer(p,Q39,Q69,3)
 call SaveInteger(TABLE_XJ,(I97),(4),(K34[Q39]))
 call SaveInteger(TABLE_XJ,(I97),(5),(K34[Q69]))
 call SaveInteger(TABLE_XJ,(I97),(6),(K34[QL9]))
@@ -172226,8 +172293,8 @@ call AddUnitToStock(u,K34[Q69],1,1)
 //call QY9(p,K34[Q69])
 call AddUnitToStock(u,K34[QL9],1,1)
 //call QY9(p,K34[QL9])
-set Q39=QC9(Q39,Q69,1)
-set Q69=QC9(Q39,Q69,3)
+set Q39=QC9HumanFirstAgility(p,Q39,Q69)
+set Q69=QC9ForPlayer(p,Q39,Q69,3)
 call SaveInteger(TABLE_XJ,I97,7,K34[Q39])
 call SaveInteger(TABLE_XJ,I97,8,K34[Q69])
 call AddUnitToStock(u,K34[Q39],1,1)
@@ -173335,8 +173402,8 @@ function XIO takes integer id, boolean XAO returns integer
 	endloop
 	return -1
 endfunction
-// v1.3 凯哥发福利 core: pid-based, shared by energy-circle A4DK (backup) and archive-dialog row.
-// per-human per-match one synchronous 1..1000 gold gift; no item pool, no archive write, no op3.
+// 凯哥发福利 core: archive-dialog only. Per-human per-match one synchronous 1..1000 gold gift;
+// independent from the fountain energy-circle equipment lottery, no archive write, no op3.
 function WELFARE_Claim takes integer id returns nothing
 local player p=null
 local unit u=null
@@ -173369,7 +173436,7 @@ if LOTTERY_REPEAT_LOG[id]<12 then
 set LOTTERY_REPEAT_LOG[id]=LOTTERY_REPEAT_LOG[id]+1
 call XOMG_LogEvent("LOTTERY_REPEAT pid="+I2S(id)+" reason=claimed ver="+XOMG_VERSION)
 endif
-call X37(p,"本局福利已领取（能量圈与存档商店共用同一领取状态）")
+call X37(p,"本局福利已领取")
 set p=null
 set u=null
 return
@@ -173377,20 +173444,51 @@ endif
 // synchronous single roll 1..1000 = current-match gold; mark success first (double-click safe)
 set roll=GetRandomInt(1,1000)
 set LOTTERY_CLAIMED[id]=true
-set CHOUJIANGSTATE[id]=0
 set goldBefore=GetPlayerState(p,PLAYER_STATE_RESOURCE_GOLD)
 call SetPlayerState(p,PLAYER_STATE_RESOURCE_GOLD,goldBefore+roll)
 call DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Other\\Transmute\\PileofGold.mdl",GetUnitX(u),GetUnitY(u)))
 call DisplayTimedTextToPlayer(p,0,0,6.,"|cFF00FF00凯哥发福利：获得 "+I2S(roll)+" 金币|r")
 call XOMG_LogEvent("LOTTERY_OK pid="+I2S(id)+" amount="+I2S(roll)+" gold_before="+I2S(goldBefore)+" gold_after="+I2S(goldBefore+roll)+" ver="+XOMG_VERSION)
-// backup energy-circle entry cleanup; dialog entry has no ability to remove
-call UnitRemoveAbility(SuijiTavernB295_GetEnergyCircle(id),'A4DK')
 set p=null
 set u=null
 endfunction
-// energy-circle A4DK spell entry: resolves pid then shares the same claim state
+// Fountain energy-circle A4DK: original per-match equipment/gold lottery.
 function CHOUJIANG takes nothing returns nothing
-call WELFARE_Claim(GetPlayerId(GetOwningPlayer(GetTriggerUnit())))
+local unit u=M7[GetPlayerId(GetOwningPlayer(GetTriggerUnit()))]
+local player p=GetOwningPlayer(u)
+local integer id=GetPlayerId(p)
+local item it=null
+local integer zb=0
+local string name=""
+local integer n=0
+call B1063BuildLotteryPool()
+if B1063LotteryCount>0 and GetRandomInt(1,100)<=50 then
+set zb=B1063LotteryPool[GetRandomInt(1,B1063LotteryCount)]
+endif
+if zb!=0 then
+if UnitInventoryCount(u)<6 then
+set it=UnitAddItemById(u,zb)
+else
+set it=CreateItem(zb,GetUnitX(u),GetUnitY(u))
+endif
+call SetItemPlayer(it,p,true)
+call SetItemUserData(it,1)
+set name=GetItemName(it)
+set name=MHString_Sub(name,0,MHString_Find(name,"|n",0))
+call DisplayTimedTextToForce(GetPlayersAll(),12.,Q[id]+KZ4[id]+"|r 抽奖获得了: |cFF00FF00"+name+"|r")
+call XOMG_LogEvent("LOTTERY pid="+I2S(id)+" kind=item raw="+I2S(zb)+" min_price="+I2S(B1063LotteryMinPrice)+" pool="+I2S(B1063LotteryCount)+" ver="+XOMG_VERSION)
+else
+set n=GetRandomInt(1000,1500)
+call SetPlayerState(p,PLAYER_STATE_RESOURCE_GOLD,GetPlayerState(p,PLAYER_STATE_RESOURCE_GOLD)+n)
+call DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Other\\Transmute\\PileofGold.mdl",GetUnitX(u),GetUnitY(u)))
+call DisplayTimedTextToForce(GetPlayersAll(),12.,Q[id]+KZ4[id]+"|r 抽奖获得了: |cFF00FF00"+I2S(n)+"枚金币|r")
+call XOMG_LogEvent("LOTTERY pid="+I2S(id)+" kind=gold amount="+I2S(n)+" pool="+I2S(B1063LotteryCount)+" ver="+XOMG_VERSION)
+endif
+set CHOUJIANGSTATE[id]=0
+call UnitRemoveAbility(SuijiTavernB295_GetEnergyCircle(id),'A4DK')
+set u=null
+set p=null
+set it=null
 endfunction
 // v1.3 双杰抽属性 core: pid-based, archive-dialog row. 1000 current-match gold per draw, infinite,
 // no claim gate, no archive write, no op3. roll=GetRandomInt(1,100); roll<=10 -> gain=20 jackpot;
@@ -250235,7 +250333,7 @@ call B957Init()
 call KK_Init()
 endfunction
 function config takes nothing returns nothing
-call SetMapName("OMG IMBA v1.4-K-loadfix5")
+call SetMapName("OMG IMBA v1.5-K50-Fix")
 call SetMapDescription("随机技能，强化AI，极限对抗。\n作者：小生我怕怕\n按F9查看地图信息。")
 call SetPlayers($A)
 call SetTeams($A)

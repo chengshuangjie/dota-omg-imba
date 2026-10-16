@@ -1,18 +1,18 @@
 ﻿{
-    "map":  "D:\\dota\\DOTA-OMG-IMBA-轻量化\\maps\\build\\DOTA-OMG-IMBA-轻量化-v1.4-K-loadfix4.w3x",
-    "mapBytes":  47452438,
-    "mapSha256":  "96ab9fb08153be275e3d3070bf55825b5cbf94759f9b0923898e693b5e78cec3",
+    "map":  "D:\\游戏\\Warcraft III\\Maps\\omg\\noskin4\\DOTA-OMG-IMBA-v1.5-能量圈原抽奖-福利独立-K真人50-小生我怕怕.w3x",
+    "mapBytes":  47453988,
+    "mapSha256":  "19d02c60657fece4633978ef7c890cd060679496160d9f23a3adf4d0049f488e",
     "files":  [
                   {
                       "file":  "war3map.j",
-                      "expected":  "4fe5616327fac097b9dcc23806ed85f75e65db6807a56e700d57356c2139eb22",
-                      "actual":  "4fe5616327fac097b9dcc23806ed85f75e65db6807a56e700d57356c2139eb22",
+                      "expected":  "e9015fd1d045e2594c217e2a205641f73a195587114aaadbea07479b7974eabd",
+                      "actual":  "e9015fd1d045e2594c217e2a205641f73a195587114aaadbea07479b7974eabd",
                       "match":  true
                   },
                   {
                       "file":  "war3map.w3i",
-                      "expected":  "4e53f7860ec0f7c5a6bbc83b84301b1818a63306c924d7d9256066a80a74f9bf",
-                      "actual":  "4e53f7860ec0f7c5a6bbc83b84301b1818a63306c924d7d9256066a80a74f9bf",
+                      "expected":  "957d274e22384bb49634421a0998d382f4d304c3bbe649e21f755692b3ed86d7",
+                      "actual":  "957d274e22384bb49634421a0998d382f4d304c3bbe649e21f755692b3ed86d7",
                       "match":  true
                   },
                   {
@@ -23,8 +23,8 @@
                   },
                   {
                       "file":  "Units\\CampaignAbilityStrings.txt",
-                      "expected":  "0b3f6cf34f4dd286d3ffdc3784e1cae135f6a5d40694b48f65d157809ff9b446",
-                      "actual":  "0b3f6cf34f4dd286d3ffdc3784e1cae135f6a5d40694b48f65d157809ff9b446",
+                      "expected":  "09c4e96030a8d59fdc2dd2db5f34ba958cb4b9bc4535790e5892c4678182a8b4",
+                      "actual":  "09c4e96030a8d59fdc2dd2db5f34ba958cb4b9bc4535790e5892c4678182a8b4",
                       "match":  true
                   },
                   {
@@ -79,11 +79,16 @@
                          "runtimeImbaGate":  1,
                          "runtimeMultiplierTwo":  1,
                          "runtimeMultiplierReset":  0,
-                         "lotteryGoldFloor":  0,
+                         "lotteryGoldFloor":  1,
                          "legacyLowLotteryGold":  0,
                          "uniqueVersionName":  1,
-                         "lotteryRuntimeGate":  0,
+                         "lotteryRuntimeGate":  1,
                          "legacyLotteryGate":  0,
+                         "kHumanRoll50":  1,
+                         "kHumanFallbackNoK":  1,
+                         "kHumanPoolResets":  4,
+                         "kHumanAgilityDispatch":  9,
+                         "kPoolLog":  2,
                          "dropCheapUsesFinishedItems":  1,
                          "dropLotteryUsesFinishedItems":  1,
                          "dropChanceFixedTenPercent":  1,
@@ -108,7 +113,10 @@
                          "welfareOpenLog":  1,
                          "welfareOkLog":  1,
                          "welfareRepeatLog":  2,
-                         "welfareNoPoolCall":  1,
+                         "lotteryPoolCall":  2,
+                         "welfareTouchesFountainState":  0,
+                         "fountainUsesPool":  1,
+                         "fountainTouchesWelfareState":  0,
                          "poolDefinitionRetained":  1,
                          "archiveWritesUnchanged":  11,
                          "attrRoll1_100":  1,
@@ -136,8 +144,8 @@
                          "a088R4":  2,
                          "a088R3":  4,
                          "a088R2":  6,
-                         "welfareName":  1,
-                         "oldLotteryName":  0,
+                         "welfareName":  0,
+                         "oldLotteryName":  1,
                          "welfareDialogRow":  1,
                          "attrDialogRow":  1,
                          "welfareDispatch":  1,

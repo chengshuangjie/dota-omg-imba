@@ -38600,9 +38600,9 @@ Ubertip=大魔导师对魔法异常娴熟，施法距离增加50，技能伤害�
 
 [A4DK]
 Art=ReplaceableTextures\CommandButtons\BTNBarrel.blp
-Name=凯哥发福利
-Tip=|c00FF8000凯哥发福利|r
-Ubertip=|cFF00FF00每人每局一次，点击同步随机获得1-1000当前局金币|r|n|n无XM模式限制，不抽装备，不写存档。
+Name=抽奖
+Tip=|c00FF8000抽奖|r
+Ubertip=|cFF00FF00每人每局一次：50%获得一件价格不低于1000的真实成品装备，否则获得1000-1500金币。|r
 
 [A4DL]
 Art=,

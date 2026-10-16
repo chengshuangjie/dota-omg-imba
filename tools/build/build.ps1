@@ -21,7 +21,7 @@ function Wait-FileStable([string]$path, [int]$timeoutSeconds = 30) {
             $currentLength = (Get-Item -LiteralPath $path).Length
             if ($currentLength -gt 0 -and $currentLength -eq $lastLength) { $stable++ } else { $stable = 0 }
             $lastLength = $currentLength
-            if ($stable -ge 4) { return }
+            if ($stable -ge 40) { return }
         }
         Start-Sleep -Milliseconds 250
     }

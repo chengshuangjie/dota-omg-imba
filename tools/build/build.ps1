@@ -39,11 +39,12 @@ function Invoke-MpqAdd([string]$mapPath, [string]$sourcePath, [string]$archivePa
 
 $baseline = Resolve-ProjectPath $config.baselineMap
 $output = if ($OutputMap) { Resolve-ProjectPath $OutputMap } else { Resolve-ProjectPath $config.outputMap }
+if (Test-Path -LiteralPath $output -PathType Leaf) { Remove-Item -LiteralPath $output -Force }
 $src = Join-Path $root 'src\war3map.j'
 $imp = Join-Path $root 'src\war3map.imp'
 $unitDir = Join-Path $root 'src\data\Units'
 $assetDir = Join-Path $root 'assets\loading-screen'
-$tempRoot = Join-Path ([IO.Path]::GetTempPath()) 'DotaOmgImbaLightBuild'
+$tempRoot = Join-Path ([IO.Path]::GetTempPath()) ('DotaOmgImbaLightBuild-' + [guid]::NewGuid().ToString('N'))
 $stageDir = Join-Path $tempRoot 'stage'
 $asciiMap = Join-Path $tempRoot 'map_work.w3x'
 
@@ -66,6 +67,25 @@ $kBlpSize0 = [BitConverter]::ToUInt32($kBlp,92)
 if ($kBlpCompression -ne 1 -or ($kBlpPictureType -ne 4 -and $kBlpPictureType -ne 5) -or $kBlpWidth -eq 0 -or $kBlpHeight -eq 0 -or ([uint64]$kBlpOffset0 + [uint64]$kBlpSize0) -gt [uint64]$kBlp.Length) {
     throw "K 贴图 BLP1 与 Warcraft III 1.24 不兼容: compression=$kBlpCompression pictureType=$kBlpPictureType size=$($kBlpWidth)x$($kBlpHeight) mip0=$kBlpOffset0+$kBlpSize0 file=$($kBlp.Length)"
 }
+
+# Classic Warcraft III requires a non-empty MODL model name. The first K model was
+# structurally parseable but had 80 zero bytes here and crashed before script init.
+$kModel = Join-Path $root 'assets\K\K_final.mdx'
+if (-not (Test-Path -LiteralPath $kModel -PathType Leaf)) { throw "缺少 K 模型: $kModel" }
+$kMdx = [IO.File]::ReadAllBytes($kModel)
+if ($kMdx.Length -lt 16 -or [Text.Encoding]::ASCII.GetString($kMdx,0,4) -ne 'MDLX') { throw "K 模型不是有效 MDX: $kModel" }
+$kMdxPos = 4
+$kMdxName = ''
+while ($kMdxPos + 8 -le $kMdx.Length) {
+    $kMdxTag = [Text.Encoding]::ASCII.GetString($kMdx,$kMdxPos,4)
+    $kMdxSize = [BitConverter]::ToUInt32($kMdx,$kMdxPos + 4)
+    if ([uint64]$kMdxPos + 8 + [uint64]$kMdxSize -gt [uint64]$kMdx.Length) { throw "K 模型区块越界: $kMdxTag" }
+    if ($kMdxTag -eq 'MODL' -and $kMdxSize -ge 80) {
+        $kMdxName = [Text.Encoding]::ASCII.GetString($kMdx,$kMdxPos + 8,80).Trim([char]0)
+    }
+    $kMdxPos += 8 + $kMdxSize
+}
+if ($kMdxPos -ne $kMdx.Length -or [string]::IsNullOrWhiteSpace($kMdxName)) { throw "K 模型 MODL 名称为空或结构不完整: $kModel" }
 
 [IO.Directory]::CreateDirectory($stageDir) | Out-Null
 [IO.Directory]::CreateDirectory((Split-Path -Parent $output)) | Out-Null

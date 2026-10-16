@@ -1,5 +1,5 @@
 ID;PWXL;N;E
-B;X25;Y9001;D0
+B;X25;Y3339;D0
 C;X1;Y1;K"unitID"
 C;X2;K"buffRadius"
 C;X3;K"buffType"
@@ -42671,7 +42671,7 @@ C;X21;K60.0
 C;X22;K"human"
 C;X24;K"ground"
 C;X25;K0.6
-C;X1;Y9001;K"H0K0"
+C;X1;Y3339;K"H0K0"
 C;X5;K1
 C;X7;K1
 C;X8;K3.0

@@ -3,9 +3,10 @@
 v1.4-K reproducible SLK builder (root-cause generator, idempotent).
 
 Responsibilities:
-1. Five Unit SLKs: relocate the H0K0 Y9001 block to immediately BEFORE the
-   standalone terminating `E` record; E stays the last non-empty line.
-2. AbilityData.slk: (re)build KA01..KA04 rows with native effects zeroed:
+1. Five Unit SLKs: relocate the H0K0 block to the first contiguous row after
+   the legacy last object, immediately BEFORE the standalone terminating `E`.
+2. AbilityData.slk: (re)build KA01..KA04 in the first four contiguous rows
+   after the legacy last ability, with native effects zeroed:
    - KA01/KA02 passive level markers (Aamk) with DataA-D = 0 (no native stat bonus).
    - KA03/KA04 pure-channel self instant (Achl), native duration/buff/movespeed
      fields zeroed; CD/levels/target preserved; mana cost 0.
@@ -101,21 +102,28 @@ def relocate_unit_block(fname):
     block, lines = extract_block(lines, "H0K0")
     if not block:
         return  # v1.3 / clean tree: nothing to relocate
+    # Warcraft III 1.24's SLK reader is not safe with large sparse row jumps.
+    # Renumber H0K0 to exactly one row after the last legacy object.
+    legacy_max_y = 0
+    for ln in lines:
+        m = ROW_Y_RE.search(ln)
+        if m:
+            legacy_max_y = max(legacy_max_y, int(m.group(1)))
+    hero_y = legacy_max_y + 1
+    block[0] = re.sub(r';Y\d+;', ';Y%d;' % hero_y, block[0], count=1)
     e = find_e_index(lines)
-    # insert block right before E; keep a blank separator if present before E
     new = lines[:e] + block + [""] + lines[e:]
     write(path, "\n".join(new), enc, eol)
-    print("relocated H0K0 -> before E in %s (%d block lines)" % (fname, len(block)))
+    print("relocated H0K0 -> contiguous Y%d before E in %s (%d block lines)" % (hero_y, fname, len(block)))
 
 
 def sync_unit_boundary_b(fname):
-    """C2: raise each B-record Y to the actual maximum object-row Y in this file.
+    """Set B.Y to the actual maximum object row (including H0K0).
 
-    The B record declares the used row boundary; object rows beyond B.Y (H0K0 at
-    Y9001 while the legacy boundary stayed Y3338) can be dropped by strict SLK
-    readers. Idempotent: B.Y only moves up to max(existing B.Y, max object Y);
-    X and D0 are preserved byte-for-byte; a clean v1.3 tree (maxY <= B.Y) is
-    untouched.
+    The old generator placed H0K0 at sparse Y9001 and then expanded B.Y to
+    9001. Warcraft III 1.24 can fail while loading such sparse custom SLKs.
+    After contiguous renumbering this function intentionally allows B.Y to
+    decrease back to the real used row; X and D are preserved.
     """
     path = os.path.join(UNITS, fname)
     if not os.path.exists(path):
@@ -133,10 +141,9 @@ def sync_unit_boundary_b(fname):
         m = B_RE.match(ln)
         if m:
             x, y, d = m.group(1), int(m.group(2)), m.group(3)
-            new_y = max(y, max_y)
-            if new_y != y:
+            if max_y != y:
                 changed = True
-                ln = 'B;X%s;Y%d;%s' % (x, new_y, d)
+                ln = 'B;X%s;Y%d;%s' % (x, max_y, d)
         out.append(ln)
     if changed:
         write(path, "\n".join(out), enc, eol)
@@ -188,12 +195,13 @@ def ka_channel(code, y, cd, levels):
     return rows
 
 
-KA_BLOCKS = (
-    ka_passive("KA01", 9001),
-    ka_passive("KA02", 9002),
-    ka_channel("KA03", 9003, ["10.0", "10.0", "10.0", "10.0"], 4),
-    ka_channel("KA04", 9004, ["80.0", "65.0", "50.0"], 3),
-)
+def make_ka_blocks(start_y):
+    return (
+        ka_passive("KA01", start_y),
+        ka_passive("KA02", start_y + 1),
+        ka_channel("KA03", start_y + 2, ["10.0", "10.0", "10.0", "10.0"], 4),
+        ka_channel("KA04", start_y + 3, ["80.0", "65.0", "50.0"], 3),
+    )
 
 
 def rebuild_ability_data():
@@ -214,14 +222,28 @@ def rebuild_ability_data():
             continue
         keep.append(ln)
     e = find_e_index(keep)
+    legacy_max_y = 0
+    for ln in keep:
+        m = ROW_Y_RE.search(ln)
+        if m:
+            legacy_max_y = max(legacy_max_y, int(m.group(1)))
+    start_y = legacy_max_y + 1
     block = []
-    for b in KA_BLOCKS:
+    for b in make_ka_blocks(start_y):
         block += b
         block.append("")
     block = block[:-1]  # drop trailing blank
     new = keep[:e] + block + [""] + keep[e:]
-    write(path, "\n".join(new), ABILITY_ENC, ABILITY_EOL)
-    print("rebuilt KA01..04 (passive zeroed; KA03/04 clone A0OT ANcl no-target, native zeroed) in AbilityData.slk")
+    # AbilityData B.Y must match the real contiguous maximum row, not sparse 9004.
+    out = []
+    final_max_y = start_y + 3
+    for ln in new:
+        m = B_RE.match(ln)
+        if m:
+            ln = 'B;X%s;Y%d;%s' % (m.group(1), final_max_y, m.group(3))
+        out.append(ln)
+    write(path, "\n".join(out), ABILITY_ENC, ABILITY_EOL)
+    print("rebuilt KA01..04 at contiguous Y%d..Y%d in AbilityData.slk" % (start_y, final_max_y))
 
 
 def main():

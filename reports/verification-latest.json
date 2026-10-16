@@ -1,18 +1,18 @@
 ﻿{
-    "map":  "D:\\dota\\DOTA-OMG-IMBA-轻量化\\maps\\build\\DOTA-OMG-IMBA-轻量化-v1.4-K-loadfix2.w3x",
-    "mapBytes":  47452442,
-    "mapSha256":  "b5b231f3327a191ff9dcc0a02d5c0940b14b5f00f31a60297fcc05404b0cf759",
+    "map":  "D:\\dota\\DOTA-OMG-IMBA-轻量化\\maps\\build\\DOTA-OMG-IMBA-轻量化-v1.4-K-loadfix4.w3x",
+    "mapBytes":  47452438,
+    "mapSha256":  "96ab9fb08153be275e3d3070bf55825b5cbf94759f9b0923898e693b5e78cec3",
     "files":  [
                   {
                       "file":  "war3map.j",
-                      "expected":  "35b5b322795acf8961714e1bc2b44b4acd936dd55260969674d02835d3681f09",
-                      "actual":  "35b5b322795acf8961714e1bc2b44b4acd936dd55260969674d02835d3681f09",
+                      "expected":  "4fe5616327fac097b9dcc23806ed85f75e65db6807a56e700d57356c2139eb22",
+                      "actual":  "4fe5616327fac097b9dcc23806ed85f75e65db6807a56e700d57356c2139eb22",
                       "match":  true
                   },
                   {
                       "file":  "war3map.w3i",
-                      "expected":  "23e98f3f0f2fbab6d46a87052daaa892ff914131c1adf61ee1d9be9a08cfa0bb",
-                      "actual":  "23e98f3f0f2fbab6d46a87052daaa892ff914131c1adf61ee1d9be9a08cfa0bb",
+                      "expected":  "4e53f7860ec0f7c5a6bbc83b84301b1818a63306c924d7d9256066a80a74f9bf",
+                      "actual":  "4e53f7860ec0f7c5a6bbc83b84301b1818a63306c924d7d9256066a80a74f9bf",
                       "match":  true
                   },
                   {
@@ -35,38 +35,38 @@
                   },
                   {
                       "file":  "Units\\UnitAbilities.slk",
-                      "expected":  "ecefb8c260878f1f98fc3e69619700b82e3ed5ec5beb899386d1e773436e73ac",
-                      "actual":  "ecefb8c260878f1f98fc3e69619700b82e3ed5ec5beb899386d1e773436e73ac",
+                      "expected":  "51290df1c1bc64057431924a94f604c0dbfde5129a32ddfbdcb1b97629d22d1e",
+                      "actual":  "51290df1c1bc64057431924a94f604c0dbfde5129a32ddfbdcb1b97629d22d1e",
                       "match":  true
                   },
                   {
                       "file":  "Units\\UnitBalance.slk",
-                      "expected":  "9b5b0deb446e0f6b148bd0f7f4735a3dda1a7c47bcc809c5e2e632601f004c4b",
-                      "actual":  "9b5b0deb446e0f6b148bd0f7f4735a3dda1a7c47bcc809c5e2e632601f004c4b",
+                      "expected":  "b3be87de20adf774d7d68ea176a4339d1064e76c7335d655c7ddfc4b0b9fdc34",
+                      "actual":  "b3be87de20adf774d7d68ea176a4339d1064e76c7335d655c7ddfc4b0b9fdc34",
                       "match":  true
                   },
                   {
                       "file":  "Units\\UnitData.slk",
-                      "expected":  "d4aa02b8ba0f0321639a623ce319561f7db5d6bb7d4e1906c33b7518ccb00ef0",
-                      "actual":  "d4aa02b8ba0f0321639a623ce319561f7db5d6bb7d4e1906c33b7518ccb00ef0",
+                      "expected":  "fb2a2fd297bbea4f766b2c8e19c331cd1b61d30c46dd06f213a5ed035fd8b288",
+                      "actual":  "fb2a2fd297bbea4f766b2c8e19c331cd1b61d30c46dd06f213a5ed035fd8b288",
                       "match":  true
                   },
                   {
                       "file":  "Units\\UnitUI.slk",
-                      "expected":  "9197b3eee15bb2f14e3f04e7e84911a653adc832933f4b1e2c00817974db8364",
-                      "actual":  "9197b3eee15bb2f14e3f04e7e84911a653adc832933f4b1e2c00817974db8364",
+                      "expected":  "705bb27924932d3399da2fed90215215101add532eb4247cbc94047cd250a76a",
+                      "actual":  "705bb27924932d3399da2fed90215215101add532eb4247cbc94047cd250a76a",
                       "match":  true
                   },
                   {
                       "file":  "Units\\UnitWeapons.slk",
-                      "expected":  "120149f22540c44abff575a5ff061199422e0d40423479f8efc3c7b10ee9e6eb",
-                      "actual":  "120149f22540c44abff575a5ff061199422e0d40423479f8efc3c7b10ee9e6eb",
+                      "expected":  "f2f00abe1dba35aa54f19fea5e13d647732109b4aeafc5f537b737ec3c46efac",
+                      "actual":  "f2f00abe1dba35aa54f19fea5e13d647732109b4aeafc5f537b737ec3c46efac",
                       "match":  true
                   },
                   {
                       "file":  "Units\\AbilityData.slk",
-                      "expected":  "d476ea132b9e7d563774d001488e4778135c717ef75c76eaffe590d1029f362a",
-                      "actual":  "d476ea132b9e7d563774d001488e4778135c717ef75c76eaffe590d1029f362a",
+                      "expected":  "435ad756c250ed128044fab47bd419858a4f04abc016ee781c55d9273497511e",
+                      "actual":  "435ad756c250ed128044fab47bd419858a4f04abc016ee781c55d9273497511e",
                       "match":  true
                   }
               ],
@@ -215,6 +215,8 @@
                          "kBoundaryWep":  true,
                          "kBoundaryUI":  true,
                          "kBoundaryOk":  true,
+                         "kContiguousUnitRows":  true,
+                         "kContiguousAbilityRows":  true,
                          "kAbJdKA01":  1,
                          "kAbJdKA02":  1,
                          "kAbJdKA03":  1,
@@ -237,6 +239,8 @@
                          "kImpMdx":  1,
                          "kImpBlp":  1,
                          "kMdxMatch":  true,
+                         "kMdxModelName":  "K_Hero",
+                         "kMdxModelNameOk":  true,
                          "kBlpMatch":  true,
                          "kBlpCompatible124":  true,
                          "attrDistributionJackpot":  10,

@@ -24,7 +24,8 @@ $checks = @(
     @{ Archive = 'Units\UnitBalance.slk'; Expected = (Join-Path $root 'src\data\Units\UnitBalance.slk') },
     @{ Archive = 'Units\UnitData.slk'; Expected = (Join-Path $root 'src\data\Units\UnitData.slk') },
     @{ Archive = 'Units\UnitUI.slk'; Expected = (Join-Path $root 'src\data\Units\UnitUI.slk') },
-    @{ Archive = 'Units\UnitWeapons.slk'; Expected = (Join-Path $root 'src\data\Units\UnitWeapons.slk') }
+    @{ Archive = 'Units\UnitWeapons.slk'; Expected = (Join-Path $root 'src\data\Units\UnitWeapons.slk') },
+    @{ Archive = 'Units\AbilityData.slk'; Expected = (Join-Path $root 'src\data\Units\AbilityData.slk') }
 )
 
 $results = @()
@@ -189,10 +190,15 @@ $attrUiNormal = ([regex]::Matches($scriptText, '1-10各9%概率全属性\+1至\+
 $kkBlockMatch = [regex]::Match($scriptText, '(?s)(function KK_IsKHero.*?)(?=function main takes)')
 $kkBlock = $kkBlockMatch.Groups[1].Value
 $kRegHero = ([regex]::Matches($scriptText, "call R1X\('H0K0',0,'KA01','KA02','KA03','KA04'\)")).Count
+# B2 fix: fake int/MD wiring must be ABSENT; H0K0 lives in agility K24 at index 40 and K34[118]
 $kPoolM84 = ([regex]::Matches($scriptText, "set M84\[42\]='H0K0'")).Count
 $kPoolMD4 = ([regex]::Matches($scriptText, "set MD4\[60\]='H0K0'")).Count
 $kBoundM94 = ([regex]::Matches($scriptText, 'set M94=42')).Count
 $kBoundME4 = ([regex]::Matches($scriptText, 'set ME4=60')).Count
+$kK34118 = ([regex]::Matches($scriptText, "set K34\[118\]='H0K0'")).Count
+$kK54 = ([regex]::Matches($scriptText, 'set K54=118')).Count
+$kK2440 = ([regex]::Matches($scriptText, "set K24\[40\]='H0K0'")).Count
+$kKAgiBound = ([regex]::Matches($scriptText, 'set K_4=40')).Count
 $kExclusion = ([regex]::Matches($scriptText, "or skill=='KA0[1-4]'")).Count
 # constants live in top globals (unique KK_ names -> count over whole scriptText)
 # SK1 permanent kill agility 1/2/3/4
@@ -234,8 +240,46 @@ $kNoB67 = ([regex]::Matches($kkBlock, 'call B67\(')).Count
 # SLK rows (extracted)
 $slkAbil = [IO.File]::ReadAllText((Join-Path $verifyDir 'units\unitabilities.slk'), [Text.Encoding]::UTF8)
 $slkUI = [IO.File]::ReadAllText((Join-Path $verifyDir 'units\unitui.slk'), [Text.Encoding]::UTF8)
+$slkBal = [IO.File]::ReadAllText((Join-Path $verifyDir 'units\unitbalance.slk'), [Text.Encoding]::UTF8)
+$slkWep = [IO.File]::ReadAllText((Join-Path $verifyDir 'units\unitweapons.slk'), [Text.Encoding]::UTF8)
+$slkData = [IO.File]::ReadAllText((Join-Path $verifyDir 'units\unitdata.slk'), [Text.Encoding]::UTF8)
+$slkAbilData = [IO.File]::ReadAllText((Join-Path $verifyDir 'units\abilitydata.slk'), [Text.Encoding]::UTF8)
 $kSlkGrant = ([regex]::Matches($slkAbil, 'KA01,KA02,KA03,KA04')).Count
 $kSlkModel = ([regex]::Matches($slkUI, 'war3mapimported\\K\\K_final\.mdx')).Count
+# isolate H0K0 block in each SLK (alias line -> next alias line)
+function Get-HeroBlock($text, $id) {
+    $m = [regex]::Match($text, ('(?s)C;X1;Y\d+;K"' + [regex]::Escape($id) + '".*?(?=C;X1;Y\d+;K"|\z)'))
+    return $m.Value
+}
+$balBlock = Get-HeroBlock $slkBal 'H0K0'
+$wepBlock = Get-HeroBlock $slkWep 'H0K0'
+$dataBlock = Get-HeroBlock $slkData 'H0K0'
+$kBalAgiPrimary = ([regex]::Matches($balBlock, 'C;X33;K"AGI"')).Count
+$kBalStr = ([regex]::Matches($balBlock, 'C;X48;K18')).Count
+$kBalStrPlus = ([regex]::Matches($balBlock, 'C;X49;K2\.0')).Count
+$kBalAgi = ([regex]::Matches($balBlock, 'C;X2;K22')).Count
+$kBalAgiPlus = ([regex]::Matches($balBlock, 'C;X3;K2\.2')).Count
+$kBalInt = ([regex]::Matches($balBlock, 'C;X17;K16')).Count
+$kBalIntPlus = ([regex]::Matches($balBlock, 'C;X18;K1\.5')).Count
+$kWepNormal = ([regex]::Matches($wepBlock, 'C;X57;K"normal"')).Count
+$kWepNormal2 = ([regex]::Matches($wepBlock, 'C;X58;K"normal"')).Count
+$kWepNoMissile = ([regex]::Matches($wepBlock, 'missile')).Count
+$kWepRange = ([regex]::Matches($wepBlock, 'C;X38;K128')).Count
+$kDataPoints = ([regex]::Matches($dataBlock, 'C;X19;K118')).Count
+# B1: real ability objects in AbilityData.slk
+$kAbJdKA01 = ([regex]::Matches($slkAbilData, 'K"KA01"')).Count
+$kAbJdKA02 = ([regex]::Matches($slkAbilData, 'K"KA02"')).Count
+$kAbJdKA03 = ([regex]::Matches($slkAbilData, 'K"KA03"')).Count
+$kAbJdKA04 = ([regex]::Matches($slkAbilData, 'K"KA04"')).Count
+$ka03Block = Get-HeroBlock $slkAbilData 'KA03'
+$ka04Block = Get-HeroBlock $slkAbilData 'KA04'
+$ka01Block = Get-HeroBlock $slkAbilData 'KA01'
+$ka02Block = Get-HeroBlock $slkAbilData 'KA02'
+$kAbJdLvl = ([regex]::Matches($ka01Block, 'C;X72;K4')).Count + ([regex]::Matches($ka02Block, 'C;X72;K4')).Count + ([regex]::Matches($ka03Block, 'C;X72;K4')).Count
+$kAbJdSK4Lvl = ([regex]::Matches($ka04Block, 'C;X72;K3')).Count
+$kAbJdSK3CD = ([regex]::Matches($ka03Block, 'C;X1[6-9];K10\.0')).Count
+$kAbJdSK4CD = ([regex]::Matches($ka04Block, 'C;X16;K80\.0')).Count + ([regex]::Matches($ka04Block, 'C;X17;K65\.0')).Count + ([regex]::Matches($ka04Block, 'C;X18;K50\.0')).Count
+$kAbJdSelf = ([regex]::Matches($ka03Block, 'C;X8[012];K"self"')).Count
 $kUnitStr = ([regex]::Matches($unitText, '(?m)^\[H0K0\]')).Count
 $kAbilStr = ([regex]::Matches($abilityText, '(?m)^\[KA0[1-4]\]')).Count
 # IMP paths present
@@ -361,6 +405,10 @@ $report = [ordered]@{
         kPoolMD4 = $kPoolMD4
         kBoundM94 = $kBoundM94
         kBoundME4 = $kBoundME4
+        kK34118 = $kK34118
+        kK54 = $kK54
+        kK2440 = $kK2440
+        kKAgiBound = $kKAgiBound
         kExclusion = $kExclusion
         kSk1Gain = $kSk1Gain
         kSk1SetAgi = $kSk1SetAgi
@@ -389,6 +437,27 @@ $report = [ordered]@{
         kNoB67 = $kNoB67
         kSlkGrant = $kSlkGrant
         kSlkModel = $kSlkModel
+        kBalAgiPrimary = $kBalAgiPrimary
+        kBalStr = $kBalStr
+        kBalStrPlus = $kBalStrPlus
+        kBalAgi = $kBalAgi
+        kBalAgiPlus = $kBalAgiPlus
+        kBalInt = $kBalInt
+        kBalIntPlus = $kBalIntPlus
+        kWepNormal = $kWepNormal
+        kWepNormal2 = $kWepNormal2
+        kWepNoMissile = $kWepNoMissile
+        kWepRange = $kWepRange
+        kDataPoints = $kDataPoints
+        kAbJdKA01 = $kAbJdKA01
+        kAbJdKA02 = $kAbJdKA02
+        kAbJdKA03 = $kAbJdKA03
+        kAbJdKA04 = $kAbJdKA04
+        kAbJdLvl = $kAbJdLvl
+        kAbJdSK4Lvl = $kAbJdSK4Lvl
+        kAbJdSK3CD = $kAbJdSK3CD
+        kAbJdSK4CD = $kAbJdSK4CD
+        kAbJdSelf = $kAbJdSelf
         kUnitStr = $kUnitStr
         kAbilStr = $kAbilStr
         kImpMdx = $kImpMdx
@@ -399,7 +468,7 @@ $report = [ordered]@{
         attrDistributionNormalEach = ($distNormal.GetEnumerator() | Sort-Object Name | ForEach-Object { "$($_.Key)=$($_.Value)" }) -join ','
         attrDistributionOk = $distOk
     }
-    passed = (($results | Where-Object { -not $_.match }).Count -eq 0 -and $skinPathCount -eq 0 -and $defenseImplCount -eq 0 -and $wheelImplCount -eq 0 -and $rechargeCount -eq 1 -and $loggerCount -eq 1 -and $runtimeImbaGate -eq 1 -and $runtimeMultTwo -eq 1 -and $runtimeMultReset -eq 0 -and $lotteryFloor -eq 0 -and $oldLotteryLowGold -eq 0 -and $versionName -eq 1 -and $versionLegacyName -eq 0 -and $lotteryRuntimeGate -eq 0 -and $legacyLotteryGate -eq 0 -and $dropCheapUsesFinishedItems -eq 1 -and $dropLotteryUsesFinishedItems -eq 1 -and $dropChanceFixedTen -eq 1 -and $dropPriceCap -eq 1 -and $dropMissingCreepsCovered -eq 1 -and $dropInitLog -eq 1 -and $dropRollLog -eq 1 -and $dropSuccessLog -eq 1 -and $dropTestCommand -eq 1 -and $fissureDuration -eq 1 -and $fissureStunScale -eq 1 -and $heroTipNewCount -eq 11 -and $heroTipLegacyCount -eq 0 -and $fissureResearchActual -ge 1 -and $fissureUberActual -ge 1 -and $fissureUiDistance -ge 2 -and $fissureUiDuration -ge 2 -and $welfareRoll -eq 1 -and $welfareClaimMark -eq 1 -and $welfareRepeatHint -eq 1 -and $welfareOpenLog -eq 1 -and $welfareOkLog -eq 1 -and $welfareRepeatLog -ge 1 -and $welfareNoPoolCall -eq 1 -and $poolDefinitionRetained -eq 1 -and $archiveWrites -eq 11 -and $attrRoll -eq 1 -and $attrJackpotCond -eq 1 -and $attrJackpotGain -eq 1 -and $attrNormalGain -eq 1 -and $attrCharge -eq 1 -and $attrInsufficient -eq 1 -and $attrStr -eq 1 -and $attrAgi -eq 1 -and $attrInt -eq 1 -and $attrRollLog -eq 1 -and $attrRejectLog -ge 1 -and $attrJackpotVisual -eq 1 -and $a088ForbiddenCountMul -eq 0 -and $a088SetSix -eq 0 -and $a088PrdScepter -eq 3 -and $a088PrdL1NoScepter -eq 1 -and $a088PrdL2NoScepter -eq 1 -and $a088PrdL2Scepter3 -eq 2 -and $a088PrdL3NoScepter4 -eq 1 -and $a088PrdL3Scepter4 -eq 1 -and $a088PrdL3Scepter3 -eq 1 -and $a088R5 -ge 3 -and $a088R4 -eq 2 -and $a088R3 -eq 4 -and $a088R2 -eq 6 -and $welfareName -eq 1 -and $oldLotteryName -eq 0 -and $welfareDialogRow -eq 1 -and $attrDialogRow -eq 1 -and $welfareDispatch -eq 1 -and $attrDispatch -eq 1 -and $welfarePreNull -eq 1 -and $attrPreNull -eq 1 -and $welfareNullAfter -eq 0 -and $attrNullAfter -eq 0 -and $welfareClickBranch -eq 1 -and $attrClickBranch -eq 1 -and $op3Call -eq 0 -and $devDropSwitch -eq 1 -and $devDropGate -eq 1 -and $a088UiL1 -ge 2 -and $a088UiScepter5 -ge 3 -and $a088UiL2 -ge 2 -and $a088UiL3 -ge 2 -and $hookL4Normal -ge 1 -and $hookScepter950 -ge 2 -and $attrUiJackpot -ge 1 -and $attrUiNormal -ge 1 -and $versionName -eq 1 -and $versionOldFuwu -eq 0 -and $versionLegacyName -eq 0 -and $kRegHero -eq 1 -and $kPoolM84 -eq 1 -and $kPoolMD4 -eq 1 -and $kBoundM94 -eq 1 -and $kBoundME4 -eq 1 -and $kExclusion -eq 4 -and $kSk1Gain -eq 4 -and $kSk1SetAgi -eq 1 -and $kSk1VictimDedup -ge 1 -and $kSk2Chance -eq 1 -and $kSk2Mult -eq 4 -and $kSk2SynGuard -eq 1 -and $kSk2Suppress -ge 3 -and $kSk2Normal -eq 1 -and $kSk3Radius -eq 1 -and $kSk3Mult -eq 4 -and $kSk3Magic -eq 1 -and $kSk3FilterAlly -eq 2 -and $kSk3FilterMagic -eq 2 -and $kSk3FilterStruct -eq 2 -and $kSk3FilterWard -eq 2 -and $kSk3FilterInvuln -eq 2 -and $kSk4Dur -eq 3 -and $kSk4Bonus -eq 1 -and $kSk4Gen -ge 3 -and $kSk4Recast -eq 1 -and $kSk4DeathClean -eq 1 -and $kDeathReg -eq 1 -and $kDeathKillerGate -eq 1 -and $kNoImbaPower -eq 0 -and $kNoB67 -eq 0 -and $kSlkGrant -eq 1 -and $kSlkModel -eq 1 -and $kUnitStr -eq 1 -and $kAbilStr -eq 4 -and $kImpMdx -eq 1 -and $kImpBlp -eq 1 -and $kMdxMatch -eq $true -and $kBlpMatch -eq $true -and $distOk)
+    passed = (($results | Where-Object { -not $_.match }).Count -eq 0 -and $skinPathCount -eq 0 -and $defenseImplCount -eq 0 -and $wheelImplCount -eq 0 -and $rechargeCount -eq 1 -and $loggerCount -eq 1 -and $runtimeImbaGate -eq 1 -and $runtimeMultTwo -eq 1 -and $runtimeMultReset -eq 0 -and $lotteryFloor -eq 0 -and $oldLotteryLowGold -eq 0 -and $versionName -eq 1 -and $versionLegacyName -eq 0 -and $lotteryRuntimeGate -eq 0 -and $legacyLotteryGate -eq 0 -and $dropCheapUsesFinishedItems -eq 1 -and $dropLotteryUsesFinishedItems -eq 1 -and $dropChanceFixedTen -eq 1 -and $dropPriceCap -eq 1 -and $dropMissingCreepsCovered -eq 1 -and $dropInitLog -eq 1 -and $dropRollLog -eq 1 -and $dropSuccessLog -eq 1 -and $dropTestCommand -eq 1 -and $fissureDuration -eq 1 -and $fissureStunScale -eq 1 -and $heroTipNewCount -eq 11 -and $heroTipLegacyCount -eq 0 -and $fissureResearchActual -ge 1 -and $fissureUberActual -ge 1 -and $fissureUiDistance -ge 2 -and $fissureUiDuration -ge 2 -and $welfareRoll -eq 1 -and $welfareClaimMark -eq 1 -and $welfareRepeatHint -eq 1 -and $welfareOpenLog -eq 1 -and $welfareOkLog -eq 1 -and $welfareRepeatLog -ge 1 -and $welfareNoPoolCall -eq 1 -and $poolDefinitionRetained -eq 1 -and $archiveWrites -eq 11 -and $attrRoll -eq 1 -and $attrJackpotCond -eq 1 -and $attrJackpotGain -eq 1 -and $attrNormalGain -eq 1 -and $attrCharge -eq 1 -and $attrInsufficient -eq 1 -and $attrStr -eq 1 -and $attrAgi -eq 1 -and $attrInt -eq 1 -and $attrRollLog -eq 1 -and $attrRejectLog -ge 1 -and $attrJackpotVisual -eq 1 -and $a088ForbiddenCountMul -eq 0 -and $a088SetSix -eq 0 -and $a088PrdScepter -eq 3 -and $a088PrdL1NoScepter -eq 1 -and $a088PrdL2NoScepter -eq 1 -and $a088PrdL2Scepter3 -eq 2 -and $a088PrdL3NoScepter4 -eq 1 -and $a088PrdL3Scepter4 -eq 1 -and $a088PrdL3Scepter3 -eq 1 -and $a088R5 -ge 3 -and $a088R4 -eq 2 -and $a088R3 -eq 4 -and $a088R2 -eq 6 -and $welfareName -eq 1 -and $oldLotteryName -eq 0 -and $welfareDialogRow -eq 1 -and $attrDialogRow -eq 1 -and $welfareDispatch -eq 1 -and $attrDispatch -eq 1 -and $welfarePreNull -eq 1 -and $attrPreNull -eq 1 -and $welfareNullAfter -eq 0 -and $attrNullAfter -eq 0 -and $welfareClickBranch -eq 1 -and $attrClickBranch -eq 1 -and $op3Call -eq 0 -and $devDropSwitch -eq 1 -and $devDropGate -eq 1 -and $a088UiL1 -ge 2 -and $a088UiScepter5 -ge 3 -and $a088UiL2 -ge 2 -and $a088UiL3 -ge 2 -and $hookL4Normal -ge 1 -and $hookScepter950 -ge 2 -and $attrUiJackpot -ge 1 -and $attrUiNormal -ge 1 -and $versionName -eq 1 -and $versionOldFuwu -eq 0 -and $versionLegacyName -eq 0 -and $kRegHero -eq 1 -and $kPoolM84 -eq 0 -and $kPoolMD4 -eq 0 -and $kBoundM94 -eq 0 -and $kBoundME4 -eq 0 -and $kK34118 -eq 1 -and $kK54 -eq 1 -and $kK2440 -eq 1 -and $kKAgiBound -eq 1 -and $kExclusion -eq 4 -and $kSk1Gain -eq 4 -and $kSk1SetAgi -eq 1 -and $kSk1VictimDedup -ge 1 -and $kSk2Chance -eq 1 -and $kSk2Mult -eq 4 -and $kSk2SynGuard -eq 1 -and $kSk2Suppress -ge 3 -and $kSk2Normal -eq 1 -and $kSk3Radius -eq 1 -and $kSk3Mult -eq 4 -and $kSk3Magic -eq 1 -and $kSk3FilterAlly -eq 2 -and $kSk3FilterMagic -eq 2 -and $kSk3FilterStruct -eq 2 -and $kSk3FilterWard -eq 2 -and $kSk3FilterInvuln -eq 2 -and $kSk4Dur -eq 3 -and $kSk4Bonus -eq 1 -and $kSk4Gen -ge 3 -and $kSk4Recast -eq 1 -and $kSk4DeathClean -eq 1 -and $kDeathReg -eq 1 -and $kDeathKillerGate -eq 1 -and $kNoImbaPower -eq 0 -and $kNoB67 -eq 0 -and $kSlkGrant -eq 1 -and $kSlkModel -eq 1 -and $kBalAgiPrimary -eq 1 -and $kBalStr -eq 1 -and $kBalStrPlus -eq 1 -and $kBalAgi -eq 1 -and $kBalAgiPlus -eq 1 -and $kBalInt -eq 1 -and $kBalIntPlus -eq 1 -and $kWepNormal -eq 1 -and $kWepNormal2 -eq 1 -and $kWepNoMissile -eq 0 -and $kWepRange -eq 1 -and $kDataPoints -eq 1 -and $kAbJdKA01 -eq 1 -and $kAbJdKA02 -eq 1 -and $kAbJdKA03 -eq 1 -and $kAbJdKA04 -eq 1 -and $kAbJdLvl -eq 3 -and $kAbJdSK4Lvl -eq 1 -and $kAbJdSK3CD -eq 4 -and $kAbJdSK4CD -eq 3 -and $kAbJdSelf -eq 3 -and $kUnitStr -eq 1 -and $kAbilStr -eq 4 -and $kImpMdx -eq 1 -and $kImpBlp -eq 1 -and $kMdxMatch -eq $true -and $kBlpMatch -eq $true -and $distOk)
 }
 
 $reportPath = Join-Path $root 'reports\verification-latest.json'

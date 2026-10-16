@@ -1,12 +1,12 @@
 ﻿{
     "map":  "D:\\dota\\DOTA-OMG-IMBA-轻量化\\maps\\build\\DOTA-OMG-IMBA-轻量化-v1.4-K.w3x",
-    "mapBytes":  47234185,
-    "mapSha256":  "2d05b9f063af6957279d3e7bbd290d611e66a7cb79e4e14d1d2e106cb40605d6",
+    "mapBytes":  47452398,
+    "mapSha256":  "1ea7929770b3ff16c928eb4998a4470a2ad776cb35c29e5bce69776ec8b41cc8",
     "files":  [
                   {
                       "file":  "war3map.j",
-                      "expected":  "8a2bfcaeefa165c4aab76341bb52219b6fdf9c4f224cefa42268ccfa0f0e9615",
-                      "actual":  "8a2bfcaeefa165c4aab76341bb52219b6fdf9c4f224cefa42268ccfa0f0e9615",
+                      "expected":  "fdef47062c40d4d567b5f9b5bc10df8103f73cd900e0e617d0e26bf344158529",
+                      "actual":  "fdef47062c40d4d567b5f9b5bc10df8103f73cd900e0e617d0e26bf344158529",
                       "match":  true
                   },
                   {
@@ -41,14 +41,14 @@
                   },
                   {
                       "file":  "Units\\UnitBalance.slk",
-                      "expected":  "0798ac57dcfc2793ae16b8c5a48cf16cf1a92fa424ead465e2e3cfde26a60bda",
-                      "actual":  "0798ac57dcfc2793ae16b8c5a48cf16cf1a92fa424ead465e2e3cfde26a60bda",
+                      "expected":  "c392f10cbd80db74a79eb912f946042426c634603b35692e0a5777271f377127",
+                      "actual":  "c392f10cbd80db74a79eb912f946042426c634603b35692e0a5777271f377127",
                       "match":  true
                   },
                   {
                       "file":  "Units\\UnitData.slk",
-                      "expected":  "7342bbbdefce0f6ca7163d6b9a57b34846b9912d64cf99ebaec84d64bf98b5e9",
-                      "actual":  "7342bbbdefce0f6ca7163d6b9a57b34846b9912d64cf99ebaec84d64bf98b5e9",
+                      "expected":  "ad200f7a8571dba91cd76f3aea3c917b9d8249072f11f438af34b889e82ce6d6",
+                      "actual":  "ad200f7a8571dba91cd76f3aea3c917b9d8249072f11f438af34b889e82ce6d6",
                       "match":  true
                   },
                   {
@@ -59,8 +59,14 @@
                   },
                   {
                       "file":  "Units\\UnitWeapons.slk",
-                      "expected":  "e60a31e1196ab25e20b3ee89e2d3ce48ca844cb055f9cd013826b3de99ff13a0",
-                      "actual":  "e60a31e1196ab25e20b3ee89e2d3ce48ca844cb055f9cd013826b3de99ff13a0",
+                      "expected":  "76f7c3a27f061582d53343a46e74eca5d29c34e68fa6dab198c6b343c1f77279",
+                      "actual":  "76f7c3a27f061582d53343a46e74eca5d29c34e68fa6dab198c6b343c1f77279",
+                      "match":  true
+                  },
+                  {
+                      "file":  "Units\\AbilityData.slk",
+                      "expected":  "3320d920d03f69389c197d2c58bb1fef5e8d28aa10b3f7dc4ebd9663f4639526",
+                      "actual":  "3320d920d03f69389c197d2c58bb1fef5e8d28aa10b3f7dc4ebd9663f4639526",
                       "match":  true
                   }
               ],
@@ -155,10 +161,14 @@
                          "attrUiNormal":  1,
                          "versionOldFuwu":  0,
                          "kRegHero":  1,
-                         "kPoolM84":  1,
-                         "kPoolMD4":  1,
-                         "kBoundM94":  1,
-                         "kBoundME4":  1,
+                         "kPoolM84":  0,
+                         "kPoolMD4":  0,
+                         "kBoundM94":  0,
+                         "kBoundME4":  0,
+                         "kK34118":  1,
+                         "kK54":  1,
+                         "kK2440":  1,
+                         "kKAgiBound":  1,
                          "kExclusion":  4,
                          "kSk1Gain":  4,
                          "kSk1SetAgi":  1,
@@ -187,6 +197,27 @@
                          "kNoB67":  0,
                          "kSlkGrant":  1,
                          "kSlkModel":  1,
+                         "kBalAgiPrimary":  1,
+                         "kBalStr":  1,
+                         "kBalStrPlus":  1,
+                         "kBalAgi":  1,
+                         "kBalAgiPlus":  1,
+                         "kBalInt":  1,
+                         "kBalIntPlus":  1,
+                         "kWepNormal":  1,
+                         "kWepNormal2":  1,
+                         "kWepNoMissile":  0,
+                         "kWepRange":  1,
+                         "kDataPoints":  1,
+                         "kAbJdKA01":  1,
+                         "kAbJdKA02":  1,
+                         "kAbJdKA03":  1,
+                         "kAbJdKA04":  1,
+                         "kAbJdLvl":  3,
+                         "kAbJdSK4Lvl":  1,
+                         "kAbJdSK3CD":  4,
+                         "kAbJdSK4CD":  3,
+                         "kAbJdSelf":  3,
                          "kUnitStr":  1,
                          "kAbilStr":  4,
                          "kImpMdx":  1,

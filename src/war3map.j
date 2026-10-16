@@ -702,7 +702,7 @@ boolean BP_MODE=false
 boolean XM_MODE=false
 constant real IMBA_POWER=2.
 constant boolean XOMG_IMBA_ENABLED=true
-constant string XOMG_VERSION="v1.1-runtime"
+constant string XOMG_VERSION="v1.2-dropfix"
 integer imbaMult=2
 integer XOMG_DAMAGE_LOG_COUNT=0
 boolean imbaB67DpsExclude=false
@@ -4040,6 +4040,11 @@ integer array B1063LotteryPool
 integer B1063LotteryCount=0
 boolean B1063LotteryBuilt=false
 integer B1063LotteryMinPrice=0
+integer B1063DropEligibleKills=0
+integer B1063DropRollCount=0
+integer B1063DropSuccessCount=0
+integer B1063DropLastRoll=0
+integer B1063DropLogCount=0
 boolean array B1063CountFault
 string B1063FaultNote=""
 endglobals
@@ -39479,7 +39484,7 @@ if wardOwner==Z7[0] or wardOwner==A7[0] then
 set wardResult=wardType=='ugho' or wardType=='unec' or wardType=='esen' or wardType=='edry' or wardType=='u001' or wardType=='u002' or wardType=='e00V' or wardType=='e00W' or wardType=='ebal' or wardType=='e026' or wardType=='umtw' or wardType=='u00R'
 elseif wardOwner==B7 then
 // Normal/ancient camp spawns LC8..DJ9 only: no Roshan, defense bosses or dummies.
-set wardResult=wardType=='n0HW' or wardType=='n0HX' or wardType=='njg1' or wardType=='njga' or wardType=='nbdo' or wardType=='nbds' or wardType=='nbdk' or wardType=='nbwm' or wardType=='ngst' or wardType=='nggr' or wardType=='n0LC' or wardType=='n0LD' or wardType=='nogm' or wardType=='nomg' or wardType=='nfpc' or wardType=='nfpu' or wardType=='nsth' or wardType=='nstl' or wardType=='nsat' or wardType=='nwlg' or wardType=='n00S' or wardType=='n026' or wardType=='nkol' or wardType=='nkob' or wardType=='nkot' or wardType=='nftb' or wardType=='nfsh' or wardType=='ncen' or wardType=='ncnk' or wardType=='ngns' or wardType=='ngh1' or wardType=='npfl' or wardType=='nowe' or wardType=='nowb' or wardType=='ndtr' or wardType=='ndtw'
+set wardResult=wardType=='n0HW' or wardType=='n0HX' or wardType=='njg1' or wardType=='njga' or wardType=='nbdo' or wardType=='nbds' or wardType=='nbdk' or wardType=='nbwm' or wardType=='ngst' or wardType=='nggr' or wardType=='n0LC' or wardType=='n0LD' or wardType=='nogm' or wardType=='nomg' or wardType=='nfpc' or wardType=='nfpu' or wardType=='nsth' or wardType=='nstl' or wardType=='nsat' or wardType=='nwlg' or wardType=='n00S' or wardType=='n026' or wardType=='nkol' or wardType=='nkob' or wardType=='nkot' or wardType=='nftb' or wardType=='nfsh' or wardType=='ncen' or wardType=='ncnk' or wardType=='ngns' or wardType=='ngh1' or wardType=='npfl' or wardType=='nowe' or wardType=='nowb' or wardType=='nmrl' or wardType=='nmrm' or wardType=='nmrr' or wardType=='ndtr' or wardType=='ndtw'
 endif
 set wardOwner=null
 return wardResult
@@ -39690,12 +39695,12 @@ function B1063BuildCheapPool takes nothing returns nothing
 	endif
 	set B1063CheapCount=0
 	loop
-	exitwhen i>EV or B1063CheapCount>=64
-	if SU[i]!=0 then
-	set p=Get_Item_Price(SU[i])
-	if p>0 and p<=1000 and B1063ItemEligible(SU[i]) then
+	exitwhen i>EV or B1063CheapCount>=256
+	if ZU[i]!=0 then
+	set p=Get_Item_Price(ZU[i])
+	if p>0 and p<=1000 and B1063ItemEligible(ZU[i]) then
 	set B1063CheapCount=B1063CheapCount+1
-	set B1063CheapPool[B1063CheapCount]=SU[i]
+	set B1063CheapPool[B1063CheapCount]=ZU[i]
 	endif
 	endif
 	set i=i+1
@@ -39712,11 +39717,11 @@ function B1063BuildLotteryPool takes nothing returns nothing
 	set B1063LotteryMinPrice=0
 	loop
 	exitwhen i>EV or B1063LotteryCount>=128
-	if SU[i]!=0 then
-	set p=Get_Item_Price(SU[i])
-	if p>=1000 and B1063ItemEligible(SU[i]) then
+	if ZU[i]!=0 then
+	set p=Get_Item_Price(ZU[i])
+	if p>=1000 and B1063ItemEligible(ZU[i]) then
 	set B1063LotteryCount=B1063LotteryCount+1
-	set B1063LotteryPool[B1063LotteryCount]=SU[i]
+	set B1063LotteryPool[B1063LotteryCount]=ZU[i]
 	if B1063LotteryMinPrice==0 or p<B1063LotteryMinPrice then
 	set B1063LotteryMinPrice=p
 	endif
@@ -39728,36 +39733,115 @@ function B1063BuildLotteryPool takes nothing returns nothing
 endfunction
 function B1063NeutralDropAction takes nothing returns nothing
 	local unit victim=GetTriggerUnit()
+	local unit killer=GetKillingUnit()
+	local player killerOwner=null
 	local integer h=0
 	local integer pick=0
+	local integer roll=0
+	local integer itemId=0
+	local integer price=0
 	local item drop=null
 	if victim==null or not B832WardCreep(victim) then
+	set victim=null
+	set killer=null
 	return
 	endif
 	call B1063BuildCheapPool()
 	set h=GetHandleId(victim)
 	if LoadBoolean(L7,h,16100) then
+	set victim=null
+	set killer=null
 	return
 	endif
 	call SaveBoolean(L7,h,16100,true)
+	set B1063DropEligibleKills=B1063DropEligibleKills+1
 	if B1063CheapCount<=0 then
+	if B1063DropLogCount<12 then
+	set B1063DropLogCount=B1063DropLogCount+1
+	call XOMG_LogEvent("DROP_SKIP eligible="+I2S(B1063DropEligibleKills)+" pool=0 victim="+GetObjectName(GetUnitTypeId(victim)))
+	endif
 	set victim=null
+	set killer=null
 	return
 	endif
-	if GetRandomInt(1,10)!=1 then
+	set roll=GetRandomInt(1,10)
+	set B1063DropRollCount=B1063DropRollCount+1
+	set B1063DropLastRoll=roll
+	if B1063DropLogCount<12 then
+	set B1063DropLogCount=B1063DropLogCount+1
+	call XOMG_LogEvent("DROP_ROLL eligible="+I2S(B1063DropEligibleKills)+" roll="+I2S(roll)+" pool="+I2S(B1063CheapCount)+" victim="+GetObjectName(GetUnitTypeId(victim)))
+	endif
+	if roll!=1 then
 	set victim=null
+	set killer=null
 	return
 	endif
 	set pick=GetRandomInt(1,B1063CheapCount)
-	set drop=CreateItem(B1063CheapPool[pick],GetUnitX(victim),GetUnitY(victim))
+	set itemId=B1063CheapPool[pick]
+	set price=Get_Item_Price(itemId)
+	set drop=CreateItem(itemId,GetUnitX(victim),GetUnitY(victim))
+	if drop!=null then
+	set B1063DropSuccessCount=B1063DropSuccessCount+1
+	call XOMG_LogEvent("DROP_OK count="+I2S(B1063DropSuccessCount)+" item="+GetObjectName(itemId)+" raw="+I2S(itemId)+" price="+I2S(price)+" roll="+I2S(roll))
+	if killer!=null then
+	set killerOwner=GetOwningPlayer(killer)
+	if GetPlayerController(killerOwner)==MAP_CONTROL_USER then
+	call DisplayTimedTextToPlayer(killerOwner,0,0,8.,"|cff00ff00[野怪掉落] 获得 "+GetObjectName(itemId)+"（价值"+I2S(price)+"）|r")
+	endif
+	endif
+	else
+	call XOMG_LogEvent("DROP_CREATE_FAIL item="+GetObjectName(itemId)+" raw="+I2S(itemId)+" price="+I2S(price))
+	endif
 	set victim=null
+	set killer=null
+	set killerOwner=null
 	set drop=null
+endfunction
+function B1063DropPoolDeferred takes nothing returns nothing
+	local timer poolTimer=GetExpiredTimer()
+	call B1063BuildCheapPool()
+	call B1063BuildLotteryPool()
+	call XOMG_LogEvent("DROP_INIT ver="+XOMG_VERSION+" cheap_pool="+I2S(B1063CheapCount)+" lottery_pool="+I2S(B1063LotteryCount)+" chance=10 max_price=1000 source=ZU")
+	call PauseTimer(poolTimer)
+	call DestroyTimer(poolTimer)
+	set poolTimer=null
+endfunction
+function B1063DropTest takes nothing returns nothing
+	local player testPlayer=GetTriggerPlayer()
+	local integer testPid=GetPlayerId(testPlayer)
+	local integer testPick=0
+	local integer testItem=0
+	local integer testPrice=0
+	local item testDrop=null
+	call B1063BuildCheapPool()
+	call X37(testPlayer,"[掉落诊断] pool="+I2S(B1063CheapCount)+" eligible="+I2S(B1063DropEligibleKills)+" rolls="+I2S(B1063DropRollCount)+" success="+I2S(B1063DropSuccessCount)+" last="+I2S(B1063DropLastRoll))
+	call XOMG_LogEvent("DROP_TEST pid="+I2S(testPid)+" pool="+I2S(B1063CheapCount)+" eligible="+I2S(B1063DropEligibleKills)+" rolls="+I2S(B1063DropRollCount)+" success="+I2S(B1063DropSuccessCount)+" last="+I2S(B1063DropLastRoll))
+	if B1063CheapCount>0 then
+	set testPick=GetRandomInt(1,B1063CheapCount)
+	set testItem=B1063CheapPool[testPick]
+	set testPrice=Get_Item_Price(testItem)
+	set testDrop=CreateItem(testItem,GetStartLocationX(GetPlayerStartLocation(testPlayer)),GetStartLocationY(GetPlayerStartLocation(testPlayer)))
+	if testDrop!=null then
+	call X37(testPlayer,"[掉落诊断] 已在出生点生成 "+GetObjectName(testItem)+"（价值"+I2S(testPrice)+"）")
+	call XOMG_LogEvent("DROP_TEST_OK pid="+I2S(testPid)+" item="+GetObjectName(testItem)+" raw="+I2S(testItem)+" price="+I2S(testPrice))
+	else
+	call X37(testPlayer,"[掉落诊断] CreateItem失败。")
+	call XOMG_LogEvent("DROP_TEST_CREATE_FAIL pid="+I2S(testPid)+" raw="+I2S(testItem)+" price="+I2S(testPrice))
+	endif
+	else
+	call X37(testPlayer,"[掉落诊断] 低价装备池为空，请查看1-miao-error\\imba-runtime.text。")
+	endif
+	set testPlayer=null
+	set testDrop=null
 endfunction
 function B1063NeutralDropInit takes nothing returns nothing
 	local trigger t=CreateTrigger()
+	local timer poolTimer=CreateTimer()
 	call TriggerRegisterPlayerUnitEvent(t,Player(12),EVENT_PLAYER_UNIT_DEATH,null)
 	call TriggerAddAction(t,function B1063NeutralDropAction)
+	call TimerStart(poolTimer,2.00,false,function B1063DropPoolDeferred)
 	set t=null
+	set poolTimer=null
 endfunction
 function B832WardInit takes nothing returns nothing
 local trigger wardChat=CreateTrigger()
@@ -53448,6 +53532,10 @@ local boolean IV9=HD9=="-aiglyph"
 local boolean IW9=((HD9=="-aishowde")or(HD9=="-aishowdg")or(HD9=="-aishowdedg")or(HD9=="-aishowdynamic"))
 if HD9=="-rlog" then
 call ExecuteFunc("B1133LogShow")
+return
+endif
+if HD9=="-droptest" then
+call ExecuteFunc("B1063DropTest")
 return
 endif
 if SubString(HD9,0,9)=="-recharge" then
@@ -249587,7 +249675,7 @@ call B946DetectInit()
 call B957Init()
 endfunction
 function config takes nothing returns nothing
-call SetMapName("OMG IMBA v1.1")
+call SetMapName("OMG IMBA v1.2 掉落修复")
 call SetMapDescription("随机技能，强化AI，极限对抗。\n作者：小生我怕怕\n按F9查看地图信息。")
 call SetPlayers($A)
 call SetTeams($A)

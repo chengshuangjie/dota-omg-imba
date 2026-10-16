@@ -65,9 +65,18 @@ $runtimeMultTwo = ([regex]::Matches($scriptText, '(?m)^integer imbaMult=2$')).Co
 $runtimeMultReset = ([regex]::Matches($scriptText, '(?m)^set imbaMult=1$')).Count
 $lotteryFloor = ([regex]::Matches($scriptText, 'GetRandomInt\(1000,1500\)')).Count
 $oldLotteryLowGold = ([regex]::Matches($scriptText, 'GetRandomInt\(50,80\)')).Count
-$versionName = ([regex]::Matches($scriptText, 'SetMapName\("OMG IMBA v1\.1"\)')).Count
+$versionName = ([regex]::Matches($scriptText, 'constant string XOMG_VERSION="v1\.2-dropfix"')).Count
 $lotteryRuntimeGate = ([regex]::Matches($scriptText, 'CHOUJIANGSTATE\[rJ\]==1 and XOMG_IMBA_ENABLED')).Count
 $legacyLotteryGate = ([regex]::Matches($scriptText, 'CHOUJIANGSTATE\[rJ\]==1 and XM_MODE')).Count
+$dropCheapUsesFinishedItems = ([regex]::Matches($scriptText, 'B1063CheapPool\[B1063CheapCount\]=ZU\[i\]')).Count
+$dropLotteryUsesFinishedItems = ([regex]::Matches($scriptText, 'B1063LotteryPool\[B1063LotteryCount\]=ZU\[i\]')).Count
+$dropChanceFixedTen = ([regex]::Matches($scriptText, 'set roll=GetRandomInt\(1,10\)')).Count
+$dropPriceCap = ([regex]::Matches($scriptText, 'p>0 and p<=1000 and B1063ItemEligible\(ZU\[i\]\)')).Count
+$dropMissingCreepsCovered = ([regex]::Matches($scriptText, "wardType=='nmrl'.*wardType=='nmrm'.*wardType=='nmrr'")).Count
+$dropInitLog = ([regex]::Matches($scriptText, 'DROP_INIT ver=')).Count
+$dropRollLog = ([regex]::Matches($scriptText, 'DROP_ROLL eligible=')).Count
+$dropSuccessLog = ([regex]::Matches($scriptText, 'DROP_OK count=')).Count
+$dropTestCommand = ([regex]::Matches($scriptText, 'HD9=="-droptest"')).Count
 $fissureDuration = ([regex]::Matches($scriptText, 'CreateDestructable\(skill,x,y,GetRandomReal\(0,360\),\.5,GetRandomInt\(0,2\)\),16')).Count
 $fissureStunScale = ([regex]::Matches($scriptText, "YDWESetUnitAbilityDataReal\(fissureDummy,'A0SJ',fissureLevel,ABILITY_DATA_DUR,\(\.75\+\.25\*fissureLevel\)\*IMBA_POWER\)")).Count
 $unitText = [IO.File]::ReadAllText((Join-Path $verifyDir 'units\campaignunitstrings.txt'), [Text.Encoding]::UTF8)
@@ -105,6 +114,15 @@ $report = [ordered]@{
         uniqueVersionName = $versionName
         lotteryRuntimeGate = $lotteryRuntimeGate
         legacyLotteryGate = $legacyLotteryGate
+        dropCheapUsesFinishedItems = $dropCheapUsesFinishedItems
+        dropLotteryUsesFinishedItems = $dropLotteryUsesFinishedItems
+        dropChanceFixedTenPercent = $dropChanceFixedTen
+        dropPriceCap1000 = $dropPriceCap
+        dropPreviouslyMissingCreepsCovered = $dropMissingCreepsCovered
+        dropInitLog = $dropInitLog
+        dropRollLog = $dropRollLog
+        dropSuccessLog = $dropSuccessLog
+        dropTestCommand = $dropTestCommand
         fissureDurationScaled = $fissureDuration
         fissureStunScaled = $fissureStunScale
         heroVisibleTips = $heroTipNewCount
@@ -114,7 +132,7 @@ $report = [ordered]@{
         fissureUiDistanceUnchanged = $fissureUiDistance
         fissureUiDuration = $fissureUiDuration
     }
-    passed = (($results | Where-Object { -not $_.match }).Count -eq 0 -and $skinPathCount -eq 0 -and $defenseImplCount -eq 0 -and $wheelImplCount -eq 0 -and $rechargeCount -eq 1 -and $loggerCount -eq 1 -and $runtimeImbaGate -eq 1 -and $runtimeMultTwo -eq 1 -and $runtimeMultReset -eq 0 -and $lotteryFloor -eq 1 -and $oldLotteryLowGold -eq 0 -and $versionName -eq 1 -and $lotteryRuntimeGate -eq 1 -and $legacyLotteryGate -eq 0 -and $fissureDuration -eq 1 -and $fissureStunScale -eq 1 -and $heroTipNewCount -eq 11 -and $heroTipLegacyCount -eq 0 -and $fissureResearchActual -ge 1 -and $fissureUberActual -ge 1 -and $fissureUiDistance -ge 2 -and $fissureUiDuration -ge 2)
+    passed = (($results | Where-Object { -not $_.match }).Count -eq 0 -and $skinPathCount -eq 0 -and $defenseImplCount -eq 0 -and $wheelImplCount -eq 0 -and $rechargeCount -eq 1 -and $loggerCount -eq 1 -and $runtimeImbaGate -eq 1 -and $runtimeMultTwo -eq 1 -and $runtimeMultReset -eq 0 -and $lotteryFloor -eq 1 -and $oldLotteryLowGold -eq 0 -and $versionName -eq 1 -and $lotteryRuntimeGate -eq 1 -and $legacyLotteryGate -eq 0 -and $dropCheapUsesFinishedItems -eq 1 -and $dropLotteryUsesFinishedItems -eq 1 -and $dropChanceFixedTen -eq 1 -and $dropPriceCap -eq 1 -and $dropMissingCreepsCovered -eq 1 -and $dropInitLog -eq 1 -and $dropRollLog -eq 1 -and $dropSuccessLog -eq 1 -and $dropTestCommand -eq 1 -and $fissureDuration -eq 1 -and $fissureStunScale -eq 1 -and $heroTipNewCount -eq 11 -and $heroTipLegacyCount -eq 0 -and $fissureResearchActual -ge 1 -and $fissureUberActual -ge 1 -and $fissureUiDistance -ge 2 -and $fissureUiDuration -ge 2)
 }
 
 $reportPath = Join-Path $root 'reports\verification-latest.json'

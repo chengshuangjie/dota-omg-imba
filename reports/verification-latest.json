@@ -1,18 +1,18 @@
 ﻿{
-    "map":  "D:\\dota\\DOTA-OMG-IMBA-轻量化\\maps\\build\\DOTA-OMG-IMBA-轻量化开发版.w3x",
-    "mapBytes":  47213471,
-    "mapSha256":  "95dadbd1dcba5d7c25fd963aa8d5ef6624bff003e5281a21ec19e02d4951c941",
+    "map":  "D:\\游戏\\Warcraft III\\Maps\\omg\\noskin\\DOTA-OMG-IMBA-v1.2-野怪掉落修复版-小生我怕怕.w3x",
+    "mapBytes":  47213624,
+    "mapSha256":  "f88b42c2e3ad417dd6f0c3041fd7e0c9f3cf0506c3da182623ca0ef49f7cf4f0",
     "files":  [
                   {
                       "file":  "war3map.j",
-                      "expected":  "1a2860b0f121fa6134b9611cccc14a5b48026a9658a52ed73b406dbe8347d236",
-                      "actual":  "1a2860b0f121fa6134b9611cccc14a5b48026a9658a52ed73b406dbe8347d236",
+                      "expected":  "3cde79a6fc973c2e73346592dff2fcb1d8af9a41164f45e1cea1a34dc0fb2411",
+                      "actual":  "3cde79a6fc973c2e73346592dff2fcb1d8af9a41164f45e1cea1a34dc0fb2411",
                       "match":  true
                   },
                   {
                       "file":  "war3map.w3i",
-                      "expected":  "6769a9ce428744dcae4ac84964f622132ef9af65477a373a7074d168fb3e3c8a",
-                      "actual":  "6769a9ce428744dcae4ac84964f622132ef9af65477a373a7074d168fb3e3c8a",
+                      "expected":  "ecb356c0b890c293f559126d1156637ace33d242f6ebe21d58d77afe452ab4fa",
+                      "actual":  "ecb356c0b890c293f559126d1156637ace33d242f6ebe21d58d77afe452ab4fa",
                       "match":  true
                   },
                   {
@@ -78,6 +78,15 @@
                          "uniqueVersionName":  1,
                          "lotteryRuntimeGate":  1,
                          "legacyLotteryGate":  0,
+                         "dropCheapUsesFinishedItems":  1,
+                         "dropLotteryUsesFinishedItems":  1,
+                         "dropChanceFixedTenPercent":  1,
+                         "dropPriceCap1000":  1,
+                         "dropPreviouslyMissingCreepsCovered":  1,
+                         "dropInitLog":  1,
+                         "dropRollLog":  1,
+                         "dropSuccessLog":  1,
+                         "dropTestCommand":  1,
                          "fissureDurationScaled":  1,
                          "fissureStunScaled":  1,
                          "heroVisibleTips":  11,

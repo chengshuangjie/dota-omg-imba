@@ -1,18 +1,18 @@
 ﻿{
-    "map":  "D:\\dota\\DOTA-OMG-IMBA-轻量化\\maps\\build\\DOTA-OMG-IMBA-轻量化-v1.4-K-loadfix1.w3x",
-    "mapBytes":  47452445,
-    "mapSha256":  "f20dcd2880547aa40a8fd725ac9407ef0d29861b3fa49d9b77d15eb1fd32863b",
+    "map":  "D:\\dota\\DOTA-OMG-IMBA-轻量化\\maps\\build\\DOTA-OMG-IMBA-轻量化-v1.4-K-loadfix2.w3x",
+    "mapBytes":  47452442,
+    "mapSha256":  "b5b231f3327a191ff9dcc0a02d5c0940b14b5f00f31a60297fcc05404b0cf759",
     "files":  [
                   {
                       "file":  "war3map.j",
-                      "expected":  "269b4a41e62b8777869616bf7566ef4782be074bec205407b4f1016a81d3da64",
-                      "actual":  "269b4a41e62b8777869616bf7566ef4782be074bec205407b4f1016a81d3da64",
+                      "expected":  "35b5b322795acf8961714e1bc2b44b4acd936dd55260969674d02835d3681f09",
+                      "actual":  "35b5b322795acf8961714e1bc2b44b4acd936dd55260969674d02835d3681f09",
                       "match":  true
                   },
                   {
                       "file":  "war3map.w3i",
-                      "expected":  "bfa60657ac25c06a14d026343b16d6f77fcd5e4cb801be8cda81bd080f301a77",
-                      "actual":  "bfa60657ac25c06a14d026343b16d6f77fcd5e4cb801be8cda81bd080f301a77",
+                      "expected":  "23e98f3f0f2fbab6d46a87052daaa892ff914131c1adf61ee1d9be9a08cfa0bb",
+                      "actual":  "23e98f3f0f2fbab6d46a87052daaa892ff914131c1adf61ee1d9be9a08cfa0bb",
                       "match":  true
                   },
                   {
@@ -35,32 +35,32 @@
                   },
                   {
                       "file":  "Units\\UnitAbilities.slk",
-                      "expected":  "c731450a14d6f84797f83f5b45f32db366a877bb996381980963fb68b4d1355d",
-                      "actual":  "c731450a14d6f84797f83f5b45f32db366a877bb996381980963fb68b4d1355d",
+                      "expected":  "ecefb8c260878f1f98fc3e69619700b82e3ed5ec5beb899386d1e773436e73ac",
+                      "actual":  "ecefb8c260878f1f98fc3e69619700b82e3ed5ec5beb899386d1e773436e73ac",
                       "match":  true
                   },
                   {
                       "file":  "Units\\UnitBalance.slk",
-                      "expected":  "8315f5da2293745ecea28e61532cd6e93607aaaed880c3da0e072358c3c4331d",
-                      "actual":  "8315f5da2293745ecea28e61532cd6e93607aaaed880c3da0e072358c3c4331d",
+                      "expected":  "9b5b0deb446e0f6b148bd0f7f4735a3dda1a7c47bcc809c5e2e632601f004c4b",
+                      "actual":  "9b5b0deb446e0f6b148bd0f7f4735a3dda1a7c47bcc809c5e2e632601f004c4b",
                       "match":  true
                   },
                   {
                       "file":  "Units\\UnitData.slk",
-                      "expected":  "1e4cc56ae868ef911b007b4c9d25262ebf461f0b65960de39ff17997ffabcacd",
-                      "actual":  "1e4cc56ae868ef911b007b4c9d25262ebf461f0b65960de39ff17997ffabcacd",
+                      "expected":  "d4aa02b8ba0f0321639a623ce319561f7db5d6bb7d4e1906c33b7518ccb00ef0",
+                      "actual":  "d4aa02b8ba0f0321639a623ce319561f7db5d6bb7d4e1906c33b7518ccb00ef0",
                       "match":  true
                   },
                   {
                       "file":  "Units\\UnitUI.slk",
-                      "expected":  "770782254d6abbefb0a3b31de1571456ad1a62edab2012c01878873e35c92b29",
-                      "actual":  "770782254d6abbefb0a3b31de1571456ad1a62edab2012c01878873e35c92b29",
+                      "expected":  "9197b3eee15bb2f14e3f04e7e84911a653adc832933f4b1e2c00817974db8364",
+                      "actual":  "9197b3eee15bb2f14e3f04e7e84911a653adc832933f4b1e2c00817974db8364",
                       "match":  true
                   },
                   {
                       "file":  "Units\\UnitWeapons.slk",
-                      "expected":  "21e7f24462c958358e2287b362b971c86a75678aba008e99ef475e4f7229e56c",
-                      "actual":  "21e7f24462c958358e2287b362b971c86a75678aba008e99ef475e4f7229e56c",
+                      "expected":  "120149f22540c44abff575a5ff061199422e0d40423479f8efc3c7b10ee9e6eb",
+                      "actual":  "120149f22540c44abff575a5ff061199422e0d40423479f8efc3c7b10ee9e6eb",
                       "match":  true
                   },
                   {
@@ -209,6 +209,12 @@
                          "kWepNoMissile":  0,
                          "kWepRange":  1,
                          "kDataPoints":  1,
+                         "kBoundaryAbil":  true,
+                         "kBoundaryData":  true,
+                         "kBoundaryBal":  true,
+                         "kBoundaryWep":  true,
+                         "kBoundaryUI":  true,
+                         "kBoundaryOk":  true,
                          "kAbJdKA01":  1,
                          "kAbJdKA02":  1,
                          "kAbJdKA03":  1,

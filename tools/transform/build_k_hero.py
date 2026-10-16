@@ -35,6 +35,10 @@ ABILITY_ENC = "utf-8"
 ABILITY_EOL = "\r\n"
 
 ALIAS_RE = re.compile(r'^C;X1;Y\d+;K"')
+# SLK dimension/boundary record: B;X<col>;Y<row>;D<type> — preserve X and D, only Y may rise.
+B_RE = re.compile(r'^B;X(\d+);Y(\d+);(D\d+)$')
+# Any object row carrying an explicit Y coordinate (alias rows set the row).
+ROW_Y_RE = re.compile(r'C;X\d+;Y(\d+);')
 
 
 def read(path, enc):
@@ -102,6 +106,41 @@ def relocate_unit_block(fname):
     new = lines[:e] + block + [""] + lines[e:]
     write(path, "\n".join(new), enc, eol)
     print("relocated H0K0 -> before E in %s (%d block lines)" % (fname, len(block)))
+
+
+def sync_unit_boundary_b(fname):
+    """C2: raise each B-record Y to the actual maximum object-row Y in this file.
+
+    The B record declares the used row boundary; object rows beyond B.Y (H0K0 at
+    Y9001 while the legacy boundary stayed Y3338) can be dropped by strict SLK
+    readers. Idempotent: B.Y only moves up to max(existing B.Y, max object Y);
+    X and D0 are preserved byte-for-byte; a clean v1.3 tree (maxY <= B.Y) is
+    untouched.
+    """
+    path = os.path.join(UNITS, fname)
+    if not os.path.exists(path):
+        return
+    enc, eol = UNIT_FILES[fname]
+    lines = split_lines(read(path, enc))
+    max_y = 0
+    for ln in lines:
+        m = ROW_Y_RE.search(ln)
+        if m:
+            max_y = max(max_y, int(m.group(1)))
+    changed = False
+    out = []
+    for ln in lines:
+        m = B_RE.match(ln)
+        if m:
+            x, y, d = m.group(1), int(m.group(2)), m.group(3)
+            new_y = max(y, max_y)
+            if new_y != y:
+                changed = True
+                ln = 'B;X%s;Y%d;%s' % (x, new_y, d)
+        out.append(ln)
+    if changed:
+        write(path, "\n".join(out), enc, eol)
+        print("synced B boundary Y->%d in %s (X/D preserved)" % (max_y, fname))
 
 
 # ---- KA ability blocks (native effects zeroed) ----
@@ -188,6 +227,7 @@ def rebuild_ability_data():
 def main():
     for fname in UNIT_FILES:
         relocate_unit_block(fname)
+        sync_unit_boundary_b(fname)
     rebuild_ability_data()
     print("done")
 

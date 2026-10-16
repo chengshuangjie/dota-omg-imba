@@ -54,7 +54,10 @@ if (-not (Test-Path -LiteralPath $config.mpqEditor -PathType Leaf)) { throw "缺
 
 $sourceEntries = @(
     @{ Source = $src; Stage = 'war3map.j'; Archive = 'war3map.j' },
+    @{ Source = (Join-Path $root 'src\war3map.w3i'); Stage = 'war3map.w3i'; Archive = 'war3map.w3i' },
     @{ Source = $imp; Stage = 'war3map.imp'; Archive = 'war3map.imp' },
+    @{ Source = (Join-Path $unitDir 'CampaignAbilityStrings.txt'); Stage = 'CampaignAbilityStrings.txt'; Archive = 'Units\CampaignAbilityStrings.txt' },
+    @{ Source = (Join-Path $unitDir 'CampaignUnitStrings.txt'); Stage = 'CampaignUnitStrings.txt'; Archive = 'Units\CampaignUnitStrings.txt' },
     @{ Source = (Join-Path $unitDir 'UnitAbilities.slk'); Stage = 'UnitAbilities.slk'; Archive = 'Units\UnitAbilities.slk' },
     @{ Source = (Join-Path $unitDir 'UnitBalance.slk'); Stage = 'UnitBalance.slk'; Archive = 'Units\UnitBalance.slk' },
     @{ Source = (Join-Path $unitDir 'UnitData.slk'); Stage = 'UnitData.slk'; Archive = 'Units\UnitData.slk' },
@@ -80,8 +83,13 @@ if (-not $SkipSyntaxCheck) {
     $pjassText = ''
     if (Test-Path -LiteralPath $pjassOut) { $pjassText += [IO.File]::ReadAllText($pjassOut) }
     if (Test-Path -LiteralPath $pjassErr) { $pjassText += [IO.File]::ReadAllText($pjassErr) }
-    if ($process.ExitCode -ne 0 -and $pjassText -notmatch 'location_m5') {
-        throw "PJASS 检查失败，请查看 $pjassOut 和 $pjassErr"
+    $diagnostics = @($pjassText -split "`r?`n" | Where-Object { $_ -match 'war3map\.j:\d+:' })
+    $unexpected = @($diagnostics | Where-Object { $_ -notmatch 'location_m5' })
+    if ($unexpected.Count -gt 0) {
+        throw "PJASS 检查失败，发现 $($unexpected.Count) 条非既有错误，请查看 $pjassOut 和 $pjassErr"
+    }
+    if ($process.ExitCode -ne 0 -and $diagnostics.Count -eq 0) {
+        throw "PJASS 非零退出但没有可识别诊断，请查看 $pjassOut 和 $pjassErr"
     }
 }
 

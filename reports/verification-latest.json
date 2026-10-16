@@ -1,18 +1,36 @@
 ﻿{
-    "map":  "D:\\dota\\DOTA-OMG-IMBA-轻量化\\maps\\build\\DOTA-OMG-IMBA-轻量化开发版.w3x",
-    "mapBytes":  46162983,
-    "mapSha256":  "d16ce660e989d1fd1e6150bee57959d79495b3637c1ef323502a49c304b15f2b",
+    "map":  "D:\\游戏\\Warcraft III\\Maps\\omg\\noskin\\DOTA-OMG-IMBA-v1.1-运行修复版-小生我怕怕.w3x",
+    "mapBytes":  47213471,
+    "mapSha256":  "95dadbd1dcba5d7c25fd963aa8d5ef6624bff003e5281a21ec19e02d4951c941",
     "files":  [
                   {
                       "file":  "war3map.j",
-                      "expected":  "ae8fb4bbbd6b630ca0f039c5b3ba23f18d9bc6992e281ebe00cf36bb2c4a7333",
-                      "actual":  "ae8fb4bbbd6b630ca0f039c5b3ba23f18d9bc6992e281ebe00cf36bb2c4a7333",
+                      "expected":  "1a2860b0f121fa6134b9611cccc14a5b48026a9658a52ed73b406dbe8347d236",
+                      "actual":  "1a2860b0f121fa6134b9611cccc14a5b48026a9658a52ed73b406dbe8347d236",
+                      "match":  true
+                  },
+                  {
+                      "file":  "war3map.w3i",
+                      "expected":  "6769a9ce428744dcae4ac84964f622132ef9af65477a373a7074d168fb3e3c8a",
+                      "actual":  "6769a9ce428744dcae4ac84964f622132ef9af65477a373a7074d168fb3e3c8a",
                       "match":  true
                   },
                   {
                       "file":  "war3map.imp",
                       "expected":  "1fb5c0b5389ae83c39bacb99aad48af86c253afb74357f47f65a8d651aa9846d",
                       "actual":  "1fb5c0b5389ae83c39bacb99aad48af86c253afb74357f47f65a8d651aa9846d",
+                      "match":  true
+                  },
+                  {
+                      "file":  "Units\\CampaignAbilityStrings.txt",
+                      "expected":  "e913ffa395122bab70918bd268929c0cd6074ff731798373453ba2c010eae71a",
+                      "actual":  "e913ffa395122bab70918bd268929c0cd6074ff731798373453ba2c010eae71a",
+                      "match":  true
+                  },
+                  {
+                      "file":  "Units\\CampaignUnitStrings.txt",
+                      "expected":  "0da4118ed76ecda64e197e795fef45c178981954600057782cf6b42b6cc93695",
+                      "actual":  "0da4118ed76ecda64e197e795fef45c178981954600057782cf6b42b6cc93695",
                       "match":  true
                   },
                   {
@@ -51,7 +69,23 @@
                          "defenseImplementationFunctions":  0,
                          "wheelImplementationFunctions":  0,
                          "rechargeCommandFunctions":  1,
-                         "diagnosticLoggerFunctions":  1
+                         "diagnosticLoggerFunctions":  1,
+                         "runtimeImbaGate":  1,
+                         "runtimeMultiplierTwo":  1,
+                         "runtimeMultiplierReset":  0,
+                         "lotteryGoldFloor":  1,
+                         "legacyLowLotteryGold":  0,
+                         "uniqueVersionName":  1,
+                         "lotteryRuntimeGate":  1,
+                         "legacyLotteryGate":  0,
+                         "fissureDurationScaled":  1,
+                         "fissureStunScaled":  1,
+                         "heroVisibleTips":  11,
+                         "legacyHeroTips":  0,
+                         "fissureUiResearchActual":  1,
+                         "fissureUiUberActual":  1,
+                         "fissureUiDistanceUnchanged":  74,
+                         "fissureUiDuration":  4
                      },
     "passed":  true
 }

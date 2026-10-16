@@ -16,7 +16,10 @@ $verifyDir = Join-Path $verifyRoot ('verify-' + [guid]::NewGuid().ToString('N'))
 
 $checks = @(
     @{ Archive = 'war3map.j'; Expected = (Join-Path $root 'src\war3map.j') },
+    @{ Archive = 'war3map.w3i'; Expected = (Join-Path $root 'src\war3map.w3i') },
     @{ Archive = 'war3map.imp'; Expected = (Join-Path $root 'src\war3map.imp') },
+    @{ Archive = 'Units\CampaignAbilityStrings.txt'; Expected = (Join-Path $root 'src\data\Units\CampaignAbilityStrings.txt') },
+    @{ Archive = 'Units\CampaignUnitStrings.txt'; Expected = (Join-Path $root 'src\data\Units\CampaignUnitStrings.txt') },
     @{ Archive = 'Units\UnitAbilities.slk'; Expected = (Join-Path $root 'src\data\Units\UnitAbilities.slk') },
     @{ Archive = 'Units\UnitBalance.slk'; Expected = (Join-Path $root 'src\data\Units\UnitBalance.slk') },
     @{ Archive = 'Units\UnitData.slk'; Expected = (Join-Path $root 'src\data\Units\UnitData.slk') },
@@ -57,6 +60,31 @@ $defenseImplCount = ([regex]::Matches($scriptText, '(?m)^function KKDefense_(?!I
 $wheelImplCount = ([regex]::Matches($scriptText, '(?m)^function B1004(?!ControlUnit)')).Count
 $rechargeCount = ([regex]::Matches($scriptText, '(?m)^function B1131Recharge takes')).Count
 $loggerCount = ([regex]::Matches($scriptText, '(?m)^function B1133LogAppend takes')).Count
+$runtimeImbaGate = ([regex]::Matches($scriptText, 'constant boolean XOMG_IMBA_ENABLED=true')).Count
+$runtimeMultTwo = ([regex]::Matches($scriptText, '(?m)^integer imbaMult=2$')).Count
+$runtimeMultReset = ([regex]::Matches($scriptText, '(?m)^set imbaMult=1$')).Count
+$lotteryFloor = ([regex]::Matches($scriptText, 'GetRandomInt\(1000,1500\)')).Count
+$oldLotteryLowGold = ([regex]::Matches($scriptText, 'GetRandomInt\(50,80\)')).Count
+$versionName = ([regex]::Matches($scriptText, 'SetMapName\("OMG IMBA v1\.1"\)')).Count
+$lotteryRuntimeGate = ([regex]::Matches($scriptText, 'CHOUJIANGSTATE\[rJ\]==1 and XOMG_IMBA_ENABLED')).Count
+$legacyLotteryGate = ([regex]::Matches($scriptText, 'CHOUJIANGSTATE\[rJ\]==1 and XM_MODE')).Count
+$fissureDuration = ([regex]::Matches($scriptText, 'CreateDestructable\(skill,x,y,GetRandomReal\(0,360\),\.5,GetRandomInt\(0,2\)\),16')).Count
+$fissureStunScale = ([regex]::Matches($scriptText, "YDWESetUnitAbilityDataReal\(fissureDummy,'A0SJ',fissureLevel,ABILITY_DATA_DUR,\(\.75\+\.25\*fissureLevel\)\*IMBA_POWER\)")).Count
+$unitText = [IO.File]::ReadAllText((Join-Path $verifyDir 'units\campaignunitstrings.txt'), [Text.Encoding]::UTF8)
+$abilityText = [IO.File]::ReadAllText((Join-Path $verifyDir 'units\campaignabilitystrings.txt'), [Text.Encoding]::UTF8)
+$utf8 = [Text.Encoding]::UTF8
+$heroTipNewPattern = $utf8.GetString([Convert]::FromBase64String('KD9tKV5UaXA9KOiigeWKoOWHr3znqIvlj4zmnbB85Zyf6bihfOWHr+WTpSlccj8k'))
+$heroTipLegacyPattern = $utf8.GetString([Convert]::FromBase64String('KD9tKV5UaXA9KOiDluWtkHzlvbHprZR854K86YeR5pyv5aOrfOWcsOeyvuW3peeoi+W4iClccj8k'))
+$fissureResearchPattern = $utf8.GetString([Convert]::FromBase64String('6YCg5oiQMjIw5Lyk5a6z77yMMuenkuecqeaZlQ=='))
+$fissureUberPattern = $utf8.GetString([Convert]::FromBase64String('6YCg5oiQMjIw54K55Lyk5a6z77yM5pmV55ypMuenkg=='))
+$fissureUiDistancePattern = $utf8.GetString([Convert]::FromBase64String('5pa95rOV6Led56a777yaXHxyMTQwMA=='))
+$fissureUiDurationPattern = $utf8.GetString([Convert]::FromBase64String('MTbnp5LlhoXkuI3og73pgJrooYw='))
+$heroTipNewCount = ([regex]::Matches($unitText, $heroTipNewPattern)).Count
+$heroTipLegacyCount = ([regex]::Matches($unitText, $heroTipLegacyPattern)).Count
+$fissureResearchActual = ([regex]::Matches($abilityText, $fissureResearchPattern)).Count
+$fissureUberActual = ([regex]::Matches($abilityText, $fissureUberPattern)).Count
+$fissureUiDistance = ([regex]::Matches($abilityText, $fissureUiDistancePattern)).Count
+$fissureUiDuration = ([regex]::Matches($abilityText, $fissureUiDurationPattern)).Count
 
 $report = [ordered]@{
     map = $MapPath
@@ -69,8 +97,24 @@ $report = [ordered]@{
         wheelImplementationFunctions = $wheelImplCount
         rechargeCommandFunctions = $rechargeCount
         diagnosticLoggerFunctions = $loggerCount
+        runtimeImbaGate = $runtimeImbaGate
+        runtimeMultiplierTwo = $runtimeMultTwo
+        runtimeMultiplierReset = $runtimeMultReset
+        lotteryGoldFloor = $lotteryFloor
+        legacyLowLotteryGold = $oldLotteryLowGold
+        uniqueVersionName = $versionName
+        lotteryRuntimeGate = $lotteryRuntimeGate
+        legacyLotteryGate = $legacyLotteryGate
+        fissureDurationScaled = $fissureDuration
+        fissureStunScaled = $fissureStunScale
+        heroVisibleTips = $heroTipNewCount
+        legacyHeroTips = $heroTipLegacyCount
+        fissureUiResearchActual = $fissureResearchActual
+        fissureUiUberActual = $fissureUberActual
+        fissureUiDistanceUnchanged = $fissureUiDistance
+        fissureUiDuration = $fissureUiDuration
     }
-    passed = (($results | Where-Object { -not $_.match }).Count -eq 0 -and $skinPathCount -eq 0 -and $defenseImplCount -eq 0 -and $wheelImplCount -eq 0 -and $rechargeCount -eq 1 -and $loggerCount -eq 1)
+    passed = (($results | Where-Object { -not $_.match }).Count -eq 0 -and $skinPathCount -eq 0 -and $defenseImplCount -eq 0 -and $wheelImplCount -eq 0 -and $rechargeCount -eq 1 -and $loggerCount -eq 1 -and $runtimeImbaGate -eq 1 -and $runtimeMultTwo -eq 1 -and $runtimeMultReset -eq 0 -and $lotteryFloor -eq 1 -and $oldLotteryLowGold -eq 0 -and $versionName -eq 1 -and $lotteryRuntimeGate -eq 1 -and $legacyLotteryGate -eq 0 -and $fissureDuration -eq 1 -and $fissureStunScale -eq 1 -and $heroTipNewCount -eq 11 -and $heroTipLegacyCount -eq 0 -and $fissureResearchActual -ge 1 -and $fissureUberActual -ge 1 -and $fissureUiDistance -ge 2 -and $fissureUiDuration -ge 2)
 }
 
 $reportPath = Join-Path $root 'reports\verification-latest.json'

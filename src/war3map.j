@@ -701,7 +701,10 @@ boolean R4=false
 boolean BP_MODE=false
 boolean XM_MODE=false
 constant real IMBA_POWER=2.
-integer imbaMult=1
+constant boolean XOMG_IMBA_ENABLED=true
+constant string XOMG_VERSION="v1.1-runtime"
+integer imbaMult=2
+integer XOMG_DAMAGE_LOG_COUNT=0
 boolean imbaB67DpsExclude=false
 boolean AM_MODE=false
 multiboard T4=null
@@ -10625,6 +10628,29 @@ set targetY=GetRectMaxY(bj_mapInitialPlayableArea)-32.
 endif
 call SetUnitX(u,targetX)
 call SetUnitY(u,targetY)
+endfunction
+function XOMG_LogEvent takes string text returns nothing
+local integer idx=ModuloInteger(B1133LogSerial,24)
+local integer off=0
+local integer row=0
+set B1133LogSerial=B1133LogSerial+1
+set B1133LogRows[idx]="#"+I2S(B1133LogSerial)+" t="+R2S(TimerGetElapsed(W))+" "+text
+if B1133LogCount<24 then
+set B1133LogCount=B1133LogCount+1
+endif
+if GetPlayerController(GetLocalPlayer())==MAP_CONTROL_USER then
+call PreloadGenClear()
+call PreloadStart()
+loop
+exitwhen off>=B1133LogCount
+set row=ModuloInteger(B1133LogSerial-B1133LogCount+off,24)
+call Preload(B1133LogRows[row])
+set off=off+1
+endloop
+call PreloadGenEnd("1-miao-error\\imba-runtime.text")
+call PreloadGenClear()
+endif
+set text=null
 endfunction
 function B287_BoolToInt takes boolean value returns integer
 if value then
@@ -21900,7 +21926,7 @@ function DisarmUnitToTimed takes unit whichUnit,integer disarmId,integer ability
 		call DisarmUnit(whichUnit , true , disarmId , abilityId , buffId)
 	endif
 	// IMBA: disarm duration x2 cap 5s.
-	if XM_MODE then
+	if XOMG_IMBA_ENABLED then
 		set time=RMinBJ(time*IMBA_POWER,5.)
 	endif
 	call TimerStart(timr, time, false, null)
@@ -26789,7 +26815,7 @@ if healTarget==null or GetUnitTypeId(healTarget)==0 or not UnitAlive(healTarget)
 return
 endif
 // IMBA: skill heal x IMBA_POWER once, before overheal clamp and the 1.15 spring branch.
-if XM_MODE then
+if XOMG_IMBA_ENABLED then
 set healAmount=healAmount*IMBA_POWER
 endif
 if healSource!=healTarget and B907RealHero(healSource) and B907RealHero(healTarget) and IsUnitAlly(healTarget,GetOwningPlayer(healSource)) then
@@ -28326,7 +28352,7 @@ function BA7 takes unit p5,unit m5,real Z27 returns nothing
 local unit BB7=null
 local integer BC7=0
 // IMBA: safety filters mirroring CommonUnitAddStun; duration x2 cap 5s.
-if XM_MODE then
+if XOMG_IMBA_ENABLED then
 if MiaoStarted and GetUnitAbilityLevel(m5,'AMdI')>0 then
 return
 endif
@@ -28357,7 +28383,11 @@ endif
 // IMBA: positive skill damage x IMBA_POWER once; BL7==6 life removal excluded; call-site exclusion for execute/econ.
 if imbaB67DpsExclude then
 set imbaB67DpsExclude=false
-elseif XM_MODE and BL7!=6 then
+elseif XOMG_IMBA_ENABLED and BL7!=6 then
+if XOMG_DAMAGE_LOG_COUNT<12 then
+call XOMG_LogEvent("IMBA_DAMAGE path=DPS type="+I2S(BL7)+" base="+R2S(YM7)+" actual="+R2S(YM7*IMBA_POWER)+" legacyXM="+I2S(B287_BoolToInt(XM_MODE))+" mult="+I2S(imbaMult)+" ver="+XOMG_VERSION)
+set XOMG_DAMAGE_LOG_COUNT=XOMG_DAMAGE_LOG_COUNT+1
+endif
 set YM7=YM7*IMBA_POWER
 endif
 if BL7==2 then
@@ -28425,7 +28455,11 @@ if BL7==0 then
 return
 endif
 // IMBA: positive skill damage x IMBA_POWER once; BL7==6 life removal excluded.
-if XM_MODE and BL7!=6 then
+if XOMG_IMBA_ENABLED and BL7!=6 then
+if XOMG_DAMAGE_LOG_COUNT<12 then
+call XOMG_LogEvent("IMBA_DAMAGE path=B67 type="+I2S(BL7)+" base="+R2S(YM7)+" actual="+R2S(YM7*IMBA_POWER)+" legacyXM="+I2S(B287_BoolToInt(XM_MODE))+" mult="+I2S(imbaMult)+" ver="+XOMG_VERSION)
+set XOMG_DAMAGE_LOG_COUNT=XOMG_DAMAGE_LOG_COUNT+1
+endif
 set YM7=YM7*IMBA_POWER
 endif
 set Fe=true
@@ -28525,7 +28559,7 @@ function Loop_Damage takes unit ZX7,unit IH7,real d,real DUR,real YM7 returns no
     local timer t=CreateTimer()
     local integer OB7=GetHandleId(t)
     // IMBA: DoT total duration x2 cap 30s; tick d untouched; end-time child100 syncs via same DUR.
-    if XM_MODE then
+    if XOMG_IMBA_ENABLED then
         set DUR=RMinBJ(DUR*IMBA_POWER,30.)
     endif
     call SaveUnitHandle(TABLE_HY,OB7,0,ZX7)
@@ -28548,7 +28582,7 @@ function CommonUnitAddStun takes unit whichUnit, real dur, boolean isIgnoresMagi
 		return 0.
 	endif
 	// IMBA: positive stun duration x IMBA_POWER, hard-capped at 5s; permanent/abnormal long stuns untouched.
-	if XM_MODE and dur > 0. and dur < 5. then
+	if XOMG_IMBA_ENABLED and dur > 0. and dur < 5. then
 		set dur=RMinBJ(dur*IMBA_POWER,5.)
 	endif
 	//set dur = FQX(whichUnit, s)
@@ -38068,7 +38102,7 @@ call TriggerRegisterUnitEvent(Tri_skill,u,EVENT_UNIT_SPELL_CAST)
 if IsUnitAlly(u, GetLocalPlayer()) then
 	call MHUnit_EnableViewSkill(u , GetLocalPlayer())
 endif
-if CHOUJIANGSTATE[rJ]==1 and XM_MODE then
+if CHOUJIANGSTATE[rJ]==1 and XOMG_IMBA_ENABLED then
 set lotteryCircle=SuijiTavernB295_GetEnergyCircle(rJ)
 if lotteryCircle!=null and GetUnitTypeId(lotteryCircle)!=0 then
 call UnitAddAbility(lotteryCircle,'A4DK')
@@ -58297,7 +58331,6 @@ set FX70=true
 endif
 if XM then
 set XM_MODE=true
-set imbaMult=2
 set HG=true
 set DE=true
 set DG=true
@@ -58340,7 +58373,6 @@ local string s=StringCase(GetEventPlayerChatString(),false)
 if s=="-neng" or s=="neng" then
 if XM_MODE then
 set XM_MODE=false
-set imbaMult=1
 set XM_EXP=0
 set XM_GOLD=0
 set XM_CG=false
@@ -58477,7 +58509,6 @@ endif
 set KK_GAME_DIFFICULTY=difficulty
 if difficulty==1 then
 set XM_MODE=false
-set imbaMult=1
 set XM_EXP=0
 set XM_GOLD=0
 set XM_CG=false
@@ -70422,7 +70453,7 @@ set y=X07(io+i*60*Sin(a))
 call GroupEnumUnitsInRange(g2,x,y,$FA,fissureFilter)
 call GroupAddGroup(g2,g)
 call GroupClear(g2)
-call ZN7(CreateDestructable(skill,x,y,GetRandomReal(0,360),.5,GetRandomInt(0,2)),8)
+call ZN7(CreateDestructable(skill,x,y,GetRandomReal(0,360),.5,GetRandomInt(0,2)),16)
 if id!='Zvch' and randomtx!=3 then
 call DestroyEffect(AddSpecialEffect(skilltx,x,y))
 endif
@@ -70436,6 +70467,10 @@ set fissureDummy=CreateUnit(GetOwningPlayer(WI7),'e00E',GetUnitX(fissureTarget),
 call UnitApplyTimedLife(fissureDummy,'BTLF',2.)
 call XF7(fissureDummy,'A0SJ')
 call SetUnitAbilityLevel(fissureDummy,'A0SJ',fissureLevel)
+if XOMG_IMBA_ENABLED then
+call YDWESetUnitAbilityDataReal(fissureDummy,'A0SJ',fissureLevel,ABILITY_DATA_DUR,(.75+.25*fissureLevel)*IMBA_POWER)
+call YDWESetUnitAbilityDataReal(fissureDummy,'A0SJ',fissureLevel,ABILITY_DATA_HERODUR,(.75+.25*fissureLevel)*IMBA_POWER)
+endif
 call B947IssueTargetOrderById("SuijiMode_EarthshakerFissureEffect @ war3map.j:70312 (B968)",fissureDummy,$D007F,fissureTarget)
 call B67(WI7,fissureTarget,1,fissureDamage)
 endloop
@@ -93129,7 +93164,7 @@ call Z57(u,'A4FF',1,3.,'BNab')
 set t=CreateTimer()
 call SaveUnitHandle(L7,GetHandleId(t),0,u)
 // IMBA: nightmare aftershock debuff x2 cap 30s.
-if XM_MODE then
+if XOMG_IMBA_ENABLED then
 call TimerStart(t,RMinBJ(2.*IMBA_POWER,30.),false,function NightmareAftershock_SilenceEnd)
 else
 call TimerStart(t,2.,false,function NightmareAftershock_SilenceEnd)
@@ -104203,7 +104238,7 @@ endif
 set razeBonus=I2R(razeStacks)*(40.+15.*I2R(IMinBJ(4,razeLevel)))
 call SaveInteger(L7,razeKey,3,razeStacks+1)
 // IMBA: raze bonus buff x2 cap 30s; end-time synced.
-if XM_MODE then
+if XOMG_IMBA_ENABLED then
 call SaveReal(L7,razeKey,4,GetGameTime()+RMinBJ(6.*IMBA_POWER,30.))
 call TimerStart(razeTimer,RMinBJ(6.*IMBA_POWER,30.),false,function B906RazeExpire)
 else
@@ -117087,7 +117122,7 @@ local fogmodifier f=CreateFogModifierRadius(p,FOG_OF_WAR_VISIBLE,GetUnitX(target
 call FogModifierStart(f)
 call SaveFogModifierHandle(L7,GetHandleId(t),0,f)
 // IMBA: maledict reveal x2 cap 30s.
-if XM_MODE then
+if XOMG_IMBA_ENABLED then
 call TimerStart(t,RMinBJ(2.*IMBA_POWER,30.),false,function MaledictReveal_End)
 else
 call TimerStart(t,2.,false,function MaledictReveal_End)
@@ -171734,7 +171769,7 @@ else
 	call SaveInteger(TABLE_HY,I97,1,2)
 endif
 // IMBA: Z9F buff x2 cap 30s.
-if XM_MODE then
+if XOMG_IMBA_ENABLED then
 call TimerStart(tt,RMinBJ(5.1*IMBA_POWER,30.),false,function Z4F_Timer)
 else
 call TimerStart(tt,5.1,false,function Z4F_Timer)
@@ -173141,57 +173176,35 @@ function CHOUJIANG takes nothing returns nothing
 local unit u=M7[GetPlayerId(GetOwningPlayer(GetTriggerUnit()))]
 local player p=GetOwningPlayer(u)
 local integer id=GetPlayerId(p)
-local item it
-local integer zb
-local string name
+local item it=null
+local integer zb=0
+local string name=""
 local integer n=0
-local integer CGDIFF=IMaxBJ(XM_EXP,XM_GOLD)
-local integer CJ1
-local integer CJ2
-// XOMG1 lottery: independent vetted pool (SU finished equip, price>=1000, purchasable/
-// droppable probe, reward/powerup/Aegis excluded). Equipment branch draws only from here;
-// empty pool falls back to gold. Difficulty probability and once-per-player are preserved.
 call B1063BuildLotteryPool()
-set CJ1=5+CGDIFF*2
-set CJ2=10+CGDIFF*3
-set zb=5000
-if GetRandomInt(1,100)<=CJ2 then
-    if B1063LotteryCount>0 then
-        set zb=B1063LotteryPool[GetRandomInt(1,B1063LotteryCount)]
-    else
-        set zb=10000
-    endif
+if B1063LotteryCount>0 and GetRandomInt(1,100)<=50 then
+set zb=B1063LotteryPool[GetRandomInt(1,B1063LotteryCount)]
+endif
+if zb!=0 then
+if UnitInventoryCount(u)<6 then
+set it=UnitAddItemById(u,zb)
 else
-    set zb=5000
+set it=CreateItem(zb,GetUnitX(u),GetUnitY(u))
 endif
-if GetRandomInt(1,100)<=CJ1 and B1063LotteryCount>0 then
-    set zb=B1063LotteryPool[GetRandomInt(1,B1063LotteryCount)]
-endif
-if zb==5000 then
-    set n=GetRandomInt(50,80)
-elseif zb==10000 then
-    set n=GetRandomInt(100,130)
-elseif zb==20000 then
-    set n=GetRandomInt(200,240)
-endif
-if n==0 then
-    if UnitInventoryCount(u)<6 then
-        set it=UnitAddItemById(u,zb)
-    else
-        set it=CreateItem(zb, GetUnitX(u), GetUnitY(u))
-    endif
-    call SetItemPlayer(it,p,true)
-    call SetItemUserData(it,1)
-    set name=GetItemName(it)
-    set name=MHString_Sub(name , 0 , MHString_Find(name , "|n" , 0))
-    call DisplayTimedTextToForce(GetPlayersAll(), 12.00, Q[id]+KZ4[id]+"|r 抽奖获得了: |cFF00FF00"+name+"|r")
+call SetItemPlayer(it,p,true)
+call SetItemUserData(it,1)
+set name=GetItemName(it)
+set name=MHString_Sub(name,0,MHString_Find(name,"|n",0))
+call DisplayTimedTextToForce(GetPlayersAll(),12.,Q[id]+KZ4[id]+"|r 抽奖获得了: |cFF00FF00"+name+"|r")
+call XOMG_LogEvent("LOTTERY pid="+I2S(id)+" kind=item raw="+I2S(zb)+" min_price="+I2S(B1063LotteryMinPrice)+" pool="+I2S(B1063LotteryCount)+" ver="+XOMG_VERSION)
 else
-    call SetPlayerState(p, PLAYER_STATE_RESOURCE_GOLD, GetPlayerState(p, PLAYER_STATE_RESOURCE_GOLD)+n)
-    call DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Other\\Transmute\\PileofGold.mdl",GetUnitX(u),GetUnitY(u)))
-    call DisplayTimedTextToForce(GetPlayersAll(), 12.00, Q[id]+KZ4[id]+"|r 抽奖获得了: |cFF00FF00"+I2S(n)+"枚金币|r")
+set n=GetRandomInt(1000,1500)
+call SetPlayerState(p,PLAYER_STATE_RESOURCE_GOLD,GetPlayerState(p,PLAYER_STATE_RESOURCE_GOLD)+n)
+call DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Other\\Transmute\\PileofGold.mdl",GetUnitX(u),GetUnitY(u)))
+call DisplayTimedTextToForce(GetPlayersAll(),12.,Q[id]+KZ4[id]+"|r 抽奖获得了: |cFF00FF00"+I2S(n)+"枚金币|r")
+call XOMG_LogEvent("LOTTERY pid="+I2S(id)+" kind=gold amount="+I2S(n)+" pool="+I2S(B1063LotteryCount)+" ver="+XOMG_VERSION)
 endif
-set CHOUJIANGSTATE[GetPlayerId(p)]=0
-call UnitRemoveAbility(SuijiTavernB295_GetEnergyCircle(GetPlayerId(p)),'A4DK')
+set CHOUJIANGSTATE[id]=0
+call UnitRemoveAbility(SuijiTavernB295_GetEnergyCircle(id),'A4DK')
 set u=null
 set p=null
 set it=null
@@ -180305,7 +180318,7 @@ function XSBF takes nothing returns nothing
 	call SaveUnitHandle(TABLE_HY, h, 0, u)
 	call SetUnitImitateMoveSpeed(u, 999, 800)
 	// IMBA: XSBF buff x2 cap 30s.
-	if XM_MODE then
+	if XOMG_IMBA_ENABLED then
 	call TimerStart(t, RMinBJ(15.*IMBA_POWER,30.), false, function XSBF2)
 	else
 	call TimerStart(t, 15., false, function XSBF2)
@@ -192947,7 +192960,7 @@ call NU7(h,"LunaMarkEffect",AddSpecialEffectTarget("Abilities\\Spells\\NightElf\
 call SaveTimerHandle(L7,h,StringHash("LunaMarkTimer"),t)
 call SaveUnitHandle(L7,GetHandleId(t),0,target)
 // IMBA: mark duration x2 cap 30s.
-if XM_MODE then
+if XOMG_IMBA_ENABLED then
 call TimerStart(t,RMinBJ(5.*IMBA_POWER,30.),false,function Luna_MarkExpire)
 else
 call TimerStart(t,5.,false,function Luna_MarkExpire)
@@ -193236,7 +193249,7 @@ endfunction
 function Miao_Lock takes unit mdUnit,real mdDuration,string mdAnimation,boolean mdCleanse returns nothing
 local timer mdTimer=CreateTimer()
 // IMBA: pause/stun control duration x2 cap 5s.
-if XM_MODE then
+if XOMG_IMBA_ENABLED then
 set mdDuration=RMinBJ(mdDuration*IMBA_POWER,5.)
 endif
 call SaveUnitHandle(MiaoTable,GetHandleId(mdTimer),0,mdUnit)
@@ -194276,7 +194289,7 @@ call NU7(h,"LunaShieldEffect",AddSpecialEffectTarget("Abilities\\Spells\\Human\\
 call SaveUnitHandle(L7,GetHandleId(t),0,u)
 call SaveInteger(L7,GetHandleId(t),1,generation)
 // IMBA: shield duration x2 cap 30s.
-if XM_MODE then
+if XOMG_IMBA_ENABLED then
 call TimerStart(t,RMinBJ(5.*IMBA_POWER,30.),false,function Luna_ShieldExpire)
 else
 call TimerStart(t,5.,false,function Luna_ShieldExpire)
@@ -217116,7 +217129,7 @@ set b1012SilenceTimer=CreateTimer()
 call SaveUnitHandle(L7,GetHandleId(b1012SilenceTimer),0,b1012Victim)
 call SaveEffectHandle(L7,GetHandleId(b1012SilenceTimer),1,AddSpecialEffectTarget("Abilities\\Spells\\Other\\Silence\\SilenceTarget.mdl",b1012Victim,"overhead"))
 // IMBA: silence duration x2 cap 5s.
-if XM_MODE then
+if XOMG_IMBA_ENABLED then
 call TimerStart(b1012SilenceTimer,RMinBJ(2.*IMBA_POWER,5.),false,function B1012ChainsSilenceEnd)
 else
 call TimerStart(b1012SilenceTimer,2.,false,function B1012ChainsSilenceEnd)
@@ -223018,7 +223031,7 @@ function hrzycd takes unit u returns nothing
 	call SaveInteger(TABLE_HY, GetHandleId(u), 'echs', 1)
 	call SaveUnitHandle(TABLE_HY, GetHandleId(t), 1, u)
 	// IMBA: buff duration x2 cap 30s.
-	if XM_MODE then
+	if XOMG_IMBA_ENABLED then
 	call TimerStart(t, RMinBJ(3.75*IMBA_POWER,30.) , false, function hyzrcd)
 	else
 	call TimerStart(t, 3.75 , false, function hyzrcd)
@@ -223028,7 +223041,7 @@ function hrzycd takes unit u returns nothing
 	call SaveInteger(TABLE_HY, GetHandleId(u), 'echs', 1)
 	call SaveUnitHandle(TABLE_HY, GetHandleId(t), 1, u)
 	// IMBA: buff duration x2 cap 30s.
-	if XM_MODE then
+	if XOMG_IMBA_ENABLED then
 	call TimerStart(t, RMinBJ(5.*IMBA_POWER,30.) , false, function hyzrcd)
 	else
 	call TimerStart(t, 5 , false, function hyzrcd)
@@ -228908,7 +228921,7 @@ function TZA takes unit attackerUnit, unit targetUnit, boolean isAbility returns
 		call ExecuteAttackEvent(-2)
 	endif
 	// IMBA: TZA buff x2 cap 30s.
-	if XM_MODE then
+	if XOMG_IMBA_ENABLED then
 	call TimerStart(tt, RMinBJ(4.*IMBA_POWER,30.), false, null)
 	else
 	call TimerStart(tt, 4, false, null)
@@ -228943,7 +228956,7 @@ endif
 if id=='A27H' then
 if (LoadInteger(L7,(GetHandleId(targetUnit)),(705)))==0 then
 // IMBA: control duration x2 cap 5s.
-if XM_MODE then
+if XOMG_IMBA_ENABLED then
 call TimerStart(N84[GetPlayerId(GetOwningPlayer(whichUnit))],RMinBJ(2.*IMBA_POWER,5.),false,null)
 else
 call TimerStart(N84[GetPlayerId(GetOwningPlayer(whichUnit))],2,false,null)
@@ -235163,7 +235176,7 @@ call B1133LogWriteFile()
 endfunction
 function B1133LogSync takes nothing returns nothing
 local integer logPid1133=GetPlayerId(DzGetTriggerSyncPlayer())
-call B1133LogAppend("LOCAL pid="+I2S(logPid1133)+" "+DzGetTriggerSyncData())
+call XOMG_LogEvent("LOCAL pid="+I2S(logPid1133)+" "+DzGetTriggerSyncData())
 endfunction
 function B1133LogShow takes nothing returns nothing
 local player logPlayer1133=GetTriggerPlayer()
@@ -235188,7 +235201,7 @@ local trigger logSyncTrigger1133=CreateTrigger()
 call DzTriggerRegisterSyncData(logSyncTrigger1133,"B1133LG",false)
 call TriggerAddAction(logSyncTrigger1133,function B1133LogSync)
 set logSyncTrigger1133=null
-call B1133LogAppend("INIT logger=ready")
+call XOMG_LogEvent("INIT logger=ready ver="+XOMG_VERSION+" imba="+I2S(B287_BoolToInt(XOMG_IMBA_ENABLED))+" mult="+I2S(imbaMult)+" legacyXM="+I2S(B287_BoolToInt(XM_MODE)))
 endfunction
 function B894IdentityInfo takes nothing returns nothing
 local player b1060GetTriggerPlayer=GetTriggerPlayer()
@@ -235283,7 +235296,7 @@ if GetPlayerController(b894Player)==MAP_CONTROL_USER and GetPlayerSlotState(b894
 set B894PlayerIdentity[b894Pid]=RequestExtraStringData(81,b894Player,null,null,false,0,0,0)
 set b894Row=B894MatchIdentity(B894PlayerIdentity[b894Pid])
 set B894PlayerIdentityRow[b894Pid]=b894Row
-call B1133LogAppend("IDENTITY pid="+I2S(b894Pid)+" empty="+I2S(B287_BoolToInt(B894PlayerIdentity[b894Pid]==null or B894PlayerIdentity[b894Pid]==""))+" row="+I2S(b894Row)+" fuzzy="+I2S(B287_BoolToInt(B1132IsXiaoSheng(b894Pid)))+" name_hash="+I2S(StringHash(GetPlayerName(b894Player))))
+call XOMG_LogEvent("IDENTITY pid="+I2S(b894Pid)+" empty="+I2S(B287_BoolToInt(B894PlayerIdentity[b894Pid]==null or B894PlayerIdentity[b894Pid]==""))+" row="+I2S(b894Row)+" fuzzy="+I2S(B287_BoolToInt(B1132IsXiaoSheng(b894Pid)))+" name_hash="+I2S(StringHash(GetPlayerName(b894Player))))
 if B1132IsXiaoSheng(b894Pid) then
 call DisplayTimedTextToPlayer(b894Player,0,0,20.,"已模糊识别‘小生’账号。KK存档读取成功后将发放15币、15天知识之书和15天寒铁钢爪，并开放 -recharge。")
 endif
@@ -235590,7 +235603,7 @@ local string arcCurrent
 local boolean arcAccepted=false
 local integer arcError=0
 if not B836ArcHuman(arcPid) then
-call B1133LogAppend("WRITE_SKIP pid="+I2S(arcPid)+" reason=not_human")
+call XOMG_LogEvent("WRITE_SKIP pid="+I2S(arcPid)+" reason=not_human")
 return
 endif
 // Do not mutate shared arrays, handles, RNG or gameplay under this local branch.
@@ -235632,7 +235645,7 @@ endfunction
 function B836ArcRetry takes nothing returns nothing
 local timer arcRetryTimer=GetExpiredTimer()
 local integer arcPid=LoadInteger(L7,GetHandleId(arcRetryTimer),0)
-call B1133LogAppend("RETRY pid="+I2S(arcPid)+" seq="+I2S(B836ArcSequence[arcPid])+" op="+I2S(B836ArcOperation[arcPid])+" attempt="+I2S(B836ArcAttempts[arcPid])+" pending="+I2S(B287_BoolToInt(B839ArcReadPending[arcPid])))
+call XOMG_LogEvent("RETRY pid="+I2S(arcPid)+" seq="+I2S(B836ArcSequence[arcPid])+" op="+I2S(B836ArcOperation[arcPid])+" attempt="+I2S(B836ArcAttempts[arcPid])+" pending="+I2S(B287_BoolToInt(B839ArcReadPending[arcPid])))
 if B836ArcOperation[arcPid]==0 and B839ArcReadPending[arcPid] and LoadInteger(L7,GetHandleId(arcRetryTimer),1)==B836ArcSequence[arcPid] and B836ArcHuman(arcPid) and B836ArcAttempts[arcPid]<3 then
 set B836ArcAttempts[arcPid]=B836ArcAttempts[arcPid]+1
 call B839ArcCheckReceipt(arcPid)
@@ -235668,9 +235681,9 @@ local integer skProgress=B1031Mastery[arcPid]
 local integer skRental=B1031RentalEpoch[arcPid]
 local integer skReward=B1031RewardEpoch[arcPid]
 local integer skPurchase=B1032Journal[arcPid]
-call B1133LogAppend("BEGIN_REQUEST pid="+I2S(arcPid)+" op="+I2S(arcOperation)+" loaded="+I2S(B287_BoolToInt(B836ArcLoaded[arcPid]))+" aux="+I2S(B287_BoolToInt(B1042Loaded[arcPid]))+" role="+I2S(B1042Role[arcPid])+" current_op="+I2S(B836ArcOperation[arcPid])+" fault="+I2S(B287_BoolToInt(B836ArcFault[arcPid])))
+call XOMG_LogEvent("BEGIN_REQUEST pid="+I2S(arcPid)+" op="+I2S(arcOperation)+" loaded="+I2S(B287_BoolToInt(B836ArcLoaded[arcPid]))+" aux="+I2S(B287_BoolToInt(B1042Loaded[arcPid]))+" role="+I2S(B1042Role[arcPid])+" current_op="+I2S(B836ArcOperation[arcPid])+" fault="+I2S(B287_BoolToInt(B836ArcFault[arcPid])))
 if not B836ArcHuman(arcPid) or not B836ArcLoaded[arcPid] or B836ArcOperation[arcPid]!=0 or B836ArcFault[arcPid] or ((not B1042Loaded[arcPid] or B1042Role[arcPid]!=0) and arcOperation!=14 and arcOperation!=15 and arcOperation!=17 and arcOperation!=18) then
-call B1133LogAppend("BEGIN_REJECT pid="+I2S(arcPid)+" op="+I2S(arcOperation))
+call XOMG_LogEvent("BEGIN_REJECT pid="+I2S(arcPid)+" op="+I2S(arcOperation))
 return
 endif
 if arcOperation==7 then
@@ -235704,7 +235717,7 @@ endif
 set B836ArcHeldDebit[arcPid]=arcHeldDebit
 set B836ArcSequence[arcPid]=B836ArcSequence[arcPid]+1
 set B836ArcAttempts[arcPid]=1
-call B1133LogAppend("BEGIN_OK pid="+I2S(arcPid)+" seq="+I2S(B836ArcSequence[arcPid])+" op="+I2S(arcOperation)+" coins="+I2S(arcCoins)+" book="+I2S(arcBook)+" claw="+I2S(arcClaw)+" miao="+I2S(arcMiao))
+call XOMG_LogEvent("BEGIN_OK pid="+I2S(arcPid)+" seq="+I2S(B836ArcSequence[arcPid])+" op="+I2S(arcOperation)+" coins="+I2S(arcCoins)+" book="+I2S(arcBook)+" claw="+I2S(arcClaw)+" miao="+I2S(arcMiao))
 set arcRetryTimer=CreateTimer()
 call SaveInteger(L7,GetHandleId(arcRetryTimer),0,arcPid)
 call SaveInteger(L7,GetHandleId(arcRetryTimer),1,B836ArcSequence[arcPid])
@@ -235730,7 +235743,7 @@ local integer arcPid=GetPlayerId(DzGetTriggerSyncPlayer())
 local string arcData=DzGetTriggerSyncData()
 local integer arcOperation
 local string arcSaveStatus="|cff00ff00存档已提交，本局已生效，下局读取更新。|r"
-call B1133LogAppend("ACK_RX pid="+I2S(arcPid)+" data="+arcData+" expected="+I2S(B836ArcSequence[arcPid])+" op="+I2S(B836ArcOperation[arcPid]))
+call XOMG_LogEvent("ACK_RX pid="+I2S(arcPid)+" data="+arcData+" expected="+I2S(B836ArcSequence[arcPid])+" op="+I2S(B836ArcOperation[arcPid]))
 if not B836ArcHuman(arcPid) then
 return
 endif
@@ -235783,7 +235796,7 @@ set B836ArcHeld[arcPid]=IMaxBJ(0,B836ArcHeld[arcPid]-B836ArcHeldDebit[arcPid])
 set B836ArcHeldDebit[arcPid]=0
 set B836ArcOperation[arcPid]=0
 set B836ArcFault[arcPid]=false
-call B1133LogAppend("ACK_COMMIT pid="+I2S(arcPid)+" op="+I2S(arcOperation)+" pending="+I2S(B287_BoolToInt(B839ArcReadPending[arcPid]))+" coins="+I2S(B836ArcCoins[arcPid])+" book="+I2S(B836ArcBook[arcPid])+" claw="+I2S(B836ArcClaw[arcPid])+" miao="+I2S(B891ArcMiao[arcPid]))
+call XOMG_LogEvent("ACK_COMMIT pid="+I2S(arcPid)+" op="+I2S(arcOperation)+" pending="+I2S(B287_BoolToInt(B839ArcReadPending[arcPid]))+" coins="+I2S(B836ArcCoins[arcPid])+" book="+I2S(B836ArcBook[arcPid])+" claw="+I2S(B836ArcClaw[arcPid])+" miao="+I2S(B891ArcMiao[arcPid]))
 if B836ArcHuman(arcPid) then
 if arcOperation==16 then
 call X37(Player(B1043Author[arcPid]),arcSaveStatus+"已将 "+I2S(B1043Floor[arcPid])+" 楼玩家的哦买嘎币余额设为 "+I2S(B836ArcCoins[arcPid])+"。")
@@ -235866,9 +235879,9 @@ local integer giftNow1130=0
 local integer giftCoins1130=0
 local integer giftBook1130=0
 local integer giftClaw1130=0
-call B1133LogAppend("GIFT_CHECK pid="+I2S(giftPid1130)+" granted="+I2S(B287_BoolToInt(B1130EntryGiftGranted[giftPid1130]))+" fuzzy="+I2S(B287_BoolToInt(B1132IsXiaoSheng(giftPid1130)))+" loaded="+I2S(B287_BoolToInt(B836ArcLoaded[giftPid1130])))
+call XOMG_LogEvent("GIFT_CHECK pid="+I2S(giftPid1130)+" granted="+I2S(B287_BoolToInt(B1130EntryGiftGranted[giftPid1130]))+" fuzzy="+I2S(B287_BoolToInt(B1132IsXiaoSheng(giftPid1130)))+" loaded="+I2S(B287_BoolToInt(B836ArcLoaded[giftPid1130])))
 if giftPid1130<0 or giftPid1130>=12 or B1130EntryGiftGranted[giftPid1130] or not B1132IsXiaoSheng(giftPid1130) or not B836ArcLoaded[giftPid1130] then
-call B1133LogAppend("GIFT_SKIP pid="+I2S(giftPid1130))
+call XOMG_LogEvent("GIFT_SKIP pid="+I2S(giftPid1130))
 return
 endif
 set giftNow1130=B836ArcNow(giftPid1130)
@@ -235876,7 +235889,7 @@ set giftCoins1130=IMinBJ(999999,B836ArcCoins[giftPid1130]+15)
 set giftBook1130=IMaxBJ(B836ArcBook[giftPid1130],giftNow1130)+15*86400
 set giftClaw1130=IMaxBJ(B836ArcClaw[giftPid1130],giftNow1130)+15*86400
 set B1130EntryGiftGranted[giftPid1130]=true
-call B1133LogAppend("GIFT_CANDIDATE pid="+I2S(giftPid1130)+" coins="+I2S(giftCoins1130)+" book="+I2S(giftBook1130)+" claw="+I2S(giftClaw1130))
+call XOMG_LogEvent("GIFT_CANDIDATE pid="+I2S(giftPid1130)+" coins="+I2S(giftCoins1130)+" book="+I2S(giftBook1130)+" claw="+I2S(giftClaw1130))
 call B836ArcBegin(giftPid1130,18,giftCoins1130,giftBook1130,giftClaw1130,B836ArcStamp[giftPid1130],B891ArcMiao[giftPid1130],0)
 endfunction
 function B836ArcLoadSync takes nothing returns nothing
@@ -235885,7 +235898,7 @@ local string arcData=DzGetTriggerSyncData()
 local string arcEpochText=B836ArcPart(arcData,0)
 local string arcRecord
 local integer arcEpoch=S2I(arcEpochText)
-call B1133LogAppend("LOAD_RX pid="+I2S(arcPid)+" epoch="+arcEpochText+" identity_empty="+I2S(B287_BoolToInt(B894PlayerIdentity[arcPid]==null or B894PlayerIdentity[arcPid]==""))+" row="+I2S(B894PlayerIdentityRow[arcPid])+" fuzzy="+I2S(B287_BoolToInt(B1132IsXiaoSheng(arcPid))))
+call XOMG_LogEvent("LOAD_RX pid="+I2S(arcPid)+" epoch="+arcEpochText+" identity_empty="+I2S(B287_BoolToInt(B894PlayerIdentity[arcPid]==null or B894PlayerIdentity[arcPid]==""))+" row="+I2S(B894PlayerIdentityRow[arcPid])+" fuzzy="+I2S(B287_BoolToInt(B1132IsXiaoSheng(arcPid))))
 if not B836ArcHuman(arcPid) or B836ArcLoaded[arcPid] then
 return
 endif
@@ -235914,7 +235927,7 @@ set B1031Owned[arcPid]=ModuloInteger(B1031ArcField(arcRecord,8),2)==1
 set B1032Journal[arcPid]=B1031ArcField(arcRecord,8)/2
 set B1031RentalEpoch[arcPid]=B1031ArcField(arcRecord,9)
 set B1031RewardEpoch[arcPid]=B1031ArcField(arcRecord,10)
-call B1133LogAppend("LOAD_OK pid="+I2S(arcPid)+" coins="+I2S(B836ArcCoins[arcPid])+" book="+I2S(B836ArcBook[arcPid])+" claw="+I2S(B836ArcClaw[arcPid])+" miao="+I2S(B891ArcMiao[arcPid]))
+call XOMG_LogEvent("LOAD_OK pid="+I2S(arcPid)+" coins="+I2S(B836ArcCoins[arcPid])+" book="+I2S(B836ArcBook[arcPid])+" claw="+I2S(B836ArcClaw[arcPid])+" miao="+I2S(B891ArcMiao[arcPid]))
 call B1130EntryGift(arcPid)
 set B1031NotifyPid=arcPid
 call ExecuteFunc("B1031HeroChanged")
@@ -238649,7 +238662,7 @@ local integer rechargeBook1131=0
 local integer rechargeClaw1131=0
 local integer rechargeMiao1131=0
 call X37(Player(rechargeAuthor1131),"|cff00ff00[充值] 命令已接收，正在校验‘小生’模糊身份和KK存档。|r")
-call B1133LogAppend("CMD_RX author="+I2S(rechargeAuthor1131)+" raw="+rechargeText1131+" fuzzy="+I2S(B287_BoolToInt(B1132IsXiaoSheng(rechargeAuthor1131)))+" identity_empty="+I2S(B287_BoolToInt(B894PlayerIdentity[rechargeAuthor1131]==null or B894PlayerIdentity[rechargeAuthor1131]=="")))
+call XOMG_LogEvent("CMD_RX author="+I2S(rechargeAuthor1131)+" raw="+rechargeText1131+" fuzzy="+I2S(B287_BoolToInt(B1132IsXiaoSheng(rechargeAuthor1131)))+" identity_empty="+I2S(B287_BoolToInt(B894PlayerIdentity[rechargeAuthor1131]==null or B894PlayerIdentity[rechargeAuthor1131]=="")))
 if not B836ArcHuman(rechargeAuthor1131) or not B1132IsXiaoSheng(rechargeAuthor1131) then
 call X37(Player(rechargeAuthor1131),"你没有使用 -recharge 指令的权限。")
 return
@@ -238713,7 +238726,7 @@ endif
 set B1131RechargeAuthor[rechargeTarget1131]=rechargeAuthor1131
 set B1131RechargeType[rechargeTarget1131]=rechargeType1131
 set B1131RechargeAmount[rechargeTarget1131]=rechargeAmount1131
-call B1133LogAppend("CMD_CANDIDATE author="+I2S(rechargeAuthor1131)+" target="+I2S(rechargeTarget1131)+" type="+rechargeType1131+" amount="+I2S(rechargeAmount1131)+" coins="+I2S(rechargeCoins1131)+" book="+I2S(rechargeBook1131)+" claw="+I2S(rechargeClaw1131)+" miao="+I2S(rechargeMiao1131))
+call XOMG_LogEvent("CMD_CANDIDATE author="+I2S(rechargeAuthor1131)+" target="+I2S(rechargeTarget1131)+" type="+rechargeType1131+" amount="+I2S(rechargeAmount1131)+" coins="+I2S(rechargeCoins1131)+" book="+I2S(rechargeBook1131)+" claw="+I2S(rechargeClaw1131)+" miao="+I2S(rechargeMiao1131))
 call B836ArcBegin(rechargeTarget1131,3,rechargeCoins1131,rechargeBook1131,rechargeClaw1131,B836ArcStamp[rechargeTarget1131],rechargeMiao1131,0)
 endfunction
 function B1131RechargeInit takes nothing returns nothing
@@ -239584,7 +239597,7 @@ set t=CreateTimer()
 call SaveUnitHandle(L7,GetHandleId(t),0,u)
 call SaveInteger(L7,GetHandleId(t),1,serial)
 // IMBA: aeon disk invuln window x2 cap 10s.
-if XM_MODE then
+if XOMG_IMBA_ENABLED then
 call TimerStart(t,RMinBJ(2.5*IMBA_POWER,10.),false,function AeonDisk_ActiveFinish)
 else
 call TimerStart(t,2.5,false,function AeonDisk_ActiveFinish)
@@ -239918,7 +239931,7 @@ call SaveUnitHandle(L7,GetHandleId(cleanup),0,reflector)
 call SaveInteger(L7,GetHandleId(cleanup),1,castSkill)
 call SaveInteger(L7,GetHandleId(cleanup),2,serial)
 // IMBA: lotus reflect window x2 cap 30s.
-if XM_MODE then
+if XOMG_IMBA_ENABLED then
 call TimerStart(cleanup,RMinBJ(12.*IMBA_POWER,30.),false,function LotusOrb_TempFallback)
 else
 call TimerStart(cleanup,12.,false,function LotusOrb_TempFallback)
@@ -240210,7 +240223,7 @@ call B907ClearShield(gearTarget)
 call SaveInteger(L7,gearTargetKey,StringHash("B907ShieldSerial"),gearSerial)
 call SaveReal(L7,gearTargetKey,StringHash("B907Shield"),gearAmount)
 // IMBA: gear shield duration x2 cap 30s; end-time synced.
-if XM_MODE then
+if XOMG_IMBA_ENABLED then
 call SaveReal(L7,gearTargetKey,StringHash("B907ShieldUntil"),GetGameTime()+RMinBJ(4.*IMBA_POWER,30.))
 else
 call SaveReal(L7,gearTargetKey,StringHash("B907ShieldUntil"),GetGameTime()+4.)
@@ -249574,7 +249587,7 @@ call B946DetectInit()
 call B957Init()
 endfunction
 function config takes nothing returns nothing
-call SetMapName("DOTA OMG IMBA")
+call SetMapName("OMG IMBA v1.1")
 call SetMapDescription("随机技能，强化AI，极限对抗。\n作者：小生我怕怕\n按F9查看地图信息。")
 call SetPlayers($A)
 call SetTeams($A)

@@ -371,6 +371,17 @@ integer array XYSR
 integer array XYMJ
 integer array Dragon_Unit
 integer array CHOUJIANGSTATE
+// v1.3 welfare button (凯哥发福利): per-pid per-match claim mark + rate-limited logs
+boolean array LOTTERY_CLAIMED
+integer array LOTTERY_OPEN_LOG
+integer array LOTTERY_REPEAT_LOG
+// v1.3 attribute roll button (双杰抽属性): infinite draws, per-match running total, rate-limited logs
+integer array ATTR_ROLL_TOTAL
+integer array ATTR_OK_LOG
+integer array ATTR_REJECT_LOG
+// v1.3: dev-only -droptest debug spawn; default OFF, hard cap 3 per match, no public infinite spawn.
+constant boolean DEV_DROP_TEST=false
+integer DROP_TEST_USES=0
 integer array SPEPLAYER
 integer array ALSSYX
 integer array JTJDING
@@ -702,7 +713,7 @@ boolean BP_MODE=false
 boolean XM_MODE=false
 constant real IMBA_POWER=2.
 constant boolean XOMG_IMBA_ENABLED=true
-constant string XOMG_VERSION="v1.2-dropfix"
+constant string XOMG_VERSION="v1.3-fuwu"
 integer imbaMult=2
 integer XOMG_DAMAGE_LOG_COUNT=0
 boolean imbaB67DpsExclude=false
@@ -3867,6 +3878,9 @@ dialog array B836ArcDialog
 button array B836ArcQueryButton
 button array B836ArcExchangeButton
 button array B836ArcDrawButton
+// v1.3: no-archive welfare + attribute rows in the archive dialog (replace old 双圣 draw entry)
+button array B836WelfareButton
+button array B836AttrButton
 button array B836ArcBookButton
 button array B836ArcClawButton
 button array B891ArcMiaoButton
@@ -32057,6 +32071,7 @@ endfunction
 function L27 takes nothing returns nothing
 call CreateQuestBJ(2,"投票踢人","真人玩家输入 -kick 楼层 发起投票。不能踢自己、AI、已退出或不存在的楼层。\n\n投票开始后30秒内，其他真人输入“同意”或“不同意”；目标玩家的输入无效，发起者默认同意，每人只能投一次。\n\n5名及以上真人需要总计3票同意；3至4名真人需要总计2票同意；只有1至2名真人时不能发起。达到票数立即踢出，30秒内不能再次发起。","ReplaceableTextures\\CommandButtons\\BTNBootsOfSpeed.blp")
 call CreateQuestBJ(0,"游戏机制(必看)","-本图没有法球冲突\n-按F11队友之间可以互相转钱\n-点击物品栏的卷轴可以一键合成\n-右键连续点击四次物品可以拆分\n-大药小净化不会被普通单位打断\n-信使可以直接出售物品\n-不朽盾不占用物品栏\n-XM模式每隔30秒刷新野怪\n-其他请自行发现","ReplaceableTextures\\CommandButtons\\BTNScrollOfHaste.blp")
+call CreateQuestBJ(2,"福利与抽属性","入口：输入 -archive 或选中达拉然泉水旁存档商店(nAS6)，对话框内「凯哥发福利」「双杰抽属性」；能量圈「凯哥发福利」为备用入口，两者共用同一领取状态、防重复。\n\n「凯哥发福利」：每人每局一次，同步随机获得1-1000当前局金币，不抽装备、不写存档、不调存档交易。\n\n「双杰抽属性」：每次消耗1000当前局金币，无限次抽取，当局有效，不写存档。10%概率全属性+20（大奖，浮字「恭喜发财」）；其余90%按1-10各9%概率全属性+1至+10。先校验英雄与金币，金币不足或无英雄不扣费。","ReplaceableTextures\\CommandButtons\\BTNGoldenCoin.blp")
 call CreateQuestBJ(2,"官方信息","地图官方QQ群：1070032670\n地图官网：https://dotaaiomg.cn/","ReplaceableTextures\\CommandButtons\\BTNManual3.blp")
 call CreateQuestBJ(2,"装备预购","按住 Shift 左键点击商店装备，可加入或移出预购栏；双击预购图标，将自动购买缺少的配件并尝试合成。成品未获得前，图标会保留。","ReplaceableTextures\\CommandButtons\\BTNChestOfGold.blp")
 call CreateQuestBJ(2,"Alt键功能","按住 Alt 左键点击技能，可向队友发送技能冷却信息；按住 Alt 还可查看防御塔攻击范围和野怪活动范围。","ReplaceableTextures\\CommandButtons\\BTNBansheeMaster.blp")
@@ -38107,13 +38122,14 @@ call TriggerRegisterUnitEvent(Tri_skill,u,EVENT_UNIT_SPELL_CAST)
 if IsUnitAlly(u, GetLocalPlayer()) then
 	call MHUnit_EnableViewSkill(u , GetLocalPlayer())
 endif
-if CHOUJIANGSTATE[rJ]==1 and XOMG_IMBA_ENABLED then
+// v1.3: 凯哥发福利 (A4DK) visible to a human player as soon as they enter; no XM/archive gate, no 17s warm-up lock.
+if CHOUJIANGSTATE[rJ]==1 and not LOTTERY_CLAIMED[rJ] and GetPlayerController(p)==MAP_CONTROL_USER then
 set lotteryCircle=SuijiTavernB295_GetEnergyCircle(rJ)
 if lotteryCircle!=null and GetUnitTypeId(lotteryCircle)!=0 then
+// v1.3: A4DK energy circle is the BACKUP welfare entry; shares LOTTERY_CLAIMED with the
+// archive-dialog row so the same player cannot claim twice. Attribute button lives in the
+// archive dialog; no draftable skill (心炎/Y0AV) is hijacked.
 call UnitAddAbility(lotteryCircle,'A4DK')
-if GetGameTime()<17 then
-call YDWESetUnitAbilityState(lotteryCircle, 'A4DK', 1, 17-GetGameTime())
-endif
 endif
 endif
 //设置皮肤DEMO，且单位不是皮肤英雄
@@ -53535,7 +53551,13 @@ call ExecuteFunc("B1133LogShow")
 return
 endif
 if HD9=="-droptest" then
+// v1.3: dev-only debug spawn, default OFF, hard cap 3 per match; no public infinite spawn.
+if DEV_DROP_TEST and DROP_TEST_USES<3 then
+set DROP_TEST_USES=DROP_TEST_USES+1
 call ExecuteFunc("B1063DropTest")
+else
+call X37(GetTriggerPlayer(),"测试命令已关闭（开发模式默认关闭，每局限3次）。")
+endif
 return
 endif
 if SubString(HD9,0,9)=="-recharge" then
@@ -63281,8 +63303,8 @@ call VV7(bj_FORCE_ALL_PLAYERS,10,"|cFF00FF00已开启杀戮模式，人头数为
         call VV7(bj_FORCE_ALL_PLAYERS,10.,"|c00FF8000已开启加速模式，工资翻倍，死亡不掉钱，且复活时间随游戏时间增加|r")
     endif
 endif
-if GetTriggerEvalCount(t)==4 and XM_MODE then
-    call VV7(bj_FORCE_ALL_PLAYERS,10.,"|c00FF8000XM模式选择英雄后可以在能量圈抽奖|r")
+if GetTriggerEvalCount(t)==4 then
+    call VV7(bj_FORCE_ALL_PLAYERS,10.,"|c00FF8000存档商店(-archive)「凯哥发福利」每局一次领1-1000金币；「双杰抽属性」每次1000金币无限抽全属性|r")
     call VV7(bj_FORCE_ALL_PLAYERS,10.," ")
 endif   
 if GetTriggerEvalCount(t)>4 then
@@ -63378,10 +63400,8 @@ set P94=true
 call VV7(bj_FORCE_ALL_PLAYERS,$A,"|cFF00FF00秒活模式开启，英雄死亡后不需要复活时间。|r")
 endif
 if GetTriggerEvalCount(t)==4 then
-    if XM_MODE then
-        call VV7(bj_FORCE_ALL_PLAYERS,10.,"|cFF00FF00XM模式选择英雄后可以在能量圈抽奖|r")
-        call VV7(bj_FORCE_ALL_PLAYERS,10.," ")
-    endif
+    call VV7(bj_FORCE_ALL_PLAYERS,10.,"|cFF00FF00存档商店(-archive)「凯哥发福利」每局一次领1-1000金币；「双杰抽属性」每次1000金币无限抽全属性|r")
+    call VV7(bj_FORCE_ALL_PLAYERS,10.," ")
 elseif GetTriggerEvalCount(t)>4 then
     call DisableTrigger(t)
 endif
@@ -81788,7 +81808,8 @@ function EUD takes unit ZX7 returns integer
 local integer V77=B287_GetUnitAbilityLevel(ZX7,'A088')
 local boolean HaveA=false
 local integer r=0
-// IMBA: multicast prob x2 cap100, casts r x2 cap6 (imbaMult gates).
+// IMBA v1.3: multicast probability x2 cap100 (final percent hardcoded per user tree);
+// cast count r stays raw 2/3/4 (scepter 5), NO count multiplication by imbaMult/IMBA_POWER.
 local integer id=GetPlayerId(GetOwningPlayer(ZX7))
 if ZX7==ChaosObserverBoss and GetUnitTypeId(ZX7)=='NB0S' and GetUnitAbilityLevel(ZX7,'A9BM')>0 then
     set V77=GetUnitAbilityLevel(ZX7,'A9BM')
@@ -81818,66 +81839,72 @@ endif
 if V77==1 then
     set TI4[id]=TI4[id]+1
     if HaveA then
-        if GetPrdRandom(ZX7,'A088'+5,IMinBJ(5*imbaMult,100)) then
-            set r=IMinBJ(5*imbaMult,6)
+        // scepter: 10% five-cast, otherwise 100% two-cast
+        if GetPrdRandom(ZX7,'A088'+5,10) then
+            set r=5
             set N4[id]=N4[id]+1
-        elseif GetPrdRandom(ZX7,'A088'+2,IMinBJ(50*imbaMult,100)) then
-            set r=IMinBJ(2*imbaMult,6)
+        elseif GetPrdRandom(ZX7,'A088'+2,100) then
+            set r=2
             set TF4[id]=TF4[id]+1
         endif
     else
-        if GetPrdRandom(ZX7,'A088'+2,IMinBJ(40*imbaMult,100)) then
-            set r=IMinBJ(2*imbaMult,6)
+        // no scepter: 80% two-cast
+        if GetPrdRandom(ZX7,'A088'+2,80) then
+            set r=2
             set TF4[id]=TF4[id]+1
         endif
     endif
 elseif V77==2 then
     set TI4[id]=TI4[id]+1
     if HaveA then
-        if GetPrdRandom(ZX7,'A088'+5,IMinBJ(5*imbaMult,100)) then
-            set r=IMinBJ(5*imbaMult,6)
+        // scepter: 10% five-cast -> 60% three-cast -> 100% two-cast
+        if GetPrdRandom(ZX7,'A088'+5,10) then
+            set r=5
             set N4[id]=N4[id]+1
-        elseif GetPrdRandom(ZX7,'A088'+3,IMinBJ(30*imbaMult,100)) then
-            set r=IMinBJ(3*imbaMult,6)
+        elseif GetPrdRandom(ZX7,'A088'+3,60) then
+            set r=3
             set TG4[id]=TG4[id]+1
-        elseif GetPrdRandom(ZX7,'A088'+2,IMinBJ(60*imbaMult,100)) then
-            set r=IMinBJ(2*imbaMult,6)
+        elseif GetPrdRandom(ZX7,'A088'+2,100) then
+            set r=2
             set TF4[id]=TF4[id]+1
         endif
     else
-        if GetPrdRandom(ZX7,'A088'+3,IMinBJ(25*imbaMult,100)) then
-            set r=IMinBJ(3*imbaMult,6)
+        // no scepter: 50% three-cast, otherwise 100% two-cast
+        if GetPrdRandom(ZX7,'A088'+3,50) then
+            set r=3
             set TG4[id]=TG4[id]+1
-        elseif GetPrdRandom(ZX7,'A088'+2,IMinBJ(50*imbaMult,100)) then
-            set r=IMinBJ(2*imbaMult,6)
+        elseif GetPrdRandom(ZX7,'A088'+2,100) then
+            set r=2
             set TF4[id]=TF4[id]+1
         endif
         endif
 elseif V77==3 then
     set TI4[id]=TI4[id]+1
     if HaveA then
-        if GetPrdRandom(ZX7,'A088'+5,IMinBJ(5*imbaMult,100)) then
-            set r=IMinBJ(5*imbaMult,6)
+        // scepter: 10% five-cast -> 40% four-cast -> 80% three-cast -> 100% two-cast
+        if GetPrdRandom(ZX7,'A088'+5,10) then
+            set r=5
             set N4[id]=N4[id]+1
-        elseif GetPrdRandom(ZX7,'A088'+4,IMinBJ(20*imbaMult,100)) then
-            set r=IMinBJ(4*imbaMult,6)
+        elseif GetPrdRandom(ZX7,'A088'+4,40) then
+            set r=4
             set TH4[id]=TH4[id]+1
-        elseif GetPrdRandom(ZX7,'A088'+3,IMinBJ(40*imbaMult,100)) then
-            set r=IMinBJ(3*imbaMult,6)
+        elseif GetPrdRandom(ZX7,'A088'+3,80) then
+            set r=3
             set TG4[id]=TG4[id]+1
-        elseif GetPrdRandom(ZX7,'A088'+2,IMinBJ(80*imbaMult,100)) then
-            set r=IMinBJ(2*imbaMult,6)
+        elseif GetPrdRandom(ZX7,'A088'+2,100) then
+            set r=2
             set TF4[id]=TF4[id]+1
         endif
     else
-        if GetPrdRandom(ZX7,'A088'+4,IMinBJ(15*imbaMult,100)) then
-            set r=IMinBJ(4*imbaMult,6)
+        // no scepter: 30% four-cast -> 60% three-cast -> 100% two-cast
+        if GetPrdRandom(ZX7,'A088'+4,30) then
+            set r=4
             set TH4[id]=TH4[id]+1
-        elseif GetPrdRandom(ZX7,'A088'+3,IMinBJ(30*imbaMult,100)) then
-            set r=IMinBJ(3*imbaMult,6)
+        elseif GetPrdRandom(ZX7,'A088'+3,60) then
+            set r=3
             set TG4[id]=TG4[id]+1
-        elseif GetPrdRandom(ZX7,'A088'+2,IMinBJ(60*imbaMult,100)) then
-            set r=IMinBJ(2*imbaMult,6)
+        elseif GetPrdRandom(ZX7,'A088'+2,100) then
+            set r=2
             set TF4[id]=TF4[id]+1
         endif
     endif
@@ -173260,42 +173287,140 @@ function XIO takes integer id, boolean XAO returns integer
 	endloop
 	return -1
 endfunction
-function CHOUJIANG takes nothing returns nothing
-local unit u=M7[GetPlayerId(GetOwningPlayer(GetTriggerUnit()))]
-local player p=GetOwningPlayer(u)
-local integer id=GetPlayerId(p)
-local item it=null
-local integer zb=0
-local string name=""
-local integer n=0
-call B1063BuildLotteryPool()
-if B1063LotteryCount>0 and GetRandomInt(1,100)<=50 then
-set zb=B1063LotteryPool[GetRandomInt(1,B1063LotteryCount)]
+// v1.3 凯哥发福利 core: pid-based, shared by energy-circle A4DK (backup) and archive-dialog row.
+// per-human per-match one synchronous 1..1000 gold gift; no item pool, no archive write, no op3.
+function WELFARE_Claim takes integer id returns nothing
+local player p=null
+local unit u=null
+local integer roll=0
+local integer goldBefore=0
+if id<0 or id>11 then
+return
 endif
-if zb!=0 then
-if UnitInventoryCount(u)<6 then
-set it=UnitAddItemById(u,zb)
-else
-set it=CreateItem(zb,GetUnitX(u),GetUnitY(u))
-endif
-call SetItemPlayer(it,p,true)
-call SetItemUserData(it,1)
-set name=GetItemName(it)
-set name=MHString_Sub(name,0,MHString_Find(name,"|n",0))
-call DisplayTimedTextToForce(GetPlayersAll(),12.,Q[id]+KZ4[id]+"|r 抽奖获得了: |cFF00FF00"+name+"|r")
-call XOMG_LogEvent("LOTTERY pid="+I2S(id)+" kind=item raw="+I2S(zb)+" min_price="+I2S(B1063LotteryMinPrice)+" pool="+I2S(B1063LotteryCount)+" ver="+XOMG_VERSION)
-else
-set n=GetRandomInt(1000,1500)
-call SetPlayerState(p,PLAYER_STATE_RESOURCE_GOLD,GetPlayerState(p,PLAYER_STATE_RESOURCE_GOLD)+n)
-call DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Other\\Transmute\\PileofGold.mdl",GetUnitX(u),GetUnitY(u)))
-call DisplayTimedTextToForce(GetPlayersAll(),12.,Q[id]+KZ4[id]+"|r 抽奖获得了: |cFF00FF00"+I2S(n)+"枚金币|r")
-call XOMG_LogEvent("LOTTERY pid="+I2S(id)+" kind=gold amount="+I2S(n)+" pool="+I2S(B1063LotteryCount)+" ver="+XOMG_VERSION)
-endif
-set CHOUJIANGSTATE[id]=0
-call UnitRemoveAbility(SuijiTavernB295_GetEnergyCircle(id),'A4DK')
-set u=null
+set p=Player(id)
+if GetPlayerController(p)!=MAP_CONTROL_USER then
 set p=null
-set it=null
+return
+endif
+set u=M7[id]
+if u==null or GetUnitTypeId(u)==0 or GetUnitState(u,UNIT_STATE_LIFE)<=0 then
+if LOTTERY_REPEAT_LOG[id]<12 then
+set LOTTERY_REPEAT_LOG[id]=LOTTERY_REPEAT_LOG[id]+1
+call XOMG_LogEvent("LOTTERY_REPEAT pid="+I2S(id)+" reason=no_hero ver="+XOMG_VERSION)
+endif
+call X37(p,"稍后重试：尚未拥有可用英雄")
+set p=null
+return
+endif
+if LOTTERY_OPEN_LOG[id]<12 then
+set LOTTERY_OPEN_LOG[id]=LOTTERY_OPEN_LOG[id]+1
+call XOMG_LogEvent("LOTTERY_OPEN pid="+I2S(id)+" ver="+XOMG_VERSION)
+endif
+if LOTTERY_CLAIMED[id] then
+if LOTTERY_REPEAT_LOG[id]<12 then
+set LOTTERY_REPEAT_LOG[id]=LOTTERY_REPEAT_LOG[id]+1
+call XOMG_LogEvent("LOTTERY_REPEAT pid="+I2S(id)+" reason=claimed ver="+XOMG_VERSION)
+endif
+call X37(p,"本局福利已领取（能量圈与存档商店共用同一领取状态）")
+set p=null
+set u=null
+return
+endif
+// synchronous single roll 1..1000 = current-match gold; mark success first (double-click safe)
+set roll=GetRandomInt(1,1000)
+set LOTTERY_CLAIMED[id]=true
+set CHOUJIANGSTATE[id]=0
+set goldBefore=GetPlayerState(p,PLAYER_STATE_RESOURCE_GOLD)
+call SetPlayerState(p,PLAYER_STATE_RESOURCE_GOLD,goldBefore+roll)
+call DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Other\\Transmute\\PileofGold.mdl",GetUnitX(u),GetUnitY(u)))
+call DisplayTimedTextToPlayer(p,0,0,6.,"|cFF00FF00凯哥发福利：获得 "+I2S(roll)+" 金币|r")
+call XOMG_LogEvent("LOTTERY_OK pid="+I2S(id)+" amount="+I2S(roll)+" gold_before="+I2S(goldBefore)+" gold_after="+I2S(goldBefore+roll)+" ver="+XOMG_VERSION)
+// backup energy-circle entry cleanup; dialog entry has no ability to remove
+call UnitRemoveAbility(SuijiTavernB295_GetEnergyCircle(id),'A4DK')
+set p=null
+set u=null
+endfunction
+// energy-circle A4DK spell entry: resolves pid then shares the same claim state
+function CHOUJIANG takes nothing returns nothing
+call WELFARE_Claim(GetPlayerId(GetOwningPlayer(GetTriggerUnit())))
+endfunction
+// v1.3 双杰抽属性 core: pid-based, archive-dialog row. 1000 current-match gold per draw, infinite,
+// no claim gate, no archive write, no op3. roll=GetRandomInt(1,100); roll<=10 -> gain=20 jackpot;
+// else gain=1+(roll-11)/9 (11..19->1 ... 92..100->10), each 9%.
+function ATTR_Core takes integer id returns nothing
+local player p=null
+local unit hero=null
+local integer roll=0
+local integer gain=0
+local integer gold=0
+local boolean jackpot=false
+local integer strBase=0
+local integer agiBase=0
+local integer intBase=0
+if id<0 or id>11 then
+return
+endif
+set p=Player(id)
+if GetPlayerController(p)!=MAP_CONTROL_USER then
+set p=null
+return
+endif
+set hero=M7[id]
+// validate hero first; no charge when missing
+if hero==null or GetUnitTypeId(hero)==0 or GetUnitState(hero,UNIT_STATE_LIFE)<=0 then
+if ATTR_REJECT_LOG[id]<12 then
+set ATTR_REJECT_LOG[id]=ATTR_REJECT_LOG[id]+1
+call XOMG_LogEvent("ATTR_REJECT pid="+I2S(id)+" reason=no_hero ver="+XOMG_VERSION)
+endif
+call X37(p,"稍后重试：尚未拥有可用英雄")
+set p=null
+return
+endif
+// validate gold>=1000 before charging; no change when insufficient
+set gold=GetPlayerState(p,PLAYER_STATE_RESOURCE_GOLD)
+if gold<1000 then
+if ATTR_REJECT_LOG[id]<12 then
+set ATTR_REJECT_LOG[id]=ATTR_REJECT_LOG[id]+1
+call XOMG_LogEvent("ATTR_REJECT pid="+I2S(id)+" reason=poor gold="+I2S(gold)+" ver="+XOMG_VERSION)
+endif
+call X37(p,"金币不足，需要1000金币")
+set p=null
+set hero=null
+return
+endif
+// synchronous single roll 1..100; no PRD/imbaMult/IMBA_POWER, not re-amplified
+set roll=GetRandomInt(1,100)
+if roll<=10 then
+set gain=20
+set jackpot=true
+else
+set gain=1+(roll-11)/9
+endif
+// charge 1000, then permanent +gain on three stats from BASE(false) values on the same synchronous path
+call SetPlayerState(p,PLAYER_STATE_RESOURCE_GOLD,gold-1000)
+set strBase=GetHeroStr(hero,false)
+set agiBase=GetHeroAgi(hero,false)
+set intBase=GetHeroInt(hero,false)
+call SetHeroStr(hero,strBase+gain,true)
+call SetHeroAgi(hero,agiBase+gain,true)
+call SetHeroInt(hero,intBase+gain,true)
+set ATTR_ROLL_TOTAL[id]=ATTR_ROLL_TOTAL[id]+gain
+if ATTR_OK_LOG[id]<12 then
+set ATTR_OK_LOG[id]=ATTR_OK_LOG[id]+1
+call XOMG_LogEvent("ATTR_ROLL pid="+I2S(id)+" cost=1000 roll="+I2S(roll)+" gain="+I2S(gain)+" jackpot="+I2S(B287_BoolToInt(jackpot))+" total="+I2S(ATTR_ROLL_TOTAL[id])+" gold_after="+I2S(gold-1000)+" ver="+XOMG_VERSION)
+endif
+call DisplayTimedTextToPlayer(p,0,0,6.,"|cFF00FF00双杰抽属性：本次+"+I2S(gain)+"全属性（累计+"+I2S(ATTR_ROLL_TOTAL[id])+"）|r")
+// jackpot visual only after charge and all three stat increases completed; reuse YW7 with the same
+// parameters as 父爱如山 (5s lifespan, size .03, yellow), auto-cleanup, no leak; non-jackpot silent.
+if jackpot then
+call YW7("恭喜发财",5,hero,.03,$FF,$FF,0,$FF)
+endif
+set p=null
+set hero=null
+endfunction
+// retained spell-cast wrapper for symmetry; dialog row calls ATTR_Core directly
+function ATTR_ROLL takes nothing returns nothing
+call ATTR_Core(GetPlayerId(GetOwningPlayer(GetTriggerUnit())))
 endfunction
 function TpSlot_GetTravelLevel takes unit hero returns integer
 local integer slot=0
@@ -181275,6 +181400,7 @@ call SaveStr(ZCS,0,'A4DG',"MNCF_PD") //大吹风
 call SaveStr(ZCS,0,'A0O6',"EI8")
 call SaveStr(ZCS,0,'A3FA',"YJGM_SPELL")
 call SaveStr(ZCS,0,'A4DK',"CHOUJIANG")
+// v1.3 ATTR_ROLL intentionally unbound: no verified spare rawcode; do not bind draftable 心炎(Y0AV).
 call SaveStr(ZCS,0,'A4DN',"fj_trigger")
 call SaveStr(ZCS,0,'A4pg',"JINGHUA_PD")
 call SaveStr(ZCS,0,'A4DT',"JINGHUA_PD")
@@ -236854,9 +236980,14 @@ call B898QuitLocal()
 endif
 call DialogClear(B836ArcDialog[arcPid])
 set B1031ArchiveButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"当前英雄熟练度 / 修炼境界",0)
+// v1.3: no-archive welfare at the old 双圣 position, attribute directly below; NOT gated by ticket/archive/双圣.
+set B836WelfareButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"凯哥发福利：每局一次领1-1000金币（无存档）",0)
+set B836AttrButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"双杰抽属性：1000金币抽全属性，无限次（10%+20大奖）",0)
 set B836ArcQueryButton[arcPid]=null
 set B836ArcExchangeButton[arcPid]=null
 set B836ArcDrawButton[arcPid]=null
+set B836WelfareButton[arcPid]=null
+set B836AttrButton[arcPid]=null
 set B836ArcBookButton[arcPid]=null
 set B836ArcClawButton[arcPid]=null
 set B891ArcMiaoButton[arcPid]=null
@@ -236903,9 +237034,7 @@ endif
 if not B892MiaoPermanent[arcPid] then
 set B891ArcMiaoBuyButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"5硬币兑换1天喵刀权限（立即扣币）",0)
 endif
-if B836ArcTicket[arcPid] and B836ArcStamp[arcPid]!=B836ArcEpoch[arcPid] then
-set B836ArcDrawButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"双圣抽奖（本局一次）",0)
-endif
+// v1.3: old ticket-gated 双圣抽奖(op3) row removed; replaced by unconditional 凯哥发福利/双杰抽属性 above.
 endif
 if B836ArcBook[arcPid]>B836ArcNow(arcPid) then
 if B836ArcBookClaimed[arcPid] then
@@ -238610,8 +238739,10 @@ elseif arcClicked==B836ArcQueryButton[arcPid] then
 call X37(Player(arcPid),B836ArcBalanceText(arcPid))
 elseif arcClicked==B836ArcExchangeButton[arcPid] then
 call B836ArcTrade(arcPid,2)
-elseif arcClicked==B836ArcDrawButton[arcPid] then
-call B836ArcTrade(arcPid,3)
+elseif arcClicked==B836WelfareButton[arcPid] then
+call WELFARE_Claim(arcPid)
+elseif arcClicked==B836AttrButton[arcPid] then
+call ATTR_Core(arcPid)
 elseif arcClicked==B891ArcMiaoBuyButton[arcPid] then
 call B836ArcTrade(arcPid,4)
 elseif arcClicked==B901QuitBuyButton[arcPid] then
@@ -249675,7 +249806,7 @@ call B946DetectInit()
 call B957Init()
 endfunction
 function config takes nothing returns nothing
-call SetMapName("OMG IMBA v1.2 掉落修复")
+call SetMapName("OMG IMBA v1.3 福利抽属性")
 call SetMapDescription("随机技能，强化AI，极限对抗。\n作者：小生我怕怕\n按F9查看地图信息。")
 call SetPlayers($A)
 call SetTeams($A)

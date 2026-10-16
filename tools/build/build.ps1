@@ -101,7 +101,13 @@ foreach ($entry in $sourceEntries) {
 
 Copy-Item -LiteralPath $asciiMap -Destination $output -Force
 Wait-FileStable $output 30
-& (Join-Path $root 'tools\build\verify.ps1') -MapPath $output
-if ($LASTEXITCODE -ne 0) { throw "地图回读验证失败" }
+# MPQEditor 句柄释放存在短暂延迟，回读验证带重试吸收锁竞争
+$verifyOk = $false
+for ($attempt = 1; $attempt -le 3 -and -not $verifyOk; $attempt++) {
+    Start-Sleep -Seconds 3
+    & (Join-Path $root 'tools\build\verify.ps1') -MapPath $output
+    if ($LASTEXITCODE -eq 0) { $verifyOk = $true }
+}
+if (-not $verifyOk) { throw "地图回读验证失败（3次重试后仍失败）" }
 
 Write-Output "构建完成: $output"

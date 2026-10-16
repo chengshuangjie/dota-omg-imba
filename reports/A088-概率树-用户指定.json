@@ -1,0 +1,14 @@
+{
+  "skill": "A088",
+  "rule": "probability = original x2 cap100 (final percent hardcoded); cast count r stays raw 2/3/4, scepter 5; no count multiplication; high-cast branch first (PRD elseif chain)",
+  "tree": [
+    {"level": 1, "scepter": false, "branches": [{"prdKey": "A088+2", "percent": 80, "casts": 2}]},
+    {"level": 1, "scepter": true, "branches": [{"prdKey": "A088+5", "percent": 10, "casts": 5}, {"prdKey": "A088+2", "percent": 100, "casts": 2}]},
+    {"level": 2, "scepter": false, "branches": [{"prdKey": "A088+3", "percent": 50, "casts": 3}, {"prdKey": "A088+2", "percent": 100, "casts": 2}]},
+    {"level": 2, "scepter": true, "branches": [{"prdKey": "A088+5", "percent": 10, "casts": 5}, {"prdKey": "A088+3", "percent": 60, "casts": 3}, {"prdKey": "A088+2", "percent": 100, "casts": 2}]},
+    {"level": 3, "scepter": false, "branches": [{"prdKey": "A088+4", "percent": 30, "casts": 4}, {"prdKey": "A088+3", "percent": 60, "casts": 3}, {"prdKey": "A088+2", "percent": 100, "casts": 2}]},
+    {"level": 3, "scepter": true, "branches": [{"prdKey": "A088+5", "percent": 10, "casts": 5}, {"prdKey": "A088+4", "percent": 40, "casts": 4}, {"prdKey": "A088+3", "percent": 80, "casts": 3}, {"prdKey": "A088+2", "percent": 100, "casts": 2}]}
+  ],
+  "rSet": [0, 2, 3, 4, 5],
+  "forbidden": ["r=IMinBJ(2*imbaMult,6)", "r=IMinBJ(3*imbaMult,6)", "r=IMinBJ(4*imbaMult,6)", "r=IMinBJ(5*imbaMult,6)", "r=...*IMBA_POWER", "r=6"]
+}

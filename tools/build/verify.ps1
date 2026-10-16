@@ -1,4 +1,4 @@
-param(
+﻿param(
     [Parameter(Mandatory=$false)]
     [string]$MapPath
 )
@@ -33,20 +33,25 @@ foreach ($check in $checks) {
     $local = Join-Path $verifyDir $relativeLocal
     $localParent = Split-Path -Parent $local
     [IO.Directory]::CreateDirectory($localParent) | Out-Null
-    & $config.mpqEditor extract $MapPath $check.Archive $verifyDir /fp
-    $extractExit = $LASTEXITCODE
-    $lastLength = -1L
-    $stable = 0
-    for ($wait = 0; $wait -lt 40; $wait++) {
-        if (Test-Path -LiteralPath $local -PathType Leaf) {
-            $currentLength = (Get-Item -LiteralPath $local).Length
-            if ($currentLength -gt 0 -and $currentLength -eq $lastLength) { $stable++ } else { $stable = 0 }
-            $lastLength = $currentLength
-            if ($stable -ge 2) { break }
+    $extractExit = 0
+    $extracted = $false
+    for ($try = 1; $try -le 5 -and -not $extracted; $try++) {
+        & $config.mpqEditor extract $MapPath $check.Archive $verifyDir /fp
+        $extractExit = $LASTEXITCODE
+        $lastLength = -1L
+        $stable = 0
+        for ($wait = 0; $wait -lt 150; $wait++) {
+            if (Test-Path -LiteralPath $local -PathType Leaf) {
+                $currentLength = (Get-Item -LiteralPath $local).Length
+                if ($currentLength -gt 0 -and $currentLength -eq $lastLength) { $stable++ } else { $stable = 0 }
+                $lastLength = $currentLength
+                if ($stable -ge 4) { $extracted = $true; break }
+            }
+            Start-Sleep -Milliseconds 150
         }
-        Start-Sleep -Milliseconds 100
+        if (-not $extracted) { Start-Sleep -Seconds 3 }
     }
-    if ($extractExit -ne 0 -or -not (Test-Path -LiteralPath $local -PathType Leaf)) {
+    if (-not $extracted) {
         throw "无法从地图回读: $($check.Archive)"
     }
     $actual = (Get-FileHash -LiteralPath $local -Algorithm SHA256).Hash.ToLowerInvariant()
@@ -65,9 +70,56 @@ $runtimeMultTwo = ([regex]::Matches($scriptText, '(?m)^integer imbaMult=2$')).Co
 $runtimeMultReset = ([regex]::Matches($scriptText, '(?m)^set imbaMult=1$')).Count
 $lotteryFloor = ([regex]::Matches($scriptText, 'GetRandomInt\(1000,1500\)')).Count
 $oldLotteryLowGold = ([regex]::Matches($scriptText, 'GetRandomInt\(50,80\)')).Count
-$versionName = ([regex]::Matches($scriptText, 'constant string XOMG_VERSION="v1\.2-dropfix"')).Count
+$versionName = ([regex]::Matches($scriptText, 'constant string XOMG_VERSION="v1\.3-fuwu"')).Count
+$versionLegacyName = ([regex]::Matches($scriptText, 'constant string XOMG_VERSION="v1\.2-dropfix"')).Count
 $lotteryRuntimeGate = ([regex]::Matches($scriptText, 'CHOUJIANGSTATE\[rJ\]==1 and XOMG_IMBA_ENABLED')).Count
 $legacyLotteryGate = ([regex]::Matches($scriptText, 'CHOUJIANGSTATE\[rJ\]==1 and XM_MODE')).Count
+# v1.3 welfare button (凯哥发福利)
+$welfareRoll = ([regex]::Matches($scriptText, 'set roll=GetRandomInt\(1,1000\)')).Count
+$welfareClaimMark = ([regex]::Matches($scriptText, 'set LOTTERY_CLAIMED\[id\]=true')).Count
+$welfareRepeatHint = ([regex]::Matches($scriptText, '本局福利已领取')).Count
+$welfareOpenLog = ([regex]::Matches($scriptText, 'LOTTERY_OPEN pid=')).Count
+$welfareOkLog = ([regex]::Matches($scriptText, 'LOTTERY_OK pid=')).Count
+$welfareRepeatLog = ([regex]::Matches($scriptText, 'LOTTERY_REPEAT pid=')).Count
+$welfareNoPoolCall = ([regex]::Matches($scriptText, 'B1063BuildLotteryPool\(\)')).Count
+$poolDefinitionRetained = ([regex]::Matches($scriptText, 'function B1063BuildLotteryPool takes')).Count
+$archiveWrites = ([regex]::Matches($scriptText, 'SaveServerValue')).Count
+# v1.3 attribute button (双杰抽属性)
+$attrRoll = ([regex]::Matches($scriptText, 'set roll=GetRandomInt\(1,100\)')).Count
+$attrJackpotCond = ([regex]::Matches($scriptText, 'if roll<=10 then')).Count
+$attrJackpotGain = ([regex]::Matches($scriptText, 'set gain=20')).Count
+$attrNormalGain = ([regex]::Matches($scriptText, 'set gain=1\+\(roll-11\)/9')).Count
+$attrCharge = ([regex]::Matches($scriptText, 'SetPlayerState\(p,PLAYER_STATE_RESOURCE_GOLD,gold-1000\)')).Count
+$attrInsufficient = ([regex]::Matches($scriptText, '金币不足，需要1000金币')).Count
+$attrStr = ([regex]::Matches($scriptText, 'SetHeroStr\(hero,strBase\+gain,true\)')).Count
+$attrAgi = ([regex]::Matches($scriptText, 'SetHeroAgi\(hero,agiBase\+gain,true\)')).Count
+$attrInt = ([regex]::Matches($scriptText, 'SetHeroInt\(hero,intBase\+gain,true\)')).Count
+$attrRollLog = ([regex]::Matches($scriptText, 'ATTR_ROLL pid=')).Count
+$attrRejectLog = ([regex]::Matches($scriptText, 'ATTR_REJECT pid=')).Count
+$attrJackpotVisual = ([regex]::Matches($scriptText, 'YW7\("恭喜发财"')).Count
+# v1.3 A088 probability-tree EUD bans and literals
+$a088ForbiddenCountMul = ([regex]::Matches($scriptText, 'set r=IMinBJ\(')).Count
+$a088SetSix = ([regex]::Matches($scriptText, 'set r=6')).Count
+$a088PrdScepter = ([regex]::Matches($scriptText, "GetPrdRandom\(ZX7,'A088'\+5,10\)")).Count
+$a088PrdL1NoScepter = ([regex]::Matches($scriptText, "GetPrdRandom\(ZX7,'A088'\+2,80\)")).Count
+$a088PrdL2NoScepter = ([regex]::Matches($scriptText, "GetPrdRandom\(ZX7,'A088'\+3,50\)")).Count
+$a088PrdL2Scepter3 = ([regex]::Matches($scriptText, "GetPrdRandom\(ZX7,'A088'\+3,60\)")).Count
+$a088PrdL3NoScepter4 = ([regex]::Matches($scriptText, "GetPrdRandom\(ZX7,'A088'\+4,30\)")).Count
+$a088PrdL3Scepter4 = ([regex]::Matches($scriptText, "GetPrdRandom\(ZX7,'A088'\+4,40\)")).Count
+$a088PrdL3Scepter3 = ([regex]::Matches($scriptText, "GetPrdRandom\(ZX7,'A088'\+3,80\)")).Count
+$a088R5 = ([regex]::Matches($scriptText, '(?m)^[ \t]*set r=5$')).Count
+$a088R4 = ([regex]::Matches($scriptText, '(?m)^[ \t]*set r=4$')).Count
+$a088R3 = ([regex]::Matches($scriptText, '(?m)^[ \t]*set r=3$')).Count
+$a088R2 = ([regex]::Matches($scriptText, '(?m)^[ \t]*set r=2$')).Count
+# exhaustive distribution over roll=1..100 (deterministic, no RNG): jackpot=10, gain 1..10 each=9
+$distJackpot = 0
+$distNormal = @{}
+for ($roll = 1; $roll -le 100; $roll++) {
+    if ($roll -le 10) { $distJackpot++ }
+    else { $g = [int](1 + [math]::Floor(($roll - 11) / 9)); $distNormal[$g] = [int]$distNormal[$g] + 1 }
+}
+$distOk = ($distJackpot -eq 10)
+foreach ($g in 1..10) { $distOk = $distOk -and ([int]$distNormal[$g] -eq 9) }
 $dropCheapUsesFinishedItems = ([regex]::Matches($scriptText, 'B1063CheapPool\[B1063CheapCount\]=ZU\[i\]')).Count
 $dropLotteryUsesFinishedItems = ([regex]::Matches($scriptText, 'B1063LotteryPool\[B1063LotteryCount\]=ZU\[i\]')).Count
 $dropChanceFixedTen = ([regex]::Matches($scriptText, 'set roll=GetRandomInt\(1,10\)')).Count
@@ -94,6 +146,30 @@ $fissureResearchActual = ([regex]::Matches($abilityText, $fissureResearchPattern
 $fissureUberActual = ([regex]::Matches($abilityText, $fissureUberPattern)).Count
 $fissureUiDistance = ([regex]::Matches($abilityText, $fissureUiDistancePattern)).Count
 $fissureUiDuration = ([regex]::Matches($abilityText, $fissureUiDurationPattern)).Count
+# v1.3 button UI names: A4DK ability block (circle backup) + archive-dialog row literals
+$welfareName = ([regex]::Matches($abilityText, '(?m)^Name=凯哥发福利$')).Count
+$oldLotteryName = ([regex]::Matches($abilityText, '(?m)^Name=抽奖$')).Count
+# dialog rows (archive shop nAS6), unconditional, not archive/ticket gated
+$welfareDialogRow = ([regex]::Matches($scriptText, 'DialogAddButton\(B836ArcDialog\[arcPid\],"凯哥发福利：每局一次领1-1000金币（无存档）"')).Count
+$attrDialogRow = ([regex]::Matches($scriptText, 'DialogAddButton\(B836ArcDialog\[arcPid\],"双杰抽属性：1000金币抽全属性')).Count
+$welfareDispatch = ([regex]::Matches($scriptText, 'call WELFARE_Claim\(arcPid\)')).Count
+$attrDispatch = ([regex]::Matches($scriptText, 'call ATTR_Core\(arcPid\)')).Count
+# old archive op3 draw must no longer be invoked from a button
+$op3Call = ([regex]::Matches($scriptText, 'B836ArcTrade\(arcPid,3\)')).Count
+# dev-only -droptest default OFF + cap
+$devDropSwitch = ([regex]::Matches($scriptText, 'constant boolean DEV_DROP_TEST=false')).Count
+$devDropGate = ([regex]::Matches($scriptText, 'if DEV_DROP_TEST and DROP_TEST_USES<3')).Count
+# v1.3 A088 UI tree phrases (raw casts, no inflated four/six)
+$a088UiL1 = ([regex]::Matches($abilityText, '80%概率连续施法两次')).Count
+$a088UiScepter5 = ([regex]::Matches($abilityText, '10%概率连续施法五次')).Count
+$a088UiL2 = ([regex]::Matches($abilityText, '50%概率连续施法三次，否则100%连续施法两次')).Count
+$a088UiL3 = ([regex]::Matches($abilityText, '30%概率连续施法四次，60%概率连续施法三次，否则100%连续施法两次')).Count
+# v1.3 hook actual B67 x2
+$hookL4Normal = ([regex]::Matches($abilityText, '720\(神杖950\)')).Count
+$hookScepter950 = ([regex]::Matches($abilityText, '950')).Count
+# v1.3 attribute distribution text (F9/chat/dialog, scriptText)
+$attrUiJackpot = ([regex]::Matches($scriptText, '10%概率全属性\+20')).Count
+$attrUiNormal = ([regex]::Matches($scriptText, '1-10各9%概率全属性\+1至\+10')).Count
 
 $report = [ordered]@{
     map = $MapPath
@@ -131,8 +207,63 @@ $report = [ordered]@{
         fissureUiUberActual = $fissureUberActual
         fissureUiDistanceUnchanged = $fissureUiDistance
         fissureUiDuration = $fissureUiDuration
+        versionLegacyName = $versionLegacyName
+        welfareRoll1_1000 = $welfareRoll
+        welfareClaimMark = $welfareClaimMark
+        welfareRepeatHint = $welfareRepeatHint
+        welfareOpenLog = $welfareOpenLog
+        welfareOkLog = $welfareOkLog
+        welfareRepeatLog = $welfareRepeatLog
+        welfareNoPoolCall = $welfareNoPoolCall
+        poolDefinitionRetained = $poolDefinitionRetained
+        archiveWritesUnchanged = $archiveWrites
+        attrRoll1_100 = $attrRoll
+        attrJackpotCond = $attrJackpotCond
+        attrJackpotGain20 = $attrJackpotGain
+        attrNormalGain = $attrNormalGain
+        attrCharge1000 = $attrCharge
+        attrInsufficientHint = $attrInsufficient
+        attrStrPermanent = $attrStr
+        attrAgiPermanent = $attrAgi
+        attrIntPermanent = $attrInt
+        attrRollLog = $attrRollLog
+        attrRejectLog = $attrRejectLog
+        attrJackpotVisual = $attrJackpotVisual
+        a088ForbiddenCountMul = $a088ForbiddenCountMul
+        a088SetSix = $a088SetSix
+        a088PrdScepter = $a088PrdScepter
+        a088PrdL1NoScepter = $a088PrdL1NoScepter
+        a088PrdL2NoScepter = $a088PrdL2NoScepter
+        a088PrdL2Scepter3 = $a088PrdL2Scepter3
+        a088PrdL3NoScepter4 = $a088PrdL3NoScepter4
+        a088PrdL3Scepter4 = $a088PrdL3Scepter4
+        a088PrdL3Scepter3 = $a088PrdL3Scepter3
+        a088R5 = $a088R5
+        a088R4 = $a088R4
+        a088R3 = $a088R3
+        a088R2 = $a088R2
+        welfareName = $welfareName
+        oldLotteryName = $oldLotteryName
+        welfareDialogRow = $welfareDialogRow
+        attrDialogRow = $attrDialogRow
+        welfareDispatch = $welfareDispatch
+        attrDispatch = $attrDispatch
+        op3CallRemoved = $op3Call
+        devDropSwitchOff = $devDropSwitch
+        devDropGate = $devDropGate
+        a088UiL1 = $a088UiL1
+        a088UiScepter5 = $a088UiScepter5
+        a088UiL2 = $a088UiL2
+        a088UiL3 = $a088UiL3
+        hookL4Normal720 = $hookL4Normal
+        hookScepter950 = $hookScepter950
+        attrUiJackpot = $attrUiJackpot
+        attrUiNormal = $attrUiNormal
+        attrDistributionJackpot = $distJackpot
+        attrDistributionNormalEach = ($distNormal.GetEnumerator() | Sort-Object Name | ForEach-Object { "$($_.Key)=$($_.Value)" }) -join ','
+        attrDistributionOk = $distOk
     }
-    passed = (($results | Where-Object { -not $_.match }).Count -eq 0 -and $skinPathCount -eq 0 -and $defenseImplCount -eq 0 -and $wheelImplCount -eq 0 -and $rechargeCount -eq 1 -and $loggerCount -eq 1 -and $runtimeImbaGate -eq 1 -and $runtimeMultTwo -eq 1 -and $runtimeMultReset -eq 0 -and $lotteryFloor -eq 1 -and $oldLotteryLowGold -eq 0 -and $versionName -eq 1 -and $lotteryRuntimeGate -eq 1 -and $legacyLotteryGate -eq 0 -and $dropCheapUsesFinishedItems -eq 1 -and $dropLotteryUsesFinishedItems -eq 1 -and $dropChanceFixedTen -eq 1 -and $dropPriceCap -eq 1 -and $dropMissingCreepsCovered -eq 1 -and $dropInitLog -eq 1 -and $dropRollLog -eq 1 -and $dropSuccessLog -eq 1 -and $dropTestCommand -eq 1 -and $fissureDuration -eq 1 -and $fissureStunScale -eq 1 -and $heroTipNewCount -eq 11 -and $heroTipLegacyCount -eq 0 -and $fissureResearchActual -ge 1 -and $fissureUberActual -ge 1 -and $fissureUiDistance -ge 2 -and $fissureUiDuration -ge 2)
+    passed = (($results | Where-Object { -not $_.match }).Count -eq 0 -and $skinPathCount -eq 0 -and $defenseImplCount -eq 0 -and $wheelImplCount -eq 0 -and $rechargeCount -eq 1 -and $loggerCount -eq 1 -and $runtimeImbaGate -eq 1 -and $runtimeMultTwo -eq 1 -and $runtimeMultReset -eq 0 -and $lotteryFloor -eq 0 -and $oldLotteryLowGold -eq 0 -and $versionName -eq 1 -and $versionLegacyName -eq 0 -and $lotteryRuntimeGate -eq 0 -and $legacyLotteryGate -eq 0 -and $dropCheapUsesFinishedItems -eq 1 -and $dropLotteryUsesFinishedItems -eq 1 -and $dropChanceFixedTen -eq 1 -and $dropPriceCap -eq 1 -and $dropMissingCreepsCovered -eq 1 -and $dropInitLog -eq 1 -and $dropRollLog -eq 1 -and $dropSuccessLog -eq 1 -and $dropTestCommand -eq 1 -and $fissureDuration -eq 1 -and $fissureStunScale -eq 1 -and $heroTipNewCount -eq 11 -and $heroTipLegacyCount -eq 0 -and $fissureResearchActual -ge 1 -and $fissureUberActual -ge 1 -and $fissureUiDistance -ge 2 -and $fissureUiDuration -ge 2 -and $welfareRoll -eq 1 -and $welfareClaimMark -eq 1 -and $welfareRepeatHint -eq 1 -and $welfareOpenLog -eq 1 -and $welfareOkLog -eq 1 -and $welfareRepeatLog -ge 1 -and $welfareNoPoolCall -eq 1 -and $poolDefinitionRetained -eq 1 -and $archiveWrites -eq 11 -and $attrRoll -eq 1 -and $attrJackpotCond -eq 1 -and $attrJackpotGain -eq 1 -and $attrNormalGain -eq 1 -and $attrCharge -eq 1 -and $attrInsufficient -eq 1 -and $attrStr -eq 1 -and $attrAgi -eq 1 -and $attrInt -eq 1 -and $attrRollLog -eq 1 -and $attrRejectLog -ge 1 -and $attrJackpotVisual -eq 1 -and $a088ForbiddenCountMul -eq 0 -and $a088SetSix -eq 0 -and $a088PrdScepter -eq 3 -and $a088PrdL1NoScepter -eq 1 -and $a088PrdL2NoScepter -eq 1 -and $a088PrdL2Scepter3 -eq 2 -and $a088PrdL3NoScepter4 -eq 1 -and $a088PrdL3Scepter4 -eq 1 -and $a088PrdL3Scepter3 -eq 1 -and $a088R5 -ge 3 -and $a088R4 -eq 2 -and $a088R3 -eq 4 -and $a088R2 -eq 6 -and $welfareName -eq 1 -and $oldLotteryName -eq 0 -and $welfareDialogRow -eq 1 -and $attrDialogRow -eq 1 -and $welfareDispatch -eq 1 -and $attrDispatch -eq 1 -and $op3Call -eq 0 -and $devDropSwitch -eq 1 -and $devDropGate -eq 1 -and $a088UiL1 -ge 2 -and $a088UiScepter5 -ge 3 -and $a088UiL2 -ge 2 -and $a088UiL3 -ge 2 -and $hookL4Normal -ge 1 -and $hookScepter950 -ge 2 -and $attrUiJackpot -ge 1 -and $attrUiNormal -ge 1 -and $distOk)
 }
 
 $reportPath = Join-Path $root 'reports\verification-latest.json'

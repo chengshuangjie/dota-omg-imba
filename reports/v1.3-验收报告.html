@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>DOTA-OMG-IMBA 轻量化 v1.3 验收报告</title>
+<style>
+body{font-family:"Microsoft YaHei",sans-serif;margin:24px;color:#222;background:#f7f7f5;line-height:1.6}
+h1{font-size:22px;border-bottom:2px solid #2c6e49;padding-bottom:8px}
+h2{font-size:17px;margin-top:28px;color:#2c6e49}
+table{border-collapse:collapse;width:100%;background:#fff;margin:10px 0}
+th,td{border:1px solid #ccc;padding:7px 10px;font-size:14px;text-align:left}
+th{background:#eef3ef}
+.ok{color:#1a7f37;font-weight:bold}
+.bad{color:#c0392b;font-weight:bold}
+code{background:#eee;padding:1px 5px;border-radius:3px;font-size:13px}
+.note{background:#fff8e6;border-left:4px solid #e0a800;padding:10px 14px;margin:10px 0}
+</style>
+</head>
+<body>
+<h1>DOTA-OMG-IMBA 轻量化 v1.3 验收报告（基线 4e98173）</h1>
+<p>构建产物：<code>maps/build/DOTA-OMG-IMBA-轻量化-v1.3-fuwu.w3x</code>（47,215,428 B）<br>
+SHA256：<code>a4f90fb45814e7729ebb4725ceab2388230b75e176fc722cb26bba6c8567e98b</code><br>
+包内 10 文件回读哈希全部一致；<span class="ok">verify passed=true</span>；PJASS 仅既有 location_m5。</p>
+
+<h2>1. A088 多重施法唯一确定修复（概率×2 cap100，r 回归原始）</h2>
+<table>
+<tr><th>层级/神杖</th><th>概率树（高重优先 PRD）</th><th>r 集合</th></tr>
+<tr><td>L1 无杖</td><td>80% 二重，否则100%二重</td><td>2</td></tr>
+<tr><td>L1 神杖</td><td>10% 五重 → 否则100%二重</td><td>5 / 2</td></tr>
+<tr><td>L2 无杖</td><td>50% 三重 → 否则100%二重</td><td>3 / 2</td></tr>
+<tr><td>L2 神杖</td><td>10% 五重 → 60% 三重 → 100%二重</td><td>5 / 3 / 2</td></tr>
+<tr><td>L3 无杖</td><td>30% 四重 → 60% 三重 → 100%二重</td><td>4 / 3 / 2</td></tr>
+<tr><td>L3 神杖</td><td>10% 五重 → 40% 四重 → 80% 三重 → 100%二重</td><td>5 / 4 / 3 / 2</td></tr>
+</table>
+<p>已删除 <code>set r=IMinBJ(n*imbaMult,6)</code> 与任何 r×IMBA_POWER；禁止项计数=0；未改重复技能伤害。Y0BV/A9BM/TRMC 副本保持原样。</p>
+
+<h2>2. 凯哥发福利（每局一次 1..1000 当前局金币）</h2>
+<ul>
+<li>同步单骰 <code>GetRandomInt(1,1000)</code>=当前局金币；先标记 <code>LOTTERY_CLAIMED</code> 再加金；不抽装备、不调 B1063LotteryPool、不读写 XOMG1/SaveServerValue。</li>
+<li>入口：存档商店对话框主入口；能量圈 A4DK 为备用入口，共用同一领取状态防重复；重复点击提示「本局福利已领取」。</li>
+<li>日志：LOTTERY_OPEN / LOTTERY_OK / LOTTERY_REPEAT 每 pid 每局限流。</li>
+</ul>
+
+<h2>3. 双杰抽属性（1000 金币/次，无限，当局有效）</h2>
+<p>roll=<code>GetRandomInt(1,100)</code>；先验英雄(M7 活且归属)再验金币≥1000，均不扣费；扣1000后用 <code>GetHeroStr/Agi/Int(hero,false)</code> 基值+gain 再 <code>SetHeroX(...,true)</code> 永久写，避免读含物品临时加成回写膨胀。不调 PRD/imbaMult/IMBA_POWER。</p>
+<table>
+<tr><th>区间</th><th>gain</th><th>占比(穷举1..100)</th></tr>
+<tr><td>roll 1..10（大奖）</td><td>+20 全属性</td><td>10（10%）</td></tr>
+<tr><td>11..19 / 20..28 / … / 92..100</td><td>+1 … +10</td><td>各 9（各9%）</td></tr>
+</table>
+<p>大奖视觉：仅在扣费与三属性增加完成后，复用末日「父爱如山」同参 <code>YW7("恭喜发财",5,hero,.03,$FF,$FF,0,$FF)</code>，5s 自动清理；普通抽取无特效。</p>
+
+<h2>4. 入口边界与存档隔离</h2>
+<p>原 B836 票门「双圣抽奖(op3 存档)」行替换为无条件福利，紧下一行抽属性；新按钮不调用 <code>B836ArcTrade(,3)</code>（op3 调用计数=0）；B836 其余存档交易原样保留；SaveServerValue 计数=11 未新增。</p>
+
+<h2>5. -droptest 权限最小化</h2>
+<p><code>DEV_DROP_TEST=false</code> 默认关，每局限3次；关闭时提示「测试命令已关闭」；B1063DropTest 前向定义保留未删。</p>
+
+<h2>6. 敏感扫描（静态源码）</h2>
+<table>
+<tr><th>项</th><th>计数</th><th>结论</th></tr>
+<tr><td>皮肤 skins\ 路径</td><td>0</td><td class="ok">通过</td></tr>
+<tr><td>防守 KKDefense_ 实现</td><td>0</td><td class="ok">通过</td></tr>
+<tr><td>车轮 B1004 实现</td><td>0</td><td class="ok">通过</td></tr>
+<tr><td>旧 GetRandomInt(1000,1500)</td><td>0</td><td class="ok">通过</td></tr>
+<tr><td>op3 存档抽奖调用</td><td>0</td><td class="ok">通过</td></tr>
+<tr><td>SaveServerValue</td><td>11</td><td class="ok">未新增</td></tr>
+<tr><td>Y0AV/心炎 绑定</td><td>0</td><td class="ok">未挪用</td></tr>
+</table>
+
+<h2>7. 部署</h2>
+<p>唯一新文件名 <code>DOTA-OMG-IMBA-v1.3-福利抽属性-小生我怕怕.w3x</code>（noskin 目录），未覆盖 v1.1/v1.2；部署副本 SHA256 与构建包一致。</p>
+
+<div class="note">说明：本报告为静态源码 + 包内哈希/断言层面；真实游戏动态（点击、金币到账、属性面板、大奖浮字、对话框顺序）需独立实机验收，不以字符串命中替代运行成功。本地仅提交、未推送，待独立验收后再推。</div>
+</body>
+</html>

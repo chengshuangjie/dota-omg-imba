@@ -42671,7 +42671,6 @@ C;X21;K60.0
 C;X22;K"human"
 C;X24;K"ground"
 C;X25;K0.6
-E
 C;X1;Y9001;K"H0K0"
 C;X5;K1
 C;X7;K1
@@ -42686,3 +42685,5 @@ C;X21;K180.0
 C;X22;K"human"
 C;X24;K"ground"
 C;X25;K3.0
+
+E

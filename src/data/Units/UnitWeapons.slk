@@ -77150,7 +77150,6 @@ C;X57;K"normal"
 C;X58;K"normal"
 C;X59;K"MetalLightChop"
 C;X60;K"AxeMediumChop"
-E
 C;X1;Y9001;K"H0K0"
 C;X2;K600.0
 C;X3;K"hero"
@@ -77184,3 +77183,5 @@ C;X56;K1
 C;X57;K"normal"
 C;X58;K"normal"
 C;X59;K"MetalHeavySlice"
+
+E

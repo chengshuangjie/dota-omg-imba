@@ -1,7 +1,7 @@
 ﻿{
     "map":  "D:\\dota\\DOTA-OMG-IMBA-轻量化\\maps\\build\\DOTA-OMG-IMBA-轻量化-v1.4-K.w3x",
-    "mapBytes":  47452398,
-    "mapSha256":  "1ea7929770b3ff16c928eb4998a4470a2ad776cb35c29e5bce69776ec8b41cc8",
+    "mapBytes":  47452424,
+    "mapSha256":  "1fefb1199c1221eeecf54849568e81912e9cb6060593cb1aa0fa4700f6c9f96b",
     "files":  [
                   {
                       "file":  "war3map.j",
@@ -35,38 +35,38 @@
                   },
                   {
                       "file":  "Units\\UnitAbilities.slk",
-                      "expected":  "baa1e0f5a46cb84c4379e22c4e298b72e4f5425101594bd89fbfaad7626de10d",
-                      "actual":  "baa1e0f5a46cb84c4379e22c4e298b72e4f5425101594bd89fbfaad7626de10d",
+                      "expected":  "c731450a14d6f84797f83f5b45f32db366a877bb996381980963fb68b4d1355d",
+                      "actual":  "c731450a14d6f84797f83f5b45f32db366a877bb996381980963fb68b4d1355d",
                       "match":  true
                   },
                   {
                       "file":  "Units\\UnitBalance.slk",
-                      "expected":  "c392f10cbd80db74a79eb912f946042426c634603b35692e0a5777271f377127",
-                      "actual":  "c392f10cbd80db74a79eb912f946042426c634603b35692e0a5777271f377127",
+                      "expected":  "8315f5da2293745ecea28e61532cd6e93607aaaed880c3da0e072358c3c4331d",
+                      "actual":  "8315f5da2293745ecea28e61532cd6e93607aaaed880c3da0e072358c3c4331d",
                       "match":  true
                   },
                   {
                       "file":  "Units\\UnitData.slk",
-                      "expected":  "ad200f7a8571dba91cd76f3aea3c917b9d8249072f11f438af34b889e82ce6d6",
-                      "actual":  "ad200f7a8571dba91cd76f3aea3c917b9d8249072f11f438af34b889e82ce6d6",
+                      "expected":  "1e4cc56ae868ef911b007b4c9d25262ebf461f0b65960de39ff17997ffabcacd",
+                      "actual":  "1e4cc56ae868ef911b007b4c9d25262ebf461f0b65960de39ff17997ffabcacd",
                       "match":  true
                   },
                   {
                       "file":  "Units\\UnitUI.slk",
-                      "expected":  "94e591b12eeff009f265d8272a15c00c64ee11b008a97969dcbc70f5e1bbab49",
-                      "actual":  "94e591b12eeff009f265d8272a15c00c64ee11b008a97969dcbc70f5e1bbab49",
+                      "expected":  "770782254d6abbefb0a3b31de1571456ad1a62edab2012c01878873e35c92b29",
+                      "actual":  "770782254d6abbefb0a3b31de1571456ad1a62edab2012c01878873e35c92b29",
                       "match":  true
                   },
                   {
                       "file":  "Units\\UnitWeapons.slk",
-                      "expected":  "76f7c3a27f061582d53343a46e74eca5d29c34e68fa6dab198c6b343c1f77279",
-                      "actual":  "76f7c3a27f061582d53343a46e74eca5d29c34e68fa6dab198c6b343c1f77279",
+                      "expected":  "21e7f24462c958358e2287b362b971c86a75678aba008e99ef475e4f7229e56c",
+                      "actual":  "21e7f24462c958358e2287b362b971c86a75678aba008e99ef475e4f7229e56c",
                       "match":  true
                   },
                   {
                       "file":  "Units\\AbilityData.slk",
-                      "expected":  "3320d920d03f69389c197d2c58bb1fef5e8d28aa10b3f7dc4ebd9663f4639526",
-                      "actual":  "3320d920d03f69389c197d2c58bb1fef5e8d28aa10b3f7dc4ebd9663f4639526",
+                      "expected":  "2852597bc3fab1ba5196e0f00170eafe8f7deed15a3d05930fc3ec8ea9be52a2",
+                      "actual":  "2852597bc3fab1ba5196e0f00170eafe8f7deed15a3d05930fc3ec8ea9be52a2",
                       "match":  true
                   }
               ],
@@ -218,6 +218,11 @@
                          "kAbJdSK3CD":  4,
                          "kAbJdSK4CD":  3,
                          "kAbJdSelf":  3,
+                         "b3PosBeforeE":  true,
+                         "kAbJdPassiveZero":  24,
+                         "kAbJdAchl":  2,
+                         "kAbJdNoOwk":  0,
+                         "kAbJdChanZero":  12,
                          "kUnitStr":  1,
                          "kAbilStr":  4,
                          "kImpMdx":  1,

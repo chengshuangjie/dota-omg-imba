@@ -18,9 +18,17 @@ code{background:#eee;padding:1px 5px;border-radius:3px;font-size:13px}
 </head>
 <body>
 <h1>DOTA-OMG-IMBA 轻量化 v1.3 验收报告（基线 4e98173）</h1>
-<p>构建产物：<code>maps/build/DOTA-OMG-IMBA-轻量化-v1.3-fuwu.w3x</code>（47,215,428 B）<br>
-SHA256：<code>a4f90fb45814e7729ebb4725ceab2388230b75e176fc722cb26bba6c8567e98b</code><br>
-包内 10 文件回读哈希全部一致；<span class="ok">verify passed=true</span>；PJASS 仅既有 location_m5。</p>
+<div style="border:3px solid #c0392b;background:#fdecea;color:#7b1f17;padding:14px 18px;margin:14px 0;font-weight:bold;font-size:16px;border-radius:6px">
+⚠ 未完成声明：全英雄约 1357 个 UI 字段（技能/单位）本轮<span style="text-decoration:underline">未逐块重新核对</span>，v1.3 仅同步本轮审计改动块（A088 / 肉钩720·950 / 两个新按钮 / F9·公告 / 版本）。<br>
+本报告<span style="text-decoration:underline">不宣称 v1.3 已完成全量 UI 同步</span>；其余字段沿用 v1.1 基线，16 项 update-needed 已列入待办（见第 8 节），不在本轮擅自改动玩法。
+</div>
+<p>构建产物：<code>maps/build/DOTA-OMG-IMBA-轻量化-v1.3-fix.w3x</code>（47,215,438 B，按钮句柄 blocker 修复版）<br>
+SHA256：<code>c1a36b6fad1afaa7c4effe2672469238c49b5a1e0e3dd3de313f8f8388503788</code><br>
+包内 10 文件回读哈希全部一致；<span class="ok">verify passed=true</span>；PJASS 仅既有 location_m5。<br>
+旧候选 <code>v1.3-fuwu.w3x</code> 保留在 build 目录未部署，避免混淆。</p>
+
+<h2>0. Blocker 修复：B836 对话框按钮句柄生命周期（验收唯一阻塞项）</h2>
+<p>原实现中 <code>B836WelfareButton/B836AttrButton</code> 在 <code>DialogAddButton</code> 创建后又被 <code>set null</code>，导致 <code>B836ArcDialogClick</code> 句柄比较恒 false、按钮不可达。修复：把<b>全部旧按钮句柄的 null 清扫移到 <code>DialogClear</code> 及所有 <code>DialogAddButton</code> 之前</b>（重开前清旧，防止旧句柄误分派），删除创建后的两行 null；其余句柄条件重建逻辑与其他存档交易原样保留。verify 新增断言：每按钮创建前清1次、创建后无 null、Click 各有唯一等号分支且 WELFARE_Claim/ATTR_Core 可达（welfarePreNull=1/attrPreNull=1/nullAfter=0/0/clickBranch=1/1）。</p>
 
 <h2>1. A088 多重施法唯一确定修复（概率×2 cap100，r 回归原始）</h2>
 <table>
@@ -69,7 +77,18 @@ SHA256：<code>a4f90fb45814e7729ebb4725ceab2388230b75e176fc722cb26bba6c8567e98b<
 </table>
 
 <h2>7. 部署</h2>
-<p>唯一新文件名 <code>DOTA-OMG-IMBA-v1.3-福利抽属性-小生我怕怕.w3x</code>（noskin 目录），未覆盖 v1.1/v1.2；部署副本 SHA256 与构建包一致。</p>
+<p>唯一部署文件 <code>DOTA-OMG-IMBA-v1.3-fix-福利抽属性按钮修复-小生我怕怕.w3x</code>（noskin 目录），SHA256 <code>c1a36b6f…03788</code> 与构建包一致；旧坏候选已从部署目录移除，未覆盖 v1.1/v1.2 历史文件。</p>
+
+<h2>8. 独立 UI 覆盖清单（三态 confirmed / update-needed / unknown，不机械重刷）</h2>
+<p>依据权威「UI需同步英雄技能rawcode清单」56 行骨架 + v1.3 本轮改动块，结合 v1.1 基线 1357 字段与 532 条实际倍率映射交叉判定，详见 <code>v1.3-UI覆盖清单.csv</code>。</p>
+<table>
+<tr><th>范围</th><th>confirmed</th><th>update-needed</th><th>unknown</th><th>合计</th></tr>
+<tr><td>本轮改动块（10项，本轮已核对）</td><td>10</td><td>0</td><td>0</td><td>10</td></tr>
+<tr><td>权威56行骨架（交叉基线/532映射）</td><td>39</td><td>16</td><td>1</td><td>56</td></tr>
+<tr><td>覆盖清单总计</td><td>49</td><td>16</td><td>1</td><td>66</td></tr>
+</table>
+<p><b>未逐块重刷的宇宙规模（不代表已核对）：</b>01 技能字段全量 6,656 个 rawcode、04 单位字符串 3,423 个 rawcode；v1.1 基线已同步 1,357 字段（覆盖 894 rawcode）；532 实际映射（去重 227 rawcode）。本轮未对全量字段逐条重算，仅对骨架三态归类。</p>
+<p><b>update-needed 待办（532有映射但v1.1基线未覆盖，本轮不改、仅登记）：</b>A0WR、A263、A264、A2QG、A4HE（概率PRD）；A4FF、A096、A09R、A33H、A4HS、A6L1、A6L2、A0NS、A2VW、B0GS、A1GU（时长/沉默/缴械/锁定窗口）；<b>unknown：</b>Miao_Lock（锁定时长，无映射无基线）。</p>
 
 <div class="note">说明：本报告为静态源码 + 包内哈希/断言层面；真实游戏动态（点击、金币到账、属性面板、大奖浮字、对话框顺序）需独立实机验收，不以字符串命中替代运行成功。本地仅提交、未推送，待独立验收后再推。</div>
 </body>

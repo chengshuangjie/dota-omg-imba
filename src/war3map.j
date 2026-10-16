@@ -236978,21 +236978,23 @@ if B836ArcLoaded[arcPid] and not B901QuitReady[arcPid] then
 call B898QuitBegin()
 call B898QuitLocal()
 endif
-call DialogClear(B836ArcDialog[arcPid])
-set B1031ArchiveButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"当前英雄熟练度 / 修炼境界",0)
-// v1.3: no-archive welfare at the old 双圣 position, attribute directly below; NOT gated by ticket/archive/双圣.
-set B836WelfareButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"凯哥发福利：每局一次领1-1000金币（无存档）",0)
-set B836AttrButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"双杰抽属性：1000金币抽全属性，无限次（10%+20大奖）",0)
+// v1.3: clear ALL old button handles BEFORE DialogClear/add so a stale handle cannot mis-dispatch on reopen.
+set B1031ArchiveButton[arcPid]=null
+set B836WelfareButton[arcPid]=null
+set B836AttrButton[arcPid]=null
 set B836ArcQueryButton[arcPid]=null
 set B836ArcExchangeButton[arcPid]=null
 set B836ArcDrawButton[arcPid]=null
-set B836WelfareButton[arcPid]=null
-set B836AttrButton[arcPid]=null
 set B836ArcBookButton[arcPid]=null
 set B836ArcClawButton[arcPid]=null
 set B891ArcMiaoButton[arcPid]=null
 set B891ArcMiaoBuyButton[arcPid]=null
 set B901QuitBuyButton[arcPid]=null
+call DialogClear(B836ArcDialog[arcPid])
+set B1031ArchiveButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"当前英雄熟练度 / 修炼境界",0)
+// v1.3: no-archive welfare at the old 双圣 position, attribute directly below; NOT gated by ticket/archive/双圣.
+set B836WelfareButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"凯哥发福利：每局一次领1-1000金币（无存档）",0)
+set B836AttrButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"双杰抽属性：1000金币抽全属性，无限次（10%+20大奖）",0)
 // Permanent named access must remain usable without the timed archive service.
 if B892MiaoPermanent[arcPid] then
 if B891MiaoWindow() and not B891ArcMiaoReplaced[arcPid] then

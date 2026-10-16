@@ -1,12 +1,12 @@
 ﻿{
-    "map":  "D:\\dota\\DOTA-OMG-IMBA-轻量化\\maps\\build\\DOTA-OMG-IMBA-轻量化-v1.3-fuwu.w3x",
-    "mapBytes":  47215428,
-    "mapSha256":  "a4f90fb45814e7729ebb4725ceab2388230b75e176fc722cb26bba6c8567e98b",
+    "map":  "D:\\dota\\DOTA-OMG-IMBA-轻量化\\maps\\build\\DOTA-OMG-IMBA-轻量化-v1.3-fix.w3x",
+    "mapBytes":  47215438,
+    "mapSha256":  "c1a36b6fad1afaa7c4effe2672469238c49b5a1e0e3dd3de313f8f8388503788",
     "files":  [
                   {
                       "file":  "war3map.j",
-                      "expected":  "a66b86db3023bd1374de1a5f13de4b24d3ebb03140b9083bc615981b3a2d2fd8",
-                      "actual":  "a66b86db3023bd1374de1a5f13de4b24d3ebb03140b9083bc615981b3a2d2fd8",
+                      "expected":  "f744febb5bd7145b83c8f3925c7a3bd2aed0a27e974d93d0299b6253f4583215",
+                      "actual":  "f744febb5bd7145b83c8f3925c7a3bd2aed0a27e974d93d0299b6253f4583215",
                       "match":  true
                   },
                   {
@@ -136,6 +136,12 @@
                          "attrDialogRow":  1,
                          "welfareDispatch":  1,
                          "attrDispatch":  1,
+                         "welfarePreNull":  1,
+                         "attrPreNull":  1,
+                         "welfareNullAfter":  0,
+                         "attrNullAfter":  0,
+                         "welfareClickBranch":  1,
+                         "attrClickBranch":  1,
                          "op3CallRemoved":  0,
                          "devDropSwitchOff":  1,
                          "devDropGate":  1,

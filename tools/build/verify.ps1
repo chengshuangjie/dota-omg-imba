@@ -154,6 +154,18 @@ $welfareDialogRow = ([regex]::Matches($scriptText, 'DialogAddButton\(B836ArcDial
 $attrDialogRow = ([regex]::Matches($scriptText, 'DialogAddButton\(B836ArcDialog\[arcPid\],"双杰抽属性：1000金币抽全属性')).Count
 $welfareDispatch = ([regex]::Matches($scriptText, 'call WELFARE_Claim\(arcPid\)')).Count
 $attrDispatch = ([regex]::Matches($scriptText, 'call ATTR_Core\(arcPid\)')).Count
+# v1.3 blocker fix: B836ArcOpen handle lifecycle. Last assignment before return must be DialogAddButton;
+# no set-null AFTER creation; exactly one stale clear BEFORE add; click has a unique equality branch.
+$openMatch = [regex]::Match($scriptText, '(?s)function B836ArcOpen takes integer arcPid returns nothing(.*?)endfunction')
+$openBody = $openMatch.Groups[1].Value
+$welfareAddIdx = [regex]::Match($openBody, 'set B836WelfareButton\[arcPid\]=DialogAddButton').Index
+$attrAddIdx = [regex]::Match($openBody, 'set B836AttrButton\[arcPid\]=DialogAddButton').Index
+$welfarePreNull = ([regex]::Matches($openBody.Substring(0,[Math]::Max(0,$welfareAddIdx)), 'set B836WelfareButton\[arcPid\]=null')).Count
+$attrPreNull = ([regex]::Matches($openBody.Substring(0,[Math]::Max(0,$attrAddIdx)), 'set B836AttrButton\[arcPid\]=null')).Count
+$welfareNullAfter = ([regex]::Matches($openBody.Substring($welfareAddIdx), 'set B836WelfareButton\[arcPid\]=null')).Count
+$attrNullAfter = ([regex]::Matches($openBody.Substring($attrAddIdx), 'set B836AttrButton\[arcPid\]=null')).Count
+$welfareClickBranch = ([regex]::Matches($scriptText, 'arcClicked==B836WelfareButton\[arcPid\]')).Count
+$attrClickBranch = ([regex]::Matches($scriptText, 'arcClicked==B836AttrButton\[arcPid\]')).Count
 # old archive op3 draw must no longer be invoked from a button
 $op3Call = ([regex]::Matches($scriptText, 'B836ArcTrade\(arcPid,3\)')).Count
 # dev-only -droptest default OFF + cap
@@ -248,6 +260,12 @@ $report = [ordered]@{
         attrDialogRow = $attrDialogRow
         welfareDispatch = $welfareDispatch
         attrDispatch = $attrDispatch
+        welfarePreNull = $welfarePreNull
+        attrPreNull = $attrPreNull
+        welfareNullAfter = $welfareNullAfter
+        attrNullAfter = $attrNullAfter
+        welfareClickBranch = $welfareClickBranch
+        attrClickBranch = $attrClickBranch
         op3CallRemoved = $op3Call
         devDropSwitchOff = $devDropSwitch
         devDropGate = $devDropGate
@@ -263,7 +281,7 @@ $report = [ordered]@{
         attrDistributionNormalEach = ($distNormal.GetEnumerator() | Sort-Object Name | ForEach-Object { "$($_.Key)=$($_.Value)" }) -join ','
         attrDistributionOk = $distOk
     }
-    passed = (($results | Where-Object { -not $_.match }).Count -eq 0 -and $skinPathCount -eq 0 -and $defenseImplCount -eq 0 -and $wheelImplCount -eq 0 -and $rechargeCount -eq 1 -and $loggerCount -eq 1 -and $runtimeImbaGate -eq 1 -and $runtimeMultTwo -eq 1 -and $runtimeMultReset -eq 0 -and $lotteryFloor -eq 0 -and $oldLotteryLowGold -eq 0 -and $versionName -eq 1 -and $versionLegacyName -eq 0 -and $lotteryRuntimeGate -eq 0 -and $legacyLotteryGate -eq 0 -and $dropCheapUsesFinishedItems -eq 1 -and $dropLotteryUsesFinishedItems -eq 1 -and $dropChanceFixedTen -eq 1 -and $dropPriceCap -eq 1 -and $dropMissingCreepsCovered -eq 1 -and $dropInitLog -eq 1 -and $dropRollLog -eq 1 -and $dropSuccessLog -eq 1 -and $dropTestCommand -eq 1 -and $fissureDuration -eq 1 -and $fissureStunScale -eq 1 -and $heroTipNewCount -eq 11 -and $heroTipLegacyCount -eq 0 -and $fissureResearchActual -ge 1 -and $fissureUberActual -ge 1 -and $fissureUiDistance -ge 2 -and $fissureUiDuration -ge 2 -and $welfareRoll -eq 1 -and $welfareClaimMark -eq 1 -and $welfareRepeatHint -eq 1 -and $welfareOpenLog -eq 1 -and $welfareOkLog -eq 1 -and $welfareRepeatLog -ge 1 -and $welfareNoPoolCall -eq 1 -and $poolDefinitionRetained -eq 1 -and $archiveWrites -eq 11 -and $attrRoll -eq 1 -and $attrJackpotCond -eq 1 -and $attrJackpotGain -eq 1 -and $attrNormalGain -eq 1 -and $attrCharge -eq 1 -and $attrInsufficient -eq 1 -and $attrStr -eq 1 -and $attrAgi -eq 1 -and $attrInt -eq 1 -and $attrRollLog -eq 1 -and $attrRejectLog -ge 1 -and $attrJackpotVisual -eq 1 -and $a088ForbiddenCountMul -eq 0 -and $a088SetSix -eq 0 -and $a088PrdScepter -eq 3 -and $a088PrdL1NoScepter -eq 1 -and $a088PrdL2NoScepter -eq 1 -and $a088PrdL2Scepter3 -eq 2 -and $a088PrdL3NoScepter4 -eq 1 -and $a088PrdL3Scepter4 -eq 1 -and $a088PrdL3Scepter3 -eq 1 -and $a088R5 -ge 3 -and $a088R4 -eq 2 -and $a088R3 -eq 4 -and $a088R2 -eq 6 -and $welfareName -eq 1 -and $oldLotteryName -eq 0 -and $welfareDialogRow -eq 1 -and $attrDialogRow -eq 1 -and $welfareDispatch -eq 1 -and $attrDispatch -eq 1 -and $op3Call -eq 0 -and $devDropSwitch -eq 1 -and $devDropGate -eq 1 -and $a088UiL1 -ge 2 -and $a088UiScepter5 -ge 3 -and $a088UiL2 -ge 2 -and $a088UiL3 -ge 2 -and $hookL4Normal -ge 1 -and $hookScepter950 -ge 2 -and $attrUiJackpot -ge 1 -and $attrUiNormal -ge 1 -and $distOk)
+    passed = (($results | Where-Object { -not $_.match }).Count -eq 0 -and $skinPathCount -eq 0 -and $defenseImplCount -eq 0 -and $wheelImplCount -eq 0 -and $rechargeCount -eq 1 -and $loggerCount -eq 1 -and $runtimeImbaGate -eq 1 -and $runtimeMultTwo -eq 1 -and $runtimeMultReset -eq 0 -and $lotteryFloor -eq 0 -and $oldLotteryLowGold -eq 0 -and $versionName -eq 1 -and $versionLegacyName -eq 0 -and $lotteryRuntimeGate -eq 0 -and $legacyLotteryGate -eq 0 -and $dropCheapUsesFinishedItems -eq 1 -and $dropLotteryUsesFinishedItems -eq 1 -and $dropChanceFixedTen -eq 1 -and $dropPriceCap -eq 1 -and $dropMissingCreepsCovered -eq 1 -and $dropInitLog -eq 1 -and $dropRollLog -eq 1 -and $dropSuccessLog -eq 1 -and $dropTestCommand -eq 1 -and $fissureDuration -eq 1 -and $fissureStunScale -eq 1 -and $heroTipNewCount -eq 11 -and $heroTipLegacyCount -eq 0 -and $fissureResearchActual -ge 1 -and $fissureUberActual -ge 1 -and $fissureUiDistance -ge 2 -and $fissureUiDuration -ge 2 -and $welfareRoll -eq 1 -and $welfareClaimMark -eq 1 -and $welfareRepeatHint -eq 1 -and $welfareOpenLog -eq 1 -and $welfareOkLog -eq 1 -and $welfareRepeatLog -ge 1 -and $welfareNoPoolCall -eq 1 -and $poolDefinitionRetained -eq 1 -and $archiveWrites -eq 11 -and $attrRoll -eq 1 -and $attrJackpotCond -eq 1 -and $attrJackpotGain -eq 1 -and $attrNormalGain -eq 1 -and $attrCharge -eq 1 -and $attrInsufficient -eq 1 -and $attrStr -eq 1 -and $attrAgi -eq 1 -and $attrInt -eq 1 -and $attrRollLog -eq 1 -and $attrRejectLog -ge 1 -and $attrJackpotVisual -eq 1 -and $a088ForbiddenCountMul -eq 0 -and $a088SetSix -eq 0 -and $a088PrdScepter -eq 3 -and $a088PrdL1NoScepter -eq 1 -and $a088PrdL2NoScepter -eq 1 -and $a088PrdL2Scepter3 -eq 2 -and $a088PrdL3NoScepter4 -eq 1 -and $a088PrdL3Scepter4 -eq 1 -and $a088PrdL3Scepter3 -eq 1 -and $a088R5 -ge 3 -and $a088R4 -eq 2 -and $a088R3 -eq 4 -and $a088R2 -eq 6 -and $welfareName -eq 1 -and $oldLotteryName -eq 0 -and $welfareDialogRow -eq 1 -and $attrDialogRow -eq 1 -and $welfareDispatch -eq 1 -and $attrDispatch -eq 1 -and $welfarePreNull -eq 1 -and $attrPreNull -eq 1 -and $welfareNullAfter -eq 0 -and $attrNullAfter -eq 0 -and $welfareClickBranch -eq 1 -and $attrClickBranch -eq 1 -and $op3Call -eq 0 -and $devDropSwitch -eq 1 -and $devDropGate -eq 1 -and $a088UiL1 -ge 2 -and $a088UiScepter5 -ge 3 -and $a088UiL2 -ge 2 -and $a088UiL3 -ge 2 -and $hookL4Normal -ge 1 -and $hookScepter950 -ge 2 -and $attrUiJackpot -ge 1 -and $attrUiNormal -ge 1 -and $distOk)
 }
 
 $reportPath = Join-Path $root 'reports\verification-latest.json'

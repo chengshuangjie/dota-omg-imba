@@ -120,10 +120,20 @@ def ka_passive(code, y):
 
 
 def ka_channel(code, y, cd, levels):
+    # Clone the proven in-map no-target instant stub A0OT (base ANcl, target "_",
+    # dispatched on spell event by GetSpellAbilityId in shipped jass; no native
+    # damage/buff/duration). Keep its structural channel fields, then clear any
+    # native Data/DataB/duration/buff explicitly; mana cost 0; CD/levels per spec.
     rows = [
         'C;X1;Y%d;K"%s"' % (y, code),
-        'C;X2;K"Achl"',
+        'C;X2;K"ANcl"',
         'C;X15;K1',
+        # A0OT structural channel fields (cosmetic, no gameplay effect)
+        'C;X32;K1',
+        'C;X36;K0.98',
+        'C;X73;K1',
+        'C;X74;K5',
+        'C;X75;K1',
     ]
     # CD per level
     for k, v in enumerate(cd):
@@ -131,11 +141,11 @@ def ka_channel(code, y, cd, levels):
     # mana cost 0 for every level
     for k in range(4):
         rows.append('C;X%d;K0' % (20 + k))
-    # native effect/duration/movespeed/buff fields zeroed
-    rows += ['C;X24;K0', 'C;X28;K0', 'C;X32;K0', 'C;X36;K0',
-             'C;X60;K0', 'C;X68;K0']
-    rows += ['C;X72;K%d' % levels, 'C;X75;K1']
-    rows += ['C;X80;K"self"', 'C;X81;K"self"', 'C;X82;K"self"', 'C;X83;K"_"']
+    # native DataA/DataB/duration/buff explicitly zeroed (A0OT carries none)
+    rows += ['C;X24;K0', 'C;X28;K0', 'C;X60;K0', 'C;X68;K0']
+    rows += ['C;X72;K%d' % levels]
+    # no-target (click-cast); script operates on caster
+    rows += ['C;X80;K"_"', 'C;X81;K"_"', 'C;X82;K"_"', 'C;X83;K"_"']
     return rows
 
 
@@ -172,7 +182,7 @@ def rebuild_ability_data():
     block = block[:-1]  # drop trailing blank
     new = keep[:e] + block + [""] + keep[e:]
     write(path, "\n".join(new), ABILITY_ENC, ABILITY_EOL)
-    print("rebuilt KA01..04 (zeroed native / Achl) in AbilityData.slk")
+    print("rebuilt KA01..04 (passive zeroed; KA03/04 clone A0OT ANcl no-target, native zeroed) in AbilityData.slk")
 
 
 def main():

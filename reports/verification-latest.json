@@ -1,7 +1,7 @@
 ﻿{
     "map":  "D:\\dota\\DOTA-OMG-IMBA-轻量化\\maps\\build\\DOTA-OMG-IMBA-轻量化-v1.4-K.w3x",
-    "mapBytes":  47452424,
-    "mapSha256":  "1fefb1199c1221eeecf54849568e81912e9cb6060593cb1aa0fa4700f6c9f96b",
+    "mapBytes":  47452432,
+    "mapSha256":  "98678f04e82217badae6100d91ba70eb0237535f61a39fb444f5638bc51803cb",
     "files":  [
                   {
                       "file":  "war3map.j",
@@ -65,8 +65,8 @@
                   },
                   {
                       "file":  "Units\\AbilityData.slk",
-                      "expected":  "2852597bc3fab1ba5196e0f00170eafe8f7deed15a3d05930fc3ec8ea9be52a2",
-                      "actual":  "2852597bc3fab1ba5196e0f00170eafe8f7deed15a3d05930fc3ec8ea9be52a2",
+                      "expected":  "d476ea132b9e7d563774d001488e4778135c717ef75c76eaffe590d1029f362a",
+                      "actual":  "d476ea132b9e7d563774d001488e4778135c717ef75c76eaffe590d1029f362a",
                       "match":  true
                   }
               ],
@@ -217,12 +217,15 @@
                          "kAbJdSK4Lvl":  1,
                          "kAbJdSK3CD":  4,
                          "kAbJdSK4CD":  3,
-                         "kAbJdSelf":  3,
                          "b3PosBeforeE":  true,
                          "kAbJdPassiveZero":  24,
-                         "kAbJdAchl":  2,
+                         "kAbJdAncl":  2,
                          "kAbJdNoOwk":  0,
-                         "kAbJdChanZero":  12,
+                         "kAbJdNoAchl":  0,
+                         "kAbJdChanZero":  8,
+                         "kAbJdNoTarget":  6,
+                         "kTplA0OTRow":  1,
+                         "kTplA0OTJass":  1,
                          "kUnitStr":  1,
                          "kAbilStr":  4,
                          "kImpMdx":  1,

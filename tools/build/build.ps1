@@ -51,6 +51,22 @@ if (-not (Test-Path -LiteralPath $baseline -PathType Leaf)) { throw "缺少基�
 if (-not (Test-Path -LiteralPath $src -PathType Leaf)) { throw "缺少主源码: $src" }
 if (-not (Test-Path -LiteralPath $config.mpqEditor -PathType Leaf)) { throw "缺少 MPQEditor: $($config.mpqEditor)" }
 
+# Warcraft III 1.24 cannot load palette BLP1 resources whose pictureType/encoding is 0.
+# Validate the K texture before touching the output map so an invalid resource can never be packaged again.
+$kTexture = Join-Path $root 'assets\K\K_body.blp'
+if (-not (Test-Path -LiteralPath $kTexture -PathType Leaf)) { throw "缺少 K 贴图: $kTexture" }
+$kBlp = [IO.File]::ReadAllBytes($kTexture)
+if ($kBlp.Length -lt 156 -or [Text.Encoding]::ASCII.GetString($kBlp,0,4) -ne 'BLP1') { throw "K 贴图不是有效 BLP1: $kTexture" }
+$kBlpCompression = [BitConverter]::ToUInt32($kBlp,4)
+$kBlpPictureType = [BitConverter]::ToUInt32($kBlp,20)
+$kBlpWidth = [BitConverter]::ToUInt32($kBlp,12)
+$kBlpHeight = [BitConverter]::ToUInt32($kBlp,16)
+$kBlpOffset0 = [BitConverter]::ToUInt32($kBlp,28)
+$kBlpSize0 = [BitConverter]::ToUInt32($kBlp,92)
+if ($kBlpCompression -ne 1 -or ($kBlpPictureType -ne 4 -and $kBlpPictureType -ne 5) -or $kBlpWidth -eq 0 -or $kBlpHeight -eq 0 -or ([uint64]$kBlpOffset0 + [uint64]$kBlpSize0) -gt [uint64]$kBlp.Length) {
+    throw "K 贴图 BLP1 与 Warcraft III 1.24 不兼容: compression=$kBlpCompression pictureType=$kBlpPictureType size=$($kBlpWidth)x$($kBlpHeight) mip0=$kBlpOffset0+$kBlpSize0 file=$($kBlp.Length)"
+}
+
 [IO.Directory]::CreateDirectory($stageDir) | Out-Null
 [IO.Directory]::CreateDirectory((Split-Path -Parent $output)) | Out-Null
 

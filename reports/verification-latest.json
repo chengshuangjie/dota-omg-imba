@@ -1,18 +1,18 @@
 ﻿{
-    "map":  "D:\\dota\\DOTA-OMG-IMBA-轻量化\\maps\\build\\DOTA-OMG-IMBA-轻量化-v1.4-K.w3x",
-    "mapBytes":  47452432,
-    "mapSha256":  "98678f04e82217badae6100d91ba70eb0237535f61a39fb444f5638bc51803cb",
+    "map":  "D:\\dota\\DOTA-OMG-IMBA-轻量化\\maps\\build\\DOTA-OMG-IMBA-轻量化-v1.4-K-loadfix1.w3x",
+    "mapBytes":  47452445,
+    "mapSha256":  "f20dcd2880547aa40a8fd725ac9407ef0d29861b3fa49d9b77d15eb1fd32863b",
     "files":  [
                   {
                       "file":  "war3map.j",
-                      "expected":  "fdef47062c40d4d567b5f9b5bc10df8103f73cd900e0e617d0e26bf344158529",
-                      "actual":  "fdef47062c40d4d567b5f9b5bc10df8103f73cd900e0e617d0e26bf344158529",
+                      "expected":  "269b4a41e62b8777869616bf7566ef4782be074bec205407b4f1016a81d3da64",
+                      "actual":  "269b4a41e62b8777869616bf7566ef4782be074bec205407b4f1016a81d3da64",
                       "match":  true
                   },
                   {
                       "file":  "war3map.w3i",
-                      "expected":  "ed7c5b370b8bdb3f60867f4c7213775419bdf3364f4972a3141e8e212f53ee88",
-                      "actual":  "ed7c5b370b8bdb3f60867f4c7213775419bdf3364f4972a3141e8e212f53ee88",
+                      "expected":  "bfa60657ac25c06a14d026343b16d6f77fcd5e4cb801be8cda81bd080f301a77",
+                      "actual":  "bfa60657ac25c06a14d026343b16d6f77fcd5e4cb801be8cda81bd080f301a77",
                       "match":  true
                   },
                   {
@@ -232,6 +232,7 @@
                          "kImpBlp":  1,
                          "kMdxMatch":  true,
                          "kBlpMatch":  true,
+                         "kBlpCompatible124":  true,
                          "attrDistributionJackpot":  10,
                          "attrDistributionNormalEach":  "1=9,2=9,3=9,4=9,5=9,6=9,7=9,8=9,9=9,10=9",
                          "attrDistributionOk":  true

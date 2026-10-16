@@ -1,11 +1,13 @@
 param(
-    [switch]$SkipSyntaxCheck
+    [switch]$SkipSyntaxCheck,
+    [string]$ConfigPath = '',
+    [string]$OutputMap = ''
 )
 
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path))
-$configPath = Join-Path $root 'config\tool-paths.json'
-$config = Get-Content -LiteralPath $configPath -Raw -Encoding UTF8 | ConvertFrom-Json
+if (-not $ConfigPath) { $ConfigPath = Join-Path $root 'config\tool-paths.json' }
+$config = Get-Content -LiteralPath $ConfigPath -Raw -Encoding UTF8 | ConvertFrom-Json
 
 function Resolve-ProjectPath([string]$value) {
     if ([IO.Path]::IsPathRooted($value)) { return $value }
@@ -36,7 +38,7 @@ function Invoke-MpqAdd([string]$mapPath, [string]$sourcePath, [string]$archivePa
 }
 
 $baseline = Resolve-ProjectPath $config.baselineMap
-$output = Resolve-ProjectPath $config.outputMap
+$output = if ($OutputMap) { Resolve-ProjectPath $OutputMap } else { Resolve-ProjectPath $config.outputMap }
 $src = Join-Path $root 'src\war3map.j'
 $imp = Join-Path $root 'src\war3map.imp'
 $unitDir = Join-Path $root 'src\data\Units'
@@ -67,7 +69,10 @@ $sourceEntries = @(
     @{ Source = (Join-Path $assetDir 'LoadingScreenTR.blp'); Stage = 'LoadingScreenTR.blp'; Archive = 'LoadingScreenTR.blp' },
     @{ Source = (Join-Path $assetDir 'LoadingScreenBL.blp'); Stage = 'LoadingScreenBL.blp'; Archive = 'LoadingScreenBL.blp' },
     @{ Source = (Join-Path $assetDir 'LoadingScreenBR.blp'); Stage = 'LoadingScreenBR.blp'; Archive = 'LoadingScreenBR.blp' },
-    @{ Source = (Join-Path $assetDir 'war3mapPreview.tga'); Stage = 'war3mapPreview.tga'; Archive = 'war3mapPreview.tga' }
+    @{ Source = (Join-Path $assetDir 'war3mapPreview.tga'); Stage = 'war3mapPreview.tga'; Archive = 'war3mapPreview.tga' },
+    # v1.4-K hero K custom model + texture (independent; not part of v1.3 baseline)
+    @{ Source = (Join-Path $root 'assets\K\K_final.mdx'); Stage = 'K_final.mdx'; Archive = 'war3mapimported\K\K_final.mdx' },
+    @{ Source = (Join-Path $root 'assets\K\K_body.blp'); Stage = 'K_body.blp'; Archive = 'war3mapimported\K\K_body.blp' }
 )
 
 foreach ($entry in $sourceEntries) {

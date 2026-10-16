@@ -66271,3 +66271,57 @@ Art=,
 Name=随机OMG变狼状态
 TargetArt=Abilities\Spells\Orc\CommandAura\CommandAura.mdl
 Targetattach=origin
+
+[KA01]
+Art=ReplaceableTextures\PassiveButtons\PASBTNStatUp.blp
+Buttonpos=1,1
+Name=猎手本能
+Order=attributemodskill
+ResearchArt=ReplaceableTextures\CommandButtons\BTNStatUp.blp
+Researchbuttonpos=,1
+Researchhotkey=U
+Researchtip=学习 猎手本能[|cffffcc00U|r] - [|cffffcc00等级 %d|r]|n(Instinct)
+Researchubertip=直接击杀敌方真实英雄（非幻象/非召唤）后，永久提升自身敏捷 1/2/3/4 点；同一目标同次死亡只结算一次。
+Tip=猎手本能 - [|cffffcc00等级 1|r],猎手本能 - [|cffffcc00等级 2|r],猎手本能 - [|cffffcc00等级 3|r],猎手本能 - [|cffffcc00等级 4|r]
+Ubertip=击杀真实英雄永久敏捷+1,击杀真实英雄永久敏捷+2,击杀真实英雄永久敏捷+3,击杀真实英雄永久敏捷+4
+
+[KA02]
+Art=ReplaceableTextures\CommandButtons\BTNGoblinLandMine.blp
+Buttonpos=2,1
+Name=捷刃
+Hotkey=B
+ResearchArt=ReplaceableTextures\CommandButtons\BTNGoblinLandMine.blp
+Researchbuttonpos=2
+Researchhotkey=B
+Researchtip=学习 捷刃[|cffffcc00B|r] - [|cffffcc00等级 %d|r]|n(Swift Blade)
+Researchubertip=有效普攻命中敌方真实目标时，20%% 概率造成额外物理伤害=当前总敏捷 x 1/1.5/2/2.5；合成/反射攻击不触发，不二次放大。
+Tip=捷刃 - [|cffffcc00等级 1|r],捷刃 - [|cffffcc00等级 2|r],捷刃 - [|cffffcc00等级 3|r],捷刃 - [|cffffcc00等级 4|r]
+Ubertip=20%%概率额外物理=总敏捷x1,20%%概率额外物理=总敏捷x1.5,20%%概率额外物理=总敏捷x2,20%%概率额外物理=总敏捷x2.5
+
+[KA03]
+Art=ReplaceableTextures\CommandButtons\BTNStasisTrap.blp
+Buttonpos=1,2
+Hotkey=W
+Name=加凯
+Order=stasistrap
+ResearchArt=ReplaceableTextures\CommandButtons\BTNStasisTrap.blp
+Researchbuttonpos=1
+Researchhotkey=W
+Researchtip=学习 加凯[|cffffcc00W|r] - [|cffffcc00等级 %d|r]|n(Jia Kai)
+Researchubertip=主动：以当前总敏捷快照 x 2/3/4/5 对 800 半径内敌方非魔免、非建筑、非守卫、非无敌单位造成魔法伤害；每目标一次，冷却10秒。
+Tip=加凯[|cffffcc00W|r] - [|cffffcc00等级 1|r],加凯[|cffffcc00W|r] - [|cffffcc00等级 2|r],加凯[|cffffcc00W|r] - [|cffffcc00等级 3|r],加凯[|cffffcc00W|r] - [|cffffcc00等级 4|r]
+Ubertip=800范围魔法伤害=敏捷x2,800范围魔法伤害=敏捷x3,800范围魔法伤害=敏捷x4,800范围魔法伤害=敏捷x5
+
+[KA04]
+Art=ReplaceableTextures\CommandButtons\BTNSelfDestructOn.blp
+Buttonpos=2,2
+Hotkey=R
+Name=凯哥牛逼了
+Order=selfdestruct
+ResearchArt=ReplaceableTextures\CommandButtons\BTNSelfDestructOn.blp
+Researchbuttonpos=2
+Researchhotkey=R
+Researchtip=学习 凯哥牛逼了[|cffffcc00R|r] - [|cffffcc00等级 %d|r]|n(Ultimate)
+Researchubertip=大招：施放慢照当前总敏捷 S，临时获得 S/2S/3S 敏捷，持续 15/17/20 秒，冷却 80/65/50 秒；重施先精确清旧，死亡/到期只扣本次增量，永久击杀成长保留。
+Tip=凯哥牛逼了[|cffffcc00R|r] - [|cffffcc00等级 1|r],凯哥牛逼了[|cffffcc00R|r] - [|cffffcc00等级 2|r],凯哥牛逼了[|cffffcc00R|r] - [|cffffcc00等级 3|r]
+Ubertip=持续15秒临时+S,持续17秒临时+2S,持续20秒临时+3S

@@ -70,8 +70,9 @@ $runtimeMultTwo = ([regex]::Matches($scriptText, '(?m)^integer imbaMult=2$')).Co
 $runtimeMultReset = ([regex]::Matches($scriptText, '(?m)^set imbaMult=1$')).Count
 $lotteryFloor = ([regex]::Matches($scriptText, 'GetRandomInt\(1000,1500\)')).Count
 $oldLotteryLowGold = ([regex]::Matches($scriptText, 'GetRandomInt\(50,80\)')).Count
-$versionName = ([regex]::Matches($scriptText, 'constant string XOMG_VERSION="v1\.3-fuwu"')).Count
+$versionName = ([regex]::Matches($scriptText, 'constant string XOMG_VERSION="v1\.4-K"')).Count
 $versionLegacyName = ([regex]::Matches($scriptText, 'constant string XOMG_VERSION="v1\.2-dropfix"')).Count
+$versionOldFuwu = ([regex]::Matches($scriptText, 'constant string XOMG_VERSION="v1\.3-fuwu"')).Count
 $lotteryRuntimeGate = ([regex]::Matches($scriptText, 'CHOUJIANGSTATE\[rJ\]==1 and XOMG_IMBA_ENABLED')).Count
 $legacyLotteryGate = ([regex]::Matches($scriptText, 'CHOUJIANGSTATE\[rJ\]==1 and XM_MODE')).Count
 # v1.3 welfare button (凯哥发福利)
@@ -183,6 +184,83 @@ $hookScepter950 = ([regex]::Matches($abilityText, '950')).Count
 $attrUiJackpot = ([regex]::Matches($scriptText, '10%概率全属性\+20')).Count
 $attrUiNormal = ([regex]::Matches($scriptText, '1-10各9%概率全属性\+1至\+10')).Count
 
+# ===================== v1.4-K hero K (H0K0 / KA01..KA04) checks =====================
+# isolate KK module block (from first KK_ function to function main) for no-IMBA gating
+$kkBlockMatch = [regex]::Match($scriptText, '(?s)(function KK_IsKHero.*?)(?=function main takes)')
+$kkBlock = $kkBlockMatch.Groups[1].Value
+$kRegHero = ([regex]::Matches($scriptText, "call R1X\('H0K0',0,'KA01','KA02','KA03','KA04'\)")).Count
+$kPoolM84 = ([regex]::Matches($scriptText, "set M84\[42\]='H0K0'")).Count
+$kPoolMD4 = ([regex]::Matches($scriptText, "set MD4\[60\]='H0K0'")).Count
+$kBoundM94 = ([regex]::Matches($scriptText, 'set M94=42')).Count
+$kBoundME4 = ([regex]::Matches($scriptText, 'set ME4=60')).Count
+$kExclusion = ([regex]::Matches($scriptText, "or skill=='KA0[1-4]'")).Count
+# constants live in top globals (unique KK_ names -> count over whole scriptText)
+# SK1 permanent kill agility 1/2/3/4
+$kSk1Gain = ([regex]::Matches($scriptText, 'KK_SK1_AGI_L[1-4] = [1-4]')).Count
+# SK2 20% extra physical = total agi x 1/1.5/2/2.5
+$kSk2Chance = ([regex]::Matches($scriptText, 'KK_SK2_CHANCE = 20')).Count
+$kSk2Mult = ([regex]::Matches($scriptText, 'KK_SK2_MULT_L[1-4] = [0-9.]+')).Count
+# SK3 800 radius, agi snapshot x2/3/4/5
+$kSk3Radius = ([regex]::Matches($scriptText, 'KK_SK3_RADIUS = 800\.0')).Count
+$kSk3Mult = ([regex]::Matches($scriptText, 'KK_SK3_MULT_L[1-4] = [2-5]')).Count
+# SK4 durations 15/17/20
+$kSk4Dur = ([regex]::Matches($scriptText, 'KK_SK4_DUR_L[1-3] = (15|17|20)\.0')).Count
+# ---- function-body checks inside kkBlock ----
+# SK1 permanent SetHeroAgi on killer; victim dedup token
+$kSk1SetAgi = ([regex]::Matches($kkBlock, 'SetHeroAgi\(killer, GetHeroAgi\(killer, false\) \+ KK_SK1Gain')).Count
+$kSk1VictimDedup = ([regex]::Matches($kkBlock, 'KK_KEY_VICTIM_DONE')).Count
+# SK2 synthetic/suppression guard; physical normal damage; no IMBA x2
+$kSk2SynGuard = ([regex]::Matches($kkBlock, 'if B964Synthetic then')).Count
+$kSk2Suppress = ([regex]::Matches($kkBlock, 'KK_SuppressHit')).Count
+$kSk2Normal = ([regex]::Matches($kkBlock, 'DAMAGE_TYPE_NORMAL')).Count
+# SK3 magic damage; filters ally/magicimmune/structure/A04R ward/invuln (Filter + Apply =2 each)
+$kSk3Magic = ([regex]::Matches($kkBlock, 'DAMAGE_TYPE_MAGIC')).Count
+$kSk3FilterAlly = ([regex]::Matches($kkBlock, 'IsUnitAlly\(t, GetOwningPlayer\(KK_SK3_CASTER\)\)')).Count
+$kSk3FilterMagic = ([regex]::Matches($kkBlock, 'UNIT_TYPE_MAGIC_IMMUNE')).Count
+$kSk3FilterStruct = ([regex]::Matches($kkBlock, 'UNIT_TYPE_STRUCTURE')).Count
+$kSk3FilterWard = ([regex]::Matches($kkBlock, "GetUnitAbilityLevel\(t, 'A04R'\) > 0")).Count
+$kSk3FilterInvuln = ([regex]::Matches($kkBlock, 'IsUnitInvulncerable\(t\)')).Count
+# SK4 bonus S*level, generation token, re-cast clear old, death cleanup
+$kSk4Bonus = ([regex]::Matches($kkBlock, 'set inc = S \* level')).Count
+$kSk4Gen = ([regex]::Matches($kkBlock, 'KK_KEY_ULT_GEN')).Count
+$kSk4Recast = ([regex]::Matches($kkBlock, 'call KK_UltRemove\(h, oldGen\)')).Count
+$kSk4DeathClean = ([regex]::Matches($kkBlock, 'if KK_IsKHero\(dying\)')).Count
+# global single death trigger registered once for all players; killer=real K gate
+$kDeathReg = ([regex]::Matches($kkBlock, 'EVENT_PLAYER_UNIT_DEATH')).Count
+$kDeathKillerGate = ([regex]::Matches($kkBlock, 'if killer == null or not KK_IsKHero\(killer\)')).Count
+# module must never route through B67 / IMBA_POWER / XOMG amplification
+$kNoImbaPower = ([regex]::Matches($kkBlock, 'IMBA_POWER')).Count
+$kNoB67 = ([regex]::Matches($kkBlock, 'call B67\(')).Count
+# SLK rows (extracted)
+$slkAbil = [IO.File]::ReadAllText((Join-Path $verifyDir 'units\unitabilities.slk'), [Text.Encoding]::UTF8)
+$slkUI = [IO.File]::ReadAllText((Join-Path $verifyDir 'units\unitui.slk'), [Text.Encoding]::UTF8)
+$kSlkGrant = ([regex]::Matches($slkAbil, 'KA01,KA02,KA03,KA04')).Count
+$kSlkModel = ([regex]::Matches($slkUI, 'war3mapimported\\K\\K_final\.mdx')).Count
+$kUnitStr = ([regex]::Matches($unitText, '(?m)^\[H0K0\]')).Count
+$kAbilStr = ([regex]::Matches($abilityText, '(?m)^\[KA0[1-4]\]')).Count
+# IMP paths present
+$impText = [IO.File]::ReadAllText((Join-Path $verifyDir 'war3map.imp'), [Text.Encoding]::UTF8)
+$kImpMdx = ([regex]::Matches($impText, 'war3mapimported\\K\\K_final\.mdx')).Count
+$kImpBlp = ([regex]::Matches($impText, 'war3mapimported\\K\\K_body\.blp')).Count
+# packaged model/texture readback hash compare against staged assets
+$kMdxStage = Join-Path $root 'assets\K\K_final.mdx'
+$kBlpStage = Join-Path $root 'assets\K\K_body.blp'
+$kMdxMatch = 0; $kBlpMatch = 0
+foreach ($pair in @(@{arc='war3mapimported\K\K_final.mdx'; stage=$kMdxStage}, @{arc='war3mapimported\K\K_body.blp'; stage=$kBlpStage})) {
+    $dst = Join-Path $verifyDir ($pair.arc -replace '\\','/')
+    [IO.Directory]::CreateDirectory((Split-Path -Parent $dst)) | Out-Null
+    for ($try=1; $try -le 5; $try++) {
+        & $config.mpqEditor extract $MapPath $pair.arc $verifyDir /fp | Out-Null
+        Start-Sleep -Milliseconds 400
+        if (Test-Path -LiteralPath $dst -PathType Leaf) { break }
+    }
+    if ((Test-Path -LiteralPath $dst) -and (Test-Path -LiteralPath $pair.stage)) {
+        $h1=(Get-FileHash -LiteralPath $dst -Algorithm SHA256).Hash.ToLowerInvariant()
+        $h2=(Get-FileHash -LiteralPath $pair.stage -Algorithm SHA256).Hash.ToLowerInvariant()
+        if ($pair.arc -like '*mdx') { $kMdxMatch = ($h1 -eq $h2) } else { $kBlpMatch = ($h1 -eq $h2) }
+    }
+}
+
 $report = [ordered]@{
     map = $MapPath
     mapBytes = (Get-Item -LiteralPath $MapPath).Length
@@ -277,11 +355,51 @@ $report = [ordered]@{
         hookScepter950 = $hookScepter950
         attrUiJackpot = $attrUiJackpot
         attrUiNormal = $attrUiNormal
+        versionOldFuwu = $versionOldFuwu
+        kRegHero = $kRegHero
+        kPoolM84 = $kPoolM84
+        kPoolMD4 = $kPoolMD4
+        kBoundM94 = $kBoundM94
+        kBoundME4 = $kBoundME4
+        kExclusion = $kExclusion
+        kSk1Gain = $kSk1Gain
+        kSk1SetAgi = $kSk1SetAgi
+        kSk1VictimDedup = $kSk1VictimDedup
+        kSk2Chance = $kSk2Chance
+        kSk2Mult = $kSk2Mult
+        kSk2SynGuard = $kSk2SynGuard
+        kSk2Suppress = $kSk2Suppress
+        kSk2Normal = $kSk2Normal
+        kSk3Radius = $kSk3Radius
+        kSk3Mult = $kSk3Mult
+        kSk3Magic = $kSk3Magic
+        kSk3FilterAlly = $kSk3FilterAlly
+        kSk3FilterMagic = $kSk3FilterMagic
+        kSk3FilterStruct = $kSk3FilterStruct
+        kSk3FilterWard = $kSk3FilterWard
+        kSk3FilterInvuln = $kSk3FilterInvuln
+        kSk4Dur = $kSk4Dur
+        kSk4Bonus = $kSk4Bonus
+        kSk4Gen = $kSk4Gen
+        kSk4Recast = $kSk4Recast
+        kSk4DeathClean = $kSk4DeathClean
+        kDeathReg = $kDeathReg
+        kDeathKillerGate = $kDeathKillerGate
+        kNoImbaPower = $kNoImbaPower
+        kNoB67 = $kNoB67
+        kSlkGrant = $kSlkGrant
+        kSlkModel = $kSlkModel
+        kUnitStr = $kUnitStr
+        kAbilStr = $kAbilStr
+        kImpMdx = $kImpMdx
+        kImpBlp = $kImpBlp
+        kMdxMatch = $kMdxMatch
+        kBlpMatch = $kBlpMatch
         attrDistributionJackpot = $distJackpot
         attrDistributionNormalEach = ($distNormal.GetEnumerator() | Sort-Object Name | ForEach-Object { "$($_.Key)=$($_.Value)" }) -join ','
         attrDistributionOk = $distOk
     }
-    passed = (($results | Where-Object { -not $_.match }).Count -eq 0 -and $skinPathCount -eq 0 -and $defenseImplCount -eq 0 -and $wheelImplCount -eq 0 -and $rechargeCount -eq 1 -and $loggerCount -eq 1 -and $runtimeImbaGate -eq 1 -and $runtimeMultTwo -eq 1 -and $runtimeMultReset -eq 0 -and $lotteryFloor -eq 0 -and $oldLotteryLowGold -eq 0 -and $versionName -eq 1 -and $versionLegacyName -eq 0 -and $lotteryRuntimeGate -eq 0 -and $legacyLotteryGate -eq 0 -and $dropCheapUsesFinishedItems -eq 1 -and $dropLotteryUsesFinishedItems -eq 1 -and $dropChanceFixedTen -eq 1 -and $dropPriceCap -eq 1 -and $dropMissingCreepsCovered -eq 1 -and $dropInitLog -eq 1 -and $dropRollLog -eq 1 -and $dropSuccessLog -eq 1 -and $dropTestCommand -eq 1 -and $fissureDuration -eq 1 -and $fissureStunScale -eq 1 -and $heroTipNewCount -eq 11 -and $heroTipLegacyCount -eq 0 -and $fissureResearchActual -ge 1 -and $fissureUberActual -ge 1 -and $fissureUiDistance -ge 2 -and $fissureUiDuration -ge 2 -and $welfareRoll -eq 1 -and $welfareClaimMark -eq 1 -and $welfareRepeatHint -eq 1 -and $welfareOpenLog -eq 1 -and $welfareOkLog -eq 1 -and $welfareRepeatLog -ge 1 -and $welfareNoPoolCall -eq 1 -and $poolDefinitionRetained -eq 1 -and $archiveWrites -eq 11 -and $attrRoll -eq 1 -and $attrJackpotCond -eq 1 -and $attrJackpotGain -eq 1 -and $attrNormalGain -eq 1 -and $attrCharge -eq 1 -and $attrInsufficient -eq 1 -and $attrStr -eq 1 -and $attrAgi -eq 1 -and $attrInt -eq 1 -and $attrRollLog -eq 1 -and $attrRejectLog -ge 1 -and $attrJackpotVisual -eq 1 -and $a088ForbiddenCountMul -eq 0 -and $a088SetSix -eq 0 -and $a088PrdScepter -eq 3 -and $a088PrdL1NoScepter -eq 1 -and $a088PrdL2NoScepter -eq 1 -and $a088PrdL2Scepter3 -eq 2 -and $a088PrdL3NoScepter4 -eq 1 -and $a088PrdL3Scepter4 -eq 1 -and $a088PrdL3Scepter3 -eq 1 -and $a088R5 -ge 3 -and $a088R4 -eq 2 -and $a088R3 -eq 4 -and $a088R2 -eq 6 -and $welfareName -eq 1 -and $oldLotteryName -eq 0 -and $welfareDialogRow -eq 1 -and $attrDialogRow -eq 1 -and $welfareDispatch -eq 1 -and $attrDispatch -eq 1 -and $welfarePreNull -eq 1 -and $attrPreNull -eq 1 -and $welfareNullAfter -eq 0 -and $attrNullAfter -eq 0 -and $welfareClickBranch -eq 1 -and $attrClickBranch -eq 1 -and $op3Call -eq 0 -and $devDropSwitch -eq 1 -and $devDropGate -eq 1 -and $a088UiL1 -ge 2 -and $a088UiScepter5 -ge 3 -and $a088UiL2 -ge 2 -and $a088UiL3 -ge 2 -and $hookL4Normal -ge 1 -and $hookScepter950 -ge 2 -and $attrUiJackpot -ge 1 -and $attrUiNormal -ge 1 -and $distOk)
+    passed = (($results | Where-Object { -not $_.match }).Count -eq 0 -and $skinPathCount -eq 0 -and $defenseImplCount -eq 0 -and $wheelImplCount -eq 0 -and $rechargeCount -eq 1 -and $loggerCount -eq 1 -and $runtimeImbaGate -eq 1 -and $runtimeMultTwo -eq 1 -and $runtimeMultReset -eq 0 -and $lotteryFloor -eq 0 -and $oldLotteryLowGold -eq 0 -and $versionName -eq 1 -and $versionLegacyName -eq 0 -and $lotteryRuntimeGate -eq 0 -and $legacyLotteryGate -eq 0 -and $dropCheapUsesFinishedItems -eq 1 -and $dropLotteryUsesFinishedItems -eq 1 -and $dropChanceFixedTen -eq 1 -and $dropPriceCap -eq 1 -and $dropMissingCreepsCovered -eq 1 -and $dropInitLog -eq 1 -and $dropRollLog -eq 1 -and $dropSuccessLog -eq 1 -and $dropTestCommand -eq 1 -and $fissureDuration -eq 1 -and $fissureStunScale -eq 1 -and $heroTipNewCount -eq 11 -and $heroTipLegacyCount -eq 0 -and $fissureResearchActual -ge 1 -and $fissureUberActual -ge 1 -and $fissureUiDistance -ge 2 -and $fissureUiDuration -ge 2 -and $welfareRoll -eq 1 -and $welfareClaimMark -eq 1 -and $welfareRepeatHint -eq 1 -and $welfareOpenLog -eq 1 -and $welfareOkLog -eq 1 -and $welfareRepeatLog -ge 1 -and $welfareNoPoolCall -eq 1 -and $poolDefinitionRetained -eq 1 -and $archiveWrites -eq 11 -and $attrRoll -eq 1 -and $attrJackpotCond -eq 1 -and $attrJackpotGain -eq 1 -and $attrNormalGain -eq 1 -and $attrCharge -eq 1 -and $attrInsufficient -eq 1 -and $attrStr -eq 1 -and $attrAgi -eq 1 -and $attrInt -eq 1 -and $attrRollLog -eq 1 -and $attrRejectLog -ge 1 -and $attrJackpotVisual -eq 1 -and $a088ForbiddenCountMul -eq 0 -and $a088SetSix -eq 0 -and $a088PrdScepter -eq 3 -and $a088PrdL1NoScepter -eq 1 -and $a088PrdL2NoScepter -eq 1 -and $a088PrdL2Scepter3 -eq 2 -and $a088PrdL3NoScepter4 -eq 1 -and $a088PrdL3Scepter4 -eq 1 -and $a088PrdL3Scepter3 -eq 1 -and $a088R5 -ge 3 -and $a088R4 -eq 2 -and $a088R3 -eq 4 -and $a088R2 -eq 6 -and $welfareName -eq 1 -and $oldLotteryName -eq 0 -and $welfareDialogRow -eq 1 -and $attrDialogRow -eq 1 -and $welfareDispatch -eq 1 -and $attrDispatch -eq 1 -and $welfarePreNull -eq 1 -and $attrPreNull -eq 1 -and $welfareNullAfter -eq 0 -and $attrNullAfter -eq 0 -and $welfareClickBranch -eq 1 -and $attrClickBranch -eq 1 -and $op3Call -eq 0 -and $devDropSwitch -eq 1 -and $devDropGate -eq 1 -and $a088UiL1 -ge 2 -and $a088UiScepter5 -ge 3 -and $a088UiL2 -ge 2 -and $a088UiL3 -ge 2 -and $hookL4Normal -ge 1 -and $hookScepter950 -ge 2 -and $attrUiJackpot -ge 1 -and $attrUiNormal -ge 1 -and $versionName -eq 1 -and $versionOldFuwu -eq 0 -and $versionLegacyName -eq 0 -and $kRegHero -eq 1 -and $kPoolM84 -eq 1 -and $kPoolMD4 -eq 1 -and $kBoundM94 -eq 1 -and $kBoundME4 -eq 1 -and $kExclusion -eq 4 -and $kSk1Gain -eq 4 -and $kSk1SetAgi -eq 1 -and $kSk1VictimDedup -ge 1 -and $kSk2Chance -eq 1 -and $kSk2Mult -eq 4 -and $kSk2SynGuard -eq 1 -and $kSk2Suppress -ge 3 -and $kSk2Normal -eq 1 -and $kSk3Radius -eq 1 -and $kSk3Mult -eq 4 -and $kSk3Magic -eq 1 -and $kSk3FilterAlly -eq 2 -and $kSk3FilterMagic -eq 2 -and $kSk3FilterStruct -eq 2 -and $kSk3FilterWard -eq 2 -and $kSk3FilterInvuln -eq 2 -and $kSk4Dur -eq 3 -and $kSk4Bonus -eq 1 -and $kSk4Gen -ge 3 -and $kSk4Recast -eq 1 -and $kSk4DeathClean -eq 1 -and $kDeathReg -eq 1 -and $kDeathKillerGate -eq 1 -and $kNoImbaPower -eq 0 -and $kNoB67 -eq 0 -and $kSlkGrant -eq 1 -and $kSlkModel -eq 1 -and $kUnitStr -eq 1 -and $kAbilStr -eq 4 -and $kImpMdx -eq 1 -and $kImpBlp -eq 1 -and $kMdxMatch -eq $true -and $kBlpMatch -eq $true -and $distOk)
 }
 
 $reportPath = Join-Path $root 'reports\verification-latest.json'

@@ -1,5 +1,40 @@
 //W3x2lni Data: 2026-10-13 15:28:28.896
 globals
+// ===== v1.4-K hero K module globals =====
+constant integer KK_HERO   = 'H0K0'  // 新英雄 K（H00K 凯哥/炸弹人保持不动）
+constant integer KK_SK1    = 'KA01'  // 被动1：击杀真实英雄永久敏捷 +1/2/3/4
+constant integer KK_SK2    = 'KA02'  // 被动2：有效普攻20%概率额外物理=总敏捷x1/1.5/2/2.5
+constant integer KK_SK3    = 'KA03'  // 主动“加凯”：快照总敏捷x2/3/4/5 魔法伤害，半径800，CD10s
+constant integer KK_SK4    = 'KA04'  // 大招“凯哥牛逼了”：3级，15/17/20s，CD80/65/50，bonus=S/2S/3S
+constant integer KK_SK1_AGI_L1 = 1
+constant integer KK_SK1_AGI_L2 = 2
+constant integer KK_SK1_AGI_L3 = 3
+constant integer KK_SK1_AGI_L4 = 4
+constant integer KK_SK2_CHANCE = 20
+constant real    KK_SK2_MULT_L1 = 1.0
+constant real    KK_SK2_MULT_L2 = 1.5
+constant real    KK_SK2_MULT_L3 = 2.0
+constant real    KK_SK2_MULT_L4 = 2.5
+constant real    KK_SK3_RADIUS = 800.0
+constant integer KK_SK3_MULT_L1 = 2
+constant integer KK_SK3_MULT_L2 = 3
+constant integer KK_SK3_MULT_L3 = 4
+constant integer KK_SK3_MULT_L4 = 5
+constant real    KK_SK4_DUR_L1 = 15.0
+constant real    KK_SK4_DUR_L2 = 17.0
+constant real    KK_SK4_DUR_L3 = 20.0
+hashtable KK_TAB = InitHashtable()
+boolean KK_SuppressHit = false        // 防递归：模块自己造成的嵌套伤害不再触发SK2
+trigger KK_CastTrigger = null
+trigger KK_DeathTrigger = null       // 单一全局死亡触发，所有真实玩家注册一次
+group KK_SK3_GROUP = null
+unit KK_SK3_CASTER = null
+integer KK_SK3_DAMAGE = 0
+constant integer KK_KEY_ULT_BONUS   = 1
+constant integer KK_KEY_ULT_GEN     = 2
+constant integer KK_KEY_ULT_ACTIVE  = 3
+constant integer KK_KEY_ULT_TIMER    = 4
+constant integer KK_KEY_VICTIM_DONE  = 9  // 死亡去重标记（防御性，防同次/重复注册）
 // Keep the release identity separate from diagnostic recorder revisions.
 constant string KK_RELEASE_VERSION="KK_B1122"
 // KK global archive DETECT is read once and synchronized before either tracer starts.
@@ -713,7 +748,7 @@ boolean BP_MODE=false
 boolean XM_MODE=false
 constant real IMBA_POWER=2.
 constant boolean XOMG_IMBA_ENABLED=true
-constant string XOMG_VERSION="v1.3-fuwu"
+constant string XOMG_VERSION="v1.4-K"
 integer imbaMult=2
 integer XOMG_DAMAGE_LOG_COUNT=0
 boolean imbaB67DpsExclude=false
@@ -16964,6 +16999,7 @@ call SaveInteger(R1Y,suijiRegisterHeroTypeId,4,a44)
 call SaveInteger(R1Y,suijiRegisterHeroTypeId,5,a55)
 endfunction
 function R1W takes nothing returns nothing
+call R1X('H0K0',0,'KA01','KA02','KA03','KA04')
 call R1X('Hamg','A07Z','A01Z','A26N','Aamk','A2ML')
 call R1X('Hblm',0,'A10X','A11T','A112','A0NR')
 call R1X('Hmkg','A011','A04W','A083','A088','Aamk')
@@ -31537,7 +31573,8 @@ set M84[38]='H0DO'
 set M84[39]='N0M7'
 set M84[40]='N0MD'
 set M84[41]='Z01U'
-set M94=41
+set M84[42]='H0K0'
+set M94=42
 set MD4[1]='Orkn'
 set MD4[2]='Emoo'
 set MD4[3]='Emns'
@@ -31597,7 +31634,8 @@ set MD4[56]='H0DO'
 set MD4[57]='N0MK'
 set MD4[58]='N0M7'
 set MD4[59]='N0MD'
-set ME4=59
+set MD4[60]='H0K0'
+set ME4=60
 set MF4[1]='Hmkg'
 set MF4[2]='H00N'
 set MF4[3]='Edem'
@@ -198211,7 +198249,7 @@ endif
 return SuijiMode_GetPoolSource(poolIndex)
 endfunction
 function SuijiMode_IsRandomPoolExcludedSkill takes integer skill returns boolean
-return skill=='ANic' or skill=='A0O8' or skill=='A0P6' or skill=='A11N' or skill=='A1MI' or skill=='A2SE' or skill=='A00E'
+return skill=='ANic' or skill=='A0O8' or skill=='A0P6' or skill=='A11N' or skill=='A1MI' or skill=='A2SE' or skill=='A00E' or skill=='KA01' or skill=='KA02' or skill=='KA03' or skill=='KA04'
 endfunction
 function SuijiMode_IsRandomRollExcludedSkill takes integer skill returns boolean
 return SuijiMode_IsRandomPoolExcludedSkill(skill) or skill=='A6L3'
@@ -241209,6 +241247,384 @@ call TriggerAddCondition(B1023HitDamageTrigger,Condition(function B1023HitDamage
 call MHDamageEvent_Register(B1023HitDamageTrigger)
 endif
 endfunction
+// ============================================================================
+// KK_hero_module.j  — 独立新英雄 K（H0K0）四技能局部模块（未集成 / 未写入主工程）
+// 只读审计结论支撑：
+//   - 属性池（blizzard.j ModifyHeroStat + 工程惯例）：
+//       GetHeroAgi(h,false)=基础(等级)+永久轨；GetHeroAgi(h,true)=false+临时轨
+//       SetHeroAgi(h,n,true) 写永久轨绝对值；SK1/SK4 增量走永久轨并自行记账。
+//   - 伤害：B67/B67_DPS 会对技能伤害统一 x IMBA_POWER(=2)；本模块一律不调用 B67，
+//           直接 UnitDamageTarget，物理=NORMAL，魔法=MAGIC，绝不二次 x2。
+//   - 攻击管道 TTA：tier1=英雄/熊灵攻击者、非幻象、真实主命中；WXX=攻击者 YXX=目标 ZXX=原伤害；
+//           B964Synthetic=true 表示合成/反射攻击，本模块跳过。
+//   - 死亡：单一全局 EVENT_PLAYER_UNIT_DEATH（所有真实玩家注册一次），不按英雄重复注册，重生无需再注册。
+// 本模块不修改任何现有函数/数值/UI；接入点见 KK_integration_table.md。
+// ============================================================================
+
+// ----------------------------- 固定 rawcode（当前基线空闲，集成前需重扫） -----------------------------
+
+// ----------------------------- 固定数值（用户最终确认，不再放大） -----------------------------
+
+// ----------------------------- 模块私有状态 -----------------------------
+
+// ============================================================================
+// 小工具
+// ============================================================================
+function KK_IsKHero takes unit u returns boolean
+    return u != null and GetUnitTypeId(u) == KK_HERO
+endfunction
+
+// 取技能等级（1..n，无技能返回0）
+function KK_Lvl takes unit u, integer abil returns integer
+    if u == null then
+        return 0
+    endif
+    return GetUnitAbilityLevel(u, abil)
+endfunction
+
+// 总敏捷快照（true=含永久击杀/抽奖/大招临时全部）
+function KK_SnapAgi takes unit h returns integer
+    return R2I(GetHeroAgi(h, true))
+endfunction
+
+// SK1 每级永久敏捷查表
+function KK_SK1Gain takes integer level returns integer
+    if level <= 1 then
+        return KK_SK1_AGI_L1
+    elseif level == 2 then
+        return KK_SK1_AGI_L2
+    elseif level == 3 then
+        return KK_SK1_AGI_L3
+    endif
+    return KK_SK1_AGI_L4
+endfunction
+
+// SK2 敏捷系数查表
+function KK_SK2Mult takes integer level returns real
+    if level <= 1 then
+        return KK_SK2_MULT_L1
+    elseif level == 2 then
+        return KK_SK2_MULT_L2
+    elseif level == 3 then
+        return KK_SK2_MULT_L3
+    endif
+    return KK_SK2_MULT_L4
+endfunction
+
+// SK3 系数查表
+function KK_SK3Mult takes integer level returns integer
+    if level <= 1 then
+        return KK_SK3_MULT_L1
+    elseif level == 2 then
+        return KK_SK3_MULT_L2
+    elseif level == 3 then
+        return KK_SK3_MULT_L3
+    endif
+    return KK_SK3_MULT_L4
+endfunction
+
+// SK4 持续时间查表
+function KK_SK4Dur takes integer level returns real
+    if level <= 1 then
+        return KK_SK4_DUR_L1
+    elseif level == 2 then
+        return KK_SK4_DUR_L2
+    endif
+    return KK_SK4_DUR_L3
+endfunction
+
+// ============================================================================
+// SK4 大招：临时敏捷（永久轨 + 精确记账；重施先清旧，死亡/到期只扣本次实际增量）
+// ============================================================================
+
+// 移除某英雄当前大招增量（不恢复旧绝对值，只扣记录的实际 bonus）
+function KK_UltRemove takes unit h, integer genCheck returns nothing
+    local integer kkh = GetHandleId(h)
+    local integer inc = LoadInteger(KK_TAB, kkh, KK_KEY_ULT_BONUS)
+    local timer tm = LoadTimerHandle(KK_TAB, kkh, KK_KEY_ULT_TIMER)
+    if LoadInteger(KK_TAB, kkh, KK_KEY_ULT_GEN) != genCheck then
+        // 旧 generation 的定时器：已被新施法取代，只销毁自身，绝不扣新buff
+        if tm != null then
+            call PauseTimer(tm)
+            call DestroyTimer(tm)
+            call RemoveSavedHandle(KK_TAB, kkh, KK_KEY_ULT_TIMER)
+        endif
+        set tm = null
+        return
+    endif
+    if inc > 0 then
+        // 永久轨读-改-写：减去本次实际增量；击杀永久/属性抽奖永久值原样保留
+        call SetHeroAgi(h, GetHeroAgi(h, false) - inc, true)
+    endif
+    if tm != null then
+        call PauseTimer(tm)
+        call DestroyTimer(tm)
+        call RemoveSavedHandle(KK_TAB, kkh, KK_KEY_ULT_TIMER)
+    endif
+    call SaveInteger(KK_TAB, kkh, KK_KEY_ULT_BONUS, 0)
+    call SaveBoolean(KK_TAB, kkh, KK_KEY_ULT_ACTIVE, false)
+    set tm = null
+endfunction
+
+// 到期回调：校验 generation，防止旧 timer 清掉新 buff
+function KK_UltExpire takes nothing returns nothing
+    local timer tm = GetExpiredTimer()
+    local unit h = LoadUnitHandle(KK_TAB, GetHandleId(tm), 1)
+    local integer gen = LoadInteger(KK_TAB, GetHandleId(tm), 2)
+    if h != null then
+        call KK_UltRemove(h, gen)
+    endif
+    set h = null
+    set tm = null
+endfunction
+
+// 大招施法（EVENT_PLAYER_UNIT_SPELL_CAST 中调用）
+function KK_UltCast takes unit h, integer level returns nothing
+    local integer kkh = GetHandleId(h)
+    local integer oldGen
+    local integer S
+    local integer inc
+    local timer tm
+    if level < 1 or level > 3 then
+        return
+    endif
+    // 1) 重施：先精确移除现存临时bonus并失效旧token/旧timer
+    if LoadBoolean(KK_TAB, kkh, KK_KEY_ULT_ACTIVE) then
+        set oldGen = LoadInteger(KK_TAB, kkh, KK_KEY_ULT_GEN)
+        call KK_UltRemove(h, oldGen)
+    endif
+    // 2) 清掉旧buff后，对当前总敏捷采 S（含已保留的永久击杀/抽奖）
+    set S = KK_SnapAgi(h)
+    // 3) temporary bonus = S*level（L1=S, L2=2S, L3=3S；不是2S/3S/4S）
+    set inc = S * level
+    call SetHeroAgi(h, GetHeroAgi(h, false) + inc, true)
+    // 4) 记录本次 bonus 与新 generation
+    set oldGen = LoadInteger(KK_TAB, kkh, KK_KEY_ULT_GEN) + 1
+    call SaveInteger(KK_TAB, kkh, KK_KEY_ULT_BONUS, inc)
+    call SaveInteger(KK_TAB, kkh, KK_KEY_ULT_GEN, oldGen)
+    call SaveBoolean(KK_TAB, kkh, KK_KEY_ULT_ACTIVE, true)
+    set tm = CreateTimer()
+    call SaveTimerHandle(KK_TAB, kkh, KK_KEY_ULT_TIMER, tm)
+    call SaveUnitHandle(KK_TAB, GetHandleId(tm), 1, h)
+    call SaveInteger(KK_TAB, GetHandleId(tm), 2, oldGen)
+    call TimerStart(tm, KK_SK4Dur(level), false, function KK_UltExpire)
+    set tm = null
+endfunction
+
+// ============================================================================
+// SK3 加凯：主动 AoE 魔法，圆心施法者，半径800，单次快照，每目标一次，不穿魔免
+// 真实过滤：存活/非自身/非友军/非魔免/非建筑/非守卫/非无敌；装饰(doodad)非单位天然排除
+// ============================================================================
+function KK_SK3_Filter takes nothing returns boolean
+    local unit t = GetFilterUnit()
+    if t == null or not UnitAlive(t) then
+        return false
+    endif
+    if t == KK_SK3_CASTER then
+        return false
+    endif
+    // 排友军；只打敌方
+    if IsUnitAlly(t, GetOwningPlayer(KK_SK3_CASTER)) then
+        return false
+    endif
+    // 魔免跳过（魔法伤害，不自创穿魔免）
+    if IsUnitType(t, UNIT_TYPE_MAGIC_IMMUNE) then
+        return false
+    endif
+    // 排建筑
+    if IsUnitType(t, UNIT_TYPE_STRUCTURE) then
+        return false
+    endif
+    // 排守卫（工程守卫以 A04R 技能标记）
+    if GetUnitAbilityLevel(t, 'A04R') > 0 then
+        return false
+    endif
+    // 排无敌（工程计数无敌 IsUnitInvulncerable；直调 SetUnitInvulnerable 不经计数，引擎本就不掉血）
+    if IsUnitInvulncerable(t) then
+        return false
+    endif
+    return true
+endfunction
+
+function KK_SK3_Apply takes nothing returns nothing
+    local unit t = GetEnumUnit()
+    if t == null or not UnitAlive(t) then
+        return
+    endif
+    if IsUnitAlly(t, GetOwningPlayer(KK_SK3_CASTER)) then
+        return
+    endif
+    if IsUnitType(t, UNIT_TYPE_MAGIC_IMMUNE) then
+        return
+    endif
+    if IsUnitType(t, UNIT_TYPE_STRUCTURE) then
+        return
+    endif
+    if GetUnitAbilityLevel(t, 'A04R') > 0 then
+        return
+    endif
+    if IsUnitInvulncerable(t) then
+        return
+    endif
+    // 直接魔法伤害，不经B67，不 x2；吃工程真实魔抗；魔免已在过滤层排除
+    call UnitDamageTarget(KK_SK3_CASTER, t, I2R(KK_SK3_DAMAGE), true, true, ATTACK_TYPE_HERO, DAMAGE_TYPE_MAGIC, WEAPON_TYPE_WHOKNOWS)
+    set t = null
+endfunction
+
+function KK_JiaKaiCast takes unit caster, integer level returns nothing
+    local integer S
+    if level < 1 or level > 4 then
+        return
+    endif
+    // 一次施放只快照一次；S=当前含临时总敏捷（大招期间也按当前总敏捷）
+    set S = KK_SnapAgi(caster)
+    set KK_SK3_DAMAGE = S * KK_SK3Mult(level)
+    set KK_SK3_CASTER = caster
+    call GroupClear(KK_SK3_GROUP)
+    call GroupEnumUnitsInRange(KK_SK3_GROUP, GetUnitX(caster), GetUnitY(caster), KK_SK3_RADIUS, Condition(function KK_SK3_Filter))
+    call ForGroup(KK_SK3_GROUP, function KK_SK3_Apply)
+    call GroupClear(KK_SK3_GROUP)
+    set KK_SK3_CASTER = null
+    set KK_SK3_DAMAGE = 0
+endfunction
+
+// ============================================================================
+// SK2：有效普攻 20% 概率额外物理 = 总敏捷 x 系数；不改原攻击倍率，防递归，不 x2
+// 宿主契约：只挂真实主命中（管道 tier1，英雄/熊灵、非幻象）；合成/反射攻击 B964Synthetic 跳过。
+// 由攻击管道 tier1 消费者调用（WXX=攻击者 YXX=目标 ZXX=已落地原伤害）
+// ============================================================================
+function KK_HitPhys takes nothing returns nothing
+    local unit attacker
+    local unit target
+    local integer level
+    local integer S
+    local real bonus
+    if KK_SuppressHit then
+        return
+    endif
+    // 合成/反射攻击不触发（工程真实旗标 B964Synthetic）
+    if B964Synthetic then
+        return
+    endif
+    // WXX=攻击者 YXX=目标：攻击管道全局（接入方工程已存在，见接入表）
+    set attacker = WXX
+    set target = YXX
+    if not KK_IsKHero(attacker) then
+        return
+    endif
+    set level = KK_Lvl(attacker, KK_SK2)
+    if level == 0 or target == null or not UnitAlive(target) then
+        return
+    endif
+    // 仅敌方有效目标
+    if not IsUnitEnemy(target, GetOwningPlayer(attacker)) then
+        return
+    endif
+    if GetRandomInt(1, 100) > KK_SK2_CHANCE then
+        return
+    endif
+    set S = KK_SnapAgi(attacker)
+    set bonus = I2R(S) * KK_SK2Mult(level)
+    // 防递归：本模块嵌套伤害置位，本消费者直接返回；原伤害ZXX绝不修改
+    set KK_SuppressHit = true
+    call UnitDamageTarget(attacker, target, bonus, true, true, ATTACK_TYPE_HERO, DAMAGE_TYPE_NORMAL, WEAPON_TYPE_WHOKNOWS)
+    set KK_SuppressHit = false
+endfunction
+
+// ============================================================================
+// 全局死亡处理（单一全局 death trigger；SK1 击杀归因 + SK4 死亡清理）
+// 只认 GetKillingUnit 直接击杀；排助攻/野怪/召唤/幻象；victim 句柄去重。
+// ============================================================================
+function KK_DeathAction takes nothing returns nothing
+    local unit dying = GetTriggerUnit()
+    local unit killer = GetKillingUnit()
+    local integer vh
+    // —— SK4 死亡清理（dying 是我们自己）：remove current temporary bonus，generation失效 ——
+    if KK_IsKHero(dying) then
+        set vh = GetHandleId(dying)
+        if LoadBoolean(KK_TAB, vh, KK_KEY_ULT_ACTIVE) then
+            call KK_UltRemove(dying, LoadInteger(KK_TAB, vh, KK_KEY_ULT_GEN))
+        endif
+    endif
+    // —— SK1 击杀归因：killer=真实K，victim=敌方真实英雄 ——
+    if killer == null or not KK_IsKHero(killer) then
+        return
+    endif
+    if dying == null then
+        return
+    endif
+    // victim 去重（防御性：防同次事件/重复注册重复加敏捷）
+    set vh = GetHandleId(dying)
+    if LoadBoolean(KK_TAB, vh, KK_KEY_VICTIM_DONE) then
+        return
+    endif
+    call SaveBoolean(KK_TAB, vh, KK_KEY_VICTIM_DONE, true)
+    // 目标必须是真实英雄：英雄类型、非幻象、非召唤物
+    if not IsUnitType(dying, UNIT_TYPE_HERO) then
+        return
+    endif
+    if IsUnitIllusion(dying) then
+        return
+    endif
+    if IsUnitType(dying, UNIT_TYPE_SUMMONED) then
+        return
+    endif
+    // 必须是敌方（排除友军/中立误伤）
+    if not IsUnitEnemy(dying, GetOwningPlayer(killer)) then
+        return
+    endif
+    // 助攻不计：只认 GetKillingUnit 直接归属；野怪非英雄已被上面排除
+    call SetHeroAgi(killer, GetHeroAgi(killer, false) + KK_SK1Gain(KK_Lvl(killer, KK_SK1)), true)
+    set dying = null
+    set killer = null
+endfunction
+
+// ============================================================================
+// 施法分发（SK3 / SK4），挂在全局 SPELL_CAST
+// ============================================================================
+function KK_CastAction takes nothing returns nothing
+    local unit caster = GetTriggerUnit()
+    local integer abid = GetSpellAbilityId()
+    local integer level
+    if not KK_IsKHero(caster) then
+        return
+    endif
+    if abid == KK_SK3 then
+        set level = KK_Lvl(caster, KK_SK3)
+        call KK_JiaKaiCast(caster, level)
+    elseif abid == KK_SK4 then
+        set level = KK_Lvl(caster, KK_SK4)
+        call KK_UltCast(caster, level)
+    endif
+    set caster = null
+endfunction
+
+// ============================================================================
+// 初始化：单一全局 death trigger（所有真实玩家注册一次）；不按英雄注册，重生无需再注册
+// ============================================================================
+function KK_Init takes nothing returns nothing
+    local integer p = 0
+    set KK_SK3_GROUP = CreateGroup()
+    set KK_CastTrigger = CreateTrigger()
+    loop
+        exitwhen p > 11
+        call TriggerRegisterPlayerUnitEvent(KK_CastTrigger, Player(p), EVENT_PLAYER_UNIT_SPELL_CAST, null)
+        set p = p + 1
+    endloop
+    call TriggerAddAction(KK_CastTrigger, function KK_CastAction)
+    // 单一全局死亡触发：所有真实玩家注册一次
+    set KK_DeathTrigger = CreateTrigger()
+    set p = 0
+    loop
+        exitwhen p > 11
+        call TriggerRegisterPlayerUnitEvent(KK_DeathTrigger, Player(p), EVENT_PLAYER_UNIT_DEATH, null)
+        set p = p + 1
+    endloop
+    call TriggerAddAction(KK_DeathTrigger, function KK_DeathAction)
+    // SK2 挂攻击管道 tier1（真实主命中/英雄攻击者）；接入方在地图初始化后调用一次
+    call RegisterUnitAttackEvent("KK_HitPhys", 1)
+endfunction
+
 function main takes nothing returns nothing
 local integer i
 local player p
@@ -249806,9 +250222,10 @@ call B921EmojiInit()
 set tt = null
 call B946DetectInit()
 call B957Init()
+call KK_Init()
 endfunction
 function config takes nothing returns nothing
-call SetMapName("OMG IMBA v1.3 福利抽属性")
+call SetMapName("OMG IMBA v1.4-K 新英雄K")
 call SetMapDescription("随机技能，强化AI，极限对抗。\n作者：小生我怕怕\n按F9查看地图信息。")
 call SetPlayers($A)
 call SetTeams($A)

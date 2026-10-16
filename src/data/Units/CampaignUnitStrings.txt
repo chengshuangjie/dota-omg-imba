@@ -30517,3 +30517,15 @@ Missilespeed=1500,1500
 Name=小狗
 Tip=训练小狗(|cffffcc00Z|r)
 Ubertip=虫族军队的小型近战攻击生物。虽然很脆弱，但是他们以极大的数量闻名。|n|cffffcc00能攻击地面单位。|r
+
+[H0K0]
+Art=ReplaceableTextures\CommandButtons\BTNStatUp.blp
+Awakentip=复活 K
+Buttonpos=,2
+Description=K
+Name=K
+Propernames=K
+Revivetip=复活 K
+ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNStatUp.blp
+Tip=K
+Ubertip=近战敏捷新英雄 K。技能：猎手本能 / 捷刃 / 加凯 / 凯哥牛逼了。基础属性为克隆近战敏捷行 Hblm，待对象编辑器核对微调。

@@ -1,0 +1,52 @@
+类别,函数/调用点,war3map.j行,rawcode,可见名,原公式,新公式(IMBA_POWER=2),安全夹取/上限,同步风险,判定,排除/备注
+伤害出口-包装,B67_DPS(定义),28329-28390,无,不触发玲珑心吸血的平行伤害口,YM7原样下发UnitDamageTarget,在BL7==0 guard后插入:if XM_MODE and BL7!=6 then set YM7=YM7*IMBA_POWER endif,BL7==6自动跳过;无额外上限(伤害类),与B67同构纯函数无随机/无GetLocalPlayer=同步安全,×2(集中插入),BL7==3分支已有IsFortDefenseTypeUnit×2且无not XM_MODE保护→全局再×2后对Fort=4倍,记录在案
+B67_DPS点,BEARFSJ,86742,A0AH,熊灵攻击附加未知,B67_DPS(WXX,YXX,6,ZXX*.2),不乘(BL7==6),—,—,排除-生命移除,BL7==6生命移除被guard自动排除
+B67_DPS点,FSJ,88272,A4C8,粉碎击,B67_DPS(WXX,YXX,6,ZXX*.5),不乘(BL7==6),—,—,排除-生命移除,BL7==6生命移除被guard自动排除
+B67_DPS点,MarksmanshipActions,102126,A0VC,小黑分裂箭,B67_DPS(src,tgt,2,saved 'xhts'=攻击伤),YM7*=2,无(物理走护甲),同步安全,×2,分裂箭复制伤,正向技能增益
+B67_DPS点,DXE2,106534,A288,未知(仅建筑分支),B67_DPS(IN4,u,2,10+15*FS7),YM7*=2,—,同步安全,×2,同技能对单位分支已走B67已×2,建筑分支须一致否则塔伤减半
+B67_DPS点,(处决收尾),183639,无,点金/牺牲奖励链,B67_DPS(ZX7,IH7,20,50),建议显式carve不乘,—,—,排除-处决/经济,先SetUnitLifeBJ(IH7,20)再打50强杀+发金币经验;乘到100对20血目标结果中性但属处决非增益,需call-site旁路
+B67_DPS点,(处决收尾),183690,无,同上(迭代版),B67_DPS(ZX7,IH7,20,50),建议显式carve不乘,—,—,排除-处决/经济,同183639
+B67_DPS点,UnitCleave,223175,A01K/A037/A1AB,巨力挥舞/授予力量/狂战 分裂,B67_DPS(src,firstUnit,10,value),YM7*=2,—,同步安全,×2,value=攻击×rate×分裂%,被动分裂正向增益
+B67_DPS点,ECJTBJ,223278,A081类,恩赐解脱 暴击额外段,B67_DPS(src,tgt,2,AddDamge=Damge×(倍率-1)),YM7*=2,—,同步安全,×2,只打暴击额外段;base由引擎/事件结算
+B67_DPS点,HDYJBJ,223296,A03N,混沌一击 暴击额外段,B67_DPS(src,tgt,2,Damge×(倍率-1)),YM7*=2,—,同步安全,×2,同上
+B67_DPS点,ZSDJBJ,223323,ABcr,致死打击 暴击额外段,B67_DPS(src,tgt,2,Damge×(倍率-1)),YM7*=2,—,同步安全,×2,同上;对非英雄×2已在223313处理
+B67_DPS点,MNBJ_Normal,223387,A0MX/A00K等,通用暴击额外段,B67_DPS(src,tgt,2,Damge×(倍率-1)),YM7*=2,—,同步安全,×2,醉拳/剑舞等暴击
+B67_DPS点,WalrusPunch_ApplyNoArmorCritical,223427,Unknown,海象神拳(模拟态),B67_DPS(src,tgt,11,extraDamage=总伤-事件伤),YM7*=2,—,同步安全,×2,非模拟态走YDWESetEventDamage不经此
+B67_DPS点,B964HJZL_Actions,224696,A7B1/A7B2,合成装备弹道伤,B67_DPS(src,tgt,2,saved 'hjzl'),YM7*=2,—,同步安全,×2,合成攻击弹道
+B67_DPS点,MNGJ,224894,无,模拟攻击基础伤(无影拳/聚焦等),B67_DPS(src,tgt,2,d=攻防+攻加),YM7*=2,—,同步安全,×2,仅技能触发的合成攻击;与同管线暴击/分裂同被×2保持一致
+B67_DPS点,JZHLActions,224961,无,聚焦火力弹道伤,B67_DPS(src,tgt,2,d=saved jzhl),YM7*=2,—,同步安全,×2,同上
+B67_DPS点,CXMAOJI,226488,A226,冲击波(主伤),B67_DPS(src,tgt,2,(攻击+50*等级)×BJ_rate),YM7*=2,—,同步安全,×2,正向AoE技能
+B67_DPS点,CXMAOJI,226508,A226/A1AB/A037,冲击波-分裂,B67_DPS(src,tgt,10,攻击×BJ_rate×FL_rate),YM7*=2,—,同步安全,×2
+B67_DPS点,JH_HJCT,226630,B0KD,穿甲差量额外伤,B67_DPS(src,tgt,10,(伤1-伤2)×Damagerate),YM7*=2,—,同步安全,×2,穿甲被动附加
+B67_DPS点,ZGS_GJ,226813,A4IU,战鼓系攻击,B67_DPS(src,tgt,2,(攻击×xishu+20×等级)×BJ_rate),YM7*=2,—,同步安全,×2,注意已有XM_MODE内建xishu 0.4→0.5(226807),全局×2叠加,记录
+B67_DPS点,ZGS_GJ,226837,A4IU,战鼓系-分裂,B67_DPS(src,tgt,10,d×BJ_rate×FL_rate),YM7*=2,—,同步安全,×2
+控制出口-包装,BA7(定义),28319-28327,A0X6/e00E,平行眩晕口(假人+A0X6按BY7映射等级),Z27秒→BY7→等级,在BC7=BY7(Z27)前:if XM_MODE and Z27>0. and Z27<2.5 then set Z27=RMinBJ(Z27*IMBA_POWER,5.) endif,BY7前夹到5.0;注意BY7≥4s即封顶24级,BA7函数体内无Boss/魔免guard=重大安全风险,启用前须补CommonUnitAddStun同款Boss/魔免过滤
+BA7点,(开局),58199,无,开局intro系统,B A7(V4,V4,0.25),不乘,—,—,排除-系统,开局锁V4
+BA7点,(开局),64396,无,常规开局系统,B A7(V4,V4,0.25),不乘,—,—,排除-系统,开局锁V4
+BA7点,SH9/SI9,64525,A1NI,炼金投掷(群体),B67+BA7(S34,enum,SL4=(1+.75×等级)×charge/5),Z27*=2夹5s,charge越长越长须5s帽,同步安全,×2,群体对敌眩晕
+BA7点,(YV9),71212,Unknown,对敌短晕,B67(p5,m5,1,YM7)+BA7(m5,m5,ySS=.25/.5/.75/1按等级),Z27*=2夹5s,—,同步安全,×2,m5=技能目标=敌
+BA7点,ZE9,71790,Unknown,对敌晕(分支1),BA7(p5,m5,.75+.75×等级)+B67(20,100lvl+50),Z27*=2夹5s,等级4=3.75s×2=7.5须夹5s,同步安全,×2
+BA7点,ZE9,71793,Unknown,对敌晕(分支2),BA7(p5,m5,1.+1.×等级)+B67(20,125lvl+125),Z27*=2夹5s,等级4=5s×2夹5s,同步安全,×2
+BA7点,BN9,73401,A2YL,对敌晕(FH7)+减速+B67(1,50),BA7(ZX7,IH7,FH7),Z27*=2夹5s,FH7来源未知须5s帽,同步安全,×2
+BA7点,(回蓝耗尽),73942,B09M/B09N/B09O/B09L,法力烧尽致晕,BA7(src,m5,1+.5×等级),Z27*=2夹5s,—,同步安全,×2
+BA7点,ZO56,75855,Unknown,对敌AoE晕(K2I==1),BA7(JUI,enum,0.5+0.5×KZI),Z27*=2夹5s,—,同步安全,×2
+BA7点,DPD,80821,Unknown,击退/晕(DWD),B67(1,YM7)+BA7(WI7,m5,DWD),Z27*=2夹5s,—,同步安全,×2
+BA7点,(穿刺落地),108851,A4I2,Impale落地晕,B67(1,伤害)+BA7(p5,WI7,'Duration'),Z27*=2夹5s,—,同步安全,×2
+BA7点,WTF,168702,Unknown,对敌AoE晕2s,B67(1,75×等级+25)+BA7(RC4,IH7,2),Z27*=2夹5s,2s×2=4s,同步安全,×2
+BA7点,(反伤晕),169645,A2KO,被打反晕攻击者,BA7(ZX7,IH7,0.6×等级),Z27*=2夹5s,等级4=2.4s×2=4.8s,同步安全,×2
+BA7点,(弹道命中),210877,A1SQ,对敌晕(.8+.5×BC7),B67(5,R4G)+BA7,Z27*=2夹5s,—,同步安全,×2
+BA7点,THG,212725,Unknown,龙鹰导弹晕,BA7(UK4,enum,.25+.5×U34),Z27*=2夹5s,—,同步安全,×2
+BA7点,U2G,214427,A27F,对敌晕(.75+.25×等级),BA7(ZG4,enum,...),Z27*=2夹5s,—,同步安全,×2
+BA7点,(闪烁贴脸),216418,A29V/A29W,对敌晕(.5+.5×BC7),BA7(ZX7,IH7,...),Z27*=2夹5s,—,同步安全,×2
+BA7点,Y9G,218084,A2BC,Wraith对敌晕(1.25+.25×BC7),B67(1,40×BC7)+KillUnit(PZE),Z27*=2夹5s,等级4=2.25s×2=4.5s,同步安全,×2
+BA7点,(复仇晕),219558,Unknown,死亡时反晕击杀者(.5+.5×BC7),BA7(ZX7,击杀者,...),Z27*=2夹5s,击杀者=敌,同步安全,×2
+BA7点,BZG,220860,Unknown,对敌晕(.5+FZ7×.5)+B67(FX7),BA7(FY7,enum,...),Z27*=2夹5s,—,同步安全,×2
+BA7点,CEG,221053,Unknown,对敌固定1.5s晕,B67(2,50+50×ET7)+BA7(ES7,enum,1.5),Z27*=2夹5s,1.5×2=3s,同步安全,×2
+BA7点,D4R,187386,Unknown,友方单位晕(D3R过滤非敌),BA7(NWUE,NWWE,1.4)+B67(1,200+100×ODX),不乘,—,—,排除-自/友方,目标为非敌方(友军),×2会误锁队友
+吸血/转疗,(事件伤害转疗簇),40943-41429,Unknown,约30处.9×GetEventDamage()回写触发单位,SetUnitState(trigger,life,life+.9×EventDamage),不单独×2,—,事件伤害已被B67/B67_DPS×2,转疗自动随动,排除-吸血/比例,固定比例随事件伤自动放大,再×2=重复计算;且门控IsUnitIllusion(source)
+吸血,BJ_EXTRA,223256,Unknown,暴击额外吸血SetWidgetLife(src,life+AddDamge×r),不单独×2,—,r为吸血%,随AddDamge随动,排除-吸血,比例型
+吸血,MNGJ系,224904/226493/226822,Unknown,攻击吸血damage×r,不单独×2,—,随事件伤随动,排除-吸血,比例型
+直加血旁路,YQ7,26827,无,裸SetUnitState(life,life+iS)无夹取,本批不×2,—,未逐点枚举,排除-本批不处理,建议后续走B907或加过量夹
+减伤转疗,14189,BrewmasterCinderBrew,事件伤×reduce回写目标,SetWidgetLife(target,life+EventDamage×reduce),不乘,—,防御性减伤,排除-系统/防御,
+建筑回血,40720-41440,Unknown,塔/结构按max-life守护回血,SetUnitState(life,life+Q74)夹max,不乘,—,环境/建筑,排除-环境,
+固定扣血反制,72274,A0QN/B081,被A0QN打时source固定-15,SetUnitState(source,life,life-15)夹1,不乘,—,固定小值反制,排除-固定小值,

@@ -1,12 +1,12 @@
 ﻿{
-    "map":  "maps/build/DOTA-OMG-IMBA-轻量化开发版.w3x",
-    "mapBytes":  46161255,
-    "mapSha256":  "b8b2ef336372a6854c0523cecb937fe1545d6beab65102eaaae3ecb62bc528ee",
+    "map":  "D:\\dota\\DOTA-OMG-IMBA-轻量化\\maps\\build\\DOTA-OMG-IMBA-轻量化开发版.w3x",
+    "mapBytes":  46162983,
+    "mapSha256":  "d16ce660e989d1fd1e6150bee57959d79495b3637c1ef323502a49c304b15f2b",
     "files":  [
                   {
                       "file":  "war3map.j",
-                      "expected":  "ea6d950368183556eec44c231a41541654b3bac4183ab78bac4e92dc5892d403",
-                      "actual":  "ea6d950368183556eec44c231a41541654b3bac4183ab78bac4e92dc5892d403",
+                      "expected":  "ae8fb4bbbd6b630ca0f039c5b3ba23f18d9bc6992e281ebe00cf36bb2c4a7333",
+                      "actual":  "ae8fb4bbbd6b630ca0f039c5b3ba23f18d9bc6992e281ebe00cf36bb2c4a7333",
                       "match":  true
                   },
                   {

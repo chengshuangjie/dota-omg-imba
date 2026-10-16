@@ -1,0 +1,220 @@
+﻿类别,技能名,rawcode,函数,参数,原公式,新公式,帽,排除/备注
+global,—,—,global,imbaMult,constant real IMBA_POWER=2.,"constant real IMBA_POWER=2.
+integer imbaMult=1
+boolean imbaB67DpsExclude=false",—,imbaMult=1 normal / 2 XM_MODE; imbaB67DpsExclude for execute/econ carve
+global,—,—,init@58266,imbaMult,"if XM then
+set XM_MODE=true
+set HG=true","if XM then
+set XM_MODE=true
+set imbaMult=2
+set HG=true",—,set imbaMult=2 when XM_MODE enabled
+global,—,—,init@58308/58444,imbaMult,set XM_MODE=false,"set XM_MODE=false
+set imbaMult=1",—,reset imbaMult=1 when XM_MODE disabled
+damage,B67_DPS集中伤害,BL7,B67_DPS,YM7,"function B67_DPS takes unit p5,unit m5,integer BL7,real YM7 returns nothing
+local unit b67DpsKillDummyUnit=null
+if BL7==","function B67_DPS takes unit p5,unit m5,integer BL7,real YM7 returns nothing
+local unit b67DpsKillDummyUnit=null
+if BL7==",BL7!=6,mirrors B67 guard; BL7==6 auto-excluded
+damage-exclude,点金/牺牲处决,BL7==20,B67_DPS@183639/183690,YM7=50,"call SetUnitLifeBJ(IH7,20)
+call B67_DPS(ZX7,IH7,20,50)","call SetUnitLifeBJ(IH7,20)
+set imbaB67DpsExclude=true
+call B67_DPS(ZX7,IH7,20,50)",—,execute/econ: target set to 20hp then 50 chaos/enhanced kill + gold/XP; excluded from multiplier
+control,BA7/A0X6平行眩晕,A0X6,BA7,Z27(秒),"function BA7 takes unit p5,unit m5,real Z27 returns nothing
+local unit BB7=CreateUnit(GetOwningPlayer(m5),'e00E',GetUnit","function BA7 takes unit p5,unit m5,real Z27 returns nothing
+local unit BB7=null
+local integer BC7=0
+// IMBA: safety filt",5.0s,adds MiaoStarted/Boss/magic-immunity/dead filters matching CommonUnitAddStun
+duration-dot,Loop_Damage(DoT总时长),DUR形参,Loop_Damage,DUR,"function Loop_Damage takes unit ZX7,unit IH7,real d,real DUR,real YM7 returns nothing
+    local timer t=CreateTimer()
+  ","function Loop_Damage takes unit ZX7,unit IH7,real d,real DUR,real YM7 returns nothing
+    local timer t=CreateTimer()
+  ",30.0s,central exit; BrambleMaze caller 78363 benefits automatically
+duration-control,DisarmUnitToTimed(缴械),—,DisarmUnitToTimed,time,"call DisarmUnit(whichUnit , true , disarmId , abilityId , buffId)
+	endif
+	call TimerStart(timr, time, false, null)","call DisarmUnit(whichUnit , true , disarmId , abilityId , buffId)
+	endif
+	// IMBA: disarm duration x2 cap 5s.
+	if XM_MOD",5.0s,
+duration-control,Miao_Lock(通用暂停),—,Miao_Lock,mdDuration,"function Miao_Lock takes unit mdUnit,real mdDuration,string mdAnimation,boolean mdCleanse returns nothing
+local timer md","function Miao_Lock takes unit mdUnit,real mdDuration,string mdAnimation,boolean mdCleanse returns nothing
+local timer md",5.0s,
+duration-control,B1012ChainsSilence(锁链沉默),A0NS/A1DA,B1012ChainsSilence,2.0,"call TimerStart(b1012SilenceTimer,2.,false,function B1012ChainsSilenceEnd)","// IMBA: silence duration x2 cap 5s.
+if XM_MODE then
+call TimerStart(b1012SilenceTimer,RMinBJ(2.*IMBA_POWER,5.),false,fu",5.0s,
+duration-debuff,Luna_ApplyMark(月神印记),FaerieFire,Luna_ApplyMark,5.0,"call SaveTimerHandle(L7,h,StringHash(""LunaMarkTimer""),t)
+call SaveUnitHandle(L7,GetHandleId(t),0,target)
+call TimerStart","call SaveTimerHandle(L7,h,StringHash(""LunaMarkTimer""),t)
+call SaveUnitHandle(L7,GetHandleId(t),0,target)
+// IMBA: mark d",30.0s,
+duration-buff,Luna_ApplyShield(月神护盾),LunaShield,Luna_ApplyShield,5.0,"call SaveUnitHandle(L7,GetHandleId(t),0,u)
+call SaveInteger(L7,GetHandleId(t),1,generation)
+call TimerStart(t,5.,false,f","call SaveUnitHandle(L7,GetHandleId(t),0,u)
+call SaveInteger(L7,GetHandleId(t),1,generation)
+// IMBA: shield duration x2 ",30.0s,
+duration-buff,AeonDisk_Activate(神盾无敌),A5VR,AeonDisk_Activate,2.5,"call SaveInteger(L7,GetHandleId(t),1,serial)
+call TimerStart(t,2.5,false,function AeonDisk_ActiveFinish)","call SaveInteger(L7,GetHandleId(t),1,serial)
+// IMBA: aeon disk invuln window x2 cap 10s.
+if XM_MODE then
+call TimerStar",10.0s,cooldown overlay tick separate
+duration-buff,B907GiveShield(装备护盾),ManaShield,B907GiveShield,4.0,"call SaveReal(L7,gearTargetKey,StringHash(""B907Shield""),gearAmount)
+call SaveReal(L7,gearTargetKey,StringHash(""B907Shiel","call SaveReal(L7,gearTargetKey,StringHash(""B907Shield""),gearAmount)
+// IMBA: gear shield duration x2 cap 30s; end-time s",30.0s,END-TIME SYNC: B907ShieldUntil matches timer
+duration-buff,B907GiveShield timer,ManaShield,B907GiveShield,4.0,"call SaveInteger(L7,GetHandleId(gearTimer),1,gearSerial)
+call TimerStart(gearTimer,4.,false,function B907ShieldExpire)","call SaveInteger(L7,GetHandleId(gearTimer),1,gearSerial)
+if XM_MODE then
+call TimerStart(gearTimer,RMinBJ(4.*IMBA_POWER,",30.0s,
+duration-buff,LotusOrb_Reflect(莲花反弹),LotusOrb,LotusOrb_ReflectTick,12.0,"call SaveInteger(L7,GetHandleId(cleanup),2,serial)
+call TimerStart(cleanup,12.,false,function LotusOrb_TempFallback)","call SaveInteger(L7,GetHandleId(cleanup),2,serial)
+// IMBA: lotus reflect window x2 cap 30s.
+if XM_MODE then
+call TimerS",30.0s,
+duration-debuff,NightmareAftershock_Apply,A4FF/BNab,NightmareAftershock_Apply,2.0,"set t=CreateTimer()
+call SaveUnitHandle(L7,GetHandleId(t),0,u)
+call TimerStart(t,2.,false,function NightmareAftershock_S","set t=CreateTimer()
+call SaveUnitHandle(L7,GetHandleId(t),0,u)
+// IMBA: nightmare aftershock debuff x2 cap 30s.
+if XM_MO",30.0s,
+duration-debuff,MaledictReveal_Start,Maledict,MaledictReveal_Start,2.0,"call SaveFogModifierHandle(L7,GetHandleId(t),0,f)
+call TimerStart(t,2.,false,function MaledictReveal_End)","call SaveFogModifierHandle(L7,GetHandleId(t),0,f)
+// IMBA: maledict reveal x2 cap 30s.
+if XM_MODE then
+call TimerStart(t",30.0s,
+duration-buff,B906RazeBonus(推平奖励),B906,B906RazeBonus,6.0,"call SaveInteger(L7,razeKey,3,razeStacks+1)
+call SaveReal(L7,razeKey,4,GetGameTime()+6.)
+call TimerStart(razeTimer,6.,fa","call SaveInteger(L7,razeKey,3,razeStacks+1)
+// IMBA: raze bonus buff x2 cap 30s; end-time synced.
+if XM_MODE then
+call S",30.0s,END-TIME SYNC: razeKey/4 matches timer
+duration-buff,hrzycd(3.75档),A2VW/A3TY,hrzycd,3.75,"call SaveInteger(TABLE_HY, GetHandleId(u), 'echs', 1)
+	call SaveUnitHandle(TABLE_HY, GetHandleId(t), 1, u)
+	call TimerSt","call SaveInteger(TABLE_HY, GetHandleId(u), 'echs', 1)
+	call SaveUnitHandle(TABLE_HY, GetHandleId(t), 1, u)
+	// IMBA: buf",30.0s,cooldown YDWESetUnitAbilityState 3.75 untouched
+duration-buff,hrzycd(5档),A2VW/A3TY,hrzycd,5.0,"call SaveInteger(TABLE_HY, GetHandleId(u), 'echs', 1)
+	call SaveUnitHandle(TABLE_HY, GetHandleId(t), 1, u)
+	call TimerSt","call SaveInteger(TABLE_HY, GetHandleId(u), 'echs', 1)
+	call SaveUnitHandle(TABLE_HY, GetHandleId(t), 1, u)
+	// IMBA: buf",30.0s,
+duration-buff,TZA,A04R/B0GS,TZA,4.0,"call ExecuteAttackEvent(-2)
+	endif
+	call TimerStart(tt, 4, false, null)","call ExecuteAttackEvent(-2)
+	endif
+	// IMBA: TZA buff x2 cap 30s.
+	if XM_MODE then
+	call TimerStart(tt, RMinBJ(4.*IMBA_P",30.0s,
+duration-control,UTA,A1RI/A1GU/A4L1/A28Y/A27H,UTA,2.0,"if id=='A27H' then
+if (LoadInteger(L7,(GetHandleId(targetUnit)),(705)))==0 then
+call TimerStart(N84[GetPlayerId(GetOwnin","if id=='A27H' then
+if (LoadInteger(L7,(GetHandleId(targetUnit)),(705)))==0 then
+// IMBA: control duration x2 cap 5s.
+if ",5.0s,
+duration-buff,XSBF,A4HS,XSBF,15.0,"call SetUnitImitateMoveSpeed(u, 999, 800)
+	call TimerStart(t, 15., false, function XSBF2)","call SetUnitImitateMoveSpeed(u, 999, 800)
+	// IMBA: XSBF buff x2 cap 30s.
+	if XM_MODE then
+	call TimerStart(t, RMinBJ(15",30.0s,
+duration-buff,Z9F,A33H,Z9F,5.1,"endif
+call TimerStart(tt,5.1,false,function Z4F_Timer)","endif
+// IMBA: Z9F buff x2 cap 30s.
+if XM_MODE then
+call TimerStart(tt,RMinBJ(5.1*IMBA_POWER,30.),false,function Z4F_Tim",30.0s,
+multicast,EUD多重施法,A088,EUD,C/r,"function EUD takes unit ZX7 returns integer
+local integer V77=B287_GetUnitAbilityLevel(ZX7,'A088')
+local boolean HaveA=f","function EUD takes unit ZX7 returns integer
+local integer V77=B287_GetUnitAbilityLevel(ZX7,'A088')
+local boolean HaveA=f",100/6,uses global imbaMult
+multicast,EUD L1神杖5/2路,A088,EUD,"5/r5,50/r2","if GetPrdRandom(ZX7,'A088'+5,5) then
+            set r=5
+            set N4[id]=N4[id]+1
+        elseif GetPrdRandom(ZX7","if GetPrdRandom(ZX7,'A088'+5,IMinBJ(5*imbaMult,100)) then
+            set r=IMinBJ(5*imbaMult,6)
+            set N4[id]=",100/6,
+multicast,EUD L1非神杖2路,A088,EUD,40/r2,"if GetPrdRandom(ZX7,'A088'+2,40) then
+            set r=2
+            set TF4[id]=TF4[id]+1","if GetPrdRandom(ZX7,'A088'+2,IMinBJ(40*imbaMult,100)) then
+            set r=IMinBJ(2*imbaMult,6)
+            set TF4[id",100/6,
+multicast,EUD L2神杖5/3/2路,A088,EUD,"5/r5,30/r3,60/r2","if GetPrdRandom(ZX7,'A088'+5,5) then
+            set r=5
+            set N4[id]=N4[id]+1
+        elseif GetPrdRandom(ZX7","if GetPrdRandom(ZX7,'A088'+5,IMinBJ(5*imbaMult,100)) then
+            set r=IMinBJ(5*imbaMult,6)
+            set N4[id]=",100/6,
+multicast,EUD L2非神杖3/2路,A088,EUD,"25/r3,50/r2","if GetPrdRandom(ZX7,'A088'+3,25) then
+            set r=3
+            set TG4[id]=TG4[id]+1
+        elseif GetPrdRandom(","if GetPrdRandom(ZX7,'A088'+3,IMinBJ(25*imbaMult,100)) then
+            set r=IMinBJ(3*imbaMult,6)
+            set TG4[id",100/6,
+multicast,EUD L3神杖5/4/3/2路,A088,EUD,"5/r5,20/r4,40/r3,80/r2","if GetPrdRandom(ZX7,'A088'+5,5) then
+            set r=5
+            set N4[id]=N4[id]+1
+        elseif GetPrdRandom(ZX7","if GetPrdRandom(ZX7,'A088'+5,IMinBJ(5*imbaMult,100)) then
+            set r=IMinBJ(5*imbaMult,6)
+            set N4[id]=",100/6,
+multicast,EUD L3非神杖4/3/2路,A088,EUD,"15/r4,30/r3,60/r2","if GetPrdRandom(ZX7,'A088'+4,15) then
+            set r=4
+            set TH4[id]=TH4[id]+1
+        elseif GetPrdRandom(","if GetPrdRandom(ZX7,'A088'+4,IMinBJ(15*imbaMult,100)) then
+            set r=IMinBJ(4*imbaMult,6)
+            set TH4[id",100/6,
+probability,碎颅锤/深渊之刃,A4C7,TPA,25/10,"if isMeleeAttacker then
+			set probability = 25
+		else
+			set probability = 10
+		endif
+		if LoadInteger(TABLE_HY, GetHan","if isMeleeAttacker then
+			set probability = 25
+		else
+			set probability = 10
+		endif
+		set probability=IMinBJ(probabil",100,"melee 25->50, ranged 10->20"
+probability,Spirit Breaker重击,A0JJ,TPA,5+5*lvl,"elseif B287_GetUnitAbilityLevel(WXX,'A0JJ')> 0 then	//重击
+		if GetPrdRandom(WXX,'A0JJ', 5 + 5 * B287_GetUnitAbilityLevel(","elseif B287_GetUnitAbilityLevel(WXX,'A0JJ')> 0 then	//重击
+		set probability=IMinBJ((5 + 5 * B287_GetUnitAbilityLevel(WXX,",100,
+probability,Faceless Void时间锁定,A081,TPA,5+5*lvl,"elseif B287_GetUnitAbilityLevel(WXX,'A081')> 0 then	//时间锁定
+			if (SUIJI_MODE==false or SuijiMode_HasRandomSkill(WXX,'A08","elseif B287_GetUnitAbilityLevel(WXX,'A081')> 0 then	//时间锁定
+			set probability=IMinBJ((5 + 5 * B287_GetUnitAbilityLevel(W",100,
+probability,Troll狂战士之怒,A09E,TPA,15/10,"if GetUnitAbilityLevel(WXX,'B00B')>0 and SuijiMode_HasAghanimState(WXX) then
+            set probability = 15
+        el","if GetUnitAbilityLevel(WXX,'B00B')>0 and SuijiMode_HasAghanimState(WXX) then
+            set probability = 15
+        el",100,
+probability,Lifestealer极度饥渴,A0WR,TPA,15,"elseif GetUnitAbilityLevel(WXX,'A0WR')> 0 then	//极度饥渴
+		if GetPrdRandom(WXX,'A0WR', 15) then","elseif GetUnitAbilityLevel(WXX,'A0WR')> 0 then	//极度饥渴
+		set probability=IMinBJ(15*imbaMult,100)
+		if GetPrdRandom(WXX,'A",100,
+probability,金箍棒暴击,A061,TPA,35,"if GetUnitAbilityLevel(WXX,'A061')==1 then	//金箍棒
+		if GetPrdRandom(WXX,'A061', 35) then","if GetUnitAbilityLevel(WXX,'A061')==1 then	//金箍棒
+		set probability=IMinBJ(35*imbaMult,100)
+		if GetPrdRandom(WXX,'A061',",100,
+probability,Axe反击螺旋(YXX侧),A0C6,FJLX@92735,20,"GetPrdRandom(YXX, 'A0C6', 20)","GetPrdRandom(YXX, 'A0C6', IMinBJ(20*imbaMult,100))",100,
+probability,Axe反击螺旋(WXX侧),A0C6,FJLX@92741,20,"GetPrdRandom(WXX, 'A0C6', 20)","GetPrdRandom(WXX, 'A0C6', IMinBJ(20*imbaMult,100))",100,
+probability,Naga激流(神杖),A2KU,@81291,15,"GetPrdRandom(ZX7,'A2KU',15)","GetPrdRandom(ZX7,'A2KU',IMinBJ(15*imbaMult,100))",100,
+probability,被动A(双路径),A263,@46804+dup,30,"GetPrdRandom(ZX7, 'A263', 30)","GetPrdRandom(ZX7, 'A263', IMinBJ(30*imbaMult,100))",100,both code paths doubled
+probability,被动B(双路径),A264,@46860+dup,20,"GetPrdRandom(ZX7, 'A264', 20)","GetPrdRandom(ZX7, 'A264', IMinBJ(20*imbaMult,100))",100,both code paths doubled
+probability,被动C(双路径),A2QG,@46894+dup,15,"GetPrdRandom(ZX7, 'A2QG', 15)","GetPrdRandom(ZX7, 'A2QG', IMinBJ(15*imbaMult,100))",100,both code paths doubled
+probability,被动D,A03Y,@90355,30,"GetPrdRandom(p5,'A03Y',30)","GetPrdRandom(p5,'A03Y',IMinBJ(30*imbaMult,100))",100,
+probability,被动E,A4L7,@112445,20,"GetPrdRandom(WXX, 'A4L7', 20)","GetPrdRandom(WXX, 'A4L7', IMinBJ(20*imbaMult,100))",100,
+probability,被动E(2),A4L7,@216350,20,"GetPrdRandom(u, 'A4L7', 20)","GetPrdRandom(u, 'A4L7', IMinBJ(20*imbaMult,100))",100,
+probability,被动F,A2RA,@147269,40,"GetPrdRandom(ZX7,'A2RA',40)","GetPrdRandom(ZX7,'A2RA',IMinBJ(40*imbaMult,100))",100,
+probability,狼人重击,A2PX,@223487,40,"GetPrdRandom(ZX7 , 'A2PX' , 40.)","GetPrdRandom(ZX7 , 'A2PX' , IMinBJ(40*imbaMult,100))",100,
+probability,剑舞,A00K,@223498,15+5*lvl,"GetPrdRandom(ZX7 , 'A00K' , 15. + level * 5.)","GetPrdRandom(ZX7 , 'A00K' , IMinBJ((15 + level * 5)*imbaMult,100))",100,
+probability,被动I,A1OY,@223545,25,"GetPrdRandom(ZX7 , 'A1OY' , 25.)","GetPrdRandom(ZX7 , 'A1OY' , IMinBJ(25*imbaMult,100))",100,
+probability,致死打击,ABcr,@223556,7+2*lvl,"GetPrdRandom(ZX7 , 'ABcr' , 7+level*2)","GetPrdRandom(ZX7 , 'ABcr' , IMinBJ((7+level*2)*imbaMult,100))",100,
+probability,恩赐解脱,A03Q,@223570,17,"GetPrdRandom(ZX7 , 'A03Q' , 17)","GetPrdRandom(ZX7 , 'A03Q' , IMinBJ(17*imbaMult,100))",100,
+probability,混沌一击,A03N,@223581,25,"GetPrdRandom(ZX7 , 'A03N' , 25)","GetPrdRandom(ZX7 , 'A03N' , IMinBJ(25*imbaMult,100))",100,
+probability,被动M,A19Q,@88225,d=5+5*lvl,"GetPrdRandom(ZX7,'A19Q',d)","GetPrdRandom(ZX7,'A19Q',IMinBJ(d*imbaMult,100))",100,
+probability,被动N,A2EY,@218601,probability=25,"GetPrdRandom(WLE,'A2EY', probability)","GetPrdRandom(WLE,'A2EY', IMinBJ(probability*imbaMult,100))",100,
+probability,被动O,A4HE,@223018,i=10/20,"GetPrdRandom(ZX7,'A4HE', i)","GetPrdRandom(ZX7,'A4HE', IMinBJ(i*imbaMult,100))",100,
+probability,水晶剑/血棘,I0TE,@223604,rate,"GetPrdRandom(ZX7 , 'I0TE' , rate)","GetPrdRandom(ZX7 , 'I0TE' , IMinBJ(rate*imbaMult,100))",100,
+probability,大炮,I0A3,@223613,rate,"GetPrdRandom(ZX7 , 'I0A3' , rate)","GetPrdRandom(ZX7 , 'I0A3' , IMinBJ(rate*imbaMult,100))",100,
+bounce,飞镖弹射(神杖),A004,TSFB3@66377,"times=3,max=3","call SaveInteger(TABLE_P,chainHandle,3,3)
+        call SaveInteger(TABLE_P,chainHandle,4,3)","// IMBA: bounce count x2 cap 8 (imbaMult gates).
+        call SaveInteger(TABLE_P,chainHandle,3,IMinBJ(3*imbaMult,8))
+  ",8,400 radius at 66339 untouched; 1000 speed at 66345 untouched
+bounce,PL灵魂之矛弹射(神杖),A10D,FZD@82418,times=3,"call SaveInteger(TABLE_P,chainHandle,2,BC7)
+            call SaveInteger(TABLE_P,chainHandle,3,3)
+            call Timer","call SaveInteger(TABLE_P,chainHandle,2,BC7)
+            // IMBA: bounce count x2 cap 8.
+            call SaveInteger(TAB",8,400 radius at 82362 untouched; 1000 speed at 82420 untouched

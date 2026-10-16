@@ -701,6 +701,8 @@ boolean R4=false
 boolean BP_MODE=false
 boolean XM_MODE=false
 constant real IMBA_POWER=2.
+integer imbaMult=1
+boolean imbaB67DpsExclude=false
 boolean AM_MODE=false
 multiboard T4=null
 unit V4=null
@@ -21897,6 +21899,10 @@ function DisarmUnitToTimed takes unit whichUnit,integer disarmId,integer ability
 		call SaveTimerHandle(TABLE_HY, h, 1, timr)
 		call DisarmUnit(whichUnit , true , disarmId , abilityId , buffId)
 	endif
+	// IMBA: disarm duration x2 cap 5s.
+	if XM_MODE then
+		set time=RMinBJ(time*IMBA_POWER,5.)
+	endif
 	call TimerStart(timr, time, false, null)
 	set timr=null
 	set trig=null
@@ -28317,8 +28323,25 @@ return 1
 endfunction
 //给单位添加眩晕，第一次使用会卡一下
 function BA7 takes unit p5,unit m5,real Z27 returns nothing
-local unit BB7=CreateUnit(GetOwningPlayer(m5),'e00E',GetUnitX(m5),GetUnitY(m5),0)
-local integer BC7=BY7(Z27)
+local unit BB7=null
+local integer BC7=0
+// IMBA: safety filters mirroring CommonUnitAddStun; duration x2 cap 5s.
+if XM_MODE then
+if MiaoStarted and GetUnitAbilityLevel(m5,'AMdI')>0 then
+return
+endif
+if (m5==ChaosObserverBoss and GetUnitTypeId(m5)=='NB0S') or (m5==TianxingBlackBoss and GetUnitTypeId(m5)=='NTY2') then
+return
+endif
+if IsMagicImmuneUnit(m5) or not UnitAlive(m5) then
+return
+endif
+if Z27 > 0. and Z27 < 2.5 then
+set Z27 = RMinBJ(Z27*IMBA_POWER, 5.)
+endif
+endif
+set BB7=CreateUnit(GetOwningPlayer(m5),'e00E',GetUnitX(m5),GetUnitY(m5),0)
+set BC7=BY7(Z27)
 call UnitAddAbility(BB7,'A0X6')
 call SetUnitAbilityLevel(BB7,'A0X6',BC7)
 call B947IssueTargetOrderById("BA7 @ war3map.j:27206 (B968)",BB7,$D007F,m5)
@@ -28330,6 +28353,12 @@ function B67_DPS takes unit p5,unit m5,integer BL7,real YM7 returns nothing
 local unit b67DpsKillDummyUnit=null
 if BL7==0 then
 return
+endif
+// IMBA: positive skill damage x IMBA_POWER once; BL7==6 life removal excluded; call-site exclusion for execute/econ.
+if imbaB67DpsExclude then
+set imbaB67DpsExclude=false
+elseif XM_MODE and BL7!=6 then
+set YM7=YM7*IMBA_POWER
 endif
 if BL7==2 then
 call UnitDamageTarget(p5,m5,YM7,true,true,ATTACK_TYPE_HERO,DAMAGE_TYPE_NORMAL,WEAPON_TYPE_WHOKNOWS)
@@ -28495,6 +28524,10 @@ endfunction
 function Loop_Damage takes unit ZX7,unit IH7,real d,real DUR,real YM7 returns nothing
     local timer t=CreateTimer()
     local integer OB7=GetHandleId(t)
+    // IMBA: DoT total duration x2 cap 30s; tick d untouched; end-time child100 syncs via same DUR.
+    if XM_MODE then
+        set DUR=RMinBJ(DUR*IMBA_POWER,30.)
+    endif
     call SaveUnitHandle(TABLE_HY,OB7,0,ZX7)
     call SaveUnitHandle(TABLE_HY,OB7,1,IH7)
     call SaveReal(TABLE_HY,OB7,0,YM7)
@@ -46801,7 +46834,7 @@ return
 endif
 if OT7(ZX7,"4309")==false then
 call O37(ZX7,"4309",.2)
-if GetPrdRandom(ZX7, 'A263', 30) and GetUnitAbilityLevel(IH7,'B08N')==0 then
+if GetPrdRandom(ZX7, 'A263', IMinBJ(30*imbaMult,100)) and GetUnitAbilityLevel(IH7,'B08N')==0 then
 call B1023HitArm(ZX7,IH7,1,2.5)
 endif
 endif
@@ -46857,7 +46890,7 @@ return
 endif
 if OT7(ZX7,"4309")==false then
 call O37(ZX7,"4309",.2)
-if GetPrdRandom(ZX7, 'A264', 20) and GetUnitAbilityLevel(IH7,'B02I')==0 then
+if GetPrdRandom(ZX7, 'A264', IMinBJ(20*imbaMult,100)) and GetUnitAbilityLevel(IH7,'B02I')==0 then
 call B1023HitArm(ZX7,IH7,2,2.5)
 endif
 endif
@@ -46891,7 +46924,7 @@ return
 endif
 if OT7(ZX7,"4311")==false then
 call O37(ZX7,"4311",.2)
-if GetPrdRandom(ZX7, 'A2QG', 15) and GetUnitAbilityLevel(IH7,'B0GT')==0 then
+if GetPrdRandom(ZX7, 'A2QG', IMinBJ(15*imbaMult,100)) and GetUnitAbilityLevel(IH7,'B0GT')==0 then
 call B1023HitArm(ZX7,IH7,3,2.5)
 endif
 endif
@@ -58264,6 +58297,7 @@ set FX70=true
 endif
 if XM then
 set XM_MODE=true
+set imbaMult=2
 set HG=true
 set DE=true
 set DG=true
@@ -58306,6 +58340,7 @@ local string s=StringCase(GetEventPlayerChatString(),false)
 if s=="-neng" or s=="neng" then
 if XM_MODE then
 set XM_MODE=false
+set imbaMult=1
 set XM_EXP=0
 set XM_GOLD=0
 set XM_CG=false
@@ -58442,6 +58477,7 @@ endif
 set KK_GAME_DIFFICULTY=difficulty
 if difficulty==1 then
 set XM_MODE=false
+set imbaMult=1
 set XM_EXP=0
 set XM_GOLD=0
 set XM_CG=false
@@ -66374,8 +66410,9 @@ local integer chainHandle=0
 		call SaveUnitHandle(TABLE_P,chainHandle,0,ZX7)
 		call SaveGroupHandle(TABLE_P,chainHandle,1,WS7())
 		call SaveInteger(TABLE_P,chainHandle,2,B287_GetUnitAbilityLevel(ZX7,'A004'))
-        call SaveInteger(TABLE_P,chainHandle,3,3)
-        call SaveInteger(TABLE_P,chainHandle,4,3)
+        // IMBA: bounce count x2 cap 8 (imbaMult gates).
+        call SaveInteger(TABLE_P,chainHandle,3,IMinBJ(3*imbaMult,8))
+        call SaveInteger(TABLE_P,chainHandle,4,IMinBJ(3*imbaMult,8))
 		call TimerStart(chainTimer,15.,false,function B582_BounceChainTimeout)
 		set missileTrigger=NHX(ZX7,IH7,'h0GH',"GWR",1000,true,"")
 		call SaveTimerHandle(TABLE_HY,GetHandleId(missileTrigger),StringHash("B582BounceChain"),chainTimer)
@@ -81288,7 +81325,7 @@ if IsUnitIllusion(ZX7) and M7[id]!=null then
 set caster=M7[id]
 endif
 set hasPassive=NagaSirenAghMirror_HasScepter(caster) and NagaSirenRipTide_GetLevel(caster)>0
-if hasPassive and NagaSirenRipTide_GetLevel(caster)>0 and LoadBoolean(TABLE_HY,EOO,11)==false and LoadBoolean(TABLE_HY,EOO,14) and LoadBoolean(TABLE_HY,EOO,15) and UnitAlive(YXX) and GetPrdRandom(ZX7,'A2KU',15) then
+if hasPassive and NagaSirenRipTide_GetLevel(caster)>0 and LoadBoolean(TABLE_HY,EOO,11)==false and LoadBoolean(TABLE_HY,EOO,14) and LoadBoolean(TABLE_HY,EOO,15) and UnitAlive(YXX) and GetPrdRandom(ZX7,'A2KU',IMinBJ(15*imbaMult,100)) then
 call NagaSirenRipTidePassive_Proc(caster,ZX7)
 endif
 set ZX7=null
@@ -81628,6 +81665,7 @@ function EUD takes unit ZX7 returns integer
 local integer V77=B287_GetUnitAbilityLevel(ZX7,'A088')
 local boolean HaveA=false
 local integer r=0
+// IMBA: multicast prob x2 cap100, casts r x2 cap6 (imbaMult gates).
 local integer id=GetPlayerId(GetOwningPlayer(ZX7))
 if ZX7==ChaosObserverBoss and GetUnitTypeId(ZX7)=='NB0S' and GetUnitAbilityLevel(ZX7,'A9BM')>0 then
     set V77=GetUnitAbilityLevel(ZX7,'A9BM')
@@ -81657,66 +81695,66 @@ endif
 if V77==1 then
     set TI4[id]=TI4[id]+1
     if HaveA then
-        if GetPrdRandom(ZX7,'A088'+5,5) then
-            set r=5
+        if GetPrdRandom(ZX7,'A088'+5,IMinBJ(5*imbaMult,100)) then
+            set r=IMinBJ(5*imbaMult,6)
             set N4[id]=N4[id]+1
-        elseif GetPrdRandom(ZX7,'A088'+2,50) then
-            set r=2
+        elseif GetPrdRandom(ZX7,'A088'+2,IMinBJ(50*imbaMult,100)) then
+            set r=IMinBJ(2*imbaMult,6)
             set TF4[id]=TF4[id]+1
         endif
     else
-        if GetPrdRandom(ZX7,'A088'+2,40) then
-            set r=2
+        if GetPrdRandom(ZX7,'A088'+2,IMinBJ(40*imbaMult,100)) then
+            set r=IMinBJ(2*imbaMult,6)
             set TF4[id]=TF4[id]+1
         endif
     endif
 elseif V77==2 then
     set TI4[id]=TI4[id]+1
     if HaveA then
-        if GetPrdRandom(ZX7,'A088'+5,5) then
-            set r=5
+        if GetPrdRandom(ZX7,'A088'+5,IMinBJ(5*imbaMult,100)) then
+            set r=IMinBJ(5*imbaMult,6)
             set N4[id]=N4[id]+1
-        elseif GetPrdRandom(ZX7,'A088'+3,30) then
-            set r=3
+        elseif GetPrdRandom(ZX7,'A088'+3,IMinBJ(30*imbaMult,100)) then
+            set r=IMinBJ(3*imbaMult,6)
             set TG4[id]=TG4[id]+1
-        elseif GetPrdRandom(ZX7,'A088'+2,60) then
-            set r=2
+        elseif GetPrdRandom(ZX7,'A088'+2,IMinBJ(60*imbaMult,100)) then
+            set r=IMinBJ(2*imbaMult,6)
             set TF4[id]=TF4[id]+1
         endif
     else
-        if GetPrdRandom(ZX7,'A088'+3,25) then
-            set r=3
+        if GetPrdRandom(ZX7,'A088'+3,IMinBJ(25*imbaMult,100)) then
+            set r=IMinBJ(3*imbaMult,6)
             set TG4[id]=TG4[id]+1
-        elseif GetPrdRandom(ZX7,'A088'+2,50) then
-            set r=2
+        elseif GetPrdRandom(ZX7,'A088'+2,IMinBJ(50*imbaMult,100)) then
+            set r=IMinBJ(2*imbaMult,6)
             set TF4[id]=TF4[id]+1
         endif
         endif
 elseif V77==3 then
     set TI4[id]=TI4[id]+1
     if HaveA then
-        if GetPrdRandom(ZX7,'A088'+5,5) then
-            set r=5
+        if GetPrdRandom(ZX7,'A088'+5,IMinBJ(5*imbaMult,100)) then
+            set r=IMinBJ(5*imbaMult,6)
             set N4[id]=N4[id]+1
-        elseif GetPrdRandom(ZX7,'A088'+4,20) then
-            set r=4
+        elseif GetPrdRandom(ZX7,'A088'+4,IMinBJ(20*imbaMult,100)) then
+            set r=IMinBJ(4*imbaMult,6)
             set TH4[id]=TH4[id]+1
-        elseif GetPrdRandom(ZX7,'A088'+3,40) then
-            set r=3
+        elseif GetPrdRandom(ZX7,'A088'+3,IMinBJ(40*imbaMult,100)) then
+            set r=IMinBJ(3*imbaMult,6)
             set TG4[id]=TG4[id]+1
-        elseif GetPrdRandom(ZX7,'A088'+2,80) then
-            set r=2
+        elseif GetPrdRandom(ZX7,'A088'+2,IMinBJ(80*imbaMult,100)) then
+            set r=IMinBJ(2*imbaMult,6)
             set TF4[id]=TF4[id]+1
         endif
     else
-        if GetPrdRandom(ZX7,'A088'+4,15) then
-            set r=4
+        if GetPrdRandom(ZX7,'A088'+4,IMinBJ(15*imbaMult,100)) then
+            set r=IMinBJ(4*imbaMult,6)
             set TH4[id]=TH4[id]+1
-        elseif GetPrdRandom(ZX7,'A088'+3,30) then
-            set r=3
+        elseif GetPrdRandom(ZX7,'A088'+3,IMinBJ(30*imbaMult,100)) then
+            set r=IMinBJ(3*imbaMult,6)
             set TG4[id]=TG4[id]+1
-        elseif GetPrdRandom(ZX7,'A088'+2,60) then
-            set r=2
+        elseif GetPrdRandom(ZX7,'A088'+2,IMinBJ(60*imbaMult,100)) then
+            set r=IMinBJ(2*imbaMult,6)
             set TF4[id]=TF4[id]+1
         endif
     endif
@@ -82415,7 +82453,8 @@ function FZD takes unit ZX7,unit IH7,integer BC7 returns nothing
             call SaveUnitHandle(TABLE_P,chainHandle,0,ZX7)
             call SaveGroupHandle(TABLE_P,chainHandle,1,WS7())
             call SaveInteger(TABLE_P,chainHandle,2,BC7)
-            call SaveInteger(TABLE_P,chainHandle,3,3)
+            // IMBA: bounce count x2 cap 8.
+            call SaveInteger(TABLE_P,chainHandle,3,IMinBJ(3*imbaMult,8))
             call TimerStart(chainTimer,15.,false,function B582_BounceChainTimeout)
             set t=NHX(ZX7, IH7,'h06L', "FYD_TS",1000, true,"")
             call SaveTimerHandle(TABLE_HY,GetHandleId(t),StringHash("B582BounceChain"),chainTimer)
@@ -88222,7 +88261,7 @@ local integer BC7=B287_GetUnitAbilityLevel(ZX7,'A19Q')
 local unit BB7
 local integer id=GetUnitTypeId(ZX7)
 local real d=5+BC7*5
-if GetPrdRandom(ZX7,'A19Q',d) and KE7(ZX7,IH7)<=325 and ISPH(ZX7)==false then
+if GetPrdRandom(ZX7,'A19Q',IMinBJ(R2I(d)*imbaMult,100)) and KE7(ZX7,IH7)<=325 and ISPH(ZX7)==false then
 set BB7=CreateUnit(GetOwningPlayer(ZX7),'e00E',GetUnitX(IH7),GetUnitY(IH7),0)
 call XF7(BB7,'A0BV')
 call SetUnitAbilityLevel(BB7,'A0BV',BC7)
@@ -90352,7 +90391,7 @@ local integer MAX=2+V77
 local trigger t=null
 if SuijiMode_ScepterRegistryIsActive(p5,'A1P9') then
     set MAX=MAX*2
-    if GetPrdRandom(p5,'A03Y',30) then
+    if GetPrdRandom(p5,'A03Y',IMinBJ(30*imbaMult,100)) then
         call CQLL_ZHDD(p5)
     endif
 endif
@@ -92732,13 +92771,13 @@ call WR7(g)
 set g=null
 endfunction
 function FJLX takes nothing returns nothing
-	if B287_GetUnitAbilityLevel(YXX,'A0C6')> 0 and IsUnitType(WXX, UNIT_TYPE_STRUCTURE)==false and GetUnitAbilityLevel(WXX,'A04R')==0 and IsUnitEnemy(WXX, GetOwningPlayer(YXX)) and GetPrdRandom(YXX, 'A0C6', 20) and ISPH(YXX)==false then
+	if B287_GetUnitAbilityLevel(YXX,'A0C6')> 0 and IsUnitType(WXX, UNIT_TYPE_STRUCTURE)==false and GetUnitAbilityLevel(WXX,'A04R')==0 and IsUnitEnemy(WXX, GetOwningPlayer(YXX)) and GetPrdRandom(YXX, 'A0C6', IMinBJ(20*imbaMult,100)) and ISPH(YXX)==false then
         if MV7(YXX,ZU[it_xh])!=null then
             call QPD(YXX,true) 
         elseif OT7(YXX,"QPD")==false then
             call QPD(YXX,false)
         endif 
-    elseif B287_GetUnitAbilityLevel(WXX,'A0C6')> 0 and IsUnitType(YXX, UNIT_TYPE_STRUCTURE)==false and GetUnitAbilityLevel(YXX,'A04R')==0 and IsUnitEnemy(WXX, GetOwningPlayer(YXX)) and GetPrdRandom(WXX, 'A0C6', 20) and ISPH(WXX)==false and SuijiMode_ScepterRegistryIsActive(WXX,'A0C6') then
+    elseif B287_GetUnitAbilityLevel(WXX,'A0C6')> 0 and IsUnitType(YXX, UNIT_TYPE_STRUCTURE)==false and GetUnitAbilityLevel(YXX,'A04R')==0 and IsUnitEnemy(WXX, GetOwningPlayer(YXX)) and GetPrdRandom(WXX, 'A0C6', IMinBJ(20*imbaMult,100)) and ISPH(WXX)==false and SuijiMode_ScepterRegistryIsActive(WXX,'A0C6') then
         if MV7(WXX,ZU[it_xh])!=null then
             call QPD(WXX,true)
         elseif OT7(WXX,"QPD")==false then
@@ -93089,7 +93128,12 @@ call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Silence\\Si
 call Z57(u,'A4FF',1,3.,'BNab')
 set t=CreateTimer()
 call SaveUnitHandle(L7,GetHandleId(t),0,u)
+// IMBA: nightmare aftershock debuff x2 cap 30s.
+if XM_MODE then
+call TimerStart(t,RMinBJ(2.*IMBA_POWER,30.),false,function NightmareAftershock_SilenceEnd)
+else
 call TimerStart(t,2.,false,function NightmareAftershock_SilenceEnd)
+endif
 set t=null
 endfunction
 function NightmareDeep_OnDamaging takes nothing returns boolean
@@ -104158,8 +104202,14 @@ endif
 // Damage uses the old count. Publish the next count before damage callbacks.
 set razeBonus=I2R(razeStacks)*(40.+15.*I2R(IMinBJ(4,razeLevel)))
 call SaveInteger(L7,razeKey,3,razeStacks+1)
+// IMBA: raze bonus buff x2 cap 30s; end-time synced.
+if XM_MODE then
+call SaveReal(L7,razeKey,4,GetGameTime()+RMinBJ(6.*IMBA_POWER,30.))
+call TimerStart(razeTimer,RMinBJ(6.*IMBA_POWER,30.),false,function B906RazeExpire)
+else
 call SaveReal(L7,razeKey,4,GetGameTime()+6.)
 call TimerStart(razeTimer,6.,false,function B906RazeExpire)
+endif
 set razeTimer=null
 set razeDeath=null
 return razeBonus
@@ -112442,7 +112492,7 @@ function ELQX takes unit ZX7,unit IH7 returns nothing
 	set t = null
 endfunction
 function ZCELQX takes nothing returns nothing
-	if WXX!=null and YXX!=null and GetUnitTypeId(WXX)!=0 and GetUnitTypeId(YXX)!=0 and (GetUnitAbilityLevel(WXX,'A4L7')>0) and ISPH(WXX)==false and GetPrdRandom(WXX, 'A4L7', 20) and UnitAlive(YXX) and IsUnitEnemy(YXX, GetOwningPlayer(WXX)) and IsUnitType(YXX, UNIT_TYPE_STRUCTURE)==false and GetUnitAbilityLevel(YXX,'A04R')==0 then
+	if WXX!=null and YXX!=null and GetUnitTypeId(WXX)!=0 and GetUnitTypeId(YXX)!=0 and (GetUnitAbilityLevel(WXX,'A4L7')>0) and ISPH(WXX)==false and GetPrdRandom(WXX, 'A4L7', IMinBJ(20*imbaMult,100)) and UnitAlive(YXX) and IsUnitEnemy(YXX, GetOwningPlayer(WXX)) and IsUnitType(YXX, UNIT_TYPE_STRUCTURE)==false and GetUnitAbilityLevel(YXX,'A04R')==0 then
         call ELQX(WXX,YXX)
 	endif
 endfunction
@@ -117036,7 +117086,12 @@ local timer t=CreateTimer()
 local fogmodifier f=CreateFogModifierRadius(p,FOG_OF_WAR_VISIBLE,GetUnitX(target),GetUnitY(target),350.,true,true)
 call FogModifierStart(f)
 call SaveFogModifierHandle(L7,GetHandleId(t),0,f)
+// IMBA: maledict reveal x2 cap 30s.
+if XM_MODE then
+call TimerStart(t,RMinBJ(2.*IMBA_POWER,30.),false,function MaledictReveal_End)
+else
 call TimerStart(t,2.,false,function MaledictReveal_End)
+endif
 set f=null
 set t=null
 endfunction
@@ -147266,7 +147321,7 @@ set IH7=null
 return false
 endif
 if GetAttacker()==ZX7 and B287_GetUnitAbilityLevel(ZX7,'A2RA')>0 and IsUnitEnemy(IH7,GetOwningPlayer(ZX7)) and LoadInteger(L7,GetHandleId(ZX7),4347)!=1 and IsUnitType(IH7,UNIT_TYPE_STRUCTURE)==false and GetUnitAbilityLevel(IH7,'A04R')==0 and ISPH(ZX7)==false then
-if GetPrdRandom(ZX7,'A2RA',40) then
+if GetPrdRandom(ZX7,'A2RA',IMinBJ(40*imbaMult,100)) then
 call O3O(ZX7,4347,0.1)
 call B1023HitArm(ZX7,IH7,9,1.5)
 endif
@@ -171678,7 +171733,12 @@ if TV7(Sh)then
 else
 	call SaveInteger(TABLE_HY,I97,1,2)
 endif
+// IMBA: Z9F buff x2 cap 30s.
+if XM_MODE then
+call TimerStart(tt,RMinBJ(5.1*IMBA_POWER,30.),false,function Z4F_Timer)
+else
 call TimerStart(tt,5.1,false,function Z4F_Timer)
+endif
 set t=null
 set tt=null
 set S4=null
@@ -180244,7 +180304,12 @@ function XSBF takes nothing returns nothing
     local unit u = GetTriggerUnit()
 	call SaveUnitHandle(TABLE_HY, h, 0, u)
 	call SetUnitImitateMoveSpeed(u, 999, 800)
+	// IMBA: XSBF buff x2 cap 30s.
+	if XM_MODE then
+	call TimerStart(t, RMinBJ(15.*IMBA_POWER,30.), false, function XSBF2)
+	else
 	call TimerStart(t, 15., false, function XSBF2)
+	endif
 	set t = null
     set u = null
 endfunction
@@ -183636,6 +183701,7 @@ call FlushChildHashtable(L7,(I97))
 call OZ7(t)
 //call KillUnit(IH7)
 call SetUnitLifeBJ(IH7,20)
+set imbaB67DpsExclude=true
 call B67_DPS(ZX7,IH7,20,50)
 endif
 set t=null
@@ -183687,6 +183753,7 @@ if GetTriggerEvalCount(t)>E1D then
 call AddHeroXP(ZX7,R2I(EEG(BC7)*2.5),true)
 //call KillUnit(IH7)
 call SetUnitLifeBJ(IH7,20)
+set imbaB67DpsExclude=true
 call B67_DPS(ZX7,IH7,20,50)
 call NM7(I97)
 call OZ7(t)
@@ -192879,7 +192946,12 @@ call NS7(h,"LunaMarked",true)
 call NU7(h,"LunaMarkEffect",AddSpecialEffectTarget("Abilities\\Spells\\NightElf\\FaerieFire\\FaerieFireTarget.mdl",target,"overhead"))
 call SaveTimerHandle(L7,h,StringHash("LunaMarkTimer"),t)
 call SaveUnitHandle(L7,GetHandleId(t),0,target)
+// IMBA: mark duration x2 cap 30s.
+if XM_MODE then
+call TimerStart(t,RMinBJ(5.*IMBA_POWER,30.),false,function Luna_MarkExpire)
+else
 call TimerStart(t,5.,false,function Luna_MarkExpire)
+endif
 set old=null
 set t=null
 set e=null
@@ -193163,6 +193235,10 @@ set mdTimer=null
 endfunction
 function Miao_Lock takes unit mdUnit,real mdDuration,string mdAnimation,boolean mdCleanse returns nothing
 local timer mdTimer=CreateTimer()
+// IMBA: pause/stun control duration x2 cap 5s.
+if XM_MODE then
+set mdDuration=RMinBJ(mdDuration*IMBA_POWER,5.)
+endif
 call SaveUnitHandle(MiaoTable,GetHandleId(mdTimer),0,mdUnit)
 call SaveBoolean(MiaoTable,GetHandleId(mdTimer),1,mdCleanse)
 call TimerStart(mdTimer,mdDuration,false,function Miao_Unlock)
@@ -194199,7 +194275,12 @@ endif
 call NU7(h,"LunaShieldEffect",AddSpecialEffectTarget("Abilities\\Spells\\Human\\ManaShield\\ManaShieldCaster.mdl",u,"origin"))
 call SaveUnitHandle(L7,GetHandleId(t),0,u)
 call SaveInteger(L7,GetHandleId(t),1,generation)
+// IMBA: shield duration x2 cap 30s.
+if XM_MODE then
+call TimerStart(t,RMinBJ(5.*IMBA_POWER,30.),false,function Luna_ShieldExpire)
+else
 call TimerStart(t,5.,false,function Luna_ShieldExpire)
+endif
 call SaveUnitHandle(L7,GetHandleId(cleanseTimer),0,u)
 call SaveInteger(L7,GetHandleId(cleanseTimer),1,generation)
 call TimerStart(cleanseTimer,1.,true,function Luna_ShieldCleanseTick)
@@ -216347,7 +216428,7 @@ endfunction
 function SFFQ_ELQX takes nothing returns nothing
 	local unit target = Wave_U
 	local unit u = Wave_Sou
-	if u!=null and target!=null and GetUnitTypeId(u)!=0 and GetUnitTypeId(target)!=0 and GetUnitAbilityLevel(u,'A4L7')>0 and GetPrdRandom(u, 'A4L7', 20) and UnitAlive(target) then
+	if u!=null and target!=null and GetUnitTypeId(u)!=0 and GetUnitTypeId(target)!=0 and GetUnitAbilityLevel(u,'A4L7')>0 and GetPrdRandom(u, 'A4L7', IMinBJ(20*imbaMult,100)) and UnitAlive(target) then
         call ELQX(u,target)
 	endif
 	set target = null
@@ -217034,7 +217115,12 @@ endif
 set b1012SilenceTimer=CreateTimer()
 call SaveUnitHandle(L7,GetHandleId(b1012SilenceTimer),0,b1012Victim)
 call SaveEffectHandle(L7,GetHandleId(b1012SilenceTimer),1,AddSpecialEffectTarget("Abilities\\Spells\\Other\\Silence\\SilenceTarget.mdl",b1012Victim,"overhead"))
+// IMBA: silence duration x2 cap 5s.
+if XM_MODE then
+call TimerStart(b1012SilenceTimer,RMinBJ(2.*IMBA_POWER,5.),false,function B1012ChainsSilenceEnd)
+else
 call TimerStart(b1012SilenceTimer,2.,false,function B1012ChainsSilenceEnd)
+endif
 call MHUnit_Silence(b1012Victim,true)
 set b1012SilenceTimer=null
 endfunction
@@ -218598,7 +218684,7 @@ function LUA takes unit R8X,unit WLE returns nothing
 	// if IsUnitType(R8X, UNIT_TYPE_HERO) then
 	// 	set probability = 35
 	// endif
-	if GetPrdRandom(WLE,'A2EY', probability) then
+	if GetPrdRandom(WLE,'A2EY', IMinBJ(probability*imbaMult,100)) then
         if GetUnitAbilityLevel(WLE,'A2VW')>0 then
             call O37(WLE,"4316",.75*(3.2-0.6*BC7))
         else
@@ -222873,6 +222959,7 @@ function TPA takes nothing returns nothing
 		else
 			set probability = 10
 		endif
+		set probability=IMinBJ(probability*imbaMult,100)
 		if LoadInteger(TABLE_HY, GetHandleId(WXX),'bash')!= 1 and GetPrdRandom(WXX,'A4C7', probability) then
 			if GetUnitAbilityLevel(WXX,'A4C6')==1 then
 				call YDWESetUnitAbilityState(WXX,'A4C6', 1, 2)
@@ -222881,11 +222968,13 @@ function TPA takes nothing returns nothing
 			call TGA(WXX, YXX, 4)
 		endif
 	elseif B287_GetUnitAbilityLevel(WXX,'A0JJ')> 0 then	//重击
-		if GetPrdRandom(WXX,'A0JJ', 5 + 5 * B287_GetUnitAbilityLevel(WXX,'A0JJ')) then
+		set probability=IMinBJ((5 + 5 * B287_GetUnitAbilityLevel(WXX,'A0JJ'))*imbaMult,100)
+		if GetPrdRandom(WXX,'A0JJ', probability) then
 			call TGA(WXX, YXX, 1)
 		endif
 	elseif B287_GetUnitAbilityLevel(WXX,'A081')> 0 then	//时间锁定
-			if (SUIJI_MODE==false or SuijiMode_HasRandomSkill(WXX,'A081')==false or GetUnitAbilityLevel(YXX,'B0C2')==0) and GetPrdRandom(WXX,'A081', 5 + 5 * B287_GetUnitAbilityLevel(WXX,'A081')) then
+			set probability=IMinBJ((5 + 5 * B287_GetUnitAbilityLevel(WXX,'A081'))*imbaMult,100)
+			if (SUIJI_MODE==false or SuijiMode_HasRandomSkill(WXX,'A081')==false or GetUnitAbilityLevel(YXX,'B0C2')==0) and GetPrdRandom(WXX,'A081', probability) then
 				call SJSD(WXX, YXX)
 			endif
 	elseif B287_GetUnitAbilityLevel(WXX,'A09E')> 0 then	//狂战士之怒
@@ -222894,16 +222983,19 @@ function TPA takes nothing returns nothing
         else
             set probability = 10
         endif
+		set probability=IMinBJ(probability*imbaMult,100)
 		if GetPrdRandom(WXX,'A09E', probability) then
 			call TGA(WXX, YXX, 3)
 		endif
 	elseif GetUnitAbilityLevel(WXX,'A0WR')> 0 then	//极度饥渴
-		if GetPrdRandom(WXX,'A0WR', 15) then
+		set probability=IMinBJ(15*imbaMult,100)
+		if GetPrdRandom(WXX,'A0WR', probability) then
 				call TGA(WXX, YXX, 6)
 		endif
     endif
 	if GetUnitAbilityLevel(WXX,'A061')==1 then	//金箍棒
-		if GetPrdRandom(WXX,'A061', 35) then
+		set probability=IMinBJ(35*imbaMult,100)
+		if GetPrdRandom(WXX,'A061', probability) then
 			call TGA(WXX, YXX, 5)
 		endif
 	endif
@@ -222925,12 +223017,22 @@ function hrzycd takes unit u returns nothing
 	call YDWESetUnitAbilityState(u,'A3TY', 1, 3.75)
 	call SaveInteger(TABLE_HY, GetHandleId(u), 'echs', 1)
 	call SaveUnitHandle(TABLE_HY, GetHandleId(t), 1, u)
-	call TimerStart(t, 3.75 , false, function hyzrcd)	
+	// IMBA: buff duration x2 cap 30s.
+	if XM_MODE then
+	call TimerStart(t, RMinBJ(3.75*IMBA_POWER,30.) , false, function hyzrcd)
+	else
+	call TimerStart(t, 3.75 , false, function hyzrcd)
+	endif	
 	else
 	call YDWESetUnitAbilityState(u,'A3TY', 1, 5)
 	call SaveInteger(TABLE_HY, GetHandleId(u), 'echs', 1)
 	call SaveUnitHandle(TABLE_HY, GetHandleId(t), 1, u)
+	// IMBA: buff duration x2 cap 30s.
+	if XM_MODE then
+	call TimerStart(t, RMinBJ(5.*IMBA_POWER,30.) , false, function hyzrcd)
+	else
 	call TimerStart(t, 5 , false, function hyzrcd)
+	endif
 	endif
 	set t = null
 endfunction
@@ -223015,7 +223117,7 @@ function JDLD takes unit ZX7,unit IH7, boolean ZOO returns nothing
     else
         set i=10
     endif
-    if WF7(IH7)==false and GetPrdRandom(ZX7,'A4HE', i) then
+    if WF7(IH7)==false and GetPrdRandom(ZX7,'A4HE', IMinBJ(i*imbaMult,100)) then
         call Z57(IH7,'A4HE', 1, 0.8,'B0K0')
         call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Undead\\FrostNova\\FrostNovaTarget.mdl",IH7,"origin"))
         call B67(ZX7,IH7,1,75.)
@@ -223484,7 +223586,7 @@ function SetUnitCriticalStrike takes unit ZX7,unit IH7,boolean isMelee returns r
 			// endif
 			// 狼人(40) * (1.6 1.8 2)
 			set level=B287_GetUnitAbilityLevel(ZX7,'A2PX')
-			if level > 0 and GetPrdRandom(ZX7 , 'A2PX' , 40.) then
+			if level > 0 and GetPrdRandom(ZX7 , 'A2PX' , IMinBJ(40*imbaMult,100)) then
 				set Damagerate=1.4+level*.2
 				if ( value < Damagerate ) then
 					set value=Damagerate
@@ -223495,7 +223597,7 @@ function SetUnitCriticalStrike takes unit ZX7,unit IH7,boolean isMelee returns r
 			// 剑舞(20, 25, 30, 35) * (2.0) 
 			// 剑舞(20, 25, 30, 35) * (2.0) 
 			set level=B287_GetUnitAbilityLevel(ZX7, 'A00K')
-			if level > 0 and GetPrdRandom(ZX7 , 'A00K' , 15. + level * 5.) then
+			if level > 0 and GetPrdRandom(ZX7 , 'A00K' , IMinBJ((15 + level * 5)*imbaMult,100)) then
 				set Damagerate=2.0
 				if ( value < Damagerate ) then
 					set value=Damagerate
@@ -223542,7 +223644,7 @@ function SetUnitCriticalStrike takes unit ZX7,unit IH7,boolean isMelee returns r
 			// endif
 			// 末日头狼(25) * (2.0)
 			set level=B287_GetUnitAbilityLevel(ZX7, 'A1OY')
-			if level > 0 and GetPrdRandom(ZX7 , 'A1OY' , 25.) then
+			if level > 0 and GetPrdRandom(ZX7 , 'A1OY' , IMinBJ(25*imbaMult,100)) then
 				set Damagerate=2.0
 				if ( value < Damagerate ) then
 					set value=Damagerate
@@ -223553,7 +223655,7 @@ function SetUnitCriticalStrike takes unit ZX7,unit IH7,boolean isMelee returns r
 			// 致死打击(9 11 13 15) * (3.0)
 			// 致死打击(9 11 13 15) * (3.0)
 			set level=B287_GetUnitAbilityLevel(ZX7, 'ABcr')
-			if level > 0 and GetPrdRandom(ZX7 , 'ABcr' , 7+level*2) then
+			if level > 0 and GetPrdRandom(ZX7 , 'ABcr' , IMinBJ((7+level*2)*imbaMult,100)) then
 				set Damagerate=3.0
 				if LoadBoolean(TABLE_HY,EOO,StringHash("B846StackHandled")) and ZX7==WXX and IH7==YXX and IsUnitType(IH7,UNIT_TYPE_HERO)==false and IsUnitIllusion(IH7)==false and GetUnitTypeId(IH7)!='n00L' and AS7(IH7)==false then
 				set Damagerate=6.0
@@ -223567,7 +223669,7 @@ function SetUnitCriticalStrike takes unit ZX7,unit IH7,boolean isMelee returns r
 			// 恩赐解脱(17) * (2.5 3.5 4.5)
 			// 恩赐解脱(17) * (2.5 3.5 4.5)
 			set level=B287_GetUnitAbilityLevel(ZX7, 'A03Q')
-			if level > 0 and GetPrdRandom(ZX7 , 'A03Q' , 17) then
+			if level > 0 and GetPrdRandom(ZX7 , 'A03Q' , IMinBJ(17*imbaMult,100)) then
 				set Damagerate=1.5 + level * 1.0
 				if ( value < Damagerate ) then
 					set value=Damagerate
@@ -223578,7 +223680,7 @@ function SetUnitCriticalStrike takes unit ZX7,unit IH7,boolean isMelee returns r
 			// 混沌一击(25) * [1.25-(1.6 1.9 2.2 2.5)]
 			// 混沌一击(25) * [1.25-(1.6 1.9 2.2 2.5)]
 			set level=B287_GetUnitAbilityLevel(ZX7, 'A03N')
-			if level > 0 and GetPrdRandom(ZX7 , 'A03N' , 25) then
+			if level > 0 and GetPrdRandom(ZX7 , 'A03N' , IMinBJ(25*imbaMult,100)) then
 				set Damagerate=GetRandomReal(1.25, 1.3 + level * 0.3)
 				if ( value < Damagerate ) then
 					set value=Damagerate
@@ -223601,7 +223703,7 @@ function SetUnitCriticalStrike takes unit ZX7,unit IH7,boolean isMelee returns r
         if MRPH(ZX7)==false and YSBJ_HERO(ZX7)==false then
             //水晶剑/血棘(20) * (1.75)
             set rate=XJBJ_RATE(ZX7)*100.
-            if rate>0 and GetPrdRandom(ZX7 , 'I0TE' , rate) then
+            if rate>0 and GetPrdRandom(ZX7 , 'I0TE' , IMinBJ(R2I(rate)*imbaMult,100)) then
                 set Damagerate=1.75
                 if ( value < Damagerate ) then
                     set value=Damagerate
@@ -223610,7 +223712,7 @@ function SetUnitCriticalStrike takes unit ZX7,unit IH7,boolean isMelee returns r
             endif
             //大炮(30) * (2.4)
             set rate=DPBJ_RATE(ZX7)*100.
-            if rate>0 and GetPrdRandom(ZX7 , 'I0A3' , rate) then
+            if rate>0 and GetPrdRandom(ZX7 , 'I0A3' , IMinBJ(R2I(rate)*imbaMult,100)) then
                 set Damagerate=2.4
                 if ( value < Damagerate ) then
                     set value=Damagerate
@@ -224785,15 +224887,15 @@ function MNGJTX takes unit ZX7, unit IH7 returns nothing
 		endif
 	endif
     if MV7(ZX7, ZU[RLL])!= null then	//大隐刀
-        if GetPrdRandom(ZX7, 'A2QG', 15) and GetUnitAbilityLevel(IH7,'B0GT')==0 then
+        if GetPrdRandom(ZX7, 'A2QG', IMinBJ(15*imbaMult,100)) and GetUnitAbilityLevel(IH7,'B0GT')==0 then
             call ZAA8(IH7)
         endif   
     elseif MV7(ZX7, ZU[U1])!= null or MV7(ZX7, ZU[it_sy])!= null then	//双刀、三元
-		if GetPrdRandom(ZX7, 'A263', 30) and GetUnitAbilityLevel(IH7,'B08N')==0 then
+		if GetPrdRandom(ZX7, 'A263', IMinBJ(30*imbaMult,100)) and GetUnitAbilityLevel(IH7,'B08N')==0 then
 			call ZW8(IH7)
 		endif
 	elseif MV7(ZX7, ZU[RL])!= null or MV7(ZX7, ZU[R3])!= null or MV7(ZX7, ZU[it_dyms])!= null then
-		if GetPrdRandom(ZX7, 'A264', 20) and GetUnitAbilityLevel(IH7,'B02I')==0 then	//散华和天堂之戟和地狱面首
+		if GetPrdRandom(ZX7, 'A264', IMinBJ(20*imbaMult,100)) and GetUnitAbilityLevel(IH7,'B02I')==0 then	//散华和天堂之戟和地狱面首
 			call ZA8(IH7)
 		endif
 	endif
@@ -228805,7 +228907,12 @@ function TZA takes unit attackerUnit, unit targetUnit, boolean isAbility returns
 	if IsUnitType(attackerUnit, UNIT_TYPE_HERO) or AS7(attackerUnit) or IsUnitIllusion(attackerUnit) then
 		call ExecuteAttackEvent(-2)
 	endif
+	// IMBA: TZA buff x2 cap 30s.
+	if XM_MODE then
+	call TimerStart(tt, RMinBJ(4.*IMBA_POWER,30.), false, null)
+	else
 	call TimerStart(tt, 4, false, null)
+	endif
 	call SaveBoolean(TABLE_HY, h, 0, isAbility)
 	set b1018DamageOwner=null
 	set tt = null
@@ -228835,7 +228942,12 @@ return
 endif
 if id=='A27H' then
 if (LoadInteger(L7,(GetHandleId(targetUnit)),(705)))==0 then
+// IMBA: control duration x2 cap 5s.
+if XM_MODE then
+call TimerStart(N84[GetPlayerId(GetOwningPlayer(whichUnit))],RMinBJ(2.*IMBA_POWER,5.),false,null)
+else
 call TimerStart(N84[GetPlayerId(GetOwningPlayer(whichUnit))],2,false,null)
+endif
 call Japi_ReduceUnitAbilityCoolDown(whichUnit,id,2.)
 set targetUnit=null
 return
@@ -239471,7 +239583,12 @@ call YW8(u,0,0)
 set t=CreateTimer()
 call SaveUnitHandle(L7,GetHandleId(t),0,u)
 call SaveInteger(L7,GetHandleId(t),1,serial)
+// IMBA: aeon disk invuln window x2 cap 10s.
+if XM_MODE then
+call TimerStart(t,RMinBJ(2.5*IMBA_POWER,10.),false,function AeonDisk_ActiveFinish)
+else
 call TimerStart(t,2.5,false,function AeonDisk_ActiveFinish)
+endif
 set shield=null
 set burst=null
 set t=null
@@ -239800,7 +239917,12 @@ set cleanup=CreateTimer()
 call SaveUnitHandle(L7,GetHandleId(cleanup),0,reflector)
 call SaveInteger(L7,GetHandleId(cleanup),1,castSkill)
 call SaveInteger(L7,GetHandleId(cleanup),2,serial)
+// IMBA: lotus reflect window x2 cap 30s.
+if XM_MODE then
+call TimerStart(cleanup,RMinBJ(12.*IMBA_POWER,30.),false,function LotusOrb_TempFallback)
+else
 call TimerStart(cleanup,12.,false,function LotusOrb_TempFallback)
+endif
 else
 call LotusOrb_ClearTemp(reflector,castSkill,serial)
 endif
@@ -240087,11 +240209,20 @@ call B907ClearShield(gearTarget)
 // Same-name shields replace rather than stack; the newest shield lasts four seconds.
 call SaveInteger(L7,gearTargetKey,StringHash("B907ShieldSerial"),gearSerial)
 call SaveReal(L7,gearTargetKey,StringHash("B907Shield"),gearAmount)
+// IMBA: gear shield duration x2 cap 30s; end-time synced.
+if XM_MODE then
+call SaveReal(L7,gearTargetKey,StringHash("B907ShieldUntil"),GetGameTime()+RMinBJ(4.*IMBA_POWER,30.))
+else
 call SaveReal(L7,gearTargetKey,StringHash("B907ShieldUntil"),GetGameTime()+4.)
+endif
 call SaveEffectHandle(L7,gearTargetKey,StringHash("B907ShieldFx"),AddSpecialEffectTarget("Abilities\\Spells\\Human\\ManaShield\\ManaShieldCaster.mdl",gearTarget,"origin"))
 call SaveUnitHandle(L7,GetHandleId(gearTimer),0,gearTarget)
 call SaveInteger(L7,GetHandleId(gearTimer),1,gearSerial)
+if XM_MODE then
+call TimerStart(gearTimer,RMinBJ(4.*IMBA_POWER,30.),false,function B907ShieldExpire)
+else
 call TimerStart(gearTimer,4.,false,function B907ShieldExpire)
+endif
 set gearTimer=null
 endfunction
 function B907OnDamaging takes nothing returns boolean

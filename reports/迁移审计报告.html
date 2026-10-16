@@ -397,6 +397,63 @@ Parse failed: 1 error total</pre>
   </table>
 </div>
 
+<h2>十五、IMBA_POWER×2 技能增益参数实施（2026-10-16 第三轮）</h2>
+<div class="card">
+  <h3>15.1 范围与硬约束</h3>
+  <p>严格按四组已审计白名单实施"除距离外技能增益参数×2"，不做全局机械替换。距离、冷却、蓝耗、rawcode、坐标、模型缩放完全不变。</p>
+  <div class="summary-grid">
+    <div class="stat"><div class="num">61</div><div class="label">代码改动点</div></div>
+    <div class="stat"><div class="num">2</div><div class="label">新增全局变量（imbaMult/imbaB67DpsExclude）</div></div>
+    <div class="stat"><div class="num">7/7</div><div class="label">包内文件回读一致</div></div>
+    <div class="stat"><div class="num">0</div><div class="label">CreateUnit/TimedLife 新增倍率</div></div>
+  </div>
+  <h3>15.2 硬约束：取消所有召唤实体数量×2</h3>
+  <p>按用户最终硬约束，<strong>取消</strong>以下白名单项（召唤/分身/守卫/陷阱数量与存活时间保持原值）：</p>
+  <ul>
+    <li><span class="badge badge-bad">取消</span> Visage 佣兽数量×2（familiarCount1052=2/3 原值保留）——单位数、AI、寻路负载。</li>
+    <li><span class="badge badge-bad">取消</span> ATD 镜像分身存活时间×2（ShuangXiongTime(AQD,DUR) 与 TimerStart(tt,DUR+4,...) 原值保留）——计时器与攻击事件负载。</li>
+    <li>召唤物造成的技能伤害/治疗仍走 B67/B907/B67_DPS 入口×2，不重复放大。</li>
+    <li>静态扫描证明：CreateUnit 循环、UnitApplyTimedLife、ShuangXiongTime 无新增 imbaMult/IMBA_POWER 引用（0 处）。</li>
+  </ul>
+  <h3>15.3 已实施改动分类</h3>
+  <table>
+    <tr><th>类别</th><th>数量</th><th>安全帽</th><th>门控</th></tr>
+    <tr><td>B67_DPS 集中伤害×2</td><td>1 处集中插入 + 2 处处决 carve</td><td>BL7!=6；BL7==6 生命移除排除</td><td>XM_MODE</td></tr>
+    <tr><td>BA7/A0X6 平行眩晕×2</td><td>1 处（含 Boss/魔免/Miao 过滤）</td><td>5.0s</td><td>XM_MODE</td></tr>
+    <tr><td>Loop_Damage DoT 总时长×2</td><td>1 处集中（end-time 同源同步）</td><td>30.0s；tick 周期不变</td><td>XM_MODE</td></tr>
+    <tr><td>控制时长（缴械/暂停/沉默/UTA）</td><td>4 处</td><td>5.0s</td><td>XM_MODE</td></tr>
+    <tr><td>Buff/Debuff 时长（Luna/Aeon/B907/Lotus/Nightmare/Maledict/Raze/hrzycd/TZA/XSBF/Z9F）</td><td>12 处（含 2 处 end-time 双写同步）</td><td>10s/30s</td><td>XM_MODE</td></tr>
+    <tr><td>EUD 多重施法概率+次数</td><td>12 档（6 个 if-else 块）</td><td>概率 100%；次数 r 帽 6</td><td>imbaMult（=XM_MODE?2:1）</td></tr>
+    <tr><td>TPA 攻击触发概率（碎颅/重击/时间锁定/狂战/饥渴/金箍棒）</td><td>6 分支</td><td>100%</td><td>imbaMult</td></tr>
+    <tr><td>散落 PRD 被动概率（A0C6/A2KU/A263/A264/A2QG/A03Y/A4L7/A2RA/A2PX/A00K/A1OY/ABcr/A03Q/A03N/A19Q/A2EY/A4HE/I0TE/I0A3）</td><td>23 处（含双路径）</td><td>100%；real→R2I 修复</td><td>imbaMult</td></tr>
+    <tr><td>弹射次数（A004 飞镖/A10D 灵魂之矛）</td><td>2 处 SaveInteger</td><td>帽 8；400 距离/1000 速度行不变</td><td>imbaMult</td></tr>
+  </table>
+  <h3>15.4 排除项（不×2）</h3>
+  <ul>
+    <li>处决/经济：183639/183690 点金/牺牲链（imbaB67DpsExclude 标记）。</li>
+    <li>生命移除：BL7==6（86742 A0AH、88272 A4C8）被 guard 自动排除。</li>
+    <li>自/友方控制：187386 D4R 友方过滤。</li>
+    <li>系统/开局：58199/64396 V4 锁 0.25s。</li>
+    <li>吸血/事件转疗：40943-41429、223256、224904/226493/226822（底层伤害已×2，转疗随动，不重复）。</li>
+    <li>直加血旁路 YQ7@26827（本批不处理）。</li>
+    <li>醉拳暴击 A0MX（已有 RMinBJ .45 封顶，不叠乘）。</li>
+    <li>Beastmaster multicast 额外召唤（已是 EUD 产物，不叠乘）。</li>
+    <li>野怪 10% 掉落、抽奖概率 CJ1/CJ2、AI handicap、系统随机、充能层数、蓝耗、冷却、距离、tick 周期、BTLF 假人 1s、异常长 timer（≥60s）、≤0.15s 动画 timer。</li>
+  </ul>
+  <h3>15.5 验证结果</h3>
+  <table>
+    <tr><th>检查项</th><th>结果</th></tr>
+    <tr><td>PJASS</td><td>仅余 location_m5 已知警告（build.ps1 白名单放行）<span class="badge badge-ok">PASS</span></td></tr>
+    <tr><td>7/7 包内文件回读</td><td>war3map.j/imp/5 SLK 全部哈希一致 <span class="badge badge-ok">PASS</span></td></tr>
+    <tr><td>三移除功能回归</td><td>skins=0、KKDefense=0、B1004=0 <span class="badge badge-ok">PASS</span></td></tr>
+    <tr><td>身份/UnitUI/XOMG1</td><td>recharge=1、logger=1、英雄改名/品牌/抽奖野怪保留 <span class="badge badge-ok">PASS</span></td></tr>
+    <tr><td>红线锚点</td><td>EXGetAbilityState(a,1)、MANA_COST const、GOLD=317、CJ1=5+CGDIFF*2、IMBA_POWER=2.、BL7!=6、RMinBJ(dur*IMBA_POWER,5.) 全部不变 <span class="badge badge-ok">PASS</span></td></tr>
+    <tr><td>imbaMult 在 GetLocalPlayer 分支</td><td>0 处 <span class="badge badge-ok">PASS</span></td></tr>
+    <tr><td>召唤数量/TimedLife 新增倍率</td><td>0 处 <span class="badge badge-ok">PASS</span></td></tr>
+  </table>
+  <p class="note">改动明细 CSV：<span class="mono">reports\IMBA-POWER-x2-改动明细-20261016.csv</span>。备份：<span class="mono">reports\backup-20261016-imba-power-x2\</span>。</p>
+</div>
+
 <footer>
   本报告由迁移实施流程自动生成；备份位于 reports\backup-20261016-author-rebrand\；
   验证机位于 reports\verification-latest.json；基线图哈希 55dbca6d… 保持不变。

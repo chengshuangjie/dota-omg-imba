@@ -1,0 +1,75 @@
+类别,技能名,rawcode,函数,原公式,新公式,上限或容量,同步,排除理由,证据
+多重施法概率,Ogre Magi Multicast L1(神杖5路),'A088',EUD@81660,"GetPrdRandom(ZX7,'A088'+5,5)→r=5","GetPrdRandom(ZX7,'A088'+5,IMinBJ(5*2,100))→r=IMinBJ(5*2,6)","概率帽100;r帽6",共享施法动作链,命中-技能触发概率,war3map.j:81660-81662
+多重施法概率,Ogre Magi Multicast L1(神杖2路),'A088',EUD@81663,"GetPrdRandom(ZX7,'A088'+2,50)→r=2","GetPrdRandom(...,IMinBJ(50*2,100)=100)→r=IMinBJ(2*2,6)=4","概率帽100(撞顶);r帽6",共享施法动作链,命中-技能触发概率,war3map.j:81663-81665
+多重施法概率,Ogre Magi Multicast L1(非神杖),'A088',EUD@81668,"GetPrdRandom(ZX7,'A088'+2,40)→r=2","GetPrdRandom(...,IMinBJ(40*2,100)=80)→r=IMinBJ(2*2,6)=4","概率帽100;r帽6",共享施法动作链,命中-技能触发概率,war3map.j:81668-81670
+多重施法概率,Ogre Magi Multicast L2(神杖5路),'A088',EUD@81676,"GetPrdRandom(ZX7,'A088'+5,5)→r=5","IMinBJ(5*2,100)=10→r=IMinBJ(5*2,6)=6","概率帽100;r帽6",共享施法动作链,命中-技能触发概率,war3map.j:81676-81678
+多重施法概率,Ogre Magi Multicast L2(神杖3路),'A088',EUD@81679,"GetPrdRandom(ZX7,'A088'+3,30)→r=3","IMinBJ(30*2,100)=60→r=IMinBJ(3*2,6)=6","概率帽100;r帽6",共享施法动作链,命中-技能触发概率,war3map.j:81679-81681
+多重施法概率,Ogre Magi Multicast L2(神杖2路),'A088',EUD@81682,"GetPrdRandom(ZX7,'A088'+2,60)→r=2","IMinBJ(60*2,100)=100(撞顶)→r=4","概率帽100(撞顶);r帽6",共享施法动作链,命中-技能触发概率,war3map.j:81682-81684
+多重施法概率,Ogre Magi Multicast L2(非神杖3路),'A088',EUD@81687,"GetPrdRandom(ZX7,'A088'+3,25)→r=3","IMinBJ(25*2,100)=50→r=6","概率帽100;r帽6",共享施法动作链,命中-技能触发概率,war3map.j:81687-81689
+多重施法概率,Ogre Magi Multicast L2(非神杖2路),'A088',EUD@81690,"GetPrdRandom(ZX7,'A088'+2,50)→r=2","IMinBJ(50*2,100)=100(撞顶)→r=4","概率帽100(撞顶);r帽6",共享施法动作链,命中-技能触发概率,war3map.j:81690-81692
+多重施法概率,Ogre Magi Multicast L3(神杖5路),'A088',EUD@81698,"GetPrdRandom(ZX7,'A088'+5,5)→r=5","10→r=6","概率帽100;r帽6",共享施法动作链,命中-技能触发概率,war3map.j:81698-81700
+多重施法概率,Ogre Magi Multicast L3(神杖4路),'A088',EUD@81701,"GetPrdRandom(ZX7,'A088'+4,20)→r=4","40→r=IMinBJ(4*2,6)=6","概率帽100;r帽6",共享施法动作链,命中-技能触发概率,war3map.j:81701-81703
+多重施法概率,Ogre Magi Multicast L3(神杖3路),'A088',EUD@81704,"GetPrdRandom(ZX7,'A088'+3,40)→r=3","80→r=6","概率帽100;r帽6",共享施法动作链,命中-技能触发概率,war3map.j:81704-81706
+多重施法概率,Ogre Magi Multicast L3(神杖2路),'A088',EUD@81707,"GetPrdRandom(ZX7,'A088'+2,80)→r=2","IMinBJ(80*2,100)=100(撞顶)→r=4","概率帽100(撞顶);r帽6",共享施法动作链,命中-技能触发概率,war3map.j:81707-81709
+多重施法概率,Ogre Magi Multicast L3(非神杖4路),'A088',EUD@81712,"GetPrdRandom(ZX7,'A088'+4,15)→r=4","30→r=6","概率帽100;r帽6",共享施法动作链,命中-技能触发概率,war3map.j:81712-81714
+多重施法概率,Ogre Magi Multicast L3(非神杖3路),'A088',EUD@81715,"GetPrdRandom(ZX7,'A088'+3,30)→r=3","60→r=6","概率帽100;r帽6",共享施法动作链,命中-技能触发概率,war3map.j:81715-81717
+多重施法概率,Ogre Magi Multicast L3(非神杖2路),'A088',EUD@81718,"GetPrdRandom(ZX7,'A088'+2,60)→r=2","100(撞顶)→r=4","概率帽100(撞顶);r帽6",共享施法动作链,命中-技能触发概率,war3map.j:81718-81720
+触发概率,碎颅锤/深渊之刃(近战),'A4C7',TPA@222872/222876,"probability=25; GetPrdRandom(WXX,'A4C7',25)","IMinBJ(25*2,100)=50","概率帽100",共享攻击回调,命中-技能触发概率,war3map.j:222872,222876
+触发概率,碎颅锤/深渊之刃(远程),'A4C7',TPA@222874/222876,"probability=10; GetPrdRandom(WXX,'A4C7',10)","IMinBJ(10*2,100)=20","概率帽100",共享攻击回调,命中-技能触发概率,war3map.j:222874,222876
+触发概率,Spirit Breaker 重击,'A0JJ',TPA@222884,"GetPrdRandom(WXX,'A0JJ',5+5*level)","IMinBJ((5+5*level)*2,100)","概率帽100(L3=30→60)",共享攻击回调,命中-技能触发概率,war3map.j:222884
+触发概率,Faceless Void 时间锁定,'A081',TPA@222888,"GetPrdRandom(WXX,'A081',5+5*level)","IMinBJ((5+5*level)*2,100)","概率帽100",共享攻击回调,命中-技能触发概率,war3map.j:222888
+触发概率,Troll Warlord 狂战士之怒(非神杖),'A09E',TPA@222895/222897,"probability=10; GetPrdRandom(WXX,'A09E',10)","IMinBJ(10*2,100)=20","概率帽100",共享攻击回调,命中-技能触发概率,war3map.j:222895,222897
+触发概率,Troll Warlord 狂战士之怒(神杖),'A09E',TPA@222893/222897,"probability=15; GetPrdRandom(WXX,'A09E',15)","IMinBJ(15*2,100)=30","概率帽100",共享攻击回调,命中-技能触发概率,war3map.j:222893,222897
+触发概率,Lifestealer 极度饥渴,'A0WR',TPA@222901,"GetPrdRandom(WXX,'A0WR',15)","IMinBJ(15*2,100)=30","概率帽100",共享攻击回调,命中-技能触发概率,war3map.j:222901
+触发概率,金箍棒暴击,'A061',TPA@222906,"GetPrdRandom(WXX,'A061',35)","IMinBJ(35*2,100)=70","概率帽100",共享攻击回调,命中-技能触发概率,war3map.j:222906
+触发概率,Axe 反击螺旋,'A0C6',@92735/92741,"GetPrdRandom(YXX,'A0C6',20)","IMinBJ(20*2,100)=40","概率帽100",共享受伤回调,命中-技能触发概率,war3map.j:92735,92741
+触发概率,Naga 激流(神杖自动释放),'A2KU',@81291,"GetPrdRandom(ZX7,'A2KU',15)","IMinBJ(15*2,100)=30","概率帽100",共享攻击回调,命中-技能触发概率,war3map.j:81291
+触发概率,未识别被动A,'A263',@46804,"GetPrdRandom(ZX7,'A263',30)","IMinBJ(30*2,100)=60","概率帽100",共享动作,命中-技能触发概率,war3map.j:46804
+触发概率,未识别被动B,'A264',@46860,"GetPrdRandom(ZX7,'A264',20)","IMinBJ(20*2,100)=40","概率帽100",共享动作,命中-技能触发概率,war3map.j:46860
+触发概率,未识别被动C,'A2QG',@46894,"GetPrdRandom(ZX7,'A2QG',15)","IMinBJ(15*2,100)=30","概率帽100",共享动作,命中-技能触发概率,war3map.j:46894
+触发概率,未识别被动D,'A03Y',@90355,"GetPrdRandom(p5,'A03Y',30)","IMinBJ(30*2,100)=60","概率帽100",共享动作,命中-技能触发概率,war3map.j:90355
+触发概率,未识别被动E,'A4L7',@112445/216350,"GetPrdRandom(WXX,'A4L7',20)","IMinBJ(20*2,100)=40","概率帽100",共享攻击回调,命中-技能触发概率,war3map.j:112445,216350
+触发概率,未识别被动F,'A2RA',@147269,"GetPrdRandom(ZX7,'A2RA',40)","IMinBJ(40*2,100)=80","概率帽100",共享动作,命中-技能触发概率,war3map.j:147269
+触发概率,未识别被动G,'A2PX',@223487,"GetPrdRandom(ZX7,'A2PX',40.)","IMinBJ(40*2,100)=80","概率帽100",共享攻击回调,命中-技能触发概率,war3map.j:223487
+触发概率,未识别被动H,'A00K',@223498,"GetPrdRandom(ZX7,'A00K',15.+level*5.)","IMinBJ((15+level*5)*2,100)","概率帽100",共享攻击回调,命中-技能触发概率,war3map.j:223498
+触发概率,未识别被动I,'A1OY',@223545,"GetPrdRandom(ZX7,'A1OY',25.)","IMinBJ(25*2,100)=50","概率帽100",共享攻击回调,命中-技能触发概率,war3map.j:223545
+触发概率,未识别被动J,'ABcr',@223556,"GetPrdRandom(ZX7,'ABcr',7+level*2)","IMinBJ((7+level*2)*2,100)","概率帽100",共享攻击回调,命中-技能触发概率,war3map.j:223556
+触发概率,未识别被动K,'A03Q',@223570,"GetPrdRandom(ZX7,'A03Q',17)","IMinBJ(17*2,100)=34","概率帽100",共享攻击回调,命中-技能触发概率,war3map.j:223570
+触发概率,未识别被动L,'A03N',@223581,"GetPrdRandom(ZX7,'A03N',25)","IMinBJ(25*2,100)=50","概率帽100",共享攻击回调,命中-技能触发概率,war3map.j:223581
+触发概率,变量概率被动M,'A19Q',@88225,"GetPrdRandom(ZX7,'A19Q',d)","IMinBJ(d*2,100)","概率帽100;d须先确认上限",共享动作,命中-技能触发概率(待确认d原值),war3map.j:88225
+触发概率,变量概率被动N,'A2EY',@218601,"GetPrdRandom(WLE,'A2EY',probability)","IMinBJ(probability*2,100)","概率帽100;待确认probability公式",共享动作,命中-技能触发概率(待确认),war3map.j:218601
+触发概率,变量概率被动O,'A4HE',@223018,"GetPrdRandom(ZX7,'A4HE',i)","IMinBJ(i*2,100)","概率帽100;待确认i公式",共享动作,命中-技能触发概率(待确认),war3map.j:223018
+触发概率,变量概率被动P,'I0TE',@223604,"GetPrdRandom(ZX7,'I0TE',rate)","IMinBJ(rate*2,100)","概率帽100;待确认rate公式",共享动作,命中-技能触发概率(待确认),war3map.j:223604
+触发概率,变量概率被动Q,'I0A3',@223613,"GetPrdRandom(ZX7,'I0A3',rate)","IMinBJ(rate*2,100)","概率帽100;待确认rate公式",共享动作,命中-技能触发概率(待确认),war3map.j:223613
+弹射次数,飞镖弹射(神杖),'A004',TSFB3@66377-66378,"SaveInteger(TABLE_P,ch,3,3); SaveInteger(...,4,3)","SaveInteger(...,3,IMinBJ(3*2,8)=6); SaveInteger(...,4,6)","弹射帽8",共享施法动作,命中-弹射次数;同函数400半径不改,war3map.j:66377-66378(半径66339)
+弹射次数,PL 灵魂之矛弹射(神杖),'A10D',FZD@82418,"SaveInteger(TABLE_P,ch,3,3)","SaveInteger(...,3,IMinBJ(3*2,8)=6)","弹射帽8",共享施法动作,命中-弹射次数;同函数400半径不改,war3map.j:82418(半径82362)
+弹射次数,弹射法术上限(神杖),'A05T',X6D@98721/98732,"Z49=99; SaveInteger(L7,I97,$C,Z49)","Z49=99(已是硬帽,×2溢出保持99)","硬帽99",共享施法动作,命中-弹射次数但已封顶不放大,war3map.j:98721,98732
+弹射次数,敌我弹跳目标数(神杖),'A0OR'/'A4K0',神杖注册表@36746,"ABILITY_DATA_TARGS=4","=IMinBJ(4*2,12)=8","帽12",共享施法动作,命中-弹射/目标次数,war3map.j:36746
+召唤数量,Visage 佣兽(基础),'A1NE',VisageSummonFamiliars_Create@115253,"familiarCount1052=2","familiarCount1052=IMinBJ(2*2,8)=4","召唤帽8",共享施法动作,命中-召唤数量;清理loop 115268不改,war3map.j:115253
+召唤数量,Visage 佣兽(神杖),'A1NE',VisageSummonFamiliars_Create@115281,"familiarCount1052=3","familiarCount1052=IMinBJ(3*2,8)=6","召唤帽8",共享施法动作,命中-召唤数量,war3map.j:115281
+弹道数量,碎裂冲击(神杖+1枚),'A2LA',神杖注册表@36638,"额外发射1枚","额外发射IMinBJ(1*2,4)=2枚","帽4",共享施法动作,命中-弹道数量;待定位实现枚数字面量,war3map.j:36638
+弹道数量,火箭(神杖四周4枚),'A0Z6',神杖注册表@36881,"四周发射4枚","四周发射IMinBJ(4*2,12)=8枚","帽12",共享施法动作,命中-弹道数量;待定位实现枚数字面量,war3map.j:36881
+弹道数量,攻击分裂箭(神杖2支),'A0VC',神杖注册表@36914,"分裂出2支箭矢","分裂出IMinBJ(2*2,6)=4支","帽6",共享攻击回调,命中-弹道数量;待定位实现枚数字面量,war3map.j:36914
+弹道数量,刺针扫射(神杖4次),'A0M3',神杖注册表@36607,"连续4次刺针扫射","连续IMinBJ(4*2,12)=8次","帽12",共享施法动作,命中-弹道/施法次数;待定位实现,war3map.j:36607
+排除,醉拳暴击率,'A0MX',BrewmasterBrawler_CritRate@14142-14162,"chance=(5+5*level)/100; RMinBJ(chance,.45); TryCrit rate>=100 return true","不改(已有RMinBJ .45与>=100提前返回)",—,—,已自带封顶与提前返回,×2会叠乘,war3map.j:14142-14162
+排除,Beastmaster召唤(multicast额外路径),'A0OO',SuijiMode_BeastmasterCallWildMulticastExtra@86323-86341,"按level产hawk/boar","不改(已是EUD multicast产物,底座只数在原生数据)","—",—,避免与EUD r×2叠乘;底座原生物编不可见,war3map.j:86323-86341
+排除,弹射搜索半径400,—,GWR@66339/FYD_TS@82362,"GroupEnumUnitsInRange(...,400,...)","不改(距离)","—",—,距离即使与次数同函数也拆分,war3map.j:66339,82362
+排除,弹道速度1000,—,NHX调用@66345/82367/82420,"NHX(...,1000,...)","不改(速度)","—",—,速度非次数,war3map.j:66345,82367,82420
+排除,施法距离750/850,—,W6E@128521/128694,"W6E('A10D',...,750,...)","不改(距离)","—",—,距离,war3map.j:128521,128694
+排除,TABLE_P child槽位,—,B582链@66311-66324,"LoadInteger(TABLE_P,h,0/1/2/4)","不改(句柄索引/组/等级)","—",—,数组索引非玩法次数,war3map.j:66311-66324
+排除,Ward跟踪容量帽,—,B832WardTrack@39446,"上限4096","不改(系统容量)",—,—,系统池容量,war3map.j:39446
+排除,召唤物序号,—,B1052FamiliarSequence@115284,"LoadInteger(...)+1","不改(池索引)",—,—,索引非产出次数,war3map.j:115284
+排除,旧召唤清理loop,—,VisageSummonFamiliars_Create@115268-115277,"loop/FirstOfGroup/KillUnit","不改(清理循环)",—,—,清理循环非产出次数,war3map.j:115268-115277
+排除,资源销毁,—,B582_DestroyBounceChain@66272,"FlushChildHashtable/DestroyTimer","不改(销毁)",—,—,清理非次数,war3map.j:66272-66273
+排除,尸体随机落点,—,WU8@44648,"GetRandomInt(0,5)","不改(系统随机)",—,—,系统随机格非技能概率,war3map.j:44648
+排除,弹射目标随机,—,GWR@66343,"GroupPickRandomUnit(g2)","不改(系统随机选目标)",—,—,随机目标选择非次数,war3map.j:66343,82365
+排除,存档抽奖,—,抽奖链@236822/238449,"存档抽奖机会","不改(抽奖/gacha)",—,—,抽奖非技能触发概率,war3map.j:236822,238449
+排除,中立野怪掉落10%,—,B1133设计,"GetRandomInt(1,10)==1","不改(野怪掉落)",—,—,野怪掉落非技能概率,见中立野怪掉落安全设计.md
+排除,AI经验/金钱handicap,—,KKDifficulty_Apply@58252,"XM_EXP/XM_GOLD=5","不改(AI侧)",—,—,AI决策非玩家技能,war3map.j:58252
+排除,AI技能选择表,—,J3F列表@149968,"AI list of skills","不改(AI决策)",—,—,AI决策,war3map.j:149968
+排除,残焰充能层数,'A2JK',神杖注册表@36884,"5层充能","不改(冷却充能)",—,—,充能非5类目标次数,war3map.j:36884
+排除,恶魔净化充能层数,'A2ZM',神杖注册表@36890,"3层充能","不改(冷却充能)",—,—,充能非次数,war3map.j:36890
+排除,割裂充能层数,'A0LH',神杖注册表@36875,"3层充能","不改(冷却充能)",—,—,充能非次数,war3map.j:36875
+排除,蓝耗数据表,—,B945SpellData@10780-11198,"hashtable蓝耗","不改(蓝耗)",—,—,蓝耗非次数/概率,war3map.j:10780-11198
+排除,multicast时长延伸,—,SuijiMode_GetDurationMulticastCount消费@81762/73139,"30.*count / 5.*count","不改(时长乘数)",—,—,时长非次数;count是EUD产物,war3map.j:81762,73139
+排除,DoT节拍period,—,Loop_Damage@28476-28485,"period秒/拍","不改(节拍)",—,—,节拍非次数,war3map.j:28476-28485

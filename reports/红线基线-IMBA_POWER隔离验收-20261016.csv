@@ -1,0 +1,29 @@
+category,region_name,start_line,end_line,key_expression,sha256,red_line_rule
+整体,war3map_j_full,1,249532,full source file ea6d950368183556eec44c231a41541654b3bac4183ab78bac4e92dc5892d403,8672898 bytes,允许因新增IMBA代码而变化；但下列锚点区哈希必须不变
+IMBA_POWER,IMBA_POWER_def,703,703,"constant real IMBA_POWER=2.",69121805bf2b271c044e04fb696d2a890a3fb5632b0a3c652c6576a6d503da6d,常量值2.0不得改动；不得新增其他IMBA_*常量进入此声明段
+IMBA_POWER,IMBA_heal_multiply,26785,26788,"set healAmount=healAmount*IMBA_POWER (gated by XM_MODE)",74f41c749a1379fef9e67a507d2a150658361cc2bfc09ec02b61539e063b003e,不得在healAmount赋值行附近新增距离/冷却/蓝耗/tick/概率表达式
+IMBA_POWER,IMBA_damage_multiply,28398,28401,"set YM7=YM7*IMBA_POWER (gated by XM_MODE and BL7!=6)",34b21cbae88e310844a7b6a32ed2ec428e81a425415c99a7dfbb183235cccc6c,不得在YM7伤害赋值行附近新增距离/冷却/蓝耗/tick/概率表达式
+IMBA_POWER,IMBA_stun_multiply,28517,28520,"set dur=RMinBJ(dur*IMBA_POWER,5.) (gated by XM_MODE and 0<dur<5)",878660db4c118d4e6c85a1d97c8699542406d50416578d71510b1033f12a1de4,眩晕上限5.0秒不得改动；不得在dur赋值行附近新增距离/冷却/蓝耗/tick/概率表达式
+抽奖概率,Lottery_CJ1_CJ2_block,173085,173134,"set CJ1=5+CGDIFF*2; set CJ2=10+CGDIFF*3; if GetRandomInt(1,100)<=CJ1/CJ2",6b6718d746f7fd101af8816eb4c85c4727cba189c6a3d178e4f4bb8289072f54,CJ1/CJ2公式与阈值不得改动；GetRandomInt(1,100)上下界不得改动；不得进入GetLocalPlayer分支
+抽奖概率,B1063BuildLotteryPool,39638,39661,"price>=1000 and B1063ItemEligible; cap 128; SU[i] pool",72461ba10daeb4b7f95940839a2a56f029201165c72b5f7e26f016b1b9650fb0,价格阈值1000与上限128不得改动
+野怪10%,B1063BuildCheapPool,39618,39637,"price>0 and p<=1000 and B1063ItemEligible; cap 64; SU[i] pool",1a433da25de60fda9ebb536fd27a847f1d7cea613e7740ba4be1a926234a49c6,价格上限1000与池上限64不得改动
+野怪10%,B1063NeutralDropAction_10pct,39662,39688,"if GetRandomInt(1,10)!=1 then return; CreateItem at victim X/Y",2a7540e5424b87591af4fb2451719276927bf1679b864cee85d289228ca6dd82,10%概率GetRandomInt(1,10)!=1不得改动；函数体内不得出现GetLocalPlayer；去重位L7/h/16100不得改动
+野怪10%,B1063NeutralDropInit,39689,39694,"TriggerRegisterPlayerUnitEvent(t,Player(12),EVENT_PLAYER_UNIT_DEATH,null)",081c8c5f37cdb839773bef3fa30a2158d7b2baaa51a274e9d24590223da0126d,仅注册Player(12)中立敌对死亡事件；不得新增其他玩家注册
+野怪分类,B832WardCreep_classify,39402,39419,"36 normal/ancient rawcode whitelist + 12 lane creep rawcodes",6c5b0d838c4800ac524b45c55431900091865a34580d91c8b7f30d424a1d7d04,36野怪rawcode名单与12线上兵名单不得增删；Roshan n00L天然排除不得改动
+冷却,B582_GetAbilityCooldown,10755,10767,"set cooldown=EXGetAbilityState(a,1); return cooldown",10d5495891ddd055d3952183713ad13caf124d71d28901a08c7400e86dc5b9c0,冷却读取底层EXGetAbilityState(a,1)不得改动
+冷却,MHAbility_Cooldown_stubs,4786,4801,"MHAbility_GetAbilityCooldown/SetAbilityCooldown/SetAbilityCooldownEx stubs",f7e5b987f6e6ada09954b459296d969928f23ee5f57985392a33282a30dfea08,这些JAPI桩函数返回0.0不得改动
+蓝耗,SuijiMode_ApplyRegisteredManaCost3,35955,35977,"MHAbility_SetCustomLevelDataInt(...ABILITY_LEVEL_DEF_DATA_MANA_COST...)",b1c5faada3b51c5294dc154b03cba65a7d013203642b3b94ae65c954e9e9b791,蓝耗写入函数签名与ABILITY_LEVEL_DEF_DATA_MANA_COST常量不得改动
+蓝耗,SuijiAI_CanPayAndCastNormally,125409,125435,"set manaCost=B945DefinitionMana(physicalSkill,level); mana check",69acc32f8421791cbd416beb3f52ecdd83119c84c8217bbf13d0225045cb902e,AI蓝耗检查B945DefinitionMana调用与mana+0.01<I2R(manaCost)判断不得改动
+经济,Gold_anticheat_loop,39296,39316,"SetPlayerState(p,PLAYER_STATE_RESOURCE_GOLD,EV0[id]) anti-cheat",a0c06a29dc645c9e12c49ef767efc630b654f6d0ee6bd78d4d88cbc0f93eb040,金币反作弊回写EV0[id]逻辑不得改动
+经济,Leaver_gold_redistribute,32745,32780,"SetPlayerState(DE8,GOLD,0) then redistribute hY/Jg to allies",2688ff1efe0b0f1df3b00973891da5d18eb0b1c4178c3afc89ae5e21740db490,离位玩家金币清零与平分逻辑不得改动
+计数基线,IMBA_POWER_occurrences,0,0,7 total (1 def + 3 usages + 3 comments),N/A,新增IMBA_POWER引用数必须逐项核对；不得出现在GetLocalPlayer分支
+计数基线,GetLocalPlayer_occurrences,0,0,647 total,N/A,新增代码不得在GetLocalPlayer分支内引入IMBA_POWER
+计数基线,GetRandomInt_occurrences,0,0,340 total,N/A,新增GetRandomInt必须在共享动作内不得在本地分支
+计数基线,GetRandomReal_occurrences,0,0,188 total,N/A,新增GetRandomReal必须在共享动作内
+计数基线,TimerStart_periodic_occurrences,0,0,95 total (TimerStart(...,true)),N/A,新增周期timer不得改动既有95个周期的周期值
+计数基线,SetPlayerState_GOLD_occurrences,0,0,132 total,N/A,新增金币写入不得绕过EV0反作弊
+计数基线,UnitApplyTimedLife_native,0,0,263 total (native call),N/A,召唤实体/守卫/陷阱存活时间调用数不得增加；寿命参数值不得改动
+计数基线,UnitApplyTimedLife_BJ,0,0,6 total (BJ variant),N/A,BJ变体寿命调用数不得增加
+计数基线,CreateUnit_calls,0,0,963 total,N/A,CreateUnit相关循环/数量不得引入IMBA_POWER；召唤实体/分身/守卫/陷阱数量不得×2
+计数基线,CreateUnitNamed_calls,0,0,0 total,N/A,基线为0；新增需逐项核对是否为实体生成
+计数基线,CreateBlightedGoldmine,0,0,0 total,N/A,基线为0

@@ -1,0 +1,57 @@
+﻿{
+    "map":  "maps/build/DOTA-OMG-IMBA-轻量化开发版.w3x",
+    "mapBytes":  46161255,
+    "mapSha256":  "b8b2ef336372a6854c0523cecb937fe1545d6beab65102eaaae3ecb62bc528ee",
+    "files":  [
+                  {
+                      "file":  "war3map.j",
+                      "expected":  "ea6d950368183556eec44c231a41541654b3bac4183ab78bac4e92dc5892d403",
+                      "actual":  "ea6d950368183556eec44c231a41541654b3bac4183ab78bac4e92dc5892d403",
+                      "match":  true
+                  },
+                  {
+                      "file":  "war3map.imp",
+                      "expected":  "1fb5c0b5389ae83c39bacb99aad48af86c253afb74357f47f65a8d651aa9846d",
+                      "actual":  "1fb5c0b5389ae83c39bacb99aad48af86c253afb74357f47f65a8d651aa9846d",
+                      "match":  true
+                  },
+                  {
+                      "file":  "Units\\UnitAbilities.slk",
+                      "expected":  "2a395c2a8685ef24c2a4e12cbfedf619b490dc25dc2b3880a7c5d4240238cc7a",
+                      "actual":  "2a395c2a8685ef24c2a4e12cbfedf619b490dc25dc2b3880a7c5d4240238cc7a",
+                      "match":  true
+                  },
+                  {
+                      "file":  "Units\\UnitBalance.slk",
+                      "expected":  "13b43ba1e66e9712703ab273361742deeddaaf34da14c0a81b9a6d6f29f93359",
+                      "actual":  "13b43ba1e66e9712703ab273361742deeddaaf34da14c0a81b9a6d6f29f93359",
+                      "match":  true
+                  },
+                  {
+                      "file":  "Units\\UnitData.slk",
+                      "expected":  "841116a37e1c1f7cb2e5d9d29f20e65ae1aa4d9f779710978d2cd581d3669499",
+                      "actual":  "841116a37e1c1f7cb2e5d9d29f20e65ae1aa4d9f779710978d2cd581d3669499",
+                      "match":  true
+                  },
+                  {
+                      "file":  "Units\\UnitUI.slk",
+                      "expected":  "1ce5d6f4c9372834b5666a32f3661ab24d07eb6c102502c9c4b1dbfb8ee7c7b0",
+                      "actual":  "1ce5d6f4c9372834b5666a32f3661ab24d07eb6c102502c9c4b1dbfb8ee7c7b0",
+                      "match":  true
+                  },
+                  {
+                      "file":  "Units\\UnitWeapons.slk",
+                      "expected":  "49c0517ad96752eb01e68f059136ca37a2d476a31fd13cb0fbdc8f67ed58f105",
+                      "actual":  "49c0517ad96752eb01e68f059136ca37a2d476a31fd13cb0fbdc8f67ed58f105",
+                      "match":  true
+                  }
+              ],
+    "scriptChecks":  {
+                         "skinPaths":  0,
+                         "defenseImplementationFunctions":  0,
+                         "wheelImplementationFunctions":  0,
+                         "rechargeCommandFunctions":  1,
+                         "diagnosticLoggerFunctions":  1
+                     },
+    "passed":  true
+}

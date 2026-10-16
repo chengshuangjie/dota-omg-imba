@@ -1,0 +1,266 @@
+{
+  "RedTortollanBattlemaster.mdx": {
+    "path": "war3mapimported\\RedTortollanBattlemaster.mdx",
+    "size": 160139,
+    "textures": [
+      {
+        "texture": "Buildings\\Other\\MageTower\\TowerOfTheSun.blp",
+        "other_model_ref_count": 0,
+        "other_models": []
+      },
+      {
+        "texture": "Textures\\Arthas.blp",
+        "other_model_ref_count": 0,
+        "other_models": []
+      },
+      {
+        "texture": "Textures\\Bandit.blp",
+        "other_model_ref_count": 0,
+        "other_models": []
+      },
+      {
+        "texture": "Textures\\DragonSeaTurtle.blp",
+        "other_model_ref_count": 0,
+        "other_models": []
+      },
+      {
+        "texture": "Textures\\GenericGlow2c.blp",
+        "other_model_ref_count": 32,
+        "other_models": [
+          "effects\\CycloneTarget2.mdx",
+          "effects\\surge.mdx",
+          "war3mapimported\\ancientswrath.mdx",
+          "war3mapimported\\blackdragonmissile.mdx",
+          "war3mapimported\\crimsonguardtarget.mdx",
+          "war3mapimported\\demonicpurge3.mdx",
+          "war3mapimported\\desecrate.mdx",
+          "war3mapimported\\fatesedict.mdx",
+          "war3mapimported\\flightofthephoenix_attachmentonly_yrota_5b.mdx",
+          "war3mapimported\\frozenthronesdeath2.mdx",
+          "war3mapimported\\gaiashield.mdx",
+          "war3mapimported\\icewindgroundfx.mdx",
+          "war3mapimported\\shadowwordpurple.mdx",
+          "war3mapimported\\shamanyouranus-shadowymissile.mdx",
+          "war3mapimported\\teleporttarget_blue.mdx",
+          "war3mapimported\\teleporttarget_brown.mdx",
+          "war3mapimported\\teleporttarget_darkgreen.mdx",
+          "war3mapimported\\teleporttarget_gray.mdx",
+          "war3mapimported\\teleporttarget_lightblue.mdx",
+          "war3mapimported\\teleporttarget_orange.mdx",
+          "war3mapimported\\teleporttarget_pink.mdx",
+          "war3mapimported\\teleporttarget_purple.mdx",
+          "war3mapimported\\teleporttarget_teal.mdx",
+          "war3mapimported\\teleporttarget_yellow.mdx",
+          "war3mapimported\\urn_enemy.mdx",
+          "war3mapimported\\void.mdx",
+          "war3mapimported\\willthealmighty-void5.mdx",
+          "tx\\jianhao\\jianhao_armor.mdx",
+          "tx\\jianhao\\jianhao_wind.mdx",
+          "tx\\jugg\\IceTornado.mdx"
+        ]
+      },
+      {
+        "texture": "Textures\\Peasant.blp",
+        "other_model_ref_count": 2,
+        "other_models": [
+          "model\\Xiaogou_Ghoul.mdx",
+          "units\\undead\\ghoul\\ghoul0.mdx"
+        ]
+      },
+      {
+        "texture": "Textures\\Red_Glow3.blp",
+        "other_model_ref_count": 13,
+        "other_models": [
+          "bullerouge.mdx",
+          "effects\\lifebreak.mdx",
+          "war3mapimported\\A (62).mdx",
+          "war3mapimported\\dai blue.mdx",
+          "war3mapimported\\hastefx.mdx",
+          "war3mapimported\\juggernautaghanims.mdx",
+          "war3mapimported\\morph_str_1.mdx",
+          "war3mapimported\\orbfirex.mdx",
+          "war3mapimported\\phoenix_missile_smaller.mdx",
+          "war3mapimported\\sunfiremissile.mdx",
+          "war3mapimported\\warlock_aghanim.mdx",
+          "war3mapimported\\witchdoctor_aghanims.mdx",
+          "tx\\qtds\\heromonkeyking_e_hand_buff.mdx"
+        ]
+      },
+      {
+        "texture": "Textures\\Tornado2b.blp",
+        "other_model_ref_count": 10,
+        "other_models": [
+          "AZModel\\HeroAxeCold.mdx",
+          "effects\\glaivesofwisdommissile_2.mdx",
+          "war3mapimported\\chakram_02.mdx",
+          "war3mapimported\\flux3.mdx",
+          "war3mapimported\\newsoularmor.mdx",
+          "war3mapimported\\void.mdx",
+          "war3mapimported\\willthealmighty-void5.mdx",
+          "units\\orc\\hellscream\\hellscream.mdx",
+          "tx\\jianhao\\jianhao_armor.mdx",
+          "tx\\jugg\\IceTornado.mdx"
+        ]
+      },
+      {
+        "texture": "Units\\Creeps\\HEROGoblinALCHEMIST\\HeroGoblinAlchemistPurple.blp",
+        "other_model_ref_count": 0,
+        "other_models": []
+      }
+    ]
+  },
+  "Sc2Baneling_v2_bW.mdx": {
+    "path": "war3mapimported\\Sc2Baneling_v2_bW.mdx",
+    "size": 93166,
+    "textures": [
+      {
+        "texture": "ReplaceableTextures\\Splats\\BurrowSplat.blp",
+        "other_model_ref_count": 1,
+        "other_models": [
+          "AZModel\\HeroSKcrystal.mdx"
+        ]
+      },
+      {
+        "texture": "Sc2Baneling_bW.blp",
+        "other_model_ref_count": 0,
+        "other_models": []
+      },
+      {
+        "texture": "Textures\\AcidSplash1.blp",
+        "other_model_ref_count": 2,
+        "other_models": [
+          "spinweb.mdx",
+          "effects\\broodmotherweb3.mdx"
+        ]
+      },
+      {
+        "texture": "Textures\\Dust5A.blp",
+        "other_model_ref_count": 30,
+        "other_models": [
+          "AZModel\\AZ_ESFrost_F.mdx",
+          "AZModel\\AZ_Goods_TP_Target_effect(3).MDX",
+          "AZModel\\AZ_PotM(1)_R2.mdx",
+          "AZModel\\AZ_PotMpink_R2.mdx",
+          "AZModel\\AZ_SSCrow_W.mdx",
+          "AZModel\\HeroSKcrystal.mdx",
+          "effects\\decaygreen_groundonly_1.mdx",
+          "effects\\glaivesofwisdommissile_2.mdx",
+          "effects\\lifebreak.mdx",
+          "effects\\snowyblizzardtarget.mdx",
+          "model\\CourierMountainGiantFly.mdx",
+          "model\\Dashu_AncientProtector.mdx",
+          "war3mapimported\\explosion.mdx",
+          "war3mapimported\\icenova.mdx",
+          "war3mapimported\\lichmissile_4.mdx",
+          "war3mapimported\\sandbreathdamage.mdx",
+          "war3mapimported\\sandbreathdamagesmall.mdx",
+          "war3mapimported\\teleportfromfaded.mdx",
+          "war3mapimported\\teleportto_delayedversion_blue.mdx",
+          "war3mapimported\\teleportto_delayedversion_brown.mdx",
+          "war3mapimported\\teleportto_delayedversion_darkgreen.mdx",
+          "war3mapimported\\teleportto_delayedversion_gray.mdx",
+          "war3mapimported\\teleportto_delayedversion_lightblue.mdx",
+          "war3mapimported\\teleportto_delayedversion_orange.mdx",
+          "war3mapimported\\teleportto_delayedversion_pink.mdx",
+          "war3mapimported\\teleportto_delayedversion_purple.mdx",
+          "war3mapimported\\teleportto_delayedversion_teal.mdx",
+          "war3mapimported\\teleportto_delayedversion_yellow.mdx",
+          "tx\\sk\\SandKing_R.MDX",
+          "tx\\xyfl\\BrambleMaze.mdx"
+        ]
+      }
+    ]
+  },
+  "A (62).mdx": {
+    "path": "war3mapimported\\A (62).mdx",
+    "size": 413947,
+    "textures": [
+      {
+        "texture": "AncientSeaTurtleFire.blp",
+        "other_model_ref_count": 0,
+        "other_models": []
+      },
+      {
+        "texture": "AncientSeaTurtleFireGlow.blp",
+        "other_model_ref_count": 0,
+        "other_models": []
+      },
+      {
+        "texture": "Textures\\Clouds8x8Fire.blp",
+        "other_model_ref_count": 22,
+        "other_models": [
+          "final_export.mdx",
+          "effects\\blackhole.mdx",
+          "war3mapimported\\ancientswrath.mdx",
+          "war3mapimported\\blackhole.mdx",
+          "war3mapimported\\blood leak.mdx",
+          "war3mapimported\\cleanerv5.mdx",
+          "war3mapimported\\darkmending.mdx",
+          "war3mapimported\\desecrate.mdx",
+          "war3mapimported\\final_export.mdx",
+          "war3mapimported\\fireleakmedium.mdx",
+          "war3mapimported\\flamebreakmissile.mdx",
+          "war3mapimported\\iceleakmedium.mdx",
+          "war3mapimported\\nebula.mdx",
+          "war3mapimported\\newgroundex.mdx",
+          "war3mapimported\\plasmaleakmedium.mdx",
+          "war3mapimported\\sunfiremissile.mdx",
+          "war3mapimported\\void.mdx",
+          "war3mapimported\\willthealmighty-void5.mdx",
+          "tx\\jianhao\\jianhao_blade_flash2.mdx",
+          "tx\\luna\\Luna_Aghanim.mdx",
+          "tx\\xuemo\\xuenu.mdx",
+          "abilities\\Weapons\\boatmissile\\boatmissile.mdx"
+        ]
+      },
+      {
+        "texture": "Textures\\Dust3x.blp",
+        "other_model_ref_count": 7,
+        "other_models": [
+          "effects\\freezingring.mdx",
+          "effects\\poisonhands.mdx",
+          "effects\\tidalerruption.mdx",
+          "war3mapimported\\ancientswrath.mdx",
+          "war3mapimported\\freezingring.mdx",
+          "war3mapimported\\nebula.mdx",
+          "abilities\\Weapons\\boatmissile\\boatmissile.mdx"
+        ]
+      },
+      {
+        "texture": "Textures\\Flame4.blp",
+        "other_model_ref_count": 10,
+        "other_models": [
+          "AZModel\\HeroAxeCold.mdx",
+          "war3mapimported\\ancientswrath.mdx",
+          "war3mapimported\\divinewrathmissile.mdx",
+          "war3mapimported\\enchant.mdx",
+          "war3mapimported\\eredarmissile.mdx",
+          "war3mapimported\\newgroundex.mdx",
+          "war3mapimported\\purplezigguratmissile.mdx",
+          "tx\\lina\\Lina_T.MDX",
+          "tx\\qtds\\heromonkeyking_q_blast.mdx",
+          "abilities\\Weapons\\boatmissile\\boatmissile.mdx"
+        ]
+      },
+      {
+        "texture": "Textures\\Red_Glow3.blp",
+        "other_model_ref_count": 13,
+        "other_models": [
+          "bullerouge.mdx",
+          "effects\\lifebreak.mdx",
+          "war3mapimported\\dai blue.mdx",
+          "war3mapimported\\hastefx.mdx",
+          "war3mapimported\\juggernautaghanims.mdx",
+          "war3mapimported\\morph_str_1.mdx",
+          "war3mapimported\\orbfirex.mdx",
+          "war3mapimported\\phoenix_missile_smaller.mdx",
+          "war3mapimported\\RedTortollanBattlemaster.mdx",
+          "war3mapimported\\sunfiremissile.mdx",
+          "war3mapimported\\warlock_aghanim.mdx",
+          "war3mapimported\\witchdoctor_aghanims.mdx",
+          "tx\\qtds\\heromonkeyking_e_hand_buff.mdx"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,39 @@
+﻿# ---- Local machine tool paths (absolute, do not commit) ----
+config/tool-paths.json
+
+# ---- War3 map binaries (built locally; remote repo has no LFS) ----
+*.w3x
+*.w3x.bak
+maps/build/*.w3x
+maps/baseline/*.w3x
+
+# ---- Local audit backups (large, contain prior map/source snapshots) ----
+reports/backup-*/
+
+# ---- OS / editor noise ----
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.swp
+*.bak
+*~
+
+# ---- Temp / build staging / logs / caches ----
+*.log
+*.tmp
+*.temp
+__pycache__/
+*.pyc
+.vs/
+.vscode/
+*.user
+
+# ---- Browser / auth / credential material (never commit) ----
+*.cookie
+*.cookies
+*.cred
+*.credentials
+*.token
+.netrc
+_kkauth/
+browser-profile/

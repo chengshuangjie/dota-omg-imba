@@ -1,0 +1,16 @@
+{
+  "log_globals": 1,
+  "log_append": 1,
+  "log_file": 1,
+  "log_sync": 1,
+  "rlog_route": 1,
+  "identity_log": 1,
+  "gift_logs": 2,
+  "command_logs": 2,
+  "write_logs": 4,
+  "readback_log": 1,
+  "retry_log": 1,
+  "ack_logs": 2,
+  "identity_acquire_log": 1,
+  "load_local_logs": 4
+}

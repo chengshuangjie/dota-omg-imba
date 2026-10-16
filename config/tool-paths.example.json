@@ -1,0 +1,8 @@
+{
+  "mpqEditor": "C:/PATH/TO/MPQEditor.exe",
+  "pjass": "C:/PATH/TO/pjass-latest.exe",
+  "commonJ": "C:/PATH/TO/common.j",
+  "blizzardJ": "C:/PATH/TO/blizzard.j",
+  "baselineMap": "maps\\baseline\\DOTA-OMG-IMBA-轻量化基线.w3x",
+  "outputMap": "maps\\build\\DOTA-OMG-IMBA-轻量化开发版.w3x"
+}

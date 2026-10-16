@@ -1,0 +1,52 @@
+[
+  {
+    "file": "Units/UnitAbilities.slk",
+    "removed_ids": 86,
+    "dims": [
+      "4",
+      "3338"
+    ],
+    "max_y": 3338,
+    "residual_defense_ids": []
+  },
+  {
+    "file": "Units/UnitBalance.slk",
+    "removed_ids": 86,
+    "dims": [
+      "52",
+      "3338"
+    ],
+    "max_y": 3338,
+    "residual_defense_ids": []
+  },
+  {
+    "file": "Units/UnitData.slk",
+    "removed_ids": 86,
+    "dims": [
+      "25",
+      "3338"
+    ],
+    "max_y": 3338,
+    "residual_defense_ids": []
+  },
+  {
+    "file": "Units/UnitUI.slk",
+    "removed_ids": 86,
+    "dims": [
+      "39",
+      "3338"
+    ],
+    "max_y": 3338,
+    "residual_defense_ids": []
+  },
+  {
+    "file": "Units/UnitWeapons.slk",
+    "removed_ids": 86,
+    "dims": [
+      "60",
+      "3338"
+    ],
+    "max_y": 3338,
+    "residual_defense_ids": []
+  }
+]

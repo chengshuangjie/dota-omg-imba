@@ -1,0 +1,176 @@
+﻿{
+    "project":  "DOTA OMG IMBA 轻量化",
+    "generatedAt":  "2026-10-16 17:13:52",
+    "fileCount":  33,
+    "baselineMapSha256":  "55dbca6debd44ae60284e819061d5136b2670120f7e80e0d2331dbc31b29a546",
+    "developmentMapSha256":  "23586842b3f32f406ab1fd933063c735610c95af206a75076178cd76d27173f1",
+    "sourceSha256":  "01d94d463a51d4def177b050298b6041bd185cd280b45d1a9d7aa79deedd8ebf",
+    "verificationPassed":  true,
+    "files":  [
+                  {
+                      "path":  "assets\\loading-screen\\DOTA-OMG-IMBA-loading-screen-1024x768.png",
+                      "bytes":  1166517,
+                      "sha256":  "f6e023557940ca38bc76cbd1545d38bfef9a07da9358a781180ceb74f4d3de9f"
+                  },
+                  {
+                      "path":  "assets\\loading-screen\\LoadingScreenBL.blp",
+                      "bytes":  132252,
+                      "sha256":  "a3ef1ad51446ec6a2910b63d4deac08044a954144dec98f9f50d09730f878590"
+                  },
+                  {
+                      "path":  "assets\\loading-screen\\LoadingScreenBR.blp",
+                      "bytes":  132252,
+                      "sha256":  "e3feb5b0449a4960153989fae558eca0b487497f297def8f9aac2f7d702a66a5"
+                  },
+                  {
+                      "path":  "assets\\loading-screen\\LoadingScreenTL.blp",
+                      "bytes":  263324,
+                      "sha256":  "ed947b529f39316390b35b7db1cc36f80843a35fade0710a2bbe70f40a73a944"
+                  },
+                  {
+                      "path":  "assets\\loading-screen\\LoadingScreenTR.blp",
+                      "bytes":  263324,
+                      "sha256":  "b3b4978855ba832f0479f80883c0c3cfdd5d4bd691e365ac71c03ac1afaa28b6"
+                  },
+                  {
+                      "path":  "assets\\loading-screen\\war3mapPreview.tga",
+                      "bytes":  196652,
+                      "sha256":  "2f73b4d993117c06872671733ca28507c327935c9d45c1568fe522477679e5a1"
+                  },
+                  {
+                      "path":  "config\\tool-paths.json",
+                      "bytes":  423,
+                      "sha256":  "e247521b04c1633a995be5d97fde63e8f03ef381e9f282f3acfa880c2cf52959"
+                  },
+                  {
+                      "path":  "maps\\baseline\\DOTA-OMG-IMBA-轻量化基线.w3x",
+                      "bytes":  43601181,
+                      "sha256":  "55dbca6debd44ae60284e819061d5136b2670120f7e80e0d2331dbc31b29a546"
+                  },
+                  {
+                      "path":  "maps\\build\\DOTA-OMG-IMBA-轻量化开发版.w3x",
+                      "bytes":  46158885,
+                      "sha256":  "23586842b3f32f406ab1fd933063c735610c95af206a75076178cd76d27173f1"
+                  },
+                  {
+                      "path":  "README.md",
+                      "bytes":  3383,
+                      "sha256":  "91fe1795d1add8d4b61beb14812ee78f77791790b8cdc600569d685abc6c74dc"
+                  },
+                  {
+                      "path":  "reports\\SLK精简报告.json",
+                      "bytes":  1121,
+                      "sha256":  "af6024d0b0cef2e2b0f1a8eaeb30eb63a0c053944c9366faa6b624d0492b1009"
+                  },
+                  {
+                      "path":  "reports\\verification-latest.json",
+                      "bytes":  2999,
+                      "sha256":  "29ba479fd2732b305cc00cf60229348451669f37127e6afdf1c97347c5aa5213"
+                  },
+                  {
+                      "path":  "reports\\充值日志注入报告.json",
+                      "bytes":  297,
+                      "sha256":  "7bb270d29e84104c8e69004719c096117eae85607247fba76cfdd12c5796c909"
+                  },
+                  {
+                      "path":  "reports\\充值事务迁移报告.json",
+                      "bytes":  376,
+                      "sha256":  "ca2eb877c7d25fbd5f63b16ae06a11e21246f5410c78f4b22af2f446f1058e81"
+                  },
+                  {
+                      "path":  "reports\\后加皮肤清理报告.json",
+                      "bytes":  757,
+                      "sha256":  "8a4670670111d3a31e42ed5c0eb7216e196b589052cc4332e5cbe1e06f9513d1"
+                  },
+                  {
+                      "path":  "reports\\模式与资源精简审计.json",
+                      "bytes":  894,
+                      "sha256":  "834b0404275f4ee0ea33d80f2fae79232210c9279829f452e79fdaa3da8f4d42"
+                  },
+                  {
+                      "path":  "reports\\模型依赖审计.json",
+                      "bytes":  9968,
+                      "sha256":  "ec291376ea78edb82201458f43b76d563e5f5379e335b6172c88e947d1f96936"
+                  },
+                  {
+                      "path":  "src\\data\\Units\\UnitAbilities.slk",
+                      "bytes":  153296,
+                      "sha256":  "2a395c2a8685ef24c2a4e12cbfedf619b490dc25dc2b3880a7c5d4240238cc7a"
+                  },
+                  {
+                      "path":  "src\\data\\Units\\UnitBalance.slk",
+                      "bytes":  893028,
+                      "sha256":  "13b43ba1e66e9712703ab273361742deeddaaf34da14c0a81b9a6d6f29f93359"
+                  },
+                  {
+                      "path":  "src\\data\\Units\\UnitData.slk",
+                      "bytes":  532643,
+                      "sha256":  "841116a37e1c1f7cb2e5d9d29f20e65ae1aa4d9f779710978d2cd581d3669499"
+                  },
+                  {
+                      "path":  "src\\data\\Units\\UnitUI.slk",
+                      "bytes":  1069683,
+                      "sha256":  "9c81179f22bb1b2d6efcd41c46be17a6f85adfbb874e28a54dd48685ce4c5ccc"
+                  },
+                  {
+                      "path":  "src\\data\\Units\\UnitWeapons.slk",
+                      "bytes":  1014045,
+                      "sha256":  "49c0517ad96752eb01e68f059136ca37a2d476a31fd13cb0fbdc8f67ed58f105"
+                  },
+                  {
+                      "path":  "src\\war3map.imp",
+                      "bytes":  89654,
+                      "sha256":  "1fb5c0b5389ae83c39bacb99aad48af86c253afb74357f47f65a8d651aa9846d"
+                  },
+                  {
+                      "path":  "src\\war3map.j",
+                      "bytes":  8669290,
+                      "sha256":  "01d94d463a51d4def177b050298b6041bd185cd280b45d1a9d7aa79deedd8ebf"
+                  },
+                  {
+                      "path":  "tools\\build\\build.ps1",
+                      "bytes":  5303,
+                      "sha256":  "91101c612c31e3b9624c086d36c5e64b9386077328cd6644606f38690d67f911"
+                  },
+                  {
+                      "path":  "tools\\build\\verify.ps1",
+                      "bytes":  4201,
+                      "sha256":  "0587582fd2f3b9e381aaa7785de029fbc9f41b73176991e3b3e61294cbcaf6ef"
+                  },
+                  {
+                      "path":  "tools\\transform\\add_entry_gift.py",
+                      "bytes":  4632,
+                      "sha256":  "5dc01dbbbd367967db6590dc56fe56948983c1a1cb2324621b6420647ca72fca"
+                  },
+                  {
+                      "path":  "tools\\transform\\add_recharge_logging.py",
+                      "bytes":  19791,
+                      "sha256":  "7db9fb845d9ad70119fb7a55bd15ddd32d41c2f623dfc3934ade0dfe37421655"
+                  },
+                  {
+                      "path":  "tools\\transform\\apply_changes.py",
+                      "bytes":  6677,
+                      "sha256":  "ecf1b4b34e1e6b1a173e905072d9ca497e6ffb240b49e754d255092d38c3f6ff"
+                  },
+                  {
+                      "path":  "tools\\transform\\fix_entry_gift_slot0.py",
+                      "bytes":  1894,
+                      "sha256":  "3337a7ff730592e8abb99da7dad521723cc27278cf0a0720085960cafe5862ba"
+                  },
+                  {
+                      "path":  "tools\\transform\\remove_late_skins.py",
+                      "bytes":  4333,
+                      "sha256":  "d1ddd8b4f6f32570b9c41a020aaa57b6604d3a122ed046a414a5edd1faa41eb5"
+                  },
+                  {
+                      "path":  "tools\\transform\\trim_modes_v2.py",
+                      "bytes":  13441,
+                      "sha256":  "c2f99148ef4904ca9f1b9d1d82c6234cb4b9629ca1ac84c6d81e3136f854f3da"
+                  },
+                  {
+                      "path":  "tools\\transform\\use_lottery_chain_for_recharge.py",
+                      "bytes":  11322,
+                      "sha256":  "8c67a2a1191eb94ba4911c439b0725d7463a6837d4c433e2f869f941ba543ed0"
+                  }
+              ]
+}

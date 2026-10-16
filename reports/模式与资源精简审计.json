@@ -1,0 +1,49 @@
+{
+  "script": {
+    "defense_impl_functions": [],
+    "wheel_impl_functions": [],
+    "forbidden_phrases": [],
+    "compat_predicate_fixed_false": true,
+    "control_wrapper_normal": true,
+    "signature_visible": 10
+  },
+  "imp_version": 1,
+  "imp_count": 3296,
+  "slk": {
+    "UnitData.slk": {
+      "dimension": [
+        "25",
+        "3338"
+      ],
+      "defense_ids": []
+    },
+    "UnitUI.slk": {
+      "dimension": [
+        "39",
+        "3338"
+      ],
+      "defense_ids": []
+    },
+    "UnitBalance.slk": {
+      "dimension": [
+        "52",
+        "3338"
+      ],
+      "defense_ids": []
+    },
+    "UnitWeapons.slk": {
+      "dimension": [
+        "60",
+        "3338"
+      ],
+      "defense_ids": []
+    },
+    "UnitAbilities.slk": {
+      "dimension": [
+        "4",
+        "3338"
+      ],
+      "defense_ids": []
+    }
+  }
+}

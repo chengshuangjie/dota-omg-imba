@@ -1,0 +1,22 @@
+{
+  "original_script_bytes": 8774237,
+  "new_script_bytes": 8654035,
+  "script_bytes_removed": 120202,
+  "original_imp_count": 3296,
+  "new_imp_count": 1880,
+  "removed_skin_entries": 1416,
+  "removed_first": [
+    "skins\\h001\\s090\\model.mdx",
+    "skins\\h001\\s132\\model.mdx",
+    "skins\\h002\\s050\\model.mdx",
+    "skins\\h002\\s050\\model_portrait.mdx",
+    "skins\\h002\\s092\\model.mdx"
+  ],
+  "removed_last": [
+    "skins\\susheng\\textures\\hero_juggernaut_n4s_f_source5.blp",
+    "skins\\susheng\\textures\\hero_skeletonking_n3_body_ef_01.blp",
+    "skins\\susheng\\textures\\hero_skeletonking_n3_ef_12.blp",
+    "skins\\susheng\\textures\\setitems_n5_tp_ef_10.blp",
+    "skins\\susheng\\textures\\tx_smoke2005.blp"
+  ]
+}

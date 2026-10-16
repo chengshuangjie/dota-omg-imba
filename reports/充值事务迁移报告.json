@@ -1,0 +1,16 @@
+{
+  "operation19_refs": 0,
+  "lottery_operation3_call": 1,
+  "lottery_local_write": 1,
+  "lottery_receipt": 1,
+  "lottery_sync_ack": 3,
+  "recharge_ack": 2,
+  "native_h99_route": 1,
+  "standalone_init_calls": 0,
+  "received_diagnostic": 1,
+  "fuzzy_helper": 1,
+  "fuzzy_entry_gift": 1,
+  "fuzzy_recharge": 1,
+  "fuzzy_announcement": 1,
+  "exact_entry_rule": 0
+}

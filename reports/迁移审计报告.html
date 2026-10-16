@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DOTA-OMG-IMBA 轻量化 — 迁移审计报告</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>D</text></svg>">
+<style>
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .table-wrap table { min-width: 480px; }
+  @media (max-width: 768px) {
+    table { display: block; overflow-x: auto; white-space: nowrap; }
+  }
+  :root {
+    --bg: #f7f6f3;
+    --card: #ffffff;
+    --ink: #1f2328;
+    --muted: #59636e;
+    --line: #e2dfd8;
+    --accent: #8b5e3c;
+    --ok: #1a7f37;
+    --warn: #9a6700;
+    --bad: #cf222e;
+    --code-bg: #f3f1ec;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 0; background: var(--bg); color: var(--ink);
+    font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", system-ui, sans-serif;
+    line-height: 1.7; font-size: 15px;
+  }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 40px 24px 80px; }
+  header { border-bottom: 2px solid var(--ink); padding-bottom: 20px; margin-bottom: 32px; }
+  header h1 { margin: 0 0 6px; font-size: 26px; font-weight: 700; }
+  header .meta { color: var(--muted); font-size: 13px; }
+  h2 {
+    font-size: 19px; font-weight: 700; margin: 36px 0 14px;
+    padding-left: 12px; border-left: 4px solid var(--accent);
+  }
+  h3 { font-size: 15px; font-weight: 600; margin: 20px 0 8px; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 8px;
+    padding: 20px 24px; margin-bottom: 16px;
+  }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 13.5px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: var(--code-bg); font-weight: 600; white-space: nowrap; }
+  td.mono, .mono { font-family: Consolas, "Cascadia Code", monospace; font-size: 12.5px; word-break: break-all; }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+  .badge-ok { background: #dafbe1; color: var(--ok); }
+  .badge-warn { background: #fff8c5; color: var(--warn); }
+  .badge-bad { background: #ffebe9; color: var(--bad); }
+  .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 14px 0; }
+  .stat { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; }
+  .stat .num { font-size: 22px; font-weight: 700; color: var(--accent); }
+  .stat .label { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  ul { margin: 6px 0; padding-left: 22px; }
+  li { margin: 4px 0; }
+  .diff-old { background: #ffebe9; padding: 2px 6px; border-radius: 3px; font-family: Consolas, monospace; font-size: 12.5px; }
+  .diff-new { background: #dafbe1; padding: 2px 6px; border-radius: 3px; font-family: Consolas, monospace; font-size: 12.5px; }
+  .note { color: var(--muted); font-size: 13px; }
+  footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>DOTA-OMG-IMBA 轻量化 — 迁移审计报告</h1>
+  <div class="meta">
+    工程路径：D:\dota\DOTA-OMG-IMBA-轻量化 &nbsp;|&nbsp;
+    执行日期：2026-10-16 &nbsp;|&nbsp;
+    基线图：DOTA-OMG-IMBA-轻量化基线.w3x &nbsp;|&nbsp;
+    开发图：DOTA-OMG-IMBA-轻量化开发版.w3x
+  </div>
+</header>
+
+<h2>一、结论摘要</h2>
+<div class="card">
+  <div class="summary-grid">
+    <div class="stat"><div class="num">0</div><div class="label">达拉然稳定性修复迁移项</div></div>
+    <div class="stat"><div class="num">1</div><div class="label">处玩家可见署名文案变更</div></div>
+    <div class="stat"><div class="num">7/7</div><div class="label">回读文件哈希一致</div></div>
+    <div class="stat"><div class="num">0</div><div class="label">skins\ / 防守 / 车轮实现</div></div>
+    <div class="stat"><div class="num">1+1</div><div class="label">recharge / logger 链各保留</div></div>
+    <div class="stat"><div class="num">PASS</div><div class="label">build.ps1 全流程通过</div></div>
+  </div>
+  <p><strong>总判定：</strong><span class="badge badge-ok">通过</span>
+    未迁移任何达拉然功能代码；全项目玩家可见作者信息统一为"小生我怕怕"；胜利致谢已固定为指定文本；基线图哈希不变；构建与回读验证全部通过。</p>
+</div>
+
+<h2>二、稳定性零迁移结论与来源证据</h2>
+<div class="card">
+  <h3>2.1 官方来源（已审计）</h3>
+  <table>
+    <tr><th>项目</th><th>值</th></tr>
+    <tr><td>来源文件路径</td><td class="mono">D:\dota\DotaDalaran\oct14-identify\F5444EE54DFBEE5874BF1096D39094E3\war3map.j</td></tr>
+    <tr><td>发布版本标识</td><td class="mono">KK_B1122</td></tr>
+    <tr><td>SHA256（来源文件）</td><td class="mono">bd50a3ad…（截断，完整值见审计工作底稿）</td></tr>
+  </table>
+
+  <h3>2.2 审计结论</h3>
+  <ul>
+    <li>对来源文件做函数级逐函数比对，判定为<strong>通用且轻量版缺失</strong>的稳定性修复 = <strong>0 项</strong>。</li>
+    <li>因此本次执行<strong>未引入任何达拉然功能代码</strong>——不新增函数、不新增全局变量、不修改游戏逻辑、不引入新的资源/路径引用。</li>
+    <li>本工程的 src/war3map.j 与基线图均保持原有架构；本次唯一代码级变更仅涉及玩家可见文案替换（见第四节）。</li>
+  </ul>
+</div>
+
+<h2>三、修改前备份</h2>
+<div class="card">
+  <p>备份目录：<span class="mono">D:\dota\DOTA-OMG-IMBA-轻量化\reports\backup-20261016-author-rebrand\</span></p>
+  <table>
+    <tr><th>备份文件</th><th>对应原文件</th><th>说明</th></tr>
+    <tr><td class="mono">src-war3map.j.bak</td><td class="mono">src\war3map.j</td><td>修改前主脚本完整快照</td></tr>
+    <tr><td class="mono">src-war3map.imp.bak</td><td class="mono">src\war3map.imp</td><td>导入表快照</td></tr>
+    <tr><td class="mono">dev-map.w3x.bak</td><td class="mono">maps\build\…开发版.w3x</td><td>修改前开发图完整快照</td></tr>
+    <tr><td class="mono">verification-latest.json.bak</td><td class="mono">reports\verification-latest.json</td><td>修改前验证报告</td></tr>
+    <tr><td class="mono">baseline-manifest.json.bak</td><td class="mono">reports\baseline-manifest.json</td><td>基线清单快照</td></tr>
+    <tr><td class="mono">PRE-BACKUP-HASHES.txt</td><td>—</td><td>修改前四个关键文件的 SHA256 记录</td></tr>
+  </table>
+  <p class="note">基线图（maps\baseline\…基线.w3x）<strong>未被修改、未被覆盖、未被删除</strong>，哈希修改前后均为 55dbca6d…。</p>
+</div>
+
+<h2>四、品牌改动：逐处变更明细</h2>
+<div class="card">
+  <h3>4.1 唯一代码变更（src\war3map.j 第 46376–46377 行）</h3>
+  <p>变更前（两行 VV7 调用）：</p>
+  <p><span class="diff-old">call VV7(bj_FORCE_ALL_PLAYERS,60,"|c00ff8000感谢以下玩家对本图做出的贡献与支持(排名不分先后)：|r")</span></p>
+  <p><span class="diff-old">call VV7(bj_FORCE_ALL_PLAYERS,60,"|c00ff8000季伯常、龙阳村长、一碗杀心酒、幻想乡住民、…（共约40个玩家名）…混沌骑士|r")</span></p>
+  <p>变更后（合并为一行 VV7 调用）：</p>
+  <p><span class="diff-new">call VV7(bj_FORCE_ALL_PLAYERS,60,"|c00ff8000感谢小生我怕怕、小生我看破、小生我顿悟|r")</span></p>
+  <p class="note">该变更位于游戏胜利结算流程（function 内，胜利播报之后）。删除了旧版"感谢以下玩家贡献"标题与约 40 人鸣谢名单，替换为指定固定致谢文本。胜利播报行（"作者：小生我怕怕"）保持不变。</p>
+
+  <h3>4.2 玩家可见署名点全量命中清单（修改后终扫结果）</h3>
+  <table>
+    <tr><th>行号</th><th>命中内容（玩家可见）</th><th>处置</th></tr>
+    <tr><td class="mono">12320</td><td>"我这钩子是向作者[小生我怕怕]学的，厉害吧"</td><td>保留（已正确）</td></tr>
+    <tr><td class="mono">13056</td><td>"这就是作者[小生我怕怕]制作的超强AI"</td><td>保留（已正确）</td></tr>
+    <tr><td class="mono">13189</td><td>"多跟作者[小生我怕怕]学习，你也能超神"</td><td>保留（已正确）</td></tr>
+    <tr><td class="mono">38226</td><td>set name="小生我怕怕"（SPEPLAYER 称号槽位1）</td><td>保留（已正确）</td></tr>
+    <tr><td class="mono">38342</td><td>set name="小生我怕怕"（SPEPLAYER 称号槽位57）</td><td>保留（已正确）</td></tr>
+    <tr><td class="mono">46374</td><td>胜利播报 "…获得了胜利！作者：小生我怕怕"</td><td>保留（已正确）</td></tr>
+    <tr><td class="mono">46376</td><td><strong>感谢小生我怕怕、小生我看破、小生我顿悟</strong></td><td><span class="badge badge-ok">本次变更</span></td></tr>
+    <tr><td class="mono">249250</td><td>开局提示 "作者：小生我怕怕"</td><td>保留（已正确）</td></tr>
+    <tr><td class="mono">249311</td><td>SetMapDescription "作者：小生我怕怕"</td><td>保留（已正确）</td></tr>
+  </table>
+
+  <h3>4.3 明确未改动（受保护项）</h3>
+  <table>
+    <tr><th>类别</th><th>示例位置</th><th>保留原因</th></tr>
+    <tr><td>账号权限白名单</td><td class="mono">B894AllowedIdentity[22..27] 等（含"小生我怕怕#7351"等）</td><td>账号白名单，非玩家可见署名，按指令不得破坏</td></tr>
+    <tr><td>AI 机器人假名池</td><td class="mono">T64[1..170]（含"大熊小清新"等）</td><td>AI 填充位的显示名，非作者署名</td></tr>
+    <tr><td>内部版本常量</td><td class="mono">KK_RELEASE_VERSION="KK_B1122"</td><td>技术标识，非玩家可见</td></tr>
+    <tr><td>函数名 / 变量名</td><td class="mono">KK_GAME_DIFFICULTY、B1131Recharge、B1133LogAppend 等</td><td>内部键与函数名，不得破坏</td></tr>
+    <tr><td>阵营名引用</td><td>"达拉然势力"、"达拉然城堡"等</td><td>游戏内阵营/地点名，非作者署名</td></tr>
+    <tr><td>代码注释</td><td>// B1122: …、// 达拉然守护版本 等</td><td>非玩家可见技术注释</td></tr>
+    <tr><td>诊断日志路径</td><td class="mono">1-miao-error\…orders.text / match.text</td><td>诊断链，非玩家可见</td></tr>
+  </table>
+</div>
+
+<h3>4.4 精确身份迁移：本喵是萌新#3871 → 小生我怕怕#7351</h3>
+<div class="card">
+  <p>按新增硬约束，将主源码中所有精确字符串"本喵是萌新#3871"替换为"小生我怕怕#7351"，覆盖白名单槽位与 -give 权限判断两处；其他账号与模糊匹配规则一律不动。</p>
+  <table>
+    <tr><th>行号</th><th>位置</th><th>变更前</th><th>变更后</th></tr>
+    <tr><td class="mono">234947</td><td>B894AllowedIdentity[15] 白名单槽位（对应 title=2）</td><td class="mono">"本喵是萌新#3871"</td><td class="mono">"小生我怕怕#7351"</td></tr>
+    <tr><td class="mono">238345</td><td>-give 命令权限判断（B894PlayerIdentity 比较）</td><td class="mono">!="本喵是萌新#3871"</td><td class="mono">!="小生我怕怕#7351"</td></tr>
+  </table>
+  <h3>替换后计数核对（src 与成品包内 war3map.j 一致）</h3>
+  <table>
+    <tr><th>字符串</th><th>src 计数</th><th>包内计数</th><th>说明</th></tr>
+    <tr><td class="mono">本喵是萌新#3871</td><td>0</td><td>0</td><td>旧身份已完全清除 <span class="badge badge-ok">PASS</span></td></tr>
+    <tr><td class="mono">小生我怕怕#7351</td><td>3</td><td>3</td><td>见下方逐项说明</td></tr>
+  </table>
+  <p><strong>新身份字面计数 = 3 项说明（任务预期 2，差异逐项列出）：</strong></p>
+  <ul>
+    <li><strong>本次迁移替换（2 处）</strong>：B894AllowedIdentity[15]（行234947）与 -give 权限判断（行238345）。</li>
+    <li><strong>既有未动（1 处，按"不得改其他账号"保留）</strong>：B894AllowedIdentity[22]="小生我怕怕#7351"（行234961），该槽位在本次迁移前即已登记此身份，不属于本喵是萌新#3871 的替换范围，按约束未做任何改动。</li>
+    <li>因此字面出现 3 次 = 本次新增 2 次 + 既有保留 1 次；旧身份"本喵是萌新#3871"在 src 与包内均为 0。</li>
+  </ul>
+</div>
+
+<h2>五、构建与验证</h2>
+<div class="card">
+  <h3>5.1 PJASS 语法检查</h3>
+  <table>
+    <tr><th>检查项</th><th>结果</th></tr>
+    <tr><td>common.j 解析</td><td>2445 行，成功</td></tr>
+    <tr><td>blizzard.j 解析</td><td>10230 行，成功</td></tr>
+    <tr><td>war3map.j 错误</td><td class="mono">第155071行：location_m5 未初始化（既有遗留项）</td></tr>
+    <tr><td>人工复核</td><td><span class="badge badge-warn">仅既有 location_m5</span> 无新增错误，符合预期</td></tr>
+  </table>
+
+  <h3>5.2 build.ps1 全流程（显式开发图）</h3>
+  <p>执行 <span class="mono">tools\build\build.ps1</span>，自动完成：PJASS → MPQ 打包基线图 → 写入 src/war3map.j、war3map.imp、5 个 SLK、loading-screen 资源 → 调用 verify.ps1 回读比对。</p>
+
+  <h3>5.3 包内回读哈希比对（7/7 一致）</h3>
+  <table>
+    <tr><th>包内文件</th><th>期望（src）SHA256 前缀</th><th>实际（包内）SHA256 前缀</th><th>一致</th></tr>
+    <tr><td class="mono">war3map.j</td><td class="mono">44dc59b6…</td><td class="mono">44dc59b6…</td><td><span class="badge badge-ok">YES</span></td></tr>
+    <tr><td class="mono">war3map.imp</td><td class="mono">1fb5c0b5…</td><td class="mono">1fb5c0b5…</td><td><span class="badge badge-ok">YES</span></td></tr>
+    <tr><td class="mono">Units\UnitAbilities.slk</td><td class="mono">2a395c2a…</td><td class="mono">2a395c2a…</td><td><span class="badge badge-ok">YES</span></td></tr>
+    <tr><td class="mono">Units\UnitBalance.slk</td><td class="mono">13b43ba1…</td><td class="mono">13b43ba1…</td><td><span class="badge badge-ok">YES</span></td></tr>
+    <tr><td class="mono">Units\UnitData.slk</td><td class="mono">841116a3…</td><td class="mono">841116a3…</td><td><span class="badge badge-ok">YES</span></td></tr>
+    <tr><td class="mono">Units\UnitUI.slk</td><td class="mono">9c81179f…</td><td class="mono">9c81179f…</td><td><span class="badge badge-ok">YES</span></td></tr>
+    <tr><td class="mono">Units\UnitWeapons.slk</td><td class="mono">49c0517a…</td><td class="mono">49c0517a…</td><td><span class="badge badge-ok">YES</span></td></tr>
+  </table>
+
+  <h3>5.4 脚本内静态检查项</h3>
+  <table>
+    <tr><th>检查项</th><th>期望值</th><th>实际值</th><th>结果</th></tr>
+    <tr><td>skins\ 路径出现次数（IMP + J）</td><td>0</td><td>0</td><td><span class="badge badge-ok">PASS</span></td></tr>
+    <tr><td>KKDefense_ 防守实现函数数</td><td>0</td><td>0</td><td><span class="badge badge-ok">PASS</span></td></tr>
+    <tr><td>B1004 车轮实现函数数</td><td>0</td><td>0</td><td><span class="badge badge-ok">PASS</span></td></tr>
+    <tr><td>B1131Recharge 充值命令函数数</td><td>1</td><td>1</td><td><span class="badge badge-ok">PASS</span></td></tr>
+    <tr><td>B1133LogAppend 诊断日志函数数</td><td>1</td><td>1</td><td><span class="badge badge-ok">PASS</span></td></tr>
+  </table>
+
+  <h3>5.5 关键文件哈希（修改后）</h3>
+  <table>
+    <tr><th>文件</th><th>SHA256</th><th>字节数</th></tr>
+    <tr><td class="mono">src\war3map.j（品牌+身份迁移后）</td><td class="mono">54607258d0bef9cc70de63a922637bc386c398ff563153200bd7bd960ac5ed81</td><td>8,668,687</td></tr>
+    <tr><td class="mono">src\war3map.j（修改前基线）</td><td class="mono">01d94d463a51d4def177b050298b6041bd185cd280b45d1a9d7aa79deedd8ebf</td><td>8,669,290</td></tr>
+    <tr><td class="mono">maps\baseline\…基线.w3x</td><td class="mono">55dbca6debd44ae60284e819061d5136b2670120f7e80e0d2331dbc31b29a546</td><td>43,601,181</td></tr>
+    <tr><td class="mono">maps\build\…开发版.w3x（最终）</td><td class="mono">3030209907bfd3dc6eb2d2c728ef9c0904f0e23f5bdf41e0e969fc91b6a36beb</td><td>46,158,377</td></tr>
+  </table>
+  <p class="note">基线图 SHA256 修改前后均为 55dbca6d…，未被触碰。src war3map.j 经品牌文案替换（-592 字节）与身份字符串等长替换后为 8,668,687 字节。</p>
+</div>
+
+<h2>六、包内终扫：作者署名残留验证</h2>
+<div class="card">
+  <p>从新开发图 MPQ 内回读 war3map.j（SHA256 与 src 一致：54607258…），对其执行正则扫描：</p>
+  <ul>
+    <li>搜索"感谢以下玩家"、旧鸣谢名单人名（季伯常、龙阳村长、疯狂上帝Lyn、LR圣魔混血、Injoker、画图仔、流X觞、MR.Huang 等）：<strong>0 命中</strong>（白名单 B894AllowedIdentity 内的账号条目除外，属受保护项）。</li>
+    <li>搜索"制作："、"汉化"、"鸣谢"、"致谢"、"原作者"、"本图作者"、"地图作者"：<strong>0 命中</strong>。</li>
+    <li>胜利致谢精确文本"感谢小生我怕怕、小生我看破、小生我顿悟"：<strong>1 处命中</strong>（第 46376 行）。</li>
+    <li>所有玩家可见"作者"引用均指向"小生我怕怕"：<strong>9 处全部正确</strong>。</li>
+  </ul>
+</div>
+
+<h2>七、风险评估</h2>
+<div class="card">
+  <table>
+    <tr><th>风险项</th><th>等级</th><th>说明与缓解</th></tr>
+    <tr><td>文案变更影响游戏逻辑</td><td><span class="badge badge-ok">低</span></td><td>仅替换 VV7 广播字符串，不涉及条件分支、变量赋值或函数调用结构。</td></tr>
+    <tr><td>误删白名单 / 权限标识</td><td><span class="badge badge-ok">低</span></td><td>B894AllowedIdentity 数组与 T64 假名池均逐处人工确认后保留。</td></tr>
+    <tr><td>基线图被污染</td><td><span class="badge badge-ok">低</span></td><td>build.ps1 从基线图副本构建输出图，基线文件只读；哈希前后一致。</td></tr>
+    <tr><td>PJASS 既有 location_m5</td><td><span class="badge badge-warn">遗留</span></td><td>修改前即存在（第155071行），非本次引入；build.ps1 对该错误白名单放行。</td></tr>
+    <tr><td>达拉然功能误迁移</td><td><span class="badge badge-ok">无</span></td><td>审计结论为 0 项可迁移修复，本次未引入任何来源代码。</td></tr>
+  </table>
+</div>
+
+<h2>八、XOMG1 存档协议（键隔离 + v1 信封 + 零迁移）</h2>
+<div class="card">
+  <h3>8.1 设计原则</h3>
+  <ul>
+    <li>所有 ServerValue / Stat 实际键统一隔离到 <span class="mono">XOMG1_</span> 命名空间；新键为空档 = 全新状态，<strong>绝不读取任何旧键、不保留迁移分支</strong>。</li>
+    <li>空新键在内存生成默认 v1 记录，<strong>首次进图不主动写服务器</strong>；仅在合法业务变更时经 CAS 写。</li>
+    <li>未知版本 / 非空损坏 / API 错误 → <strong>fail-closed</strong>：锁定该记录本局写入，玩家提示 + B1133 本地诊断（B1133LogAppend）。不以 S2I 吞错后写 0。</li>
+    <li>记录长度 ≤63 字节（B836ArcValid / arcLength 校验）；动态键（英雄/peer）做白名单与长度检查。</li>
+  </ul>
+  <h3>8.2 旧键 → 新键映射（全部已落地，旧键字面量 src=0）</h3>
+  <table>
+    <tr><th>用途</th><th>旧键（运行时/源码）</th><th>新键</th><th>读写成对</th></tr>
+    <tr><td>钱包 ARC（硬币/书/爪/喵刀/减次收据/熟练度/境界/时间戳）</td><td class="mono">OMGARC1</td><td class="mono">XOMG1_ARC</td><td>读/写/收据回读 ✓</td></tr>
+    <tr><td>早退日志 QUIT</td><td class="mono">OMGQUIT1</td><td class="mono">XOMG1_QUIT</td><td>读/写/回读 ✓</td></tr>
+    <tr><td>早退计数（StoredInteger 包装，运行时加 I 前缀）</td><td class="mono">IZTTP</td><td class="mono">IXOMG1_ZTTP</td><td>读/写 ✓</td></tr>
+    <tr><td>Stat 展示早退</td><td class="mono">ZTTP</td><td class="mono">XOMG1_ZTTP</td><td>Stat_SetStat ✓</td></tr>
+    <tr><td>每英雄境界/熟练度</td><td class="mono">OMGM1_&lt;hero&gt;</td><td class="mono">XOMG1_M_&lt;hero&gt;</td><td>读/CAS写/回读 ✓</td></tr>
+    <tr><td>打赏主记录</td><td class="mono">OMGTP1</td><td class="mono">XOMG1_TIP</td><td>读/CAS写 ✓</td></tr>
+    <tr><td>打赏回执（peer）</td><td class="mono">OMGTR_&lt;peer&gt;</td><td class="mono">XOMG1_TR_&lt;peer&gt;</td><td>读/CAS写 ✓</td></tr>
+    <tr><td>设置-开关</td><td class="mono">setups</td><td class="mono">XOMG1_SETUP</td><td>读/写 ✓</td></tr>
+    <tr><td>设置-改键</td><td class="mono">hotkeys</td><td class="mono">XOMG1_HOTKEY</td><td>读/写 ✓</td></tr>
+    <tr><td>设置-快捷施法</td><td class="mono">spell（仅设置语境）</td><td class="mono">XOMG1_SPELL</td><td>读/写 ✓</td></tr>
+    <tr><td>Stat 胜场</td><td class="mono">BSYZ</td><td class="mono">XOMG1_WINS</td><td>KKServerScore_Add ✓</td></tr>
+    <tr><td>Stat MVP</td><td class="mono">MVP</td><td class="mono">XOMG1_MVP</td><td>KKServerScore_Add ✓</td></tr>
+  </table>
+  <p class="note">注：单位动画语境的 "spell"（XY7/SetUnitAnimation，约30处）为技能动作名，非存档键，按要求全部保留未动。</p>
+  <h3>8.3 实际 v1 格式</h3>
+  <ul>
+    <li><strong>设置类（SETUP/HOTKEY/SPELL）</strong>：外层字面 <span class="mono">"1;"+&lt;原字符串&gt;</span>；读取时剥离 "1;" 前缀，无前缀/损坏 = 内存默认、不写覆盖。写入即 "1;" 信封。</li>
+    <li><strong>ARC / QUIT / TIP / TR / M_</strong>：复用既有自带版本前缀的线路格式（ARC 内层版本号 1..5、QUIT 日志版本 1/2/3、境界 pack、打赏回执），本身即自描述版本记录；新键空档首次业务写才生成，≤63B，CAS 写后回读、有限重试3次、故障锁。</li>
+    <li><strong>计数（ZTTP/WINS/MVP）</strong>：沿用既有 StoredInteger + Stat 同步，写入前经 GetServerValueErrorCode 与边界校验（不在错误时写0）。</li>
+  </ul>
+  <h3>8.4 已删除/停用的持久化链（无新键、无迁移分支）</h3>
+  <table>
+    <tr><th>链</th><th>旧键</th><th>处置</th></tr>
+    <tr><td>每日皮肤</td><td class="mono">OMGF1_&lt;hero&gt;</td><td>B1040Local 改为空操作返回，ServerValue 读写全部移除</td></tr>
+    <tr><td>皮肤掩码</td><td class="mono">OMGSK1</td><td>B1032MaskLocalWrite / B1032LoadLocal 改为空操作，读写字节全删</td></tr>
+    <tr><td>双圣祝福</td><td class="mono">OMGTWINBLESSING</td><td>读 owned 恒为 false，StoreInteger 写块移除</td></tr>
+    <tr><td>2026暑期彩蛋</td><td class="mono">OMG2026SUMMER</td><td>读 owned 恒为 false，StoreInteger 写块移除</td></tr>
+  </table>
+  <p class="note">皮肤/防守/车轮功能未恢复；三移除实现静态检查仍为 0。EVENT26 在源码中无任何现存键，无需动作。</p>
+</div>
+
+<h2>九、IMBA 规则层（跟随 XM_MODE，常量 IMBA_POWER=2）</h2>
+<div class="card">
+  <p>不新增第二模式；全局开关 <span class="mono">XM_MODE</span> + 常量 <span class="mono">constant real IMBA_POWER=2.</span>。倍率只在统一入口施加一次，禁止在 GetLocalPlayer 中决定倍率。</p>
+  <table>
+    <tr><th>入口</th><th>位置</th><th>施加规则</th></tr>
+    <tr><td>正向技能伤害 ×2</td><td class="mono">B67（function B67）</td><td>XM_MODE 且 BL7!=6（生命移除）时 YM7×2；BL7==6 直接生命操作排除。</td></tr>
+    <tr><td>Fort×2 避免 ×4</td><td class="mono">B67 内 BL7==3 / ==7</td><td>既有 Fort 加成改为 <span class="mono">IsFortDefenseTypeUnit and not XM_MODE</span>——IMBA 下全局已×2，Fort 不二次加倍，倍率只施一次。注：平行的 B67_DPS（DoT 不触吸血）未乘，按用户指定仅改 B67。</td></tr>
+    <tr><td>技能治疗 ×2</td><td class="mono">B907ApplySkillHeal</td><td>夹取/树枝1.15 之前 healAmount×2，每个参数只乘一次；保留过量夹取与 tether。</td></tr>
+    <tr><td>正向眩晕时长 ×2</td><td class="mono">CommonUnitAddStun</td><td>dur&gt;0 且 dur&lt;5 时 ×2 并硬上限 5 秒；永久/异常长眩晕（dur≥5）不乘。</td></tr>
+  </table>
+  <h3>9.1 未覆盖技能/参数及原因（不盲改）</h3>
+  <ul>
+    <li>距离、数量、概率、多数 buff 持续时间、旁路直伤（UnitDamageTarget 直调、B67_DPS、Loop_Damage）<strong>无统一安全语义入口</strong>，本轮不猜改。</li>
+    <li>B945SpellData 蓝耗、离散 real/int、对象 ID、索引、坐标、计时器、模型缩放、冷却、自伤：均未改。</li>
+    <li>442 处 B67 调用经统一入口自动覆盖；其余旁路伤害不乘。</li>
+  </ul>
+</div>
+
+<h2>十、初始化抽奖 ≥1000 与中立野怪 10% 掉落</h2>
+<div class="card">
+  <h3>10.1 抽奖（CHOUJIANG / A4DK，XM_MODE 每人每局一次）</h3>
+  <ul>
+    <li>保留既有三层策展奖品池（zb1/zb2/zb3，难度概率不变）；新增<strong>价格门</strong>：选中物品若 Get_Item_Price(id)&lt;1000 即 fail-closed 落金币兜底，绝不发低价/任务/存档奖励/喵刀书爪硬币/Aegis/Cheese/powerup。</li>
+    <li>随机全部在共享动作用 GetRandomInt，无 GetLocalPlayer 随机；池空走金币兜底不崩。</li>
+  </ul>
+  <h3>10.2 中立野怪掉落（10%，单件低价 ≤1000）</h3>
+  <ul>
+    <li>新建独立死亡 trigger：仅 Player(12)（B7）EVENT_PLAYER_UNIT_DEATH；复用 B832WardCreep 白名单（已排除英雄/建筑/召唤/幻象，B7 普通/远古36类，自然排除 Roshan n00L、防守 Boss/剧情/假人）。</li>
+    <li>用 L7+handle id 状态位（key 16100）确保同一死亡只处理一次；共享动作 <span class="mono">GetRandomInt(1,10)==1</span>，无本地随机。</li>
+    <li>低价池在物品表初始化后一次构建（扫描 ZU 登记表，0&lt;价格≤1000、有效登记），空池不掉；每死最多 1 件，死亡点 CreateItem 并清理句柄。</li>
+  </ul>
+</div>
+
+<h2>十一、四英雄对象层精确改名</h2>
+<div class="card">
+  <p>UnitUI.slk（GBK）X2 显示名列直接写中文；不碰 rawcode/属性/模型/头像/技能。脚本内玩家可见引用同步；注释与内部名不动。</p>
+  <table>
+    <tr><th>旧名</th><th>新名</th><th>rawcode / 变体（SLK 行）</th><th>脚本同步点</th></tr>
+    <tr><td>屠夫</td><td>袁加凯</td><td class="mono">U00F(Y983)、Z00F(Y1003)</td><td>图鉴、喊话"我才是袁加凯"、更新日志</td></tr>
+    <tr><td>影魔</td><td>程双杰</td><td class="mono">Nfir(Y48)、Zfir(Y1060)、Zgir(Y1062)、Zhir(Y1064)</td><td>调试输出、更新日志</td></tr>
+    <tr><td>炼金/炼金术士</td><td>土鸡</td><td class="mono">N01I(Y929)、N01H(Y928)、N01J(Y930)、N01T(Y932)</td><td>无独立中文引用</td></tr>
+    <tr><td>炸弹人/Techies</td><td>凯哥</td><td class="mono">H00K(Y884)（仅主英雄，无皮肤变体）</td><td>图鉴、更新日志</td></tr>
+  </table>
+  <p class="note">明确未改：Nalc/Nalm/Nal2/Nal3、Ntin/Nrob、H00T、ncg*/nfa*、ngsp、negz、h04L、n0HV 等；函数名/资源/音效/rawcode 映射保留。改后 slk 内 袁加凯×2、程双杰×4、土鸡×4、凯哥×1，旧名 屠夫/影魔/炸弹人=0。</p>
+</div>
+
+<h2>十二、本轮构建与回读验证（IMBA + 英雄改名后）</h2>
+<div class="card">
+  <table>
+    <tr><th>检查项</th><th>结果</th></tr>
+    <tr><td>PJASS</td><td>仅既有第155071行 location_m5，无新增错误 <span class="badge badge-ok">PASS</span></td></tr>
+    <tr><td>包内 7 文件回读哈希</td><td>war3map.j / imp / 5 SLK 全 match <span class="badge badge-ok">7/7</span></td></tr>
+    <tr><td>scriptChecks</td><td>skinsPaths=0、防守=0、车轮=0、recharge=1、logger=1 <span class="badge badge-ok">PASS</span></td></tr>
+    <tr><td>旧持久键字面量（src）</td><td>OMGARC1/OMGQUIT1/OMGM1_/OMGTR_/OMGTP1/OMGF1_/OMGSK1/OMG2026SUMMER/OMGTWINBLESSING = 0 <span class="badge badge-ok">PASS</span></td></tr>
+    <tr><td>IMP skins\</td><td>0 <span class="badge badge-ok">PASS</span></td></tr>
+    <tr><td>旧身份 本喵是萌新#3871</td><td>0；新身份 小生我怕怕#7351 = 3（2迁移+1既有） <span class="badge badge-ok">PASS</span></td></tr>
+    <tr><td>基线图 SHA256</td><td class="mono">55dbca6d… 不变 <span class="badge badge-ok">PASS</span></td></tr>
+    <tr><td>新开发图 SHA256</td><td class="mono">6130bc7ba3cde5f535b1600b0d6daa7a4b5e32d65e3cd5680d64679d103cceeb</td></tr>
+  </table>
+  <p class="note">本轮备份：reports\backup-20261016-imba-hero\（src/开发图/UnitUI.slk + PRE-IMBA-HERO-HASHES.txt）。</p>
+</div>
+
+<h2>十三、发布前待办（外部权限，不阻塞本地交付）</h2>
+<div class="card">
+  <ul>
+    <li>完成个人 KK 认证；创建或认领新地图项目。</li>
+    <li>在 KK 后台为 XOMG1_ 系列键开通 <strong>ServerValue 与 Stat 服务器存档规则 / 写入权限</strong>（新键空档，未开通前线上读写会失败）。</li>
+  </ul>
+  <p class="note"><strong>本地验证边界：</strong>纯静态/构建级验证无法模拟 KK 真实服务器；CAS 读回、故障锁、空键默认、线上 Stat 展示均未做实服验证，发布后需在 KK 环境回归。本报告不伪称已完成实服验证。</p>
+</div>
+
+<h2>十四、独立验收修复（第二轮，PJASS 14→1）</h2>
+<div class="card">
+  <h3>14.1 修复内容</h3>
+  <table>
+    <tr><th>验收问题</th><th>修复</th></tr>
+    <tr><td>B1063 三个全局声明在函数间（globals 外）→ 22 errors</td><td>移入顶部 <span class="mono">globals…endglobals</span> 块；新增 B1063LotteryPool/Count/MinPrice/CountFault/FaultNote。</td></tr>
+    <tr><td>JASS 严格先定义后使用（forward ref 被 PJASS 拒绝）</td><td>B1063CountRead/Write 前移到 KKServerScore_Add 之前；池/NeutralDrop 函数前移到 B832WardInit 之前；拒绝表 ED9 内联（I006/I008/I00J/I00K/I007/I0PJ/I0Q5/I0X5），日志改写入 B1063FaultNote 由 B1133LogAppend 汇总。</td></tr>
+    <tr><td>整数计数 S2I 非数字吞 0</td><td>新封装 B1063CountRead/Write：空=0 内存默认不写；非空必须 <span class="mono">"1;&lt;canonical uint&gt;"</span>（重编码校验拒前导零/乱码）；未知/损坏/API 错误置 B1063CountFault 锁本局写入、玩家提示、B1133 诊断；写后读回 CAS。KKServerScore_Add / B581 / B898 ZTTP / ReportSavedLeaves 全部走此封装，无裸 GetStoredInteger/StoreInteger 调用。</td></tr>
+    <tr><td>中立低价池仅 ZU 升级件</td><td>改为 SU[] 基础成品，0&lt;价≤1000，离屏 CreateItem 探针 + IsItemPowerup 排除 + 拒绝表；空池不掉；保留白名单/10%/handle 去重/同步。</td></tr>
+    <tr><td>抽奖仅对旧 zb 池加价格门</td><td>新建独立 LotteryPool（SU 成品、价≥1000、探针+拒绝表），CHOUJIANG 装备分支只从此池同步随机，池空金币兜底；保留难度概率与每人一次。</td></tr>
+    <tr><td>tool-paths.json 本机绝对路径</td><td>新增可提交模板 config\tool-paths.example.json；真实 config\tool-paths.json 加入 .gitignore。</td></tr>
+  </table>
+  <h3>14.2 PJASS 最终输出（证据）</h3>
+  <pre class="mono" style="background:var(--code-bg);padding:10px;border-radius:6px;overflow-x:auto;font-size:12px;">Parse successful:  2445 lines: common.j
+Parse successful: 10230 lines: blizzard.j
+war3map.j:155276: 变量 location_m5 没有初始化
+war3map.j failed with 1 error
+Parse failed: 1 error total</pre>
+  <p class="note">唯一错误为既有 location_m5 未初始化（build.ps1 白名单放行）；其余 14 个错误已全部消除。</p>
+  <h3>14.3 最终哈希与回读</h3>
+  <table>
+    <tr><th>项</th><th>值</th></tr>
+    <tr><td>开发图 SHA256</td><td class="mono">b8b2ef336372a6854c0523cecb937fe1545d6beab65102eaaae3ecb62bc528ee</td></tr>
+    <tr><td>包内 war3map.j SHA256</td><td class="mono">ea6d950368183556eec44c231a41541654b3bac4183ab78bac4e92dc5892d403</td></tr>
+    <tr><td>基线图 SHA256</td><td class="mono">55dbca6debd44ae60284e819061d5136b2670120f7e80e0d2331dbc31b29a546（不变）</td></tr>
+    <tr><td>包内 7 文件回读</td><td>全部 match <span class="badge badge-ok">7/7</span></td></tr>
+    <tr><td>scriptChecks</td><td>skins=0、防守=0、车轮=0、recharge=1、logger=1 <span class="badge badge-ok">PASS</span></td></tr>
+    <tr><td>旧持久键 / 旧身份</td><td>均为 0；新身份 小生我怕怕#7351 = 3 <span class="badge badge-ok">PASS</span></td></tr>
+    <tr><td>四英雄 slk</td><td>袁加凯2/程双杰4/土鸡4/凯哥1，旧名 0 <span class="badge badge-ok">PASS</span></td></tr>
+  </table>
+</div>
+
+<footer>
+  本报告由迁移实施流程自动生成；备份位于 reports\backup-20261016-author-rebrand\；
+  验证机位于 reports\verification-latest.json；基线图哈希 55dbca6d… 保持不变。
+</footer>
+
+</div>
+</body>
+</html>

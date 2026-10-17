@@ -751,7 +751,7 @@ boolean BP_MODE=false
 boolean XM_MODE=false
 constant real IMBA_POWER=2.
 constant boolean XOMG_IMBA_ENABLED=true
-constant string XOMG_VERSION="v1.7-K-VisualSkillFix"
+constant string XOMG_VERSION="v1.7.1-K-W3IFix"
 integer imbaMult=2
 integer XOMG_DAMAGE_LOG_COUNT=0
 boolean imbaB67DpsExclude=false
@@ -250381,7 +250381,7 @@ call B957Init()
 call KK_Init()
 endfunction
 function config takes nothing returns nothing
-call SetMapName("OMG IMBA v1.7-K-VisualSkillFix")
+call SetMapName("OMG IMBA v1.7.1-K-W3IFix")
 call SetMapDescription("随机技能，强化AI，极限对抗。\n作者：小生我怕怕\n按F9查看地图信息。")
 call SetPlayers($A)
 call SetTeams($A)

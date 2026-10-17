@@ -182,6 +182,28 @@ if (-not $SkipSyntaxCheck) {
     }
 }
 
+# v1.7.1-K-W3IFix: binary equal-length w3i guard. Never decode/encode or text-replace the
+# w3i; assert fixed 806B, the equal-length label appears exactly twice, and the old label
+# is absent. The baseline binary itself (a1c1de1, 806B, sha 4df0e683...) is the source of
+# truth; only the two 24-byte name slots (0x0C, 0xEA) differ.
+$w3iSrc = Join-Path $root 'src\war3map.w3i'
+$w3iBytes = [IO.File]::ReadAllBytes($w3iSrc)
+if ($w3iBytes.Length -ne 806) { throw "war3map.w3i 必须为固定 806B，当前 $($w3iBytes.Length)B（禁止变长替换）" }
+$newLabel = [Text.Encoding]::ASCII.GetBytes('OMG IMBA v1.7.1-W3IFix  ')
+$oldLabel = [Text.Encoding]::ASCII.GetBytes('OMG IMBA v1.6-K-Visible ')
+function Count-Bytes($hay, $needle) {
+    $c = 0; $i = 0
+    while (($i = [Array]::IndexOf($hay, $needle[0], $i)) -ge 0) {
+        $match = $true
+        for ($k = 0; $k -lt $needle.Length; $k++) { if ($hay[$i + $k] -ne $needle[$k]) { $match = $false; break } }
+        if ($match) { $c++ }
+        $i++
+    }
+    return $c
+}
+if ((Count-Bytes $w3iBytes $newLabel) -ne 2) { throw 'w3i 等长新名必须精确出现 2 次' }
+if ((Count-Bytes $w3iBytes $oldLabel) -ne 0) { throw 'w3i 旧名 v1.6-K-Visible 必须为 0 次' }
+
 Copy-Item -LiteralPath $baseline -Destination $asciiMap -Force
 Wait-FileStable $asciiMap 30
 foreach ($entry in $sourceEntries) {

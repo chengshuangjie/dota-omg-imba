@@ -62,14 +62,47 @@ $uiSlk = [IO.File]::ReadAllText((Extract-FromMpq 'Units\UnitUI.slk'), [Text.Enco
 $unitStr = [IO.File]::ReadAllText((Extract-FromMpq 'Units\CampaignUnitStrings.txt'), [Text.Encoding]::UTF8)
 $abilStr = [IO.File]::ReadAllText((Extract-FromMpq 'Units\CampaignAbilityStrings.txt'), [Text.Encoding]::UTF8)
 
+# ---- w3i binary hard assertions: fixed 806B, equal-length label x2, byte-diff vs a1c1de1 only in slots ----
+$w3iLocal = Extract-FromMpq 'war3map.w3i'
+$w3iBytes = [IO.File]::ReadAllBytes($w3iLocal)
+$checks['w3i:fixed-806'] = ($w3iBytes.Length -eq 806)
+$newLabel = [Text.Encoding]::ASCII.GetBytes('OMG IMBA v1.7.1-W3IFix  ')
+$oldLabel = [Text.Encoding]::ASCII.GetBytes('OMG IMBA v1.6-K-Visible ')
+function Count-Sub($hay, $needle) {
+    $c = 0; $i = 0
+    while ($i -le ($hay.Length - $needle.Length)) {
+        $m = $true
+        for ($k = 0; $k -lt $needle.Length; $k++) { if ($hay[$i + $k] -ne $needle[$k]) { $m = $false; break } }
+        if ($m) { $c++ }
+        $i++
+    }
+    return $c
+}
+$checks['w3i:new-label-x2'] = ((Count-Sub $w3iBytes $newLabel) -eq 2)
+$checks['w3i:old-label-x0'] = ((Count-Sub $w3iBytes $oldLabel) -eq 0)
+# byte-diff vs a1c1de1 baseline: changed indices must live only inside slots 0x0C(12) len24 and 0xEA(234) len24
+$baselineW3i = $null
+$tmpBlob = Join-Path $verifyDir 'baseline-w3i.bin'
+cmd /c "git show a1c1de1:src/war3map.w3i > `"$tmpBlob`""
+if (Test-Path $tmpBlob) { $baselineW3i = [IO.File]::ReadAllBytes($tmpBlob) }
+$allow = New-Object System.Collections.Generic.HashSet[int]
+foreach ($s in 12,234) { for ($k = 0; $k -lt 24; $k++) { [void]$allow.Add($s + $k) } }
+$diffOk = $true
+if ($baselineW3i -and $baselineW3i.Length -eq 806) {
+    for ($i = 0; $i -lt 806; $i++) {
+        if ($w3iBytes[$i] -ne $baselineW3i[$i] -and -not $allow.Contains($i)) { $diffOk = $false; break }
+    }
+} else { $diffOk = $false }
+$checks['w3i:byte-equal-baseline-outside-slots'] = $diffOk
+
 function Get-Block($text, $id) {
     $m = [regex]::Match($text, ('(?s)C;X1;Y\d+;K"' + [regex]::Escape($id) + '".*?(?=C;X1;Y\d+;K"|\z)'))
     return $m.Value
 }
 
 # ---- 2. version ----
-$checks['version:xomg'] = ([regex]::Matches($jass, 'constant string XOMG_VERSION="v1\.7-K-VisualSkillFix"')).Count -eq 1
-$checks['version:setmapname'] = ([regex]::Matches($jass, 'SetMapName\("OMG IMBA v1\.7-K-VisualSkillFix"\)')).Count -eq 1
+$checks['version:xomg'] = ([regex]::Matches($jass, 'constant string XOMG_VERSION="v1\.7\.1-K-W3IFix"')).Count -eq 1
+$checks['version:setmapname'] = ([regex]::Matches($jass, 'SetMapName\("OMG IMBA v1\.7\.1-K-W3IFix"\)')).Count -eq 1
 
 # ---- 3. KA skill templates: four distinct basecodes, distinct orders ----
 $ka = @{}

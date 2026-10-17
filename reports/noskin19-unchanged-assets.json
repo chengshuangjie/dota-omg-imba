@@ -1,0 +1,62 @@
+{
+  "war3map.imp": {
+    "v18": "8092a613dd0779546b6bfbc9b7d2a14d5aaa0038264bc5545aba62b9b4b90546",
+    "v19": "8092a613dd0779546b6bfbc9b7d2a14d5aaa0038264bc5545aba62b9b4b90546",
+    "unchanged": true
+  },
+  "units/abilitydata.slk": {
+    "v18": "55d0be0ba85fa75d8539a95949a838e03d644916b4017be91901ba909098e550",
+    "v19": "55d0be0ba85fa75d8539a95949a838e03d644916b4017be91901ba909098e550",
+    "unchanged": true
+  },
+  "units/campaignabilitystrings.txt": {
+    "v18": "7c665b67b6374fa9bc1cac21267f67b1edd7c741523db89ce584356e02ebc02a",
+    "v19": "7c665b67b6374fa9bc1cac21267f67b1edd7c741523db89ce584356e02ebc02a",
+    "unchanged": true
+  },
+  "units/campaignunitstrings.txt": {
+    "v18": "3f4eea13c15b11a770b1cfae82b4b049a1c4bbe0dad72cb2c58fae6f8bc0e8f9",
+    "v19": "3f4eea13c15b11a770b1cfae82b4b049a1c4bbe0dad72cb2c58fae6f8bc0e8f9",
+    "unchanged": true
+  },
+  "units/unitabilities.slk": {
+    "v18": "51290df1c1bc64057431924a94f604c0dbfde5129a32ddfbdcb1b97629d22d1e",
+    "v19": "51290df1c1bc64057431924a94f604c0dbfde5129a32ddfbdcb1b97629d22d1e",
+    "unchanged": true
+  },
+  "units/unitbalance.slk": {
+    "v18": "b3be87de20adf774d7d68ea176a4339d1064e76c7335d655c7ddfc4b0b9fdc34",
+    "v19": "b3be87de20adf774d7d68ea176a4339d1064e76c7335d655c7ddfc4b0b9fdc34",
+    "unchanged": true
+  },
+  "units/unitdata.slk": {
+    "v18": "fb2a2fd297bbea4f766b2c8e19c331cd1b61d30c46dd06f213a5ed035fd8b288",
+    "v19": "fb2a2fd297bbea4f766b2c8e19c331cd1b61d30c46dd06f213a5ed035fd8b288",
+    "unchanged": true
+  },
+  "units/unitui.slk": {
+    "v18": "0b447c84f9ebc6f206a623e68fc380ab1fcea6597df5f3064eb44113530d37ab",
+    "v19": "0b447c84f9ebc6f206a623e68fc380ab1fcea6597df5f3064eb44113530d37ab",
+    "unchanged": true
+  },
+  "units/unitweapons.slk": {
+    "v18": "f2f00abe1dba35aa54f19fea5e13d647732109b4aeafc5f537b737ec3c46efac",
+    "v19": "f2f00abe1dba35aa54f19fea5e13d647732109b4aeafc5f537b737ec3c46efac",
+    "unchanged": true
+  },
+  "war3mapimported/K/K_final_v2.mdx": {
+    "v18": "be89dbd9a94f2fa52d7f7ffac8aec32cbcf7899bf49e20a5d6c4484ac7075265",
+    "v19": "be89dbd9a94f2fa52d7f7ffac8aec32cbcf7899bf49e20a5d6c4484ac7075265",
+    "unchanged": true
+  },
+  "war3mapimported/K/K_final_portrait.mdx": {
+    "v18": "5c40bdafa6bb925d9b840ae1d63f666203715f26072938295293ca5cb74c94f1",
+    "v19": "5c40bdafa6bb925d9b840ae1d63f666203715f26072938295293ca5cb74c94f1",
+    "unchanged": true
+  },
+  "war3mapimported/K/K_body.blp": {
+    "v18": "1b69483e5bea3d699cf9694d1a39c6d9d1cacc8e9fa60edaef457bbbdc083a84",
+    "v19": "1b69483e5bea3d699cf9694d1a39c6d9d1cacc8e9fa60edaef457bbbdc083a84",
+    "unchanged": true
+  }
+}

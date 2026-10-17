@@ -1,18 +1,18 @@
 ﻿{
-    "map":  "D:\\dota\\DOTA-OMG-IMBA-轻量化\\maps\\build\\DOTA-OMG-IMBA-v1.8-Integrated.w3x",
-    "mapBytes":  47529199,
-    "mapSha256":  "1ca2d509d5b8ae1a994dc19fe00d9e09fe2b2af049bb9ff1fa26e9760db1f9a0",
+    "map":  "D:\\dota\\DOTA-OMG-IMBA-轻量化\\maps\\build\\OMG-IMBA-v1.8.5-SYNCF001-repro.w3x",
+    "mapBytes":  47520899,
+    "mapSha256":  "d93818d35206a257fbb772b3d6598124e21ba8af251559de7d12f9783a4d5ccd",
     "files":  [
                   {
                       "file":  "war3map.j",
-                      "expected":  "9c04d46806700ff3c1509680d8cd0de4a84c800cf726bdaae4be3972b58c091c",
-                      "actual":  "9c04d46806700ff3c1509680d8cd0de4a84c800cf726bdaae4be3972b58c091c",
+                      "expected":  "8d8f10f8e6011b32df56d3fbde10bd9652919926f760ed669ddf8444d818d261",
+                      "actual":  "8d8f10f8e6011b32df56d3fbde10bd9652919926f760ed669ddf8444d818d261",
                       "match":  true
                   },
                   {
                       "file":  "war3map.w3i",
-                      "expected":  "784377fd920415b94b6f66ad4b2607218c8bb3e49f0740a05a7257f78f12cbf6",
-                      "actual":  "784377fd920415b94b6f66ad4b2607218c8bb3e49f0740a05a7257f78f12cbf6",
+                      "expected":  "83092a89b14b703119dc30537d0da8f394356314a38ce4bb45390a3c82790ae8",
+                      "actual":  "83092a89b14b703119dc30537d0da8f394356314a38ce4bb45390a3c82790ae8",
                       "match":  true
                   },
                   {
@@ -65,8 +65,8 @@
                   },
                   {
                       "file":  "Units\\AbilityData.slk",
-                      "expected":  "455193b2d35df81d07a755cec9a25895c54c5e648f25b37c9bfed66784def2ef",
-                      "actual":  "455193b2d35df81d07a755cec9a25895c54c5e648f25b37c9bfed66784def2ef",
+                      "expected":  "55d0be0ba85fa75d8539a95949a838e03d644916b4017be91901ba909098e550",
+                      "actual":  "55d0be0ba85fa75d8539a95949a838e03d644916b4017be91901ba909098e550",
                       "match":  true
                   }
               ],
@@ -85,8 +85,8 @@
                          "lotteryRuntimeGate":  1,
                          "legacyLotteryGate":  0,
                          "kHumanRoll50":  0,
-                         "kHumanFallbackNoK":  0,
-                         "kHumanPoolResets":  0,
+                         "kHumanFallbackNoK":  1,
+                         "kHumanPoolResets":  3,
                          "kHumanAgilityDispatch":  9,
                          "kPoolLog":  0,
                          "dropCheapUsesFinishedItems":  1,
@@ -94,8 +94,8 @@
                          "dropChanceFixedTenPercent":  1,
                          "dropPriceCap1000":  1,
                          "dropPreviouslyMissingCreepsCovered":  1,
-                         "dropInitLog":  0,
-                         "dropRollLog":  0,
+                         "dropInitLog":  1,
+                         "dropRollLog":  1,
                          "dropSuccessLog":  1,
                          "dropTestCommand":  1,
                          "fissureDurationScaled":  1,

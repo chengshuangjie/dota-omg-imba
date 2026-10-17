@@ -1,0 +1,18 @@
+{
+  "local_no_Rect": true,
+  "local_no_Condition": true,
+  "local_no_Enum": true,
+  "local_no_handle": true,
+  "local_no_item_selection": true,
+  "local_no_log": true,
+  "local_sync_coordinates_only": true,
+  "last_click_per_pid": true,
+  "sync_enum": true,
+  "sync_remove_rect": true,
+  "sync_destroy_filter": true,
+  "sync_remove_item": true,
+  "sync_add_gold": true,
+  "new_version": true,
+  "one_sync_registration": true,
+  "one_delayed_schedule": true
+}

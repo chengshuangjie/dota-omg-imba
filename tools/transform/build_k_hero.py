@@ -160,6 +160,7 @@ def ka_passive(code, y):
         'C;X28;K0', 'C;X29;K0', 'C;X30;K0', 'C;X31;K0',
         'C;X32;K0', 'C;X33;K0', 'C;X34;K0', 'C;X35;K0',
         'C;X72;K4',
+        'C;X73;K2',
         'C;X75;K1',
         'C;X80;K"_"', 'C;X81;K"_"', 'C;X82;K"_"', 'C;X83;K"_"',
     ]
@@ -168,8 +169,9 @@ def ka_passive(code, y):
 def ka_channel(code, y, cd, levels):
     # Clone the proven in-map no-target instant stub A0OT (base ANcl, target "_",
     # dispatched on spell event by GetSpellAbilityId in shipped jass; no native
-    # damage/buff/duration). Keep its structural channel fields, then clear any
-    # native Data/DataB/duration/buff explicitly; mana cost 0; CD/levels per spec.
+    # damage/buff/duration). Use unique channel base orders so both active skills
+    # coexist on the same hero command card.
+    base_order = "roar" if code == "KA03" else "chemicalrage"
     rows = [
         'C;X1;Y%d;K"%s"' % (y, code),
         'C;X2;K"ANcl"',
@@ -177,9 +179,10 @@ def ka_channel(code, y, cd, levels):
         # A0OT structural channel fields (cosmetic, no gameplay effect)
         'C;X32;K1',
         'C;X36;K0.98',
-        'C;X73;K1',
+        'C;X44;K"%s"' % base_order,
+        'C;X73;K2' if levels == 4 else 'C;X73;K5',
         'C;X74;K5',
-        'C;X75;K1',
+        'C;X75;K1' if levels == 4 else 'C;X75;K6',
     ]
     # CD per level
     for k, v in enumerate(cd):

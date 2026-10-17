@@ -751,7 +751,7 @@ boolean BP_MODE=false
 boolean XM_MODE=false
 constant real IMBA_POWER=2.
 constant boolean XOMG_IMBA_ENABLED=true
-constant string XOMG_VERSION="v1.5-LotteryFix-K50"
+constant string XOMG_VERSION="v1.6-K-VisualFix"
 integer imbaMult=2
 integer XOMG_DAMAGE_LOG_COUNT=0
 boolean imbaB67DpsExclude=false
@@ -18772,10 +18772,10 @@ set HN4[116]='A2ML'
 set HP4[116]='A0VQ'
 set HM4[117]='ANic'
 set HP4[117]='A0VG'
-set HM4[118]='A011'
-set HN4[118]='A04W'
-set HO4[118]='A083'
-set HP4[118]='A0VN'
+set HM4[118]='KA01'
+set HN4[118]='KA02'
+set HO4[118]='KA03'
+set HP4[118]='KA04'
 set HM4[119]='A21L'
 set HP4[119]='A0VM'
 set HM4[120]='A2AI'
@@ -31412,8 +31412,8 @@ set MO4[117]=""
 set K34[118]='H0K0'
 set MI4[118]='hMn0'
 set K64[118]='H0K0'
-set MH4[118]="ReplaceableTextures\\CommandButtons\\btn_BR.blp"
-call XY7(K34[118],"stand 4")
+set MH4[118]="ReplaceableTextures\\CommandButtons\\BTNHeroBladeMaster.blp"
+call XY7(K34[118],"stand")
 call XU7(K34[118],1.0,MI4[118])
 set MJ4[118]=""
 set MK4[118]=""
@@ -38167,10 +38167,37 @@ return SUIJI_TAVERN_HERO[pid]
 endif
 return KU4[pid]
 endfunction
+// K is a complete fixed-skill hero, not a diagnostic/random-skill carrier.
+// Re-assert player visibility after creation/revive/OMG reconciliation without auto-learning levels.
+function KK_EnsureHeroAbilities takes unit u returns nothing
+local player p=null
+if u==null or GetUnitTypeId(u)!=KK_HERO then
+return
+endif
+set p=GetOwningPlayer(u)
+call SetPlayerAbilityAvailable(p,KK_SK1,true)
+call SetPlayerAbilityAvailable(p,KK_SK2,true)
+call SetPlayerAbilityAvailable(p,KK_SK3,true)
+call SetPlayerAbilityAvailable(p,KK_SK4,true)
+if GetUnitAbilityLevel(u,KK_SK1)>0 then
+call UnitMakeAbilityPermanent(u,true,KK_SK1)
+endif
+if GetUnitAbilityLevel(u,KK_SK2)>0 then
+call UnitMakeAbilityPermanent(u,true,KK_SK2)
+endif
+if GetUnitAbilityLevel(u,KK_SK3)>0 then
+call UnitMakeAbilityPermanent(u,true,KK_SK3)
+endif
+if GetUnitAbilityLevel(u,KK_SK4)>0 then
+call UnitMakeAbilityPermanent(u,true,KK_SK4)
+endif
+set p=null
+endfunction
 function ADD_CONTENT takes unit u,player p,integer rJ returns nothing
 local integer slot
 local item KA7
 local unit lotteryCircle=null
+call KK_EnsureHeroAbilities(u)
 //注册释放技能事件
 call TriggerRegisterUnitEvent(Tri_skill,u,EVENT_UNIT_SPELL_EFFECT)
 call TriggerRegisterUnitEvent(Tri_skill,u,EVENT_UNIT_SPELL_CAST)
@@ -207555,6 +207582,18 @@ if IsUnitType(u,UNIT_TYPE_HERO)==false or IsUnitIllusion(u) or GetUnitTypeId(u)=
 call SuijiTest_DebugUnit(u,"AP3","不是有效真实英雄，返回 type="+I2S(GetUnitTypeId(u)))
 return
 endif
+// K keeps its complete native four-skill kit; do not route it through OMG random skill assignment.
+if GetUnitTypeId(u)==KK_HERO then
+set h=GetHandleId(u)
+if GetUnitPointValue(u)>=KL4 and GetUnitPointValue(u)<=K54 then
+call SaveInteger(L7,h,StringHash("SuijiStableHeroIndex"),GetUnitPointValue(u))
+endif
+call KK_EnsureHeroAbilities(u)
+call NS7(h,"SuijiDone",true)
+call SuijiMode_MarkUnitVisibilityDirty(u)
+call SuijiMode_RestoreBaseHeroSkills(u)
+return
+endif
 // Hold ordinary AI grants until the host's second dialog resolves.
 if B979Mode==0 and GetPlayerController(GetOwningPlayer(u))==MAP_CONTROL_COMPUTER and not SuijiMode_HasForcedPreset(GetPlayerId(GetOwningPlayer(u))) then
 return
@@ -250333,7 +250372,7 @@ call B957Init()
 call KK_Init()
 endfunction
 function config takes nothing returns nothing
-call SetMapName("OMG IMBA v1.5-K50-Fix")
+call SetMapName("OMG IMBA v1.6-K-Visible")
 call SetMapDescription("随机技能，强化AI，极限对抗。\n作者：小生我怕怕\n按F9查看地图信息。")
 call SetPlayers($A)
 call SetTeams($A)

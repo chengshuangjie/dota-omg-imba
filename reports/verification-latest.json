@@ -1,36 +1,36 @@
 ﻿{
-    "map":  "D:\\游戏\\Warcraft III\\Maps\\omg\\noskin4\\DOTA-OMG-IMBA-v1.5-能量圈原抽奖-福利独立-K真人50-小生我怕怕.w3x",
-    "mapBytes":  47453988,
-    "mapSha256":  "19d02c60657fece4633978ef7c890cd060679496160d9f23a3adf4d0049f488e",
+    "map":  "D:\\dota\\DOTA-OMG-IMBA-轻量化\\maps\\build\\DOTA-OMG-IMBA-v1.6-K-CompleteHero.w3x",
+    "mapBytes":  47466868,
+    "mapSha256":  "a42023b356c817fdda6e0d896d3a864caec6ae3582338cd51886f670a3c50528",
     "files":  [
                   {
                       "file":  "war3map.j",
-                      "expected":  "e9015fd1d045e2594c217e2a205641f73a195587114aaadbea07479b7974eabd",
-                      "actual":  "e9015fd1d045e2594c217e2a205641f73a195587114aaadbea07479b7974eabd",
+                      "expected":  "7351209c2fa210be0631d9a0607e1f96f92619af116ac21181fda8a0b5d479d3",
+                      "actual":  "7351209c2fa210be0631d9a0607e1f96f92619af116ac21181fda8a0b5d479d3",
                       "match":  true
                   },
                   {
                       "file":  "war3map.w3i",
-                      "expected":  "957d274e22384bb49634421a0998d382f4d304c3bbe649e21f755692b3ed86d7",
-                      "actual":  "957d274e22384bb49634421a0998d382f4d304c3bbe649e21f755692b3ed86d7",
+                      "expected":  "4df0e683d3174443fcf45b8cd910c2c26822d376d4adec10a19f9b94229fc9e2",
+                      "actual":  "4df0e683d3174443fcf45b8cd910c2c26822d376d4adec10a19f9b94229fc9e2",
                       "match":  true
                   },
                   {
                       "file":  "war3map.imp",
-                      "expected":  "43b4dfb1d12edec2cc1c83fcabfde18c09a2a05bc362d6d6188f96f5b0b8eceb",
-                      "actual":  "43b4dfb1d12edec2cc1c83fcabfde18c09a2a05bc362d6d6188f96f5b0b8eceb",
+                      "expected":  "3afe9f36c46a037f6002cdcc992bb3499e3b142ba58c4653032713525f1e26f4",
+                      "actual":  "3afe9f36c46a037f6002cdcc992bb3499e3b142ba58c4653032713525f1e26f4",
                       "match":  true
                   },
                   {
                       "file":  "Units\\CampaignAbilityStrings.txt",
-                      "expected":  "09c4e96030a8d59fdc2dd2db5f34ba958cb4b9bc4535790e5892c4678182a8b4",
-                      "actual":  "09c4e96030a8d59fdc2dd2db5f34ba958cb4b9bc4535790e5892c4678182a8b4",
+                      "expected":  "ef2129061ace0d2fc381d2f43283058ebb016d72ae9f7f29d31137c7a364fb22",
+                      "actual":  "ef2129061ace0d2fc381d2f43283058ebb016d72ae9f7f29d31137c7a364fb22",
                       "match":  true
                   },
                   {
                       "file":  "Units\\CampaignUnitStrings.txt",
-                      "expected":  "d4ecfb4db51745f1ac4aa99a6d78188f15bd890a010f88a27288af1dcb723d5a",
-                      "actual":  "d4ecfb4db51745f1ac4aa99a6d78188f15bd890a010f88a27288af1dcb723d5a",
+                      "expected":  "395f60038bd406b5d078bf23e5aa88a8ebbc0e38f28b573fbeb18f7304e40690",
+                      "actual":  "395f60038bd406b5d078bf23e5aa88a8ebbc0e38f28b573fbeb18f7304e40690",
                       "match":  true
                   },
                   {
@@ -53,8 +53,8 @@
                   },
                   {
                       "file":  "Units\\UnitUI.slk",
-                      "expected":  "705bb27924932d3399da2fed90215215101add532eb4247cbc94047cd250a76a",
-                      "actual":  "705bb27924932d3399da2fed90215215101add532eb4247cbc94047cd250a76a",
+                      "expected":  "35f50e064e1e5f6f86ef0977b8425f07ed121330c2ba4ff95fcf1e24b00361a9",
+                      "actual":  "35f50e064e1e5f6f86ef0977b8425f07ed121330c2ba4ff95fcf1e24b00361a9",
                       "match":  true
                   },
                   {
@@ -65,8 +65,8 @@
                   },
                   {
                       "file":  "Units\\AbilityData.slk",
-                      "expected":  "435ad756c250ed128044fab47bd419858a4f04abc016ee781c55d9273497511e",
-                      "actual":  "435ad756c250ed128044fab47bd419858a4f04abc016ee781c55d9273497511e",
+                      "expected":  "fc974f22a1434ab69e2d6c9f12ff7b10cd5b977a8968e860c4cfebd0f5a62fd4",
+                      "actual":  "fc974f22a1434ab69e2d6c9f12ff7b10cd5b977a8968e860c4cfebd0f5a62fd4",
                       "match":  true
                   }
               ],
@@ -174,6 +174,10 @@
                          "kBoundM94":  0,
                          "kBoundME4":  0,
                          "kK34118":  1,
+                         "kIndexSkills":  4,
+                         "kPreviewIcon":  1,
+                         "kPreviewStand":  1,
+                         "kPreviewScale":  1,
                          "kK54":  1,
                          "kK2440":  1,
                          "kKAgiBound":  1,
@@ -205,6 +209,7 @@
                          "kNoB67":  0,
                          "kSlkGrant":  1,
                          "kSlkModel":  1,
+                         "kUiModelScale120":  1,
                          "kBalAgiPrimary":  1,
                          "kBalStr":  1,
                          "kBalStrPlus":  1,
@@ -239,14 +244,26 @@
                          "kAbJdNoOwk":  0,
                          "kAbJdNoAchl":  0,
                          "kAbJdChanZero":  8,
+                         "kAbJdSmallLevelSkip":  3,
+                         "kAbJdUltLevelSkip":  1,
+                         "kAbJdUltReqLevel":  1,
+                         "kAbJdActiveOrders":  2,
                          "kAbJdNoTarget":  6,
                          "kTplA0OTRow":  1,
                          "kTplA0OTJass":  1,
                          "kUnitStr":  1,
+                         "kHeroIcon":  2,
+                         "kNoDiagnosticIcon":  0,
                          "kAbilStr":  4,
+                         "kEnsureAbilities":  1,
+                         "kApplyBypass":  1,
+                         "kEnsureCalls":  2,
                          "kImpMdx":  1,
+                         "kImpPortrait":  1,
                          "kImpBlp":  1,
                          "kMdxMatch":  true,
+                         "kPortraitMatch":  true,
+                         "kPortraitCameraOk":  true,
                          "kMdxModelName":  "K_Hero",
                          "kMdxModelNameOk":  true,
                          "kBlpMatch":  true,

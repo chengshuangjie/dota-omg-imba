@@ -86,6 +86,21 @@ while ($kMdxPos + 8 -le $kMdx.Length) {
     $kMdxPos += 8 + $kMdxSize
 }
 if ($kMdxPos -ne $kMdx.Length -or [string]::IsNullOrWhiteSpace($kMdxName)) { throw "K 模型 MODL 名称为空或结构不完整: $kModel" }
+# A complete hero portrait requires a sibling model with a valid CAMS chunk.
+$kPortrait = Join-Path $root 'assets\K\K_final_portrait.mdx'
+if (-not (Test-Path -LiteralPath $kPortrait -PathType Leaf)) { throw "缺少 K 肖像模型: $kPortrait" }
+$kPortraitBytes = [IO.File]::ReadAllBytes($kPortrait)
+if ($kPortraitBytes.Length -lt 16 -or [Text.Encoding]::ASCII.GetString($kPortraitBytes,0,4) -ne 'MDLX') { throw "K 肖像不是有效 MDX: $kPortrait" }
+$kPortraitPos = 4
+$kPortraitCamera = 0
+while ($kPortraitPos + 8 -le $kPortraitBytes.Length) {
+    $kPortraitTag = [Text.Encoding]::ASCII.GetString($kPortraitBytes,$kPortraitPos,4)
+    $kPortraitSize = [BitConverter]::ToUInt32($kPortraitBytes,$kPortraitPos + 4)
+    if ([uint64]$kPortraitPos + 8 + [uint64]$kPortraitSize -gt [uint64]$kPortraitBytes.Length) { throw "K 肖像模型区块越界: $kPortraitTag" }
+    if ($kPortraitTag -eq 'CAMS' -and $kPortraitSize -ge 120) { $kPortraitCamera++ }
+    $kPortraitPos += 8 + $kPortraitSize
+}
+if ($kPortraitPos -ne $kPortraitBytes.Length -or $kPortraitCamera -ne 1) { throw "K 肖像模型缺少唯一有效相机: $kPortrait" }
 
 [IO.Directory]::CreateDirectory($stageDir) | Out-Null
 [IO.Directory]::CreateDirectory((Split-Path -Parent $output)) | Out-Null
@@ -107,8 +122,9 @@ $sourceEntries = @(
     @{ Source = (Join-Path $assetDir 'LoadingScreenBL.blp'); Stage = 'LoadingScreenBL.blp'; Archive = 'LoadingScreenBL.blp' },
     @{ Source = (Join-Path $assetDir 'LoadingScreenBR.blp'); Stage = 'LoadingScreenBR.blp'; Archive = 'LoadingScreenBR.blp' },
     @{ Source = (Join-Path $assetDir 'war3mapPreview.tga'); Stage = 'war3mapPreview.tga'; Archive = 'war3mapPreview.tga' },
-    # v1.4-K hero K custom model + texture (independent; not part of v1.3 baseline)
+    # v1.6-K complete hero: world model, dedicated portrait camera model, and compatible texture
     @{ Source = (Join-Path $root 'assets\K\K_final.mdx'); Stage = 'K_final.mdx'; Archive = 'war3mapimported\K\K_final.mdx' },
+    @{ Source = (Join-Path $root 'assets\K\K_final_portrait.mdx'); Stage = 'K_final_portrait.mdx'; Archive = 'war3mapimported\K\K_final_portrait.mdx' },
     @{ Source = (Join-Path $root 'assets\K\K_body.blp'); Stage = 'K_body.blp'; Archive = 'war3mapimported\K\K_body.blp' }
 )
 

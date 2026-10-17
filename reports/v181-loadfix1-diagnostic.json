@@ -1,0 +1,40 @@
+{
+  "candidate": "v1.8.1-loadfix1 (加载诊断候选/待实机，不承诺可用)",
+  "single_variable_bisect": "仅回退 K 主模型内嵌 CAMS（af21e75 原始无相机字节）；其余 v1.8 功能逐字节保持不变",
+  "k_main_model": {
+    "source_bytes": 54029,
+    "source_sha256": "f68e6d9d8410421c9beb79f959220544848a12f0fd5b3f98bdf803660ed48773",
+    "cams": 0,
+    "structure_closed": true,
+    "package_embedded_sha256": "f68e6d9d8410421c9beb79f959220544848a12f0fd5b3f98bdf803660ed48773",
+    "package_embedded_bytes": 54029,
+    "package_embedded_cams": 0,
+    "independent_portrait": "K_final_portrait.mdx 保留未接线，portrait 回退待解决（不再要求 kPortraitCameraOk）"
+  },
+  "version": {
+    "XOMG_VERSION": "v1.8.1-loadfix1",
+    "SetMapName": "OMG IMBA v1.8-Integrated (未改)",
+    "w3i": "806B 原名x2，槽外与a1c1de1基线0差"
+  },
+  "retained": {
+    "B1063SellInit": "保留且main call=1；MHMsgMouseDown + DROP_SELL DzSync 注册保持（双击直售未禁用）",
+    "all_v18": "男神/ATTR广播keep-open/斯温selfRate/allyRate/莱恩SWYJ+50/喵刀HMD0/K normal/K四技能/HP4 15项/魔瓶族/早晚池/AI skip 全部不变"
+  },
+  "verification": {
+    "pjass": "仅白名单 location_m5，0 非预期",
+    "verify_v17": "112 pass / 0 fail",
+    "w3i": "806B, 24B名x2, 槽外0差"
+  },
+  "build_map": {
+    "size": 47529199,
+    "sha256": "1CA2D509D5B8AE1A994DC19FE00D9E09FE2B2AF049BB9FF1FA26E9760DB1F9A0"
+  },
+  "deploy": {
+    "dir": "D:\\游戏\\Warcraft III\\Maps\\omg\\noskin9",
+    "file": "OMG-IMBA-v1.8.1-loadfix1-无肖像相机-只测试加载.w3x",
+    "sha256": "1CA2D509D5B8AE1A994DC19FE00D9E09FE2B2AF049BB9FF1FA26E9760DB1F9A0",
+    "file_count": 1,
+    "sha_match": true
+  },
+  "git": "本轮不 commit/push（避免诊断混入主线）；相对2fccbba仅：主MDX二进制回退 + XOMG_VERSION标签 + verify世界门"
+}

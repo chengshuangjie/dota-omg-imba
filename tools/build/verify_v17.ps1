@@ -103,7 +103,7 @@ function Get-Block($text, $id) {
 }
 
 # ---- 2. version ----
-$checks['version:xomg'] = ([regex]::Matches($jass, 'constant string XOMG_VERSION="v1\.8-integrated"')).Count -eq 1
+$checks['version:xomg'] = ([regex]::Matches($jass, 'constant string XOMG_VERSION="v1\.8\.1-loadfix1"')).Count -eq 1
 $checks['version:setmapname'] = ([regex]::Matches($jass, 'SetMapName\("OMG IMBA v1\.8-Integrated"\)')).Count -eq 1
 
 # ---- 3. KA skill templates: four distinct basecodes, distinct orders ----
@@ -225,6 +225,11 @@ foreach ($pair in @(@{arc='war3mapimported\K\K_final_v2.mdx';kind='world'},@{arc
         $checks['mdx:world-modl'] = (-not [string]::IsNullOrWhiteSpace($modl))
         $checks['mdx:world-seqs'] = $seqs
         $checks['mdx:world-bounds'] = $ok
+        # v1.8.1-loadfix1: CAMS rolled back to af21e75 original (no embedded portrait camera); portrait pending
+        $worldSha=[BitConverter]::ToString([Security.Cryptography.SHA256]::Create().ComputeHash($bytes)).Replace('-','').ToLower()
+        $checks['mdx:world-af21e75-sha'] = ($worldSha -eq 'f68e6d9d8410421c9beb79f959220544848a12f0fd5b3f98bdf803660ed48773')
+        $checks['mdx:world-size54029'] = ($bytes.Length -eq 54029)
+        $checks['mdx:world-cams0'] = ($cams -eq 0)
     } else {
         $checks['mdx:portrait-vers800'] = ($vers -eq 800)
         $checks['mdx:portrait-cams1'] = ($cams -eq 1)

@@ -751,7 +751,7 @@ boolean BP_MODE=false
 boolean XM_MODE=false
 constant real IMBA_POWER=2.
 constant boolean XOMG_IMBA_ENABLED=true
-constant string XOMG_VERSION="v1.6-K-VisualFix"
+constant string XOMG_VERSION="v1.7-K-VisualSkillFix"
 integer imbaMult=2
 integer XOMG_DAMAGE_LOG_COUNT=0
 boolean imbaB67DpsExclude=false
@@ -31412,7 +31412,7 @@ set MO4[117]=""
 set K34[118]='H0K0'
 set MI4[118]='hMn0'
 set K64[118]='H0K0'
-set MH4[118]="ReplaceableTextures\\CommandButtons\\BTNHeroBladeMaster.blp"
+set MH4[118]="ReplaceableTextures\\CommandButtons\\BTNK_Hero.blp"
 call XY7(K34[118],"stand")
 call XU7(K34[118],1.0,MI4[118])
 set MJ4[118]=""
@@ -89313,6 +89313,10 @@ function SuijiMode_SetVisualForm takes unit u,integer status,string model return
 local integer h=0
 local integer epoch=0
 if u==null or GetUnitTypeId(u)==0 or status<1 or status>8 or model=="" then
+return
+endif
+// v1.7-K double insurance: never route K hero H0K0 / ult KA04 through scripted visual form swap.
+if GetUnitTypeId(u)==KK_HERO or GetUnitAbilityLevel(u,'KA04')>0 then
 return
 endif
 set h=GetHandleId(u)
@@ -208441,6 +208445,11 @@ local real manaRegen=15.
 if u==null or GetUnitTypeId(u)==0 then
 return
 endif
+// v1.7-K double insurance: K hero H0K0 / ult KA04 never enter the alchemist
+// Chemical Rage chain (no model swap, no vertex color, no blue filter, no ZCRG, no regen).
+if GetUnitTypeId(u)==KK_HERO or GetUnitAbilityLevel(u,'KA04')>0 then
+return
+endif
 set h=GetHandleId(u)
 if OO7(h,"SuijiChemicalRageActive")==false then
 return
@@ -250372,7 +250381,7 @@ call B957Init()
 call KK_Init()
 endfunction
 function config takes nothing returns nothing
-call SetMapName("OMG IMBA v1.6-K-Visible")
+call SetMapName("OMG IMBA v1.7-K-VisualSkillFix")
 call SetMapDescription("随机技能，强化AI，极限对抗。\n作者：小生我怕怕\n按F9查看地图信息。")
 call SetPlayers($A)
 call SetTeams($A)

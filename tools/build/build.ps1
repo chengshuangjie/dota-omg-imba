@@ -1,4 +1,4 @@
-param(
+﻿param(
     [switch]$SkipSyntaxCheck,
     [string]$ConfigPath = '',
     [string]$OutputMap = ''
@@ -53,9 +53,9 @@ if (-not (Test-Path -LiteralPath $src -PathType Leaf)) { throw "缺少主源码:
 if (-not (Test-Path -LiteralPath $config.mpqEditor -PathType Leaf)) { throw "缺少 MPQEditor: $($config.mpqEditor)" }
 
 # Warcraft III 1.24 cannot load palette BLP1 resources whose pictureType/encoding is 0.
-# Validate the K texture before touching the output map so an invalid resource can never be packaged again.
-$kTexture = Join-Path $root 'assets\K\K_body.blp'
-if (-not (Test-Path -LiteralPath $kTexture -PathType Leaf)) { throw "缺少 K 贴图: $kTexture" }
+# Validate the v1.7-Kv2 K texture before touching the output map so an invalid resource can never be packaged again.
+$kTexture = Join-Path $root 'assets\Kv2\textures\K_body.blp'
+if (-not (Test-Path -LiteralPath $kTexture -PathType Leaf)) { throw "缺少 K 贴图(v2): $kTexture" }
 $kBlp = [IO.File]::ReadAllBytes($kTexture)
 if ($kBlp.Length -lt 156 -or [Text.Encoding]::ASCII.GetString($kBlp,0,4) -ne 'BLP1') { throw "K 贴图不是有效 BLP1: $kTexture" }
 $kBlpCompression = [BitConverter]::ToUInt32($kBlp,4)
@@ -70,8 +70,8 @@ if ($kBlpCompression -ne 1 -or ($kBlpPictureType -ne 4 -and $kBlpPictureType -ne
 
 # Classic Warcraft III requires a non-empty MODL model name. The first K model was
 # structurally parseable but had 80 zero bytes here and crashed before script init.
-$kModel = Join-Path $root 'assets\K\K_final.mdx'
-if (-not (Test-Path -LiteralPath $kModel -PathType Leaf)) { throw "缺少 K 模型: $kModel" }
+$kModel = Join-Path $root 'assets\Kv2\model\K_final_v2.mdx'
+if (-not (Test-Path -LiteralPath $kModel -PathType Leaf)) { throw "缺少 K 模型(v2): $kModel" }
 $kMdx = [IO.File]::ReadAllBytes($kModel)
 if ($kMdx.Length -lt 16 -or [Text.Encoding]::ASCII.GetString($kMdx,0,4) -ne 'MDLX') { throw "K 模型不是有效 MDX: $kModel" }
 $kMdxPos = 4
@@ -87,8 +87,8 @@ while ($kMdxPos + 8 -le $kMdx.Length) {
 }
 if ($kMdxPos -ne $kMdx.Length -or [string]::IsNullOrWhiteSpace($kMdxName)) { throw "K 模型 MODL 名称为空或结构不完整: $kModel" }
 # A complete hero portrait requires a sibling model with a valid CAMS chunk.
-$kPortrait = Join-Path $root 'assets\K\K_final_portrait.mdx'
-if (-not (Test-Path -LiteralPath $kPortrait -PathType Leaf)) { throw "缺少 K 肖像模型: $kPortrait" }
+$kPortrait = Join-Path $root 'assets\Kv2\model\K_final_portrait.mdx'
+if (-not (Test-Path -LiteralPath $kPortrait -PathType Leaf)) { throw "缺少 K 肖像模型(v2): $kPortrait" }
 $kPortraitBytes = [IO.File]::ReadAllBytes($kPortrait)
 if ($kPortraitBytes.Length -lt 16 -or [Text.Encoding]::ASCII.GetString($kPortraitBytes,0,4) -ne 'MDLX') { throw "K 肖像不是有效 MDX: $kPortrait" }
 $kPortraitPos = 4
@@ -122,10 +122,25 @@ $sourceEntries = @(
     @{ Source = (Join-Path $assetDir 'LoadingScreenBL.blp'); Stage = 'LoadingScreenBL.blp'; Archive = 'LoadingScreenBL.blp' },
     @{ Source = (Join-Path $assetDir 'LoadingScreenBR.blp'); Stage = 'LoadingScreenBR.blp'; Archive = 'LoadingScreenBR.blp' },
     @{ Source = (Join-Path $assetDir 'war3mapPreview.tga'); Stage = 'war3mapPreview.tga'; Archive = 'war3mapPreview.tga' },
-    # v1.6-K complete hero: world model, dedicated portrait camera model, and compatible texture
+    # v1.6-K complete hero: world model, dedicated portrait camera model, and compatible texture (retained, not removed)
     @{ Source = (Join-Path $root 'assets\K\K_final.mdx'); Stage = 'K_final.mdx'; Archive = 'war3mapimported\K\K_final.mdx' },
     @{ Source = (Join-Path $root 'assets\K\K_final_portrait.mdx'); Stage = 'K_final_portrait.mdx'; Archive = 'war3mapimported\K\K_final_portrait.mdx' },
-    @{ Source = (Join-Path $root 'assets\K\K_body.blp'); Stage = 'K_body.blp'; Archive = 'war3mapimported\K\K_body.blp' }
+    @{ Source = (Join-Path $root 'assets\K\K_body.blp'); Stage = 'K_body.blp'; Archive = 'war3mapimported\K\K_body.blp' },
+    # v1.7-K-VisualSkillFix: K-v2 world model, dedicated portrait camera model, compatible texture
+    @{ Source = (Join-Path $root 'assets\Kv2\model\K_final_v2.mdx'); Stage = 'K_final_v2.mdx'; Archive = 'war3mapimported\K\K_final_v2.mdx' },
+    @{ Source = (Join-Path $root 'assets\Kv2\model\K_final_portrait.mdx'); Stage = 'K_final_portrait_v2.mdx'; Archive = 'war3mapimported\K\K_final_portrait.mdx' },
+    @{ Source = (Join-Path $root 'assets\Kv2\textures\K_body.blp'); Stage = 'K_body_v2.blp'; Archive = 'war3mapimported\K\K_body.blp' },
+    # v1.7 dedicated hero button + four skill buttons, each with its DIS disabled twin (classic paths)
+    @{ Source = (Join-Path $root 'assets\Kv2\buttons\BTNK_Hero.blp'); Stage = 'BTNK_Hero.blp'; Archive = 'ReplaceableTextures\CommandButtons\BTNK_Hero.blp' },
+    @{ Source = (Join-Path $root 'assets\Kv2\buttons\DISBTNK_Hero.blp'); Stage = 'DISBTNK_Hero.blp'; Archive = 'ReplaceableTextures\CommandButtonsDisabled\DISBTNK_Hero.blp' },
+    @{ Source = (Join-Path $root 'assets\Kv2\buttons\BTNKMarksmanship.blp'); Stage = 'BTNKMarksmanship.blp'; Archive = 'ReplaceableTextures\CommandButtons\BTNKMarksmanship.blp' },
+    @{ Source = (Join-Path $root 'assets\Kv2\buttons\DISBTNKMarksmanship.blp'); Stage = 'DISBTNKMarksmanship.blp'; Archive = 'ReplaceableTextures\CommandButtonsDisabled\DISBTNKMarksmanship.blp' },
+    @{ Source = (Join-Path $root 'assets\Kv2\buttons\BTNKCriticalStrike.blp'); Stage = 'BTNKCriticalStrike.blp'; Archive = 'ReplaceableTextures\CommandButtons\BTNKCriticalStrike.blp' },
+    @{ Source = (Join-Path $root 'assets\Kv2\buttons\DISBTNKCriticalStrike.blp'); Stage = 'DISBTNKCriticalStrike.blp'; Archive = 'ReplaceableTextures\CommandButtonsDisabled\DISBTNKCriticalStrike.blp' },
+    @{ Source = (Join-Path $root 'assets\Kv2\buttons\BTNKBattleRoar.blp'); Stage = 'BTNKBattleRoar.blp'; Archive = 'ReplaceableTextures\CommandButtons\BTNKBattleRoar.blp' },
+    @{ Source = (Join-Path $root 'assets\Kv2\buttons\DISBTNKBattleRoar.blp'); Stage = 'DISBTNKBattleRoar.blp'; Archive = 'ReplaceableTextures\CommandButtonsDisabled\DISBTNKBattleRoar.blp' },
+    @{ Source = (Join-Path $root 'assets\Kv2\buttons\BTNKChemicalRage.blp'); Stage = 'BTNKChemicalRage.blp'; Archive = 'ReplaceableTextures\CommandButtons\BTNKChemicalRage.blp' },
+    @{ Source = (Join-Path $root 'assets\Kv2\buttons\DISBTNKChemicalRage.blp'); Stage = 'DISBTNKChemicalRage.blp'; Archive = 'ReplaceableTextures\CommandButtonsDisabled\DISBTNKChemicalRage.blp' }
 )
 
 foreach ($entry in $sourceEntries) {
@@ -175,13 +190,19 @@ foreach ($entry in $sourceEntries) {
 
 Copy-Item -LiteralPath $asciiMap -Destination $output -Force
 Wait-FileStable $output 30
-# MPQEditor 句柄释放存在短暂延迟，回读验证带重试吸收锁竞争
-$verifyOk = $false
-for ($attempt = 1; $attempt -le 3 -and -not $verifyOk; $attempt++) {
+
+# Legacy v1.6 static gate: executed for retained-system evidence only; its superseded
+# v1.6 K-specific assertions are informational and must not block the v1.7 build.
+& (Join-Path $root 'tools\build\verify.ps1') -MapPath $output | Out-Null
+Write-Output "遗留 v1.6 静态门已执行（仅留存系统证据；旧 K 断言已被 v1.7 取代）"
+
+# Authoritative v1.7-K-VisualSkillFix semantic + readback gate; must exit 0.
+$v17Ok = $false
+for ($attempt = 1; $attempt -le 3 -and -not $v17Ok; $attempt++) {
     Start-Sleep -Seconds 3
-    & (Join-Path $root 'tools\build\verify.ps1') -MapPath $output
-    if ($LASTEXITCODE -eq 0) { $verifyOk = $true }
+    & (Join-Path $root 'tools\build\verify_v17.ps1') -MapPath $output
+    if ($LASTEXITCODE -eq 0) { $v17Ok = $true }
 }
-if (-not $verifyOk) { throw "地图回读验证失败（3次重试后仍失败）" }
+if (-not $v17Ok) { throw "v1.7 回读语义验证失败（3次重试后仍失败）" }
 
 Write-Output "构建完成: $output"

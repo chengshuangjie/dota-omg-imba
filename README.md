@@ -90,3 +90,16 @@ PJASS 仅报当前 `location_m5 没有初始化`，为基图既有项，已在 `
 - 每次构建后以包内回读结果为准，不能只看 MPQEditor 退出码。
 - `tools/transform` 是历史可复现脚本，不作为日常构建入口。
 - 达拉然缓存补丁、平台缓存与历史失败充值目录未带入本工程。
+
+## 版本标识 v1.7-K-VisualSkillFix（独立构建，不覆盖旧部署）
+
+- 运行标识 `XOMG_VERSION="v1.7-K-VisualSkillFix"`，`SetMapName("OMG IMBA v1.7-K-VisualSkillFix")`，W3I 内置地图名与 F9 全局描述同步；独立文件，不覆盖 v1.6-K-Visible/noskin5。
+- 四技能改为克隆本图已实机可学的原生母本，四个 basecode 互异、四个 order 互异，禁用 Aamk×2 / ANcl×2，不使用 ANcl/AOwk/Achl：
+  - KA01 猎手本能（被动）← AHad 虔诚光环母本，reqLevel1、4 级。
+  - KA02 捷刃（被动）← AEev 闪避母本，reqLevel1、4 级。
+  - KA03 加凯（无目标主动 AOE）← AHds 神圣护盾母本，order=divineshield，reqLevel1、4 级、CD10×4、cost0。
+  - KA04 凯哥牛逼了（大招）← ANdo 末日母本，order=doom，6/11/16 学习，3 级、levelSkip5、reqLevel6，CD80/65/50；不换模型、不改顶点色、不加蓝色滤镜、不进 ZCRG、不加炼金再生。
+- 视觉接入 K-v2：主模型 `K_final_v2.mdx`、`K_body.blp`、专属英雄按钮 `BTNK_Hero`/`DISBTNK_Hero`，四技能 Art/ResearchArt 全部改用包内专属 `BTNK*` 按钮并配各自 DIS；禁用 PASBTN，主模型 modelScale 校正为 1.0 附近。
+- 兼容链双保险：`SuijiMode_ChemicalRageCompatApply` 与 `SuijiMode_SetVisualForm` 两个入口均对 `H0K0`/`KA04` 直接 return，阻断炼金化学狂暴换模/换色/滤镜/再生链。
+- 完整保留 IMBA、初始化抽奖、中立野怪掉落、凯哥发福利/属性、A088、XOMG1、无皮肤、防守（已物理移除）、车轮（已物理移除）；K 原技能数值与模块（SK3 加凯等）不变。
+- 静态/构建级通过，未冒充实机；自定义 portrait 模型因 UnitUI/UnitData 无 portrait 字段、`MHUnit_SetPortrait` 为空 stub 暂未接线，作为动态缺口如实记录。

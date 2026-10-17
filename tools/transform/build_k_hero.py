@@ -150,60 +150,96 @@ def sync_unit_boundary_b(fname):
         print("synced B boundary Y->%d in %s (X/D preserved)" % (max_y, fname))
 
 
-# ---- KA ability blocks (native effects zeroed) ----
-def ka_passive(code, y):
+# ---- KA ability blocks (v1.7-K-VisualSkillFix: clone proven in-map hero templates) ----
+# Each KA object copies a real, in-game learnable hero template's baseCode, hero
+# flag (X15), button-learn fields (X7/X8/X9), levels (X72), levelSkip (X73) and
+# reqLevel (X75). Native gameplay fields are zeroed; the shipped jass KK_ module
+# drives all K gameplay numbers and modules unchanged.
+#
+# KA01 <- AHad (Devotion Aura, proven paladin hero passive, reqLevel1)
+# KA02 <- AEev (Evasion, proven demon-hunter hero passive, reqLevel1)
+# KA03 <- AHds (Divine Shield, proven paladin no-target self active, reqLevel1)
+# KA04 <- ANdo (Doom, proven pit-lord hero ultimate, reqLevel6, levelSkip5)
+def ka01_block(y):
     return [
-        'C;X1;Y%d;K"%s"' % (y, code),
-        'C;X2;K"Aamk"',
+        'C;X1;Y%d;K"KA01"' % y,
+        'C;X2;K"AHad"',
+        'C;X7;K"BHad"', 'C;X8;K"BHad"', 'C;X9;K"BHad"',
         'C;X15;K1',
-        'C;X24;K0', 'C;X25;K0', 'C;X26;K0', 'C;X27;K0',
-        'C;X28;K0', 'C;X29;K0', 'C;X30;K0', 'C;X31;K0',
-        'C;X32;K0', 'C;X33;K0', 'C;X34;K0', 'C;X35;K0',
+        # native devotion armor/aura zeroed; jass drives kill-agility
+        'C;X24;K0', 'C;X25;K0', 'C;X26;K0',
+        'C;X61;K0', 'C;X62;K0', 'C;X69;K0', 'C;X70;K0',
         'C;X72;K4',
-        'C;X73;K2',
         'C;X75;K1',
         'C;X80;K"_"', 'C;X81;K"_"', 'C;X82;K"_"', 'C;X83;K"_"',
     ]
 
 
-def ka_channel(code, y, cd, levels):
-    # Clone the proven in-map no-target instant stub A0OT (base ANcl, target "_",
-    # dispatched on spell event by GetSpellAbilityId in shipped jass; no native
-    # damage/buff/duration). Use unique channel base orders so both active skills
-    # coexist on the same hero command card.
-    base_order = "roar" if code == "KA03" else "chemicalrage"
-    rows = [
-        'C;X1;Y%d;K"%s"' % (y, code),
-        'C;X2;K"ANcl"',
+def ka02_block(y):
+    return [
+        'C;X1;Y%d;K"KA02"' % y,
+        'C;X2;K"AEev"',
         'C;X15;K1',
-        # A0OT structural channel fields (cosmetic, no gameplay effect)
-        'C;X32;K1',
-        'C;X36;K0.98',
-        'C;X44;K"%s"' % base_order,
-        'C;X73;K2' if levels == 4 else 'C;X73;K5',
-        'C;X74;K5',
-        'C;X75;K1' if levels == 4 else 'C;X75;K6',
+        # native evasion dodge zeroed; jass drives 20% extra physical
+        'C;X24;K0', 'C;X25;K0', 'C;X26;K0', 'C;X27;K0',
+        'C;X72;K4',
+        'C;X75;K1',
+        'C;X80;K"_"', 'C;X81;K"_"', 'C;X82;K"_"', 'C;X83;K"_"',
     ]
-    # CD per level
-    for k, v in enumerate(cd):
-        rows.append('C;X%d;K%s' % (16 + k, v))
-    # mana cost 0 for every level
-    for k in range(4):
-        rows.append('C;X%d;K0' % (20 + k))
-    # native DataA/DataB/duration/buff explicitly zeroed (A0OT carries none)
-    rows += ['C;X24;K0', 'C;X28;K0', 'C;X60;K0', 'C;X68;K0']
-    rows += ['C;X72;K%d' % levels]
-    # no-target (click-cast); script operates on caster
-    rows += ['C;X80;K"_"', 'C;X81;K"_"', 'C;X82;K"_"', 'C;X83;K"_"']
-    return rows
+
+
+def ka03_block(y):
+    # AHds Divine Shield clone: no-target self active; native invulnerability
+    # duration zeroed. CD 10s / cost 0 preserved from the K skill; jass KK_SK3
+    # delivers the 800-radius magic AOE on spell cast by ability id.
+    return [
+        'C;X1;Y%d;K"KA03"' % y,
+        'C;X2;K"AHds"',
+        'C;X7;K"BHds"', 'C;X8;K"BHds"', 'C;X9;K"BHds"',
+        'C;X15;K1',
+        'C;X16;K10.0', 'C;X17;K10.0', 'C;X18;K10.0', 'C;X19;K10.0',
+        'C;X20;K0', 'C;X21;K0', 'C;X22;K0', 'C;X23;K0',
+        # native invulnerability duration (hero/ordinary) zeroed
+        'C;X60;K0', 'C;X61;K0', 'C;X62;K0',
+        'C;X68;K0', 'C;X69;K0', 'C;X70;K0',
+        'C;X72;K4',
+        'C;X75;K1',
+        'C;X80;K"invu,vuln"', 'C;X81;K"invu,vuln"', 'C;X82;K"invu,vuln"',
+        'C;X83;K"_"',
+    ]
+
+
+def ka04_block(y):
+    # ANdo Doom clone: hero ultimate 6/11/16 (levelSkip5, reqLevel6). Native
+    # doom damage/range/area/duration zeroed; jass KK_SK4 drives the temporary
+    # S/2S/3S agility buff. Deliberately NOT chemicalrage: no model swap,
+    # no vertex color, no blue filter, no ZCRG, no alchemist regen.
+    return [
+        'C;X1;Y%d;K"KA04"' % y,
+        'C;X2;K"ANdo"',
+        'C;X7;K"BNdo"', 'C;X8;K"BNdo"', 'C;X9;K"BNdo"',
+        'C;X15;K1',
+        'C;X16;K80.0', 'C;X17;K65.0', 'C;X18;K50.0',
+        'C;X20;K0', 'C;X21;K0', 'C;X22;K0',
+        # native doom damage / range / area / duration zeroed
+        'C;X24;K0', 'C;X25;K0', 'C;X26;K0',
+        'C;X32;K0', 'C;X33;K0', 'C;X34;K0',
+        'C;X60;K0', 'C;X61;K0', 'C;X62;K0',
+        'C;X68;K0', 'C;X69;K0', 'C;X70;K0',
+        'C;X76;K0', 'C;X77;K0', 'C;X78;K0',
+        'C;X72;K3',
+        'C;X73;K5',
+        'C;X75;K6',
+        'C;X80;K"_"', 'C;X81;K"_"', 'C;X82;K"_"', 'C;X83;K"_"',
+    ]
 
 
 def make_ka_blocks(start_y):
     return (
-        ka_passive("KA01", start_y),
-        ka_passive("KA02", start_y + 1),
-        ka_channel("KA03", start_y + 2, ["10.0", "10.0", "10.0", "10.0"], 4),
-        ka_channel("KA04", start_y + 3, ["80.0", "65.0", "50.0"], 3),
+        ka01_block(start_y),
+        ka02_block(start_y + 1),
+        ka03_block(start_y + 2),
+        ka04_block(start_y + 3),
     )
 
 

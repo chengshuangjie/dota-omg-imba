@@ -66273,11 +66273,10 @@ TargetArt=Abilities\Spells\Orc\CommandAura\CommandAura.mdl
 Targetattach=origin
 
 [KA01]
-Art=ReplaceableTextures\PassiveButtons\PASBTNMarksmanship.blp
+Art=ReplaceableTextures\CommandButtons\BTNKMarksmanship.blp
 Buttonpos=0,2
 Name=猎手本能
-Order=attributemodskill
-ResearchArt=ReplaceableTextures\CommandButtons\BTNMarksmanship.blp
+ResearchArt=ReplaceableTextures\CommandButtons\BTNKMarksmanship.blp
 Researchbuttonpos=0
 Researchhotkey=U
 Researchtip=学习 猎手本能[|cffffcc00U|r] - [|cffffcc00等级 %d|r]|n(Instinct)
@@ -66286,11 +66285,11 @@ Tip=猎手本能 - [|cffffcc00等级 1|r],猎手本能 - [|cffffcc00等级 2|r],
 Ubertip=击杀真实英雄永久敏捷+1,击杀真实英雄永久敏捷+2,击杀真实英雄永久敏捷+3,击杀真实英雄永久敏捷+4
 
 [KA02]
-Art=ReplaceableTextures\PassiveButtons\PASBTNCriticalStrike.blp
+Art=ReplaceableTextures\CommandButtons\BTNKCriticalStrike.blp
 Buttonpos=1,2
 Name=捷刃
 Hotkey=B
-ResearchArt=ReplaceableTextures\CommandButtons\BTNCriticalStrike.blp
+ResearchArt=ReplaceableTextures\CommandButtons\BTNKCriticalStrike.blp
 Researchbuttonpos=1
 Researchhotkey=B
 Researchtip=学习 捷刃[|cffffcc00B|r] - [|cffffcc00等级 %d|r]|n(Swift Blade)
@@ -66299,12 +66298,12 @@ Tip=捷刃 - [|cffffcc00等级 1|r],捷刃 - [|cffffcc00等级 2|r],捷刃 - [|c
 Ubertip=20%%概率额外物理=总敏捷x1,20%%概率额外物理=总敏捷x1.5,20%%概率额外物理=总敏捷x2,20%%概率额外物理=总敏捷x2.5
 
 [KA03]
-Art=ReplaceableTextures\CommandButtons\BTNThunderClap.blp
+Art=ReplaceableTextures\CommandButtons\BTNKBattleRoar.blp
 Buttonpos=2,2
 Hotkey=W
 Name=加凯
-Order=roar
-ResearchArt=ReplaceableTextures\CommandButtons\BTNThunderClap.blp
+Order=divineshield
+ResearchArt=ReplaceableTextures\CommandButtons\BTNKBattleRoar.blp
 Researchbuttonpos=2
 Researchhotkey=W
 Researchtip=学习 加凯[|cffffcc00W|r] - [|cffffcc00等级 %d|r]|n(Jia Kai)
@@ -66313,12 +66312,12 @@ Tip=加凯[|cffffcc00W|r] - [|cffffcc00等级 1|r],加凯[|cffffcc00W|r] - [|cff
 Ubertip=800范围魔法伤害=敏捷x2,800范围魔法伤害=敏捷x3,800范围魔法伤害=敏捷x4,800范围魔法伤害=敏捷x5
 
 [KA04]
-Art=ReplaceableTextures\CommandButtons\BTNAvatar.blp
+Art=ReplaceableTextures\CommandButtons\BTNKChemicalRage.blp
 Buttonpos=3,2
 Hotkey=R
 Name=凯哥牛逼了
-Order=chemicalrage
-ResearchArt=ReplaceableTextures\CommandButtons\BTNAvatar.blp
+Order=doom
+ResearchArt=ReplaceableTextures\CommandButtons\BTNKChemicalRage.blp
 Researchbuttonpos=3
 Researchhotkey=R
 Researchtip=学习 凯哥牛逼了[|cffffcc00R|r] - [|cffffcc00等级 %d|r]|n(Ultimate)

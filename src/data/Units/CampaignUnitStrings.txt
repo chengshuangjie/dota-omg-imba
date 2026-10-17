@@ -30519,13 +30519,13 @@ Tip=训练小狗(|cffffcc00Z|r)
 Ubertip=虫族军队的小型近战攻击生物。虽然很脆弱，但是他们以极大的数量闻名。|n|cffffcc00能攻击地面单位。|r
 
 [H0K0]
-Art=ReplaceableTextures\CommandButtons\BTNHeroBladeMaster.blp
+Art=ReplaceableTextures\CommandButtons\BTNK_Hero.blp
 Awakentip=复活 K
 Buttonpos=,2
 Description=K
 Name=K
 Propernames=K
 Revivetip=复活 K
-ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNHeroBladeMaster.blp
+ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNK_Hero.blp
 Tip=K
 Ubertip=近战敏捷英雄 K。可以学习猎手本能、捷刃、加凯和|c00ff8000凯哥牛逼了|r。|n|n|c000042ff力量|r - 18 + 2.0|n|c00ff0303敏捷|r - 22 + 2.2|n|c000042ff智力|r - 16 + 1.5|n|n攻击距离 128（近战）|n移动速度 315。

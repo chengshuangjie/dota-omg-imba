@@ -1,0 +1,31 @@
+{
+  "K54": 117,
+  "K_4": 39,
+  "stable_count": 117,
+  "agility_count": 39,
+  "stable_roll_bad": 0,
+  "stable_coverage": 117,
+  "agility_roll_bad": 0,
+  "extended_populated_slots": [
+    119,
+    120,
+    121,
+    122,
+    123,
+    124,
+    125,
+    126,
+    127,
+    129,
+    130,
+    131,
+    132,
+    133,
+    134
+  ],
+  "ai_strength_candidates": 41,
+  "ai_int_candidates": 37,
+  "ai_agility_candidates": 39,
+  "errors": [],
+  "PASS": true
+}

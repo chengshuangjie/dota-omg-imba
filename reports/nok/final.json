@@ -1,0 +1,58 @@
+{
+  "version": "v1.8.6-NOK",
+  "baseline_commit": "a2c66730b818978810203d73e77394d2c1b87428",
+  "branch": "nok-v186",
+  "package": {
+    "absolute_path": "D:\\dota\\DOTA-OMG-IMBA-NOK-worktree\\maps\\build\\DOTA-OMG-IMBA-v1.8.6-NOK.w3x",
+    "size_bytes": 47438761,
+    "sha256": "5be8dc5b4b20a75c209a76f5ef391aaa05e99c071bb37129e386c51332fba701"
+  },
+  "w3i": {
+    "bytes": 806,
+    "nok_24b_label_occurrences": 2,
+    "label": "OMG IMBA v1.8.6-NOK",
+    "label_bytes": 24,
+    "padding_spaces": 5
+  },
+  "gates": {
+    "pjass": "only baseline pre-existing location_m5; no unexpected diagnostics",
+    "verify_v17": {"pass": 80, "fail": 0},
+    "allin_deterministic_boundaries": {
+      "g999_reject": true,
+      "g1000_gain_range": [1, 2],
+      "g4999_gain_range": [1, 8],
+      "g5000_gain_range": [10, 250],
+      "g10000_gain_range": [20, 500],
+      "failure_no_random_no_charge": true,
+      "success_single_random_then_gold0_base_perm_plus_all3": true
+    },
+    "alt_pin_16_state_truth_table": "PASS (P1/b0 camp0.70 tower.01; P0 identical to legacy; zero new handles/timers/effects)",
+    "pool_simulation": "PASS (K54=117 HMD0 kept, K_4=39, stable 117, AI candidates 41/37/39, roll bad=0)",
+    "mpq_package": {
+      "imp_entries": 1880,
+      "imp_missing_in_package": [],
+      "forbidden_k_assets_in_listfile": [],
+      "orphan_k_resources": 0,
+      "baseline_packs_no_k_hero_assets": true
+    },
+    "readback_hash_parity": {
+      "war3map.j": "OK", "war3map.w3i": "OK", "war3map.imp": "OK",
+      "UnitAbilities.slk": "OK", "UnitBalance.slk": "OK", "UnitData.slk": "OK",
+      "UnitUI.slk": "OK", "UnitWeapons.slk": "OK", "AbilityData.slk": "OK",
+      "CampaignUnitStrings.txt": "OK", "CampaignAbilityStrings.txt": "OK",
+      "all_ok": true
+    },
+    "package_content_markers": {
+      "present": ["ALLIN_Core", "LOTTERY_DIALOG", "幸运大抽奖", "1000抽属性（无限次）", "梭哈抽属性", "JALTPIN", "AltRefreshPinned", "-alt", "可鼠标双击直接出售", "抽奖屋", "WELFARE_Claim", "ATTR_Core"],
+      "k_forbidden_patterns": {"note": "forbidden patterns checked to be ABSENT in packaged j; this is a zero-check list, not detected residue", "patterns": ["H0K0", "KA01", "KA02", "KA03", "KA04", "war3mapimported\\K\\", "BTNK_Hero", "K_final_v2"], "present_in_package_j": []}
+    }
+  },
+  "renames": {
+    "U00F/Z00F": "Name=屠夫; Propernames/Tip=胖子; Awaken/Revive=复活屠夫; Ubertip hero name=屠夫",
+    "Nfir/Zfir/Zgir/Zhir": "Name/Tip=影魔; Awaken/Revive=复活影魔; Propernames=restored player pool; Ubertip hero names=影魔",
+    "N01I": "Name/Tip=炼金术士; Propernames=拉泽尔．黑酿; Awaken/Revive=复活炼金术士; Ubertip head=炼金术士",
+    "N01H/N01J/N01T": "Name=炼金术士; Propernames=拉泽尔．黑酿; injected Tip rows removed",
+    "nAS6": "static Name/Tip=抽奖屋"
+  },
+  "redlines_kept": ["H00K 凯哥", "HMD0 喵刀", "作者小生我怕怕", "YW7 我才是袁加凯 (E02X/Z02X)", "debug A29J/A1MP/A1MU", "UpdateLog history", "archive system/permission/interface"]
+}

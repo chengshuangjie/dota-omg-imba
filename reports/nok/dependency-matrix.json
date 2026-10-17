@@ -1,0 +1,390 @@
+{
+  "baseline": "a2c66730b818978810203d73e77394d2c1b87428",
+  "worktree": "D:\\dota\\DOTA-OMG-IMBA-NOK-worktree",
+  "branch": "nok-v186",
+  "delete_edit": [
+    {
+      "layer": "jass-globals",
+      "target": "lines 3-37 v1.4-K hero K module globals banner + KK_HERO/KK_SK1..4/AGI/MULT/RADIUS/DUR constants, KK_TAB, KK_SuppressHit, KK_CastTrigger, KK_DeathTrigger, KK_SK3_GROUP/CASTER/DAMAGE, KK_KEY_*",
+      "action": "delete",
+      "evidence": "src/war3map.j:3-37",
+      "keep_note": "keep line 38+ KK_RELEASE_VERSION (general log tag)"
+    },
+    {
+      "layer": "jass-globals",
+      "target": "K_POOL_ROLLED / K_POOL_HIT boolean arrays (decl 410-411, resets 61184/85, 61261/62, 172381/82)",
+      "action": "delete",
+      "evidence": "src/war3map.j:409-411 + 6 reset lines",
+      "keep_note": "dead flags in a2c6673: never set/read; no 50% roll code present"
+    },
+    {
+      "layer": "jass-globals",
+      "target": "XOMG_VERSION constant string v1.8.5-SYNCF001 (line 754)",
+      "action": "edit",
+      "evidence": "src/war3map.j:754",
+      "keep_note": "bump to v1.8.6-NOK; verify gate updated accordingly"
+    },
+    {
+      "layer": "jass-module",
+      "target": "KK_EnsureHeroAbilities (38186-38209) + call sites ADD_CONTENT(38214), ApplyUnit(207710)",
+      "action": "delete",
+      "evidence": "src/war3map.j:38186-38209,38214,207710",
+      "keep_note": ""
+    },
+    {
+      "layer": "jass-module",
+      "target": "KK_IsKHero/KK_Lvl/KK_SnapAgi/KK_SK1Gain/KK_SK2Mult/KK_SK3Mult/KK_SK4Dur/KK_UltRemove/KK_UltExpire/KK_UltCast/KK_SK3_Filter/KK_SK3_Apply/KK_JiaKaiCast/KK_HitPhys/KK_DeathAction/KK_CastAction/KK_Init (241810-242163)",
+      "action": "delete",
+      "evidence": "src/war3map.j:241787 banner .. 242163 endfunction",
+      "keep_note": "whole KK hero module; main call KK_Init() at 250762 removed"
+    },
+    {
+      "layer": "jass-module",
+      "target": "main call call KK_Init() (250762)",
+      "action": "delete",
+      "evidence": "src/war3map.j:250762",
+      "keep_note": ""
+    },
+    {
+      "layer": "jass-guard",
+      "target": "SuijiMode_SetVisualForm K/KA04 early-return guard (89424-89427)",
+      "action": "simplify",
+      "evidence": "src/war3map.j:89424-89427",
+      "keep_note": "remove K condition; function retained for all other forms"
+    },
+    {
+      "layer": "jass-guard",
+      "target": "SuijiMode_ChemicalRageCompatApply K/KA04 guard (208563-208567)",
+      "action": "simplify",
+      "evidence": "src/war3map.j:208563-208567",
+      "keep_note": "remove K condition; alchemist chain retained"
+    },
+    {
+      "layer": "jass-guard",
+      "target": "SuijiMode_IsRandomPoolExcludedSkill KA01..KA04 literals (198506)",
+      "action": "edit",
+      "evidence": "src/war3map.j:198506",
+      "keep_note": "drop 4 KA entries; keep ANic/A0O8/... list"
+    },
+    {
+      "layer": "jass-guard",
+      "target": "SuijiMode_ApplyUnit K bypass block (207704-207715)",
+      "action": "delete",
+      "evidence": "src/war3map.j:207704-207715",
+      "keep_note": "K no longer reaches this path"
+    },
+    {
+      "layer": "jass-register",
+      "target": "R1W: call R1X(H0K0,0,KA01,KA02,KA03,KA04) (17019)",
+      "action": "delete",
+      "evidence": "src/war3map.j:17019",
+      "keep_note": ""
+    },
+    {
+      "layer": "jass-table",
+      "target": "LX7 stable hero row 118: K34[118]/MI4[118]/K64[118]/MH4[118]=BTNK_Hero/XY7/XU7 + MJ4..MO4 clears (31426-31436)",
+      "action": "delete",
+      "evidence": "src/war3map.j:31426-31436",
+      "keep_note": ""
+    },
+    {
+      "layer": "jass-table",
+      "target": "V5 skill row 118: HM4[118]=KA01/HN4[118]=KA02/HO4[118]=KA03/HP4[118]=KA04 (18789-18792)",
+      "action": "delete",
+      "evidence": "src/war3map.j:18789-18792",
+      "keep_note": ""
+    },
+    {
+      "layer": "jass-table",
+      "target": "SUIJI_POOL_SOURCE[118]=18 (31456)",
+      "action": "delete",
+      "evidence": "src/war3map.j:31456",
+      "keep_note": "scanned by native-pool enumeration KL4..SUIJI_POOL_MAX; must clear"
+    },
+    {
+      "layer": "jass-table",
+      "target": "K54=118 bound (31437)",
+      "action": "edit",
+      "evidence": "src/war3map.j:31437",
+      "keep_note": "TAIL-SHRINK proposal: K54=117 (K was tail of stable bound); awaiting audit"
+    },
+    {
+      "layer": "jass-pool",
+      "target": "K24[40]=H0K0 (31529), K_4=40 (31530)",
+      "action": "edit",
+      "evidence": "src/war3map.j:31529-31530",
+      "keep_note": "delete row; K_4=39; K24[39]=HMD0 Miao retained"
+    },
+    {
+      "layer": "jass-pool",
+      "target": "B891RandomAgilityNoK (25022-25024)",
+      "action": "refactor/delete",
+      "evidence": "src/war3map.j:25020-25024",
+      "keep_note": "merged into plain B891RandomAgility after K removal"
+    },
+    {
+      "layer": "jass-pool",
+      "target": "QZ9HumanNoK (61079-61089), QC9HumanNoK (61090-61101)",
+      "action": "refactor/delete",
+      "evidence": "src/war3map.j:61079-61101",
+      "keep_note": "reused by all human slots; collapse onto QZ9/QC9 (QA9 2/3 branches identical)"
+    },
+    {
+      "layer": "jass-pool",
+      "target": "QC9ForPlayer human/AI split (61102-61107)",
+      "action": "refactor",
+      "evidence": "src/war3map.j:61102-61107",
+      "keep_note": "always QC9 after merge"
+    },
+    {
+      "layer": "jass-pool",
+      "target": "QC9HumanFirstAgility (61108-61116)",
+      "action": "refactor",
+      "evidence": "src/war3map.j:61108-61116",
+      "keep_note": "human agility slot -> QC9(...,1); call sites 61206/61229/61241 + reroll path"
+    },
+    {
+      "layer": "slk",
+      "target": "UnitData.slk Y3339 H0K0 hero block (model K_Hero, art=BTNK_Hero, scale120)",
+      "action": "delete",
+      "evidence": "src/data/Units/UnitData.slk",
+      "keep_note": ""
+    },
+    {
+      "layer": "slk",
+      "target": "UnitUI.slk H0K0 block (BTNK_Hero/DISBTNK_Hero, Name=凯哥)",
+      "action": "delete",
+      "evidence": "src/data/Units/UnitUI.slk",
+      "keep_note": ""
+    },
+    {
+      "layer": "slk",
+      "target": "UnitBalance.slk H0K0 block (agi primary, agi+3)",
+      "action": "delete",
+      "evidence": "src/data/Units/UnitBalance.slk",
+      "keep_note": ""
+    },
+    {
+      "layer": "slk",
+      "target": "UnitAbilities.slk H0K0 block (KA01..KA04)",
+      "action": "delete",
+      "evidence": "src/data/Units/UnitAbilities.slk",
+      "keep_note": ""
+    },
+    {
+      "layer": "slk",
+      "target": "UnitWeapons.slk H0K0 block (normal attack, no missile, range128)",
+      "action": "delete",
+      "evidence": "src/data/Units/UnitWeapons.slk",
+      "keep_note": ""
+    },
+    {
+      "layer": "slk",
+      "target": "AbilityData.slk Y6659-6662 KA01..KA04 blocks",
+      "action": "delete",
+      "evidence": "src/data/Units/AbilityData.slk",
+      "keep_note": ""
+    },
+    {
+      "layer": "campaign",
+      "target": "CampaignUnitStrings.txt [H0K0] block (name/tooltip/displayname/model K_Hero)",
+      "action": "delete",
+      "evidence": "src/data/Units/CampaignUnitStrings.txt",
+      "keep_note": ""
+    },
+    {
+      "layer": "campaign",
+      "target": "CampaignAbilityStrings.txt [KA01]猎手本能/[KA02]捷刃/[KA03]加凯/[KA04]凯哥牛逼了 blocks",
+      "action": "delete",
+      "evidence": "src/data/Units/CampaignAbilityStrings.txt",
+      "keep_note": ""
+    },
+    {
+      "layer": "campaign",
+      "target": "exact K-family buttons BTNK_Hero/Marksmanship/CriticalStrike/BattleRoar/ChemicalRage + DIS* in both txt",
+      "action": "delete",
+      "evidence": "src/data/Units/Campaign*.txt",
+      "keep_note": "generic BTNKeep/BTNKeeper*/BTNKelThuzad/BTNKiljaedin/BTNKnight/BTNKobold*/BTNKotoBeast/BTNKrobWitchcraft KEPT"
+    },
+    {
+      "layer": "imp",
+      "target": "war3mapimported\\K\\K_final.mdx",
+      "action": "delete",
+      "evidence": "src/war3map.imp",
+      "keep_note": ""
+    },
+    {
+      "layer": "imp",
+      "target": "war3mapimported\\K\\K_final_portrait.mdx",
+      "action": "delete",
+      "evidence": "src/war3map.imp",
+      "keep_note": ""
+    },
+    {
+      "layer": "imp",
+      "target": "war3mapimported\\K\\K_final_v2.mdx",
+      "action": "delete",
+      "evidence": "src/war3map.imp",
+      "keep_note": ""
+    },
+    {
+      "layer": "imp",
+      "target": "war3mapimported\\K\\K_body.blp",
+      "action": "delete",
+      "evidence": "src/war3map.imp",
+      "keep_note": ""
+    },
+    {
+      "layer": "imp",
+      "target": "ReplaceableTextures\\CommandButtons\\BTNK_Hero.blp / Marksmanship / CriticalStrike / BattleRoar / ChemicalRage",
+      "action": "delete",
+      "evidence": "src/war3map.imp",
+      "keep_note": ""
+    },
+    {
+      "layer": "imp",
+      "target": "ReplaceableTextures\\CommandButtonsDisabled\\DISBTNK_Hero.blp + 4 DIS variants",
+      "action": "delete",
+      "evidence": "src/war3map.imp",
+      "keep_note": ""
+    },
+    {
+      "layer": "assets",
+      "target": "assets/K/K_body.blp, K_final.mdx, K_final_portrait.mdx",
+      "action": "delete",
+      "evidence": "assets/K/",
+      "keep_note": ""
+    },
+    {
+      "layer": "assets",
+      "target": "assets/Kv2/model/K_final_v2.mdx, K_final_portrait.mdx; textures/K_body.blp; buttons/ BTNK* + DISBTNK* (13 files)",
+      "action": "delete",
+      "evidence": "assets/Kv2/",
+      "keep_note": "whole directory; assets/loading-screen kept"
+    },
+    {
+      "layer": "tools",
+      "target": "build.ps1 K asset copy/validate gates + sourceEntries K entries",
+      "action": "edit",
+      "evidence": "tools/build/build.ps1",
+      "keep_note": "drop K branches; keep all non-K gates; NOK label assert exact 24B"
+    },
+    {
+      "layer": "tools",
+      "target": "verify_v17.ps1 K-existence gates (KA01..04 templates, KK chain, K assets, K test pool) -> replace with zero-residue + pool-completeness gates",
+      "action": "edit",
+      "evidence": "tools/build/verify_v17.ps1",
+      "keep_note": "retain title/sven/lion/ATTR/bottle/drops/double-click/miao/syncfix smoke checks"
+    },
+    {
+      "layer": "tools",
+      "target": "verify.ps1 legacy v1.6 gate K assertions in final $passed expression",
+      "action": "edit",
+      "evidence": "tools/build/verify.ps1",
+      "keep_note": "replace K-existence with K-zero-residue; retain all non-K gates"
+    },
+    {
+      "layer": "tools",
+      "target": "tools/transform/build_k_hero.py K SLK generator",
+      "action": "delete",
+      "evidence": "tools/transform/build_k_hero.py",
+      "keep_note": "historical K-only generator, never invoked by build.ps1"
+    },
+    {
+      "layer": "tools",
+      "target": "tools/transform/audit_v18.py G7-k-normal K gate",
+      "action": "edit",
+      "evidence": "tools/transform/audit_v18.py",
+      "keep_note": "remove K gate; keep other gates"
+    },
+    {
+      "layer": "tools",
+      "target": "tools/transform/sync_preview_ui.py samples H0K0: None line 88",
+      "action": "edit",
+      "evidence": "tools/transform/sync_preview_ui.py",
+      "keep_note": "remove single sample entry"
+    },
+    {
+      "layer": "tools",
+      "target": "config/tool-paths-v14k.json (v1.4-K legacy output path)",
+      "action": "delete",
+      "evidence": "config/tool-paths-v14k.json",
+      "keep_note": ""
+    },
+    {
+      "layer": "docs",
+      "target": "README.md K sections: line 36 v1.4-K hero, line 37 v1.6-K VisualFix, 95-106 v1.7-K historical block, 111 K真人50% retention mention, 126 K回归普通敏捷池, 133-134 K内嵌肖像",
+      "action": "edit",
+      "evidence": "README.md",
+      "keep_note": "keep line 34 四英雄改名(含炸弹人→凯哥 general), 凯哥发福利 general system"
+    },
+    {
+      "layer": "reports",
+      "target": "reports/audit-v17-K-VisualSkillFix.html, reports/k-portrait-merge.json, reports/verification-v1.6-K-CompleteHero.json",
+      "action": "delete(strip)",
+      "evidence": "reports/",
+      "keep_note": "K-only historical artifacts; pending audit confirmation"
+    },
+    {
+      "layer": "reports",
+      "target": "reports/noskin19-unchanged-assets.json K asset rows",
+      "action": "edit",
+      "evidence": "reports/noskin19-unchanged-assets.json",
+      "keep_note": "strip K entries; keep non-K hash record"
+    },
+    {
+      "layer": "w3i",
+      "target": "two 24-byte ASCII slots @0x0C and @0xEA -> exact 24B \"OMG IMBA v1.8.6-NOK\" + 5 spaces padding; assert len==24; all other Force/player bytes identical to noskin19",
+      "action": "edit",
+      "evidence": "src/war3map.w3i",
+      "keep_note": "806B size preserved; no other byte touched"
+    }
+  ],
+  "keep": [
+    {
+      "class": "KEEP",
+      "target": "HMD0 喵刀 hero (K24[39], stable index 117, SUIJI_POOL_SOURCE[117]=17, B891RandomHeroRange 117-skip)",
+      "note": "tail-shrink K54=117 leaves 117 intact"
+    },
+    {
+      "class": "KEEP",
+      "target": "H00K 凯哥/炸弹人 (general renamed hero; sync_hero_visible_names_v11.py)",
+      "note": "different rawcode; explicitly protected"
+    },
+    {
+      "class": "KEEP",
+      "target": "KK_GAME_DIFFICULTY/KK_DIFFICULTY_*/KKGameTips_*/KK_AIMAXZB_EQUIPPED/AIMAXZB_*",
+      "note": "general difficulty/tips/AI-item systems, prefix collision only"
+    },
+    {
+      "class": "KEEP",
+      "target": "KK_RELEASE_VERSION=\"KK_B1122\" general match/sync/order log tag",
+      "note": "used by B1037/B1111/B1120 logging, not hero K"
+    },
+    {
+      "class": "KEEP",
+      "target": "YY7(\"我才是袁加凯！\") and UpdateLog 袁加凯 mentions",
+      "note": "屠夫 rename, general hero"
+    },
+    {
+      "class": "KEEP",
+      "target": "凯哥发福利 welfare button, ATTR双杰抽属性, 斯神威神, 莱恩, 魔瓶族, 野怪掉落, 双击直售, 喵刀直选, syncfix chain, XOMG1, IMBA layer",
+      "note": "all non-K systems; semantic/hash preserved"
+    },
+    {
+      "class": "KEEP",
+      "target": "generic BTNKeep/BTNKeeperGhostBlue/BTNKelThuzad/BTNKiljaedin/BTNKnight/BTNKobold*/BTNKotoBeast/BTNKrobWitchcraft buttons",
+      "note": "unrelated native UI"
+    },
+    {
+      "class": "KEEP",
+      "target": "unrelated arrays indexed 118: HW4/HX4/HY4/HZ4 acidbomb-thunderbolt-bloodlust-auravamp; HR4..HU4 A6B7..A6CD; T64 title; h7/UK7 terrain remap",
+      "note": "different indexing schemes, not K row"
+    },
+    {
+      "class": "KEEP",
+      "target": "SetMapName(\"OMG IMBA v1.7.1-K-W3IFix\") proven load script label",
+      "note": "deliberately retained per noskin19 policy; not K-hero player text"
+    }
+  ]
+}

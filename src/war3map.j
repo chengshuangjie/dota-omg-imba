@@ -1,40 +1,5 @@
 //W3x2lni Data: 2026-10-13 15:28:28.896
 globals
-// ===== v1.4-K hero K module globals =====
-constant integer KK_HERO   = 'H0K0'  // 新英雄 K（H00K 凯哥/炸弹人保持不动）
-constant integer KK_SK1    = 'KA01'  // 被动1：击杀真实英雄永久敏捷 +1/2/3/4
-constant integer KK_SK2    = 'KA02'  // 被动2：有效普攻20%概率额外物理=总敏捷x1/1.5/2/2.5
-constant integer KK_SK3    = 'KA03'  // 主动“加凯”：快照总敏捷x2/3/4/5 魔法伤害，半径800，CD10s
-constant integer KK_SK4    = 'KA04'  // 大招“凯哥牛逼了”：3级，15/17/20s，CD80/65/50，bonus=S/2S/3S
-constant integer KK_SK1_AGI_L1 = 1
-constant integer KK_SK1_AGI_L2 = 2
-constant integer KK_SK1_AGI_L3 = 3
-constant integer KK_SK1_AGI_L4 = 4
-constant integer KK_SK2_CHANCE = 20
-constant real    KK_SK2_MULT_L1 = 1.0
-constant real    KK_SK2_MULT_L2 = 1.5
-constant real    KK_SK2_MULT_L3 = 2.0
-constant real    KK_SK2_MULT_L4 = 2.5
-constant real    KK_SK3_RADIUS = 800.0
-constant integer KK_SK3_MULT_L1 = 2
-constant integer KK_SK3_MULT_L2 = 3
-constant integer KK_SK3_MULT_L3 = 4
-constant integer KK_SK3_MULT_L4 = 5
-constant real    KK_SK4_DUR_L1 = 15.0
-constant real    KK_SK4_DUR_L2 = 17.0
-constant real    KK_SK4_DUR_L3 = 20.0
-hashtable KK_TAB = InitHashtable()
-boolean KK_SuppressHit = false        // 防递归：模块自己造成的嵌套伤害不再触发SK2
-trigger KK_CastTrigger = null
-trigger KK_DeathTrigger = null       // 单一全局死亡触发，所有真实玩家注册一次
-group KK_SK3_GROUP = null
-unit KK_SK3_CASTER = null
-integer KK_SK3_DAMAGE = 0
-constant integer KK_KEY_ULT_BONUS   = 1
-constant integer KK_KEY_ULT_GEN     = 2
-constant integer KK_KEY_ULT_ACTIVE  = 3
-constant integer KK_KEY_ULT_TIMER    = 4
-constant integer KK_KEY_VICTIM_DONE  = 9  // 死亡去重标记（防御性，防同次/重复注册）
 // Keep the release identity separate from diagnostic recorder revisions.
 constant string KK_RELEASE_VERSION="KK_B1122"
 // KK global archive DETECT is read once and synchronized before either tracer starts.
@@ -406,9 +371,6 @@ integer array XYSR
 integer array XYMJ
 integer array Dragon_Unit
 integer array CHOUJIANGSTATE
-// Human K test probability: reset once per candidate-pool build/refresh; AI never reads these flags.
-boolean array K_POOL_ROLLED
-boolean array K_POOL_HIT
 // v1.3 welfare button (凯哥发福利): per-pid per-match claim mark + rate-limited logs
 boolean array LOTTERY_CLAIMED
 integer array LOTTERY_OPEN_LOG
@@ -417,6 +379,9 @@ integer array LOTTERY_REPEAT_LOG
 integer array ATTR_ROLL_TOTAL
 integer array ATTR_OK_LOG
 integer array ATTR_REJECT_LOG
+// v1.8.6-NOK 梭哈: rate-limited diagnostic logs only; no state mark beyond settlement
+integer array ALLIN_OK_LOG
+integer array ALLIN_REJECT_LOG
 // v1.3: dev-only -droptest debug spawn; default OFF, hard cap 3 per match, no public infinite spawn.
 constant boolean DEV_DROP_TEST=false
 integer DROP_TEST_USES=0
@@ -601,6 +566,7 @@ real CheckBox_HeightSpacing=.024
 	boolean IsCapsLockEnableMultiboard = false //CapsLock键是否启用多面板
     boolean AltShowAttackRange = true
     boolean AltShowRefreshRange = true
+    boolean AltRefreshPinned = false // v1.8.6-NOK: local per-match -alt camp-line pin; not persisted to setup
 	boolean array Default_SetUp
 	// 工具提示
 	// 工具提示背景
@@ -751,7 +717,7 @@ boolean BP_MODE=false
 boolean XM_MODE=false
 constant real IMBA_POWER=2.
 constant boolean XOMG_IMBA_ENABLED=true
-constant string XOMG_VERSION="v1.8.5-SYNCF001"
+constant string XOMG_VERSION="v1.8.6-NOK"
 integer imbaMult=2
 integer XOMG_DAMAGE_LOG_COUNT=0
 boolean imbaB67DpsExclude=false
@@ -3924,6 +3890,12 @@ button array B836ArcBookButton
 button array B836ArcClawButton
 button array B891ArcMiaoButton
 button array B836ArcRulesButton
+// v1.8.6-NOK: dedicated 抽奖屋 dialog (exactly 3 business rows), separated from archive UI
+dialog array LOTTERY_DIALOG
+button array LOTTERY_RollButton
+button array LOTTERY_AttrButton
+button array LOTTERY_AllInButton
+button array LOTTERY_CloseButton
 boolean B849TempestStarted=false
 boolean B998TempestCreating=false
 timer B999EndFreezeTimer=null
@@ -17016,7 +16988,6 @@ call SaveInteger(R1Y,suijiRegisterHeroTypeId,4,a44)
 call SaveInteger(R1Y,suijiRegisterHeroTypeId,5,a55)
 endfunction
 function R1W takes nothing returns nothing
-call R1X('H0K0',0,'KA01','KA02','KA03','KA04')
 call R1X('Hamg','A07Z','A01Z','A26N','Aamk','A2ML')
 call R1X('Hblm',0,'A10X','A11T','A112','A0NR')
 call R1X('Hmkg','A011','A04W','A083','A088','Aamk')
@@ -18786,10 +18757,6 @@ set HN4[116]='A2ML'
 set HP4[116]='A0VQ'
 set HM4[117]='ANic'
 set HP4[117]='A0VG'
-set HM4[118]='KA01'
-set HN4[118]='KA02'
-set HO4[118]='KA03'
-set HP4[118]='KA04'
 set HM4[119]='A21L'
 set HP4[119]='A0VM'
 set HM4[120]='A2AI'
@@ -19908,10 +19875,6 @@ set HS4[116]='A6B5'
 set HU4[116]='A6CB'
 set HR4[117]='A6B6'
 set HU4[117]='A6CC'
-set HR4[118]='A6B7'
-set HS4[118]='A6B8'
-set HT4[118]='A6B9'
-set HU4[118]='A6CD'
 set HR4[119]='A6BA'
 set HU4[119]='A6CE'
 set HR4[120]='A6BB'
@@ -25010,17 +24973,7 @@ endif
 return GetRandomInt(b891Low,b891High)
 endfunction
 function B891RandomAgility takes nothing returns integer
-local integer b891Pick=GetRandomInt(1,K_4-1)
-// K24[39] remains registered for native agility classification, not random rolls.
-if b891Pick>=39 then
-set b891Pick=b891Pick+1
-endif
-return GetUnitPointValueByType(K24[b891Pick])
-endfunction
-// Human fallback pool excludes both Miao at slot 39 and K at slot 40.
-// K is injected once per human candidate-pool build by an explicit 50% roll.
-function B891RandomAgilityNoK takes nothing returns integer
-return GetUnitPointValueByType(K24[GetRandomInt(1,K_4-2)])
+return GetUnitPointValueByType(K24[GetRandomInt(1,K_4-1)])
 endfunction
 function UR7 takes integer hI returns nothing
 call hi(hI,Z7[1])
@@ -31423,18 +31376,7 @@ set MK4[117]=""
 set MM4[117]=""
 set MN4[117]=""
 set MO4[117]=""
-set K34[118]='H0K0'
-set MI4[118]='hMn0'
-set K64[118]='H0K0'
-set MH4[118]="ReplaceableTextures\\CommandButtons\\BTNK_Hero.blp"
-call XY7(K34[118],"stand")
-call XU7(K34[118],1.0,MI4[118])
-set MJ4[118]=""
-set MK4[118]=""
-set MM4[118]=""
-set MN4[118]=""
-set MO4[118]=""
-set K54=118
+set K54=117
 set SUIJI_POOL_MAX=134
 // Several late-added heroes reused old K34 slots while the original skills
 // remained in their historical random-pool rows. Keep those rows bound to the
@@ -31453,7 +31395,6 @@ set SUIJI_POOL_SOURCE[114]=7
 set SUIJI_POOL_SOURCE[115]=10
 set SUIJI_POOL_SOURCE[116]=14
 set SUIJI_POOL_SOURCE[117]=17
-set SUIJI_POOL_SOURCE[118]=18
 set SUIJI_POOL_SOURCE[119]=27
 set SUIJI_POOL_SOURCE[120]=33
 set SUIJI_POOL_SOURCE[121]=50
@@ -31526,8 +31467,7 @@ set K24[36]='Z052'
 set K24[37]='Z060'
 set K24[38]='Z061'
 set K24[39]='HMD0'
-set K24[40]='H0K0'
-set K_4=40
+set K_4=39
 set M44[1]='Npbm'
 set M44[2]='Hlgr'
 set M44[3]='Harf'
@@ -32141,7 +32081,7 @@ endfunction
 function L27 takes nothing returns nothing
 call CreateQuestBJ(2,"投票踢人","真人玩家输入 -kick 楼层 发起投票。不能踢自己、AI、已退出或不存在的楼层。\n\n投票开始后30秒内，其他真人输入“同意”或“不同意”；目标玩家的输入无效，发起者默认同意，每人只能投一次。\n\n5名及以上真人需要总计3票同意；3至4名真人需要总计2票同意；只有1至2名真人时不能发起。达到票数立即踢出，30秒内不能再次发起。","ReplaceableTextures\\CommandButtons\\BTNBootsOfSpeed.blp")
 call CreateQuestBJ(0,"游戏机制(必看)","-本图没有法球冲突\n-按F11队友之间可以互相转钱\n-点击物品栏的卷轴可以一键合成\n-右键连续点击四次物品可以拆分\n-大药小净化不会被普通单位打断\n-信使可以直接出售物品\n-不朽盾不占用物品栏\n-XM模式每隔30秒刷新野怪\n-其他请自行发现","ReplaceableTextures\\CommandButtons\\BTNScrollOfHaste.blp")
-call CreateQuestBJ(2,"福利与抽属性","泉水能量圈保留原初始化抽奖：每局一次，50%从价格不低于1000的真实成品装备池获得装备，否则获得1000-1500金币。\n\n存档商店入口：输入 -archive 或选中达拉然泉水旁存档商店(nAS6)，对话框内「凯哥发福利」「双杰抽属性」；与能量圈抽奖相互独立。\n\n「凯哥发福利」：每人每局一次，同步随机获得1-1000当前局金币，不抽装备、不写存档、不调存档交易。\n\n「双杰抽属性」：每次消耗1000当前局金币，无限次抽取，当局有效，不写存档。10%概率全属性+20（大奖，浮字「恭喜发财」）；其余90%按1-10各9%概率全属性+1至+10。先校验英雄与金币，金币不足或无英雄不扣费。","ReplaceableTextures\\CommandButtons\\BTNGoldenCoin.blp")
+call CreateQuestBJ(2,"福利与抽属性","泉水能量圈保留原初始化抽奖：每局一次，50%从价格不低于1000的真实成品装备池获得装备，否则获得1000-1500金币。\n\n抽奖屋入口：选中达拉然泉水旁抽奖屋(nAS6)直接打开；-archive仅用于个人存档，不含抽奖业务。\n\n「幸运大抽奖」：每人每局一次，同步随机获得1-1000当前局金币，不抽装备、不写存档。\n\n「1000抽属性（无限次）」：每次消耗1000当前局金币，无限次抽取，当局有效，不写存档。10%概率全属性+20（大奖，浮字「恭喜发财」）；其余90%按1-10各9%概率全属性+1至+10。先校验英雄与金币，金币不足或无英雄不扣费。\n\n「梭哈抽属性」：投入全部本局金币，成功后三属性同增，失败不扣费。","ReplaceableTextures\\CommandButtons\\BTNGoldenCoin.blp")
 call CreateQuestBJ(2,"官方信息","地图官方QQ群：1070032670\n地图官网：https://dotaaiomg.cn/","ReplaceableTextures\\CommandButtons\\BTNManual3.blp")
 call CreateQuestBJ(2,"装备预购","按住 Shift 左键点击商店装备，可加入或移出预购栏；双击预购图标，将自动购买缺少的配件并尝试合成。成品未获得前，图标会保留。","ReplaceableTextures\\CommandButtons\\BTNChestOfGold.blp")
 call CreateQuestBJ(2,"Alt键功能","按住 Alt 左键点击技能，可向队友发送技能冷却信息；按住 Alt 还可查看防御塔攻击范围和野怪活动范围。","ReplaceableTextures\\CommandButtons\\BTNBansheeMaster.blp")
@@ -38181,37 +38121,10 @@ return SUIJI_TAVERN_HERO[pid]
 endif
 return KU4[pid]
 endfunction
-// K is a complete fixed-skill hero, not a diagnostic/random-skill carrier.
-// Re-assert player visibility after creation/revive/OMG reconciliation without auto-learning levels.
-function KK_EnsureHeroAbilities takes unit u returns nothing
-local player p=null
-if u==null or GetUnitTypeId(u)!=KK_HERO then
-return
-endif
-set p=GetOwningPlayer(u)
-call SetPlayerAbilityAvailable(p,KK_SK1,true)
-call SetPlayerAbilityAvailable(p,KK_SK2,true)
-call SetPlayerAbilityAvailable(p,KK_SK3,true)
-call SetPlayerAbilityAvailable(p,KK_SK4,true)
-if GetUnitAbilityLevel(u,KK_SK1)>0 then
-call UnitMakeAbilityPermanent(u,true,KK_SK1)
-endif
-if GetUnitAbilityLevel(u,KK_SK2)>0 then
-call UnitMakeAbilityPermanent(u,true,KK_SK2)
-endif
-if GetUnitAbilityLevel(u,KK_SK3)>0 then
-call UnitMakeAbilityPermanent(u,true,KK_SK3)
-endif
-if GetUnitAbilityLevel(u,KK_SK4)>0 then
-call UnitMakeAbilityPermanent(u,true,KK_SK4)
-endif
-set p=null
-endfunction
 function ADD_CONTENT takes unit u,player p,integer rJ returns nothing
 local integer slot
 local item KA7
 local unit lotteryCircle=null
-call KK_EnsureHeroAbilities(u)
 //注册释放技能事件
 call TriggerRegisterUnitEvent(Tri_skill,u,EVENT_UNIT_SPELL_EFFECT)
 call TriggerRegisterUnitEvent(Tri_skill,u,EVENT_UNIT_SPELL_CAST)
@@ -39984,7 +39897,7 @@ function B1063NeutralDropAction takes nothing returns nothing
 	if killer!=null then
 	set killerOwner=GetOwningPlayer(killer)
 	if GetPlayerController(killerOwner)==MAP_CONTROL_USER then
-	call DisplayTimedTextToPlayer(killerOwner,0,0,8.,"|cff00ff00[野怪掉落] 获得 "+GetObjectName(itemId)+"（价值"+I2S(price)+"）|r")
+	call DisplayTimedTextToPlayer(killerOwner,0,0,8.,"|cff00ff00[野怪掉落] 获得 "+GetObjectName(itemId)+"（价值"+I2S(price)+"），可鼠标双击直接出售|r")
 	endif
 	endif
 	else
@@ -53663,6 +53576,7 @@ local boolean H_9=SubString(HD9,0,3)=="-cm"
 local boolean I49=SubString(HD9,0,9)=="-itemswap"
 local boolean I79=HD9=="-bonus"
 local boolean I89=HD9=="-rollhero" or HD9=="-rh"
+local boolean HALT9=HD9=="-alt"
 local boolean I99=SubString(HD9,0,9)=="-rickroll"
 local boolean Switch=SubString(HD9,0,7)=="-switch"or HD9=="-ok"or HD9=="-no"
 local boolean ID9=HD9=="-tips"
@@ -53789,6 +53703,7 @@ call XL7("JR9",H_9)
 call XL7("JS9",I49)
 call XL7("JT9",I79)
 call XL7("JU9",I89)
+call XL7("JALTPIN",HALT9)
 call XL7("JV9",I99)
 call XL7("JW9",IE9)
 call XL7("JX9",ID9)
@@ -55160,7 +55075,7 @@ call DisplayTimedTextToPlayer(b1060GetTriggerPlayer,0,0,15," ")
 call DisplayTimedTextToPlayer(b1060GetTriggerPlayer,0,0,15," ")
 elseif i==4 then
 call ZZ7(b1060GetTriggerPlayer)
-call DisplayTimedTextToPlayer(b1060GetTriggerPlayer,0,0,15,"|c00FF8000 编号      来源        部位              效果|r\n【22】    祸乱之源  双手            紫光环绕\n【23】    巫妖         双手            大冰球\n【24】    骨法         双手             绿色能量球\n【25】    帕克         双手             紫色能量球\n【26】    帕克         双手             黄色能量球\n【27】    袁加凯       手部、武器  鲜血飞舞\n【28】    水晶室女  双手、武器  蓝色能量球和冰锥")
+call DisplayTimedTextToPlayer(b1060GetTriggerPlayer,0,0,15,"|c00FF8000 编号      来源        部位              效果|r\n【22】    祸乱之源  双手            紫光环绕\n【23】    巫妖         双手            大冰球\n【24】    骨法         双手             绿色能量球\n【25】    帕克         双手             紫色能量球\n【26】    帕克         双手             黄色能量球\n【27】    屠夫         手部、武器  鲜血飞舞\n【28】    水晶室女  双手、武器  蓝色能量球和冰锥")
 call DisplayTimedTextToPlayer(b1060GetTriggerPlayer,0,0,15," ")
 call DisplayTimedTextToPlayer(b1060GetTriggerPlayer,0,0,15," ")
 elseif i==5 then
@@ -61075,44 +60990,11 @@ endloop
 set J[QB9]=true
 return QB9
 endfunction
-// Human candidate pools use an agility fallback which excludes K.
-function QZ9HumanNoK takes integer QA9 returns integer
-local integer QB9
-if QA9==1 then
-set QB9=B891RandomAgilityNoK()
-elseif QA9==2 then
-set QB9=GetUnitPointValueByType(M44[GetRandomInt(1,M74)])
-elseif QA9==3 then
-set QB9=GetUnitPointValueByType(M84[GetRandomInt(1,M94)])
-endif
-return QB9
-endfunction
-function QC9HumanNoK takes integer Q39,integer Q69,integer QA9 returns integer
-local integer QB9=QZ9HumanNoK(QA9)
-if X8 and Q39!=QB9 and Q69!=QB9 then
-return QB9
-endif
-loop
-exitwhen J[QB9]==false and Q39!=QB9 and Q69!=QB9
-set QB9=QZ9HumanNoK(QA9)
-endloop
-set J[QB9]=true
-return QB9
-endfunction
 function QC9ForPlayer takes player p,integer Q39,integer Q69,integer QA9 returns integer
-if GetPlayerController(p)==MAP_CONTROL_USER then
-return QC9HumanNoK(Q39,Q69,QA9)
-endif
 return QC9(Q39,Q69,QA9)
 endfunction
-// Called from every agility slot, but rolls only once per human candidate-pool build.
-// Hit: inject K (hero index 118) in the first available agility slot. Miss/follow-ups: fallback excludes K.
 function QC9HumanFirstAgility takes player p,integer Q39,integer Q69 returns integer
-local integer id=GetPlayerId(p)
-if GetPlayerController(p)!=MAP_CONTROL_USER then
 return QC9(Q39,Q69,1)
-endif
-return QC9HumanNoK(Q39,Q69,1)
 endfunction
 function ShowShop takes boolean b returns nothing
     call ShowUnit(I34,b)
@@ -61181,8 +61063,6 @@ set p=Z7[i]
 set Q39=0
 set Q69=0
 set QL9=0
-set K_POOL_ROLLED[GetPlayerId(p)]=false
-set K_POOL_HIT[GetPlayerId(p)]=false
 if TY7(p)then
 call UnitRemoveAbility(KU4[GetPlayerId(p)],'A331')
 // call UnitRemoveAbility(KU4[GetPlayerId(p)],'A4AL')
@@ -61258,8 +61138,6 @@ set p=A7[i]
 set Q39=0
 set Q69=0
 set QL9=0
-set K_POOL_ROLLED[GetPlayerId(p)]=false
-set K_POOL_HIT[GetPlayerId(p)]=false
 if TY7(p)then
 call UnitRemoveAbility(KU4[GetPlayerId(p)],'A331')
 // call UnitRemoveAbility(KU4[GetPlayerId(p)],'A4AL')
@@ -63550,7 +63428,7 @@ call VV7(bj_FORCE_ALL_PLAYERS,10,"|cFF00FF00已开启杀戮模式，人头数为
     endif
 endif
 if GetTriggerEvalCount(t)==4 then
-    call VV7(bj_FORCE_ALL_PLAYERS,10.,"|c00FF8000存档商店(-archive)「凯哥发福利」每局一次领1-1000金币；「双杰抽属性」每次1000金币无限抽全属性|r")
+    call VV7(bj_FORCE_ALL_PLAYERS,10.,"|c00FF8000选中泉水旁抽奖屋(nAS6)：幸运大抽奖每局一次领1-1000金币；1000抽属性（无限次）每次1000金币抽全属性；梭哈抽属性投入全部金币。-archive仅用于个人存档|r")
     call VV7(bj_FORCE_ALL_PLAYERS,10.," ")
 endif   
 if GetTriggerEvalCount(t)>4 then
@@ -63646,7 +63524,7 @@ set P94=true
 call VV7(bj_FORCE_ALL_PLAYERS,$A,"|cFF00FF00秒活模式开启，英雄死亡后不需要复活时间。|r")
 endif
 if GetTriggerEvalCount(t)==4 then
-    call VV7(bj_FORCE_ALL_PLAYERS,10.,"|cFF00FF00存档商店(-archive)「凯哥发福利」每局一次领1-1000金币；「双杰抽属性」每次1000金币无限抽全属性|r")
+    call VV7(bj_FORCE_ALL_PLAYERS,10.,"|cFF00FF00选中泉水旁抽奖屋(nAS6)：幸运大抽奖每局一次领1-1000金币；1000抽属性（无限次）每次1000金币抽全属性；梭哈抽属性投入全部金币。-archive仅用于个人存档|r")
     call VV7(bj_FORCE_ALL_PLAYERS,10.," ")
 elseif GetTriggerEvalCount(t)>4 then
     call DisableTrigger(t)
@@ -89419,10 +89297,6 @@ function SuijiMode_SetVisualForm takes unit u,integer status,string model return
 local integer h=0
 local integer epoch=0
 if u==null or GetUnitTypeId(u)==0 or status<1 or status>8 or model=="" then
-return
-endif
-// v1.7-K double insurance: never route K hero H0K0 / ult KA04 through scripted visual form swap.
-if GetUnitTypeId(u)==KK_HERO or GetUnitAbilityLevel(u,'KA04')>0 then
 return
 endif
 set h=GetHandleId(u)
@@ -172378,8 +172252,6 @@ local integer Q69=0
 local integer QL9=0
 local integer left=LoadInteger(TABLE_XJ,I97,100)
 local boolean freeRandom=SpecialTitle_HasFreeRandom(p)
-set K_POOL_ROLLED[i]=false
-set K_POOL_HIT[i]=false
 if freeRandom==false and GetPlayerState(p,PLAYER_STATE_RESOURCE_GOLD)<100 then
 call X37(p,"刷新英雄需要100金币")
 set p=null
@@ -173550,7 +173422,8 @@ if id<0 or id>11 then
 return
 endif
 set p=Player(id)
-if GetPlayerController(p)!=MAP_CONTROL_USER then
+// explicit in-match human gate: controller USER, PLAYING slot, real human, not left, not observer.
+if GetPlayerController(p)!=MAP_CONTROL_USER or GetPlayerSlotState(p)!=PLAYER_SLOT_STATE_PLAYING or GetPlayerState(p,PLAYER_STATE_OBSERVER)!=0 or KKServerScore_Left[id] or not KKServerScore_InitialHuman[id] then
 set p=null
 return
 endif
@@ -173645,7 +173518,8 @@ if id<0 or id>11 then
 return
 endif
 set p=Player(id)
-if GetPlayerController(p)!=MAP_CONTROL_USER then
+// explicit in-match human gate: controller USER, PLAYING slot, real human, not left, not observer.
+if GetPlayerController(p)!=MAP_CONTROL_USER or GetPlayerSlotState(p)!=PLAYER_SLOT_STATE_PLAYING or GetPlayerState(p,PLAYER_STATE_OBSERVER)!=0 or KKServerScore_Left[id] or not KKServerScore_InitialHuman[id] then
 set p=null
 return
 endif
@@ -173697,7 +173571,7 @@ call DisplayTimedTextToPlayer(p,0,0,6.,"|cFF00FF00双杰抽属性：本次+"+I2S
 set allyId=0
 loop
 exitwhen allyId>11
-if allyId!=id and B836ArcHuman(allyId) and IsPlayerAlly(Player(allyId),p) then
+if allyId!=id and GetPlayerController(Player(allyId))==MAP_CONTROL_USER and GetPlayerSlotState(Player(allyId))==PLAYER_SLOT_STATE_PLAYING and GetPlayerState(Player(allyId),PLAYER_STATE_OBSERVER)==0 and KKServerScore_InitialHuman[allyId] and not KKServerScore_Left[allyId] and B836ArcHuman(allyId) and IsPlayerAlly(Player(allyId),p) then
 call DisplayTimedTextToPlayer(Player(allyId),0,0,6.,"|cFF00FF00[队友抽属性] "+GetUnitName(hero)+" 本次+"+I2S(gain)+"全属性（累计+"+I2S(ATTR_ROLL_TOTAL[id])+"）|r")
 endif
 set allyId=allyId+1
@@ -173707,6 +173581,96 @@ endloop
 if jackpot then
 call YW7("恭喜发财",5,hero,.03,$FF,$FF,0,$FF)
 endif
+set p=null
+set hero=null
+endfunction
+// v1.8.6-NOK 梭哈抽属性: fully synchronous single settlement. Validate human-in-match, own
+// living non-illusion main hero, gold>=1000; any failure -> 0 charge, 0 gain, 0 random.
+// gold<1000 reject; 1000<=G<5000: n=floor(G/1000), gain=rand(1,2n); G>=5000: b=floor(G/100),
+// gain=rand(max(1,b/5),5b). Roll once, then set gold=0, permanent +gain on STR/AGI/INT from base
+// (no B67/IMBA re-amplification). No GetLocalPlayer branching for random/charge/stats.
+function ALLIN_Core takes integer id returns nothing
+local player p=null
+local unit hero=null
+local integer gold=0
+local integer allN=0
+local integer allB=0
+local integer allLo=0
+local integer allHi=0
+local integer gain=0
+local integer strBase=0
+local integer agiBase=0
+local integer intBase=0
+local integer allyId=0
+if id<0 or id>11 then
+return
+endif
+set p=Player(id)
+// real-path human-in-game gate: controller user, slot playing, not left, initial human;
+// do not rely solely on B836ArcHuman for observer exclusion.
+if GetPlayerController(p)!=MAP_CONTROL_USER or GetPlayerSlotState(p)!=PLAYER_SLOT_STATE_PLAYING or GetPlayerState(p,PLAYER_STATE_OBSERVER)!=0 or KKServerScore_Left[id] or not KKServerScore_InitialHuman[id] then
+if ALLIN_REJECT_LOG[id]<12 then
+set ALLIN_REJECT_LOG[id]=ALLIN_REJECT_LOG[id]+1
+call XOMG_LogEvent("ALLIN_REJECT pid="+I2S(id)+" reason=not_in_game ver="+XOMG_VERSION)
+endif
+call X37(p,"请在局内使用梭哈。")
+set p=null
+return
+endif
+set hero=M7[id]
+if hero==null or GetUnitTypeId(hero)==0 or not UnitAlive(hero) or GetOwningPlayer(hero)!=p or IsUnitIllusion(hero) then
+if ALLIN_REJECT_LOG[id]<12 then
+set ALLIN_REJECT_LOG[id]=ALLIN_REJECT_LOG[id]+1
+call XOMG_LogEvent("ALLIN_REJECT pid="+I2S(id)+" reason=bad_hero ver="+XOMG_VERSION)
+endif
+call X37(p,"请在本人主英雄存活、非幻象时梭哈。")
+set p=null
+set hero=null
+return
+endif
+set gold=GetPlayerState(p,PLAYER_STATE_RESOURCE_GOLD)
+if gold<1000 then
+if ALLIN_REJECT_LOG[id]<12 then
+set ALLIN_REJECT_LOG[id]=ALLIN_REJECT_LOG[id]+1
+call XOMG_LogEvent("ALLIN_REJECT pid="+I2S(id)+" reason=poor gold="+I2S(gold)+" ver="+XOMG_VERSION)
+endif
+call X37(p,"金币不足1000，不可梭哈")
+set p=null
+set hero=null
+return
+endif
+if gold<5000 then
+set allN=gold/1000
+set gain=GetRandomInt(1,2*allN)
+else
+set allB=gold/100
+set allLo=IMaxBJ(1,allB/5)
+set allHi=5*allB
+set gain=GetRandomInt(allLo,allHi)
+endif
+// single roll done; charge all gold once on the same synchronous path, no yield
+call SetPlayerState(p,PLAYER_STATE_RESOURCE_GOLD,0)
+set strBase=GetHeroStr(hero,false)
+set agiBase=GetHeroAgi(hero,false)
+set intBase=GetHeroInt(hero,false)
+call SetHeroStr(hero,strBase+gain,true)
+call SetHeroAgi(hero,agiBase+gain,true)
+call SetHeroInt(hero,intBase+gain,true)
+if ALLIN_OK_LOG[id]<12 then
+set ALLIN_OK_LOG[id]=ALLIN_OK_LOG[id]+1
+call XOMG_LogEvent("ALLIN_OK pid="+I2S(id)+" gold_before="+I2S(gold)+" gain="+I2S(gain)+" ver="+XOMG_VERSION)
+endif
+call DisplayTimedTextToPlayer(p,0,0,6.,"|cFF00FF00梭哈成功：金币已全部投入，三属性各+"+I2S(gain)+"|r")
+set allyId=0
+loop
+exitwhen allyId>11
+// explicit per-ally gate: user controller, slot playing, not left, initial human, ally;
+// observers/leavers are excluded rather than assumed away by B836ArcHuman.
+if allyId!=id and GetPlayerController(Player(allyId))==MAP_CONTROL_USER and GetPlayerSlotState(Player(allyId))==PLAYER_SLOT_STATE_PLAYING and GetPlayerState(Player(allyId),PLAYER_STATE_OBSERVER)==0 and not KKServerScore_Left[allyId] and KKServerScore_InitialHuman[allyId] and IsPlayerAlly(Player(allyId),p) then
+call DisplayTimedTextToPlayer(Player(allyId),0,0,6.,"|cFF00FF00[队友梭哈] "+Q[id]+KZ4[id]+" 梭哈成功，三属性各+"+I2S(gain)+"|r")
+endif
+set allyId=allyId+1
+endloop
 set p=null
 set hero=null
 endfunction
@@ -198503,7 +198467,7 @@ endif
 return SuijiMode_GetPoolSource(poolIndex)
 endfunction
 function SuijiMode_IsRandomPoolExcludedSkill takes integer skill returns boolean
-return skill=='ANic' or skill=='A0O8' or skill=='A0P6' or skill=='A11N' or skill=='A1MI' or skill=='A2SE' or skill=='A00E' or skill=='KA01' or skill=='KA02' or skill=='KA03' or skill=='KA04'
+return skill=='ANic' or skill=='A0O8' or skill=='A0P6' or skill=='A11N' or skill=='A1MI' or skill=='A2SE' or skill=='A00E'
 endfunction
 function SuijiMode_IsRandomRollExcludedSkill takes integer skill returns boolean
 return SuijiMode_IsRandomPoolExcludedSkill(skill) or skill=='A6L3'
@@ -207701,18 +207665,6 @@ if IsUnitType(u,UNIT_TYPE_HERO)==false or IsUnitIllusion(u) or GetUnitTypeId(u)=
 call SuijiTest_DebugUnit(u,"AP3","不是有效真实英雄，返回 type="+I2S(GetUnitTypeId(u)))
 return
 endif
-// K keeps its complete native four-skill kit; do not route it through OMG random skill assignment.
-if GetUnitTypeId(u)==KK_HERO then
-set h=GetHandleId(u)
-if GetUnitPointValue(u)>=KL4 and GetUnitPointValue(u)<=K54 then
-call SaveInteger(L7,h,StringHash("SuijiStableHeroIndex"),GetUnitPointValue(u))
-endif
-call KK_EnsureHeroAbilities(u)
-call NS7(h,"SuijiDone",true)
-call SuijiMode_MarkUnitVisibilityDirty(u)
-call SuijiMode_RestoreBaseHeroSkills(u)
-return
-endif
 // Hold ordinary AI grants until the host's second dialog resolves.
 if B979Mode==0 and GetPlayerController(GetOwningPlayer(u))==MAP_CONTROL_COMPUTER and not SuijiMode_HasForcedPreset(GetPlayerId(GetOwningPlayer(u))) then
 return
@@ -208558,11 +208510,6 @@ local real attackCooldown=1.4
 local real lifeRegen=10.
 local real manaRegen=15.
 if u==null or GetUnitTypeId(u)==0 then
-return
-endif
-// v1.7-K double insurance: K hero H0K0 / ult KA04 never enter the alchemist
-// Chemical Rage chain (no model swap, no vertex color, no blue filter, no ZCRG, no regen).
-if GetUnitTypeId(u)==KK_HERO or GetUnitAbilityLevel(u,'KA04')>0 then
 return
 endif
 set h=GetHandleId(u)
@@ -231552,13 +231499,13 @@ function AHC takes boolean b returns nothing
 	local integer n = 0
 	local real size = 0.01
 	set DownAlt = b
-	if b then
-        if AltShowRefreshRange then
-		    set a = 0.70
-        endif
-        if AltShowAttackRange then
-		    set size = 1
-        endif
+	// camp refresh lines: pinned shows regardless of held Alt / checkbox; tower range still
+	// requires held Alt AND AltShowAttackRange; checkbox variables are never mutated here.
+	if AltRefreshPinned or (b and AltShowRefreshRange) then
+		set a = 0.70
+	endif
+	if b and AltShowAttackRange then
+		set size = 1
 	endif
 	loop
 		call SetLightningColor(NeutralsPosTipLightning[i * 4 + 0], 0.211, 0.87, 0, a)
@@ -231575,6 +231522,21 @@ function AHC takes boolean b returns nothing
 		set n = n + 1
 	exitwhen n > tower_rangeint
 	endloop
+endfunction
+// v1.8.6-NOK -alt: local-only pin toggle for camp refresh lines; flips scalar, redraws via AHC
+// with current Alt state. No handle/timer/frame/effect creation; no combat/vision change.
+function JALTPIN takes nothing returns nothing
+local player jaltLocal=GetLocalPlayer()
+if GetTriggerPlayer()==jaltLocal then
+set AltRefreshPinned=not AltRefreshPinned
+call AHC(DzIsKeyDown(18))
+if AltRefreshPinned then
+call DisplayTimedTextToPlayer(jaltLocal,0,0,4.,"|cFF00FF00-alt：野怪营地刷新范围常驻开启|r")
+else
+call DisplayTimedTextToPlayer(jaltLocal,0,0,4.,"|cFFCC0000-alt：野怪营地刷新范围常驻关闭，恢复按住Alt显示|r")
+endif
+endif
+set jaltLocal=null
 endfunction
 // function Down_M takes boolean b returns nothing
 // 	set DownM = b
@@ -237304,9 +237266,8 @@ set B891ArcMiaoBuyButton[arcPid]=null
 set B901QuitBuyButton[arcPid]=null
 call DialogClear(B836ArcDialog[arcPid])
 set B1031ArchiveButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"当前英雄熟练度 / 修炼境界",0)
-// v1.3: no-archive welfare at the old 双圣 position, attribute directly below; NOT gated by ticket/archive/双圣.
-set B836WelfareButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"凯哥发福利：每局一次领1-1000金币（无存档）",0)
-set B836AttrButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"双杰抽属性：1000金币抽全属性，无限次（10%+20大奖）",0)
+// v1.8.6-NOK: welfare/attr/all-in live in the dedicated 抽奖屋 (opened directly from the hut);
+// this archive dialog keeps only archive systems.
 // Permanent named access must remain usable without the timed archive service.
 if B892MiaoPermanent[arcPid] then
 if B891MiaoWindow() and not B891ArcMiaoReplaced[arcPid] then
@@ -237369,6 +237330,49 @@ set B836ArcRulesButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"规则说�
 call DialogSetMessage(B836ArcDialog[arcPid],arcText)
 call DialogAddButton(B836ArcDialog[arcPid],"关闭",0)
 call DialogDisplay(Player(arcPid),B836ArcDialog[arcPid],true)
+endfunction
+// v1.8.6-NOK 抽奖屋: dedicated dialog, exactly 3 business rows in fixed order; 关闭 is a
+// non-business control. Every action (success or failure) re-displays the same house; only
+// 主动关闭 hides it. Archive query/exchange/claim systems stay in B836ArcDialog untouched.
+function LOTTERY_Open takes integer lotPid returns nothing
+// explicit observer gate in addition to B836ArcHuman; observers never open/consume the house.
+if LOTTERY_DIALOG[lotPid]==null or not B836ArcHuman(lotPid) or GetPlayerState(Player(lotPid),PLAYER_STATE_OBSERVER)!=0 then
+return
+endif
+// DialogClear destroys prior buttons on rebuild; null stale refs before re-adding (event trigger
+// registration itself stays a one-time init, never re-registered here).
+set LOTTERY_RollButton[lotPid]=null
+set LOTTERY_AttrButton[lotPid]=null
+set LOTTERY_AllInButton[lotPid]=null
+set LOTTERY_CloseButton[lotPid]=null
+call DialogClear(LOTTERY_DIALOG[lotPid])
+set LOTTERY_RollButton[lotPid]=DialogAddButton(LOTTERY_DIALOG[lotPid],"幸运大抽奖",0)
+set LOTTERY_AttrButton[lotPid]=DialogAddButton(LOTTERY_DIALOG[lotPid],"1000抽属性（无限次）",0)
+set LOTTERY_AllInButton[lotPid]=DialogAddButton(LOTTERY_DIALOG[lotPid],"梭哈抽属性",0)
+call DialogSetMessage(LOTTERY_DIALOG[lotPid],"抽奖屋\n幸运大抽奖：每局一次领1-1000金币（无存档）。\n1000抽属性（无限次）：每次1000金币抽全属性，10%+20大奖。\n梭哈抽属性：投入全部本局金币，成功后三属性同增。")
+set LOTTERY_CloseButton[lotPid]=DialogAddButton(LOTTERY_DIALOG[lotPid],"关闭",0)
+call DialogDisplay(Player(lotPid),LOTTERY_DIALOG[lotPid],true)
+endfunction
+function LOTTERY_Click takes nothing returns nothing
+local integer lotPid=GetPlayerId(GetTriggerPlayer())
+local button lotClicked=GetClickedButton()
+if not B836ArcHuman(lotPid) or GetPlayerState(Player(lotPid),PLAYER_STATE_OBSERVER)!=0 or GetClickedDialog()!=LOTTERY_DIALOG[lotPid] then
+set lotClicked=null
+return
+endif
+if lotClicked==LOTTERY_CloseButton[lotPid] then
+set lotClicked=null
+return
+elseif lotClicked==LOTTERY_RollButton[lotPid] then
+call WELFARE_Claim(lotPid)
+elseif lotClicked==LOTTERY_AttrButton[lotPid] then
+call ATTR_Core(lotPid)
+elseif lotClicked==LOTTERY_AllInButton[lotPid] then
+call ALLIN_Core(lotPid)
+endif
+// success or failure: re-display the same house; only 关闭 above hides it
+call DialogDisplay(Player(lotPid),LOTTERY_DIALOG[lotPid],true)
+set lotClicked=null
 endfunction
 function B836ArcClaim takes integer arcPid,boolean arcIsBook returns nothing
 local unit arcHero=M7[arcPid]
@@ -239053,11 +239057,6 @@ elseif arcClicked==B836ArcQueryButton[arcPid] then
 call X37(Player(arcPid),B836ArcBalanceText(arcPid))
 elseif arcClicked==B836ArcExchangeButton[arcPid] then
 call B836ArcTrade(arcPid,2)
-elseif arcClicked==B836WelfareButton[arcPid] then
-call WELFARE_Claim(arcPid)
-elseif arcClicked==B836AttrButton[arcPid] then
-call ATTR_Core(arcPid)
-call DialogDisplay(Player(arcPid),B836ArcDialog[arcPid],true)
 elseif arcClicked==B891ArcMiaoBuyButton[arcPid] then
 call B836ArcTrade(arcPid,4)
 elseif arcClicked==B901QuitBuyButton[arcPid] then
@@ -239071,6 +239070,10 @@ set arcClicked=null
 endfunction
 function B836ArcOpenSync takes nothing returns nothing
 call B836ArcOpen(GetPlayerId(DzGetTriggerSyncPlayer()))
+endfunction
+// Hut selection opens the 抽奖屋 directly; archive dialog stays on the -archive entry.
+function LOTTERY_OpenSync takes nothing returns nothing
+call LOTTERY_Open(GetPlayerId(DzGetTriggerSyncPlayer()))
 endfunction
 function B836ArcSelected takes nothing returns nothing
 local player b1060GetTriggerPlayer=GetTriggerPlayer()
@@ -239086,7 +239089,7 @@ endif
 if b1060GetTriggerUnit==B836ArcHut and GetLocalPlayer()==b1060GetTriggerPlayer then
 if TimerGetElapsed(W)>=B837ArcLocalSendAfter then
 set B837ArcLocalSendAfter=TimerGetElapsed(W)+.3
-call DzSyncData("B836AO","")
+call DzSyncData("LOTOPEN","")
 endif
 endif
 set b1060GetTriggerPlayer=null
@@ -239294,6 +239297,8 @@ local trigger arcOpenTrigger=CreateTrigger()
 local trigger arcSelectTrigger=CreateTrigger()
 local trigger arcChatTrigger=CreateTrigger()
 local trigger arcDialogTrigger=CreateTrigger()
+local trigger lotDialogTrigger=CreateTrigger()
+local trigger lotOpenTrigger=CreateTrigger()
 local timer arcLoadTimer=CreateTimer()
 local item arcRulesItem
 local integer arcPid=0
@@ -239325,14 +239330,19 @@ call DzTriggerRegisterSyncData(arcAckTrigger,"B836AA",false)
 call TriggerAddAction(arcAckTrigger,function B836ArcAck)
 call DzTriggerRegisterSyncData(arcOpenTrigger,"B836AO",false)
 call TriggerAddAction(arcOpenTrigger,function B836ArcOpenSync)
+call DzTriggerRegisterSyncData(lotOpenTrigger,"LOTOPEN",false)
+call TriggerAddAction(lotOpenTrigger,function LOTTERY_OpenSync)
 call TriggerAddAction(arcSelectTrigger,function B836ArcSelected)
 call TriggerAddAction(arcChatTrigger,function B836ArcChat)
 call TriggerAddAction(arcDialogTrigger,function B836ArcDialogClick)
+call TriggerAddAction(lotDialogTrigger,function LOTTERY_Click)
 loop
 exitwhen arcPid>=12
 if KKServerScore_InitialHuman[arcPid] then
 set B836ArcDialog[arcPid]=DialogCreate()
 call TriggerRegisterDialogEvent(arcDialogTrigger,B836ArcDialog[arcPid])
+set LOTTERY_DIALOG[arcPid]=DialogCreate()
+call TriggerRegisterDialogEvent(lotDialogTrigger,LOTTERY_DIALOG[arcPid])
 call TriggerRegisterPlayerUnitEvent(arcSelectTrigger,Player(arcPid),EVENT_PLAYER_UNIT_SELECTED,null)
 call TriggerRegisterPlayerChatEvent(arcChatTrigger,Player(arcPid),"-archive",true)
 endif
@@ -239345,6 +239355,8 @@ set arcOpenTrigger=null
 set arcSelectTrigger=null
 set arcChatTrigger=null
 set arcDialogTrigger=null
+set lotDialogTrigger=null
+set lotOpenTrigger=null
 set arcLoadTimer=null
 endfunction
 function B1103SceneFogWarningClear takes nothing returns nothing
@@ -241783,383 +241795,6 @@ set B1023HitDamageTrigger=CreateTrigger()
 call TriggerAddCondition(B1023HitDamageTrigger,Condition(function B1023HitDamage))
 call MHDamageEvent_Register(B1023HitDamageTrigger)
 endif
-endfunction
-// ============================================================================
-// KK_hero_module.j  — 独立新英雄 K（H0K0）四技能局部模块（未集成 / 未写入主工程）
-// 只读审计结论支撑：
-//   - 属性池（blizzard.j ModifyHeroStat + 工程惯例）：
-//       GetHeroAgi(h,false)=基础(等级)+永久轨；GetHeroAgi(h,true)=false+临时轨
-//       SetHeroAgi(h,n,true) 写永久轨绝对值；SK1/SK4 增量走永久轨并自行记账。
-//   - 伤害：B67/B67_DPS 会对技能伤害统一 x IMBA_POWER(=2)；本模块一律不调用 B67，
-//           直接 UnitDamageTarget，物理=NORMAL，魔法=MAGIC，绝不二次 x2。
-//   - 攻击管道 TTA：tier1=英雄/熊灵攻击者、非幻象、真实主命中；WXX=攻击者 YXX=目标 ZXX=原伤害；
-//           B964Synthetic=true 表示合成/反射攻击，本模块跳过。
-//   - 死亡：单一全局 EVENT_PLAYER_UNIT_DEATH（所有真实玩家注册一次），不按英雄重复注册，重生无需再注册。
-// 本模块不修改任何现有函数/数值/UI；接入点见 KK_integration_table.md。
-// ============================================================================
-
-// ----------------------------- 固定 rawcode（当前基线空闲，集成前需重扫） -----------------------------
-
-// ----------------------------- 固定数值（用户最终确认，不再放大） -----------------------------
-
-// ----------------------------- 模块私有状态 -----------------------------
-
-// ============================================================================
-// 小工具
-// ============================================================================
-function KK_IsKHero takes unit u returns boolean
-    return u != null and GetUnitTypeId(u) == KK_HERO
-endfunction
-
-// 取技能等级（1..n，无技能返回0）
-function KK_Lvl takes unit u, integer abil returns integer
-    if u == null then
-        return 0
-    endif
-    return GetUnitAbilityLevel(u, abil)
-endfunction
-
-// 总敏捷快照（true=含永久击杀/抽奖/大招临时全部）
-function KK_SnapAgi takes unit h returns integer
-    return R2I(GetHeroAgi(h, true))
-endfunction
-
-// SK1 每级永久敏捷查表
-function KK_SK1Gain takes integer level returns integer
-    if level <= 1 then
-        return KK_SK1_AGI_L1
-    elseif level == 2 then
-        return KK_SK1_AGI_L2
-    elseif level == 3 then
-        return KK_SK1_AGI_L3
-    endif
-    return KK_SK1_AGI_L4
-endfunction
-
-// SK2 敏捷系数查表
-function KK_SK2Mult takes integer level returns real
-    if level <= 1 then
-        return KK_SK2_MULT_L1
-    elseif level == 2 then
-        return KK_SK2_MULT_L2
-    elseif level == 3 then
-        return KK_SK2_MULT_L3
-    endif
-    return KK_SK2_MULT_L4
-endfunction
-
-// SK3 系数查表
-function KK_SK3Mult takes integer level returns integer
-    if level <= 1 then
-        return KK_SK3_MULT_L1
-    elseif level == 2 then
-        return KK_SK3_MULT_L2
-    elseif level == 3 then
-        return KK_SK3_MULT_L3
-    endif
-    return KK_SK3_MULT_L4
-endfunction
-
-// SK4 持续时间查表
-function KK_SK4Dur takes integer level returns real
-    if level <= 1 then
-        return KK_SK4_DUR_L1
-    elseif level == 2 then
-        return KK_SK4_DUR_L2
-    endif
-    return KK_SK4_DUR_L3
-endfunction
-
-// ============================================================================
-// SK4 大招：临时敏捷（永久轨 + 精确记账；重施先清旧，死亡/到期只扣本次实际增量）
-// ============================================================================
-
-// 移除某英雄当前大招增量（不恢复旧绝对值，只扣记录的实际 bonus）
-function KK_UltRemove takes unit h, integer genCheck returns nothing
-    local integer kkh = GetHandleId(h)
-    local integer inc = LoadInteger(KK_TAB, kkh, KK_KEY_ULT_BONUS)
-    local timer tm = LoadTimerHandle(KK_TAB, kkh, KK_KEY_ULT_TIMER)
-    if LoadInteger(KK_TAB, kkh, KK_KEY_ULT_GEN) != genCheck then
-        // 旧 generation 的定时器：已被新施法取代，只销毁自身，绝不扣新buff
-        if tm != null then
-            call PauseTimer(tm)
-            call DestroyTimer(tm)
-            call RemoveSavedHandle(KK_TAB, kkh, KK_KEY_ULT_TIMER)
-        endif
-        set tm = null
-        return
-    endif
-    if inc > 0 then
-        // 永久轨读-改-写：减去本次实际增量；击杀永久/属性抽奖永久值原样保留
-        call SetHeroAgi(h, GetHeroAgi(h, false) - inc, true)
-    endif
-    if tm != null then
-        call PauseTimer(tm)
-        call DestroyTimer(tm)
-        call RemoveSavedHandle(KK_TAB, kkh, KK_KEY_ULT_TIMER)
-    endif
-    call SaveInteger(KK_TAB, kkh, KK_KEY_ULT_BONUS, 0)
-    call SaveBoolean(KK_TAB, kkh, KK_KEY_ULT_ACTIVE, false)
-    set tm = null
-endfunction
-
-// 到期回调：校验 generation，防止旧 timer 清掉新 buff
-function KK_UltExpire takes nothing returns nothing
-    local timer tm = GetExpiredTimer()
-    local unit h = LoadUnitHandle(KK_TAB, GetHandleId(tm), 1)
-    local integer gen = LoadInteger(KK_TAB, GetHandleId(tm), 2)
-    if h != null then
-        call KK_UltRemove(h, gen)
-    endif
-    set h = null
-    set tm = null
-endfunction
-
-// 大招施法（EVENT_PLAYER_UNIT_SPELL_CAST 中调用）
-function KK_UltCast takes unit h, integer level returns nothing
-    local integer kkh = GetHandleId(h)
-    local integer oldGen
-    local integer S
-    local integer inc
-    local timer tm
-    if level < 1 or level > 3 then
-        return
-    endif
-    // 1) 重施：先精确移除现存临时bonus并失效旧token/旧timer
-    if LoadBoolean(KK_TAB, kkh, KK_KEY_ULT_ACTIVE) then
-        set oldGen = LoadInteger(KK_TAB, kkh, KK_KEY_ULT_GEN)
-        call KK_UltRemove(h, oldGen)
-    endif
-    // 2) 清掉旧buff后，对当前总敏捷采 S（含已保留的永久击杀/抽奖）
-    set S = KK_SnapAgi(h)
-    // 3) temporary bonus = S*level（L1=S, L2=2S, L3=3S；不是2S/3S/4S）
-    set inc = S * level
-    call SetHeroAgi(h, GetHeroAgi(h, false) + inc, true)
-    // 4) 记录本次 bonus 与新 generation
-    set oldGen = LoadInteger(KK_TAB, kkh, KK_KEY_ULT_GEN) + 1
-    call SaveInteger(KK_TAB, kkh, KK_KEY_ULT_BONUS, inc)
-    call SaveInteger(KK_TAB, kkh, KK_KEY_ULT_GEN, oldGen)
-    call SaveBoolean(KK_TAB, kkh, KK_KEY_ULT_ACTIVE, true)
-    set tm = CreateTimer()
-    call SaveTimerHandle(KK_TAB, kkh, KK_KEY_ULT_TIMER, tm)
-    call SaveUnitHandle(KK_TAB, GetHandleId(tm), 1, h)
-    call SaveInteger(KK_TAB, GetHandleId(tm), 2, oldGen)
-    call TimerStart(tm, KK_SK4Dur(level), false, function KK_UltExpire)
-    set tm = null
-endfunction
-
-// ============================================================================
-// SK3 加凯：主动 AoE 魔法，圆心施法者，半径800，单次快照，每目标一次，不穿魔免
-// 真实过滤：存活/非自身/非友军/非魔免/非建筑/非守卫/非无敌；装饰(doodad)非单位天然排除
-// ============================================================================
-function KK_SK3_Filter takes nothing returns boolean
-    local unit t = GetFilterUnit()
-    if t == null or not UnitAlive(t) then
-        return false
-    endif
-    if t == KK_SK3_CASTER then
-        return false
-    endif
-    // 排友军；只打敌方
-    if IsUnitAlly(t, GetOwningPlayer(KK_SK3_CASTER)) then
-        return false
-    endif
-    // 魔免跳过（魔法伤害，不自创穿魔免）
-    if IsUnitType(t, UNIT_TYPE_MAGIC_IMMUNE) then
-        return false
-    endif
-    // 排建筑
-    if IsUnitType(t, UNIT_TYPE_STRUCTURE) then
-        return false
-    endif
-    // 排守卫（工程守卫以 A04R 技能标记）
-    if GetUnitAbilityLevel(t, 'A04R') > 0 then
-        return false
-    endif
-    // 排无敌（工程计数无敌 IsUnitInvulncerable；直调 SetUnitInvulnerable 不经计数，引擎本就不掉血）
-    if IsUnitInvulncerable(t) then
-        return false
-    endif
-    return true
-endfunction
-
-function KK_SK3_Apply takes nothing returns nothing
-    local unit t = GetEnumUnit()
-    if t == null or not UnitAlive(t) then
-        return
-    endif
-    if IsUnitAlly(t, GetOwningPlayer(KK_SK3_CASTER)) then
-        return
-    endif
-    if IsUnitType(t, UNIT_TYPE_MAGIC_IMMUNE) then
-        return
-    endif
-    if IsUnitType(t, UNIT_TYPE_STRUCTURE) then
-        return
-    endif
-    if GetUnitAbilityLevel(t, 'A04R') > 0 then
-        return
-    endif
-    if IsUnitInvulncerable(t) then
-        return
-    endif
-    // 直接魔法伤害，不经B67，不 x2；吃工程真实魔抗；魔免已在过滤层排除
-    call UnitDamageTarget(KK_SK3_CASTER, t, I2R(KK_SK3_DAMAGE), true, true, ATTACK_TYPE_HERO, DAMAGE_TYPE_MAGIC, WEAPON_TYPE_WHOKNOWS)
-    set t = null
-endfunction
-
-function KK_JiaKaiCast takes unit caster, integer level returns nothing
-    local integer S
-    if level < 1 or level > 4 then
-        return
-    endif
-    // 一次施放只快照一次；S=当前含临时总敏捷（大招期间也按当前总敏捷）
-    set S = KK_SnapAgi(caster)
-    set KK_SK3_DAMAGE = S * KK_SK3Mult(level)
-    set KK_SK3_CASTER = caster
-    call GroupClear(KK_SK3_GROUP)
-    call GroupEnumUnitsInRange(KK_SK3_GROUP, GetUnitX(caster), GetUnitY(caster), KK_SK3_RADIUS, Condition(function KK_SK3_Filter))
-    call ForGroup(KK_SK3_GROUP, function KK_SK3_Apply)
-    call GroupClear(KK_SK3_GROUP)
-    set KK_SK3_CASTER = null
-    set KK_SK3_DAMAGE = 0
-endfunction
-
-// ============================================================================
-// SK2：有效普攻 20% 概率额外物理 = 总敏捷 x 系数；不改原攻击倍率，防递归，不 x2
-// 宿主契约：只挂真实主命中（管道 tier1，英雄/熊灵、非幻象）；合成/反射攻击 B964Synthetic 跳过。
-// 由攻击管道 tier1 消费者调用（WXX=攻击者 YXX=目标 ZXX=已落地原伤害）
-// ============================================================================
-function KK_HitPhys takes nothing returns nothing
-    local unit attacker
-    local unit target
-    local integer level
-    local integer S
-    local real bonus
-    if KK_SuppressHit then
-        return
-    endif
-    // 合成/反射攻击不触发（工程真实旗标 B964Synthetic）
-    if B964Synthetic then
-        return
-    endif
-    // WXX=攻击者 YXX=目标：攻击管道全局（接入方工程已存在，见接入表）
-    set attacker = WXX
-    set target = YXX
-    if not KK_IsKHero(attacker) then
-        return
-    endif
-    set level = KK_Lvl(attacker, KK_SK2)
-    if level == 0 or target == null or not UnitAlive(target) then
-        return
-    endif
-    // 仅敌方有效目标
-    if not IsUnitEnemy(target, GetOwningPlayer(attacker)) then
-        return
-    endif
-    if GetRandomInt(1, 100) > KK_SK2_CHANCE then
-        return
-    endif
-    set S = KK_SnapAgi(attacker)
-    set bonus = I2R(S) * KK_SK2Mult(level)
-    // 防递归：本模块嵌套伤害置位，本消费者直接返回；原伤害ZXX绝不修改
-    set KK_SuppressHit = true
-    call UnitDamageTarget(attacker, target, bonus, true, true, ATTACK_TYPE_HERO, DAMAGE_TYPE_NORMAL, WEAPON_TYPE_WHOKNOWS)
-    set KK_SuppressHit = false
-endfunction
-
-// ============================================================================
-// 全局死亡处理（单一全局 death trigger；SK1 击杀归因 + SK4 死亡清理）
-// 只认 GetKillingUnit 直接击杀；排助攻/野怪/召唤/幻象；victim 句柄去重。
-// ============================================================================
-function KK_DeathAction takes nothing returns nothing
-    local unit dying = GetTriggerUnit()
-    local unit killer = GetKillingUnit()
-    local integer vh
-    // —— SK4 死亡清理（dying 是我们自己）：remove current temporary bonus，generation失效 ——
-    if KK_IsKHero(dying) then
-        set vh = GetHandleId(dying)
-        if LoadBoolean(KK_TAB, vh, KK_KEY_ULT_ACTIVE) then
-            call KK_UltRemove(dying, LoadInteger(KK_TAB, vh, KK_KEY_ULT_GEN))
-        endif
-    endif
-    // —— SK1 击杀归因：killer=真实K，victim=敌方真实英雄 ——
-    if killer == null or not KK_IsKHero(killer) then
-        return
-    endif
-    if dying == null then
-        return
-    endif
-    // victim 去重（防御性：防同次事件/重复注册重复加敏捷）
-    set vh = GetHandleId(dying)
-    if LoadBoolean(KK_TAB, vh, KK_KEY_VICTIM_DONE) then
-        return
-    endif
-    call SaveBoolean(KK_TAB, vh, KK_KEY_VICTIM_DONE, true)
-    // 目标必须是真实英雄：英雄类型、非幻象、非召唤物
-    if not IsUnitType(dying, UNIT_TYPE_HERO) then
-        return
-    endif
-    if IsUnitIllusion(dying) then
-        return
-    endif
-    if IsUnitType(dying, UNIT_TYPE_SUMMONED) then
-        return
-    endif
-    // 必须是敌方（排除友军/中立误伤）
-    if not IsUnitEnemy(dying, GetOwningPlayer(killer)) then
-        return
-    endif
-    // 助攻不计：只认 GetKillingUnit 直接归属；野怪非英雄已被上面排除
-    call SetHeroAgi(killer, GetHeroAgi(killer, false) + KK_SK1Gain(KK_Lvl(killer, KK_SK1)), true)
-    set dying = null
-    set killer = null
-endfunction
-
-// ============================================================================
-// 施法分发（SK3 / SK4），挂在全局 SPELL_CAST
-// ============================================================================
-function KK_CastAction takes nothing returns nothing
-    local unit caster = GetTriggerUnit()
-    local integer abid = GetSpellAbilityId()
-    local integer level
-    if not KK_IsKHero(caster) then
-        return
-    endif
-    if abid == KK_SK3 then
-        set level = KK_Lvl(caster, KK_SK3)
-        call KK_JiaKaiCast(caster, level)
-    elseif abid == KK_SK4 then
-        set level = KK_Lvl(caster, KK_SK4)
-        call KK_UltCast(caster, level)
-    endif
-    set caster = null
-endfunction
-
-// ============================================================================
-// 初始化：单一全局 death trigger（所有真实玩家注册一次）；不按英雄注册，重生无需再注册
-// ============================================================================
-function KK_Init takes nothing returns nothing
-    local integer p = 0
-    set KK_SK3_GROUP = CreateGroup()
-    set KK_CastTrigger = CreateTrigger()
-    loop
-        exitwhen p > 11
-        call TriggerRegisterPlayerUnitEvent(KK_CastTrigger, Player(p), EVENT_PLAYER_UNIT_SPELL_CAST, null)
-        set p = p + 1
-    endloop
-    call TriggerAddAction(KK_CastTrigger, function KK_CastAction)
-    // 单一全局死亡触发：所有真实玩家注册一次
-    set KK_DeathTrigger = CreateTrigger()
-    set p = 0
-    loop
-        exitwhen p > 11
-        call TriggerRegisterPlayerUnitEvent(KK_DeathTrigger, Player(p), EVENT_PLAYER_UNIT_DEATH, null)
-        set p = p + 1
-    endloop
-    call TriggerAddAction(KK_DeathTrigger, function KK_DeathAction)
-    // SK2 挂攻击管道 tier1（真实主命中/英雄攻击者）；接入方在地图初始化后调用一次
-    call RegisterUnitAttackEvent("KK_HitPhys", 1)
 endfunction
 
 function main takes nothing returns nothing
@@ -250759,10 +250394,9 @@ call B921EmojiInit()
 set tt = null
 call B946DetectInit()
 call B957Init()
-call KK_Init()
 endfunction
 function config takes nothing returns nothing
-call SetMapName("OMG IMBA v1.7.1-K-W3IFix")
+call SetMapName("OMG IMBA v1.8.6-NOK")
 call SetMapDescription("随机技能，强化AI，极限对抗。\n作者：小生我怕怕\n按F9查看地图信息。")
 call SetPlayers($A)
 call SetTeams($A)

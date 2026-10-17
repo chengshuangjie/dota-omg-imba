@@ -41,12 +41,12 @@ gate('G5-bottle', '魔瓶族排除池/来源标记/PICKUP转换SU[XZ]/BOTTLE_FIX
 gate('G6-preview', 'SuijiTavern_Fill 入 logical; 同步生成器存在',
      'SuijiTavern_Fill' in j and 'OM7(heroHandle,mark+"Choice"+I2S(i)+"Skill")' in j
      and os.path.exists(os.path.join(ROOT,'tools','transform','sync_preview_ui.py')))
-# 7 K normal pool: 50% test injection revoked; H0K0 rolls naturally in shared agility pool
-gate('G7-k-normal', 'H0K0回归普通敏捷池：K_POOL/50%骰/NoK排除全部0；K24[40]成员x1；四技能R1X保留',
-     'K_POOL_ROLLED' not in j and 'K_POOL_HIT' not in j and 'K_POOL_ROLL' not in j
-     and 'B891RandomAgilityNoK' not in j and 'QC9HumanNoK' not in j and 'QZ9HumanNoK' not in j
-     and j.count("set K24[40]='H0K0'")==1
-     and "call R1X('H0K0',0,'KA01','KA02','KA03','KA04')" in j)
+# 7 NOK: hero K fully removed; zero residue of rawcodes/module/NoK wrappers/dead flags
+gate('G7-nok-zero', 'NOK：H0K0/KA01-04/KK模块/K_POOL/NoK包装/R1X注册全部0残留',
+     all(t not in j for t in ['H0K0','KA01','KA02','KA03','KA04','KK_HERO','KK_Init',
+                              'K_POOL_ROLLED','K_POOL_HIT','B891RandomAgilityNoK',
+                              'QC9HumanNoK','QZ9HumanNoK'])
+     and "call R1X('H0K0'" not in j)
 # 8 version + w3i
 gate('G8-version', 'XOMG_VERSION/SetMapName v1.8',
      'XOMG_VERSION="v1.8-integrated"' in j and 'SetMapName("OMG IMBA v1.8-Integrated")' in j)
@@ -71,22 +71,12 @@ gate('G11-pool', '掉落EARLY(1..1000)/LATE(无cap)双池/600s切换/非pawnable
      and 'elapsedReal>=600.' in j and 'set elapsedReal=TimerGetElapsed(W)' in j and 'IsItemPawnable(probe)==false' in j
      and 'DROP_POOL_INIT' in j and 'early_count=' in j and 'late_count=' in j
      and 'B1063CheapCount<=0' not in j)
-# 12 K portrait embedded CAMS (runtime MDX structural)
-_mdxp = os.path.join(ROOT,'assets','Kv2','model','K_final_v2.mdx')
-_mb = open(_mdxp,'rb').read()
-_pos=4;_vers=0;_modl='';_cams=0;_close=True
-while _pos+8<=len(_mb):
-    _t=_mb[_pos:_pos+4];_sz=int.from_bytes(_mb[_pos+4:_pos+8],'little')
-    if _pos+8+_sz>len(_mb):_close=False;break
-    if _t==b'VERS':_vers=int.from_bytes(_mb[_pos+8:_pos+12],'little')
-    if _t==b'MODL' and _sz>=80:_modl=_mb[_pos+8:_pos+88].split(b'\0')[0].decode('ascii','ignore')
-    if _t==b'CAMS' and _sz>=120:_cams+=1
-    _pos+=8+_sz
-_portrait_ok = (_mb[:4]==b'MDLX' and _close and _pos==len(_mb) and _vers==800
-                and _modl=='K_Hero' and _cams==1 and len(_mb)==54157
-                and hashlib.sha256(_mb).hexdigest().startswith('e42041389591493b'))
-gate('G12-portrait', 'K主模型内嵌CAMS=1/VERS800/K_Hero/闭合/SHA e4204138',
-     _portrait_ok, f"len={len(_mb)} vers={_vers} modl={_modl} cams={_cams}")
+# 12 NOK: K-only asset directories/files physically removed; no K model/button on disk
+_g12 = (not os.path.exists(os.path.join(ROOT,'assets','K'))
+        and not os.path.exists(os.path.join(ROOT,'assets','Kv2'))
+        and 'K_final_v2.mdx' not in j and 'K_final_portrait.mdx' not in j
+        and 'war3mapimported\\K\\' not in j)
+gate('G12-nok-assets', 'NOK：assets/K、assets/Kv2 物理删除，jass无K模型/按钮引用', _g12)
 
 # AI marker guards (E1/E2/E4/E5-E8); shop purchase / one-click / courier slot / bear / Roshan / human DROP_SELL not gated
 gate('G13-ai-guard','AI标记物保护：GWF选择器/GXF拾取攻击/IHG拾取/Y9F/YDF/YUF/YBE/LDF 全部marker skip，商店购买不拦',

@@ -1,0 +1,58 @@
+﻿class,layer,target,action,evidence,keep_note
+DELETE/EDIT,jass-globals,"lines 3-37 v1.4-K hero K module globals banner + KK_HERO/KK_SK1..4/AGI/MULT/RADIUS/DUR constants, KK_TAB, KK_SuppressHit, KK_CastTrigger, KK_DeathTrigger, KK_SK3_GROUP/CASTER/DAMAGE, KK_KEY_*",delete,src/war3map.j:3-37,keep line 38+ KK_RELEASE_VERSION (general log tag)
+DELETE/EDIT,jass-globals,"K_POOL_ROLLED / K_POOL_HIT boolean arrays (decl 410-411, resets 61184/85, 61261/62, 172381/82)",delete,src/war3map.j:409-411 + 6 reset lines,dead flags in a2c6673: never set/read; no 50% roll code present
+DELETE/EDIT,jass-globals,XOMG_VERSION constant string v1.8.5-SYNCF001 (line 754),edit,src/war3map.j:754,bump to v1.8.6-NOK; verify gate updated accordingly
+DELETE/EDIT,jass-module,"KK_EnsureHeroAbilities (38186-38209) + call sites ADD_CONTENT(38214), ApplyUnit(207710)",delete,"src/war3map.j:38186-38209,38214,207710",
+DELETE/EDIT,jass-module,KK_IsKHero/KK_Lvl/KK_SnapAgi/KK_SK1Gain/KK_SK2Mult/KK_SK3Mult/KK_SK4Dur/KK_UltRemove/KK_UltExpire/KK_UltCast/KK_SK3_Filter/KK_SK3_Apply/KK_JiaKaiCast/KK_HitPhys/KK_DeathAction/KK_CastAction/KK_Init (241810-242163),delete,src/war3map.j:241787 banner .. 242163 endfunction,whole KK hero module; main call KK_Init() at 250762 removed
+DELETE/EDIT,jass-module,main call call KK_Init() (250762),delete,src/war3map.j:250762,
+DELETE/EDIT,jass-guard,SuijiMode_SetVisualForm K/KA04 early-return guard (89424-89427),simplify,src/war3map.j:89424-89427,remove K condition; function retained for all other forms
+DELETE/EDIT,jass-guard,SuijiMode_ChemicalRageCompatApply K/KA04 guard (208563-208567),simplify,src/war3map.j:208563-208567,remove K condition; alchemist chain retained
+DELETE/EDIT,jass-guard,SuijiMode_IsRandomPoolExcludedSkill KA01..KA04 literals (198506),edit,src/war3map.j:198506,drop 4 KA entries; keep ANic/A0O8/... list
+DELETE/EDIT,jass-guard,SuijiMode_ApplyUnit K bypass block (207704-207715),delete,src/war3map.j:207704-207715,K no longer reaches this path
+DELETE/EDIT,jass-register,"R1W: call R1X(H0K0,0,KA01,KA02,KA03,KA04) (17019)",delete,src/war3map.j:17019,
+DELETE/EDIT,jass-table,LX7 stable hero row 118: K34[118]/MI4[118]/K64[118]/MH4[118]=BTNK_Hero/XY7/XU7 + MJ4..MO4 clears (31426-31436),delete,src/war3map.j:31426-31436,
+DELETE/EDIT,jass-table,V5 skill row 118: HM4[118]=KA01/HN4[118]=KA02/HO4[118]=KA03/HP4[118]=KA04 (18789-18792),delete,src/war3map.j:18789-18792,
+DELETE/EDIT,jass-table,SUIJI_POOL_SOURCE[118]=18 (31456),delete,src/war3map.j:31456,scanned by native-pool enumeration KL4..SUIJI_POOL_MAX; must clear
+DELETE/EDIT,jass-table,K54=118 bound (31437),edit,src/war3map.j:31437,TAIL-SHRINK proposal: K54=117 (K was tail of stable bound); awaiting audit
+DELETE/EDIT,jass-pool,"K24[40]=H0K0 (31529), K_4=40 (31530)",edit,src/war3map.j:31529-31530,delete row; K_4=39; K24[39]=HMD0 Miao retained
+DELETE/EDIT,jass-pool,B891RandomAgilityNoK (25022-25024),refactor/delete,src/war3map.j:25020-25024,merged into plain B891RandomAgility after K removal
+DELETE/EDIT,jass-pool,"QZ9HumanNoK (61079-61089), QC9HumanNoK (61090-61101)",refactor/delete,src/war3map.j:61079-61101,reused by all human slots; collapse onto QZ9/QC9 (QA9 2/3 branches identical)
+DELETE/EDIT,jass-pool,QC9ForPlayer human/AI split (61102-61107),refactor,src/war3map.j:61102-61107,always QC9 after merge
+DELETE/EDIT,jass-pool,QC9HumanFirstAgility (61108-61116),refactor,src/war3map.j:61108-61116,"human agility slot -> QC9(...,1); call sites 61206/61229/61241 + reroll path"
+DELETE/EDIT,slk,"UnitData.slk Y3339 H0K0 hero block (model K_Hero, art=BTNK_Hero, scale120)",delete,src/data/Units/UnitData.slk,
+DELETE/EDIT,slk,"UnitUI.slk H0K0 block (BTNK_Hero/DISBTNK_Hero, Name=凯哥)",delete,src/data/Units/UnitUI.slk,
+DELETE/EDIT,slk,"UnitBalance.slk H0K0 block (agi primary, agi+3)",delete,src/data/Units/UnitBalance.slk,
+DELETE/EDIT,slk,UnitAbilities.slk H0K0 block (KA01..KA04),delete,src/data/Units/UnitAbilities.slk,
+DELETE/EDIT,slk,"UnitWeapons.slk H0K0 block (normal attack, no missile, range128)",delete,src/data/Units/UnitWeapons.slk,
+DELETE/EDIT,slk,AbilityData.slk Y6659-6662 KA01..KA04 blocks,delete,src/data/Units/AbilityData.slk,
+DELETE/EDIT,campaign,CampaignUnitStrings.txt [H0K0] block (name/tooltip/displayname/model K_Hero),delete,src/data/Units/CampaignUnitStrings.txt,
+DELETE/EDIT,campaign,CampaignAbilityStrings.txt [KA01]猎手本能/[KA02]捷刃/[KA03]加凯/[KA04]凯哥牛逼了 blocks,delete,src/data/Units/CampaignAbilityStrings.txt,
+DELETE/EDIT,campaign,exact K-family buttons BTNK_Hero/Marksmanship/CriticalStrike/BattleRoar/ChemicalRage + DIS* in both txt,delete,src/data/Units/Campaign*.txt,generic BTNKeep/BTNKeeper*/BTNKelThuzad/BTNKiljaedin/BTNKnight/BTNKobold*/BTNKotoBeast/BTNKrobWitchcraft KEPT
+DELETE/EDIT,imp,war3mapimported\K\K_final.mdx,delete,src/war3map.imp,
+DELETE/EDIT,imp,war3mapimported\K\K_final_portrait.mdx,delete,src/war3map.imp,
+DELETE/EDIT,imp,war3mapimported\K\K_final_v2.mdx,delete,src/war3map.imp,
+DELETE/EDIT,imp,war3mapimported\K\K_body.blp,delete,src/war3map.imp,
+DELETE/EDIT,imp,ReplaceableTextures\CommandButtons\BTNK_Hero.blp / Marksmanship / CriticalStrike / BattleRoar / ChemicalRage,delete,src/war3map.imp,
+DELETE/EDIT,imp,ReplaceableTextures\CommandButtonsDisabled\DISBTNK_Hero.blp + 4 DIS variants,delete,src/war3map.imp,
+DELETE/EDIT,assets,"assets/K/K_body.blp, K_final.mdx, K_final_portrait.mdx",delete,assets/K/,
+DELETE/EDIT,assets,"assets/Kv2/model/K_final_v2.mdx, K_final_portrait.mdx; textures/K_body.blp; buttons/ BTNK* + DISBTNK* (13 files)",delete,assets/Kv2/,whole directory; assets/loading-screen kept
+DELETE/EDIT,tools,build.ps1 K asset copy/validate gates + sourceEntries K entries,edit,tools/build/build.ps1,drop K branches; keep all non-K gates; NOK label assert exact 24B
+DELETE/EDIT,tools,"verify_v17.ps1 K-existence gates (KA01..04 templates, KK chain, K assets, K test pool) -> replace with zero-residue + pool-completeness gates",edit,tools/build/verify_v17.ps1,retain title/sven/lion/ATTR/bottle/drops/double-click/miao/syncfix smoke checks
+DELETE/EDIT,tools,verify.ps1 legacy v1.6 gate K assertions in final $passed expression,edit,tools/build/verify.ps1,replace K-existence with K-zero-residue; retain all non-K gates
+DELETE/EDIT,tools,tools/transform/build_k_hero.py K SLK generator,delete,tools/transform/build_k_hero.py,"historical K-only generator, never invoked by build.ps1"
+DELETE/EDIT,tools,tools/transform/audit_v18.py G7-k-normal K gate,edit,tools/transform/audit_v18.py,remove K gate; keep other gates
+DELETE/EDIT,tools,tools/transform/sync_preview_ui.py samples H0K0: None line 88,edit,tools/transform/sync_preview_ui.py,remove single sample entry
+DELETE/EDIT,tools,config/tool-paths-v14k.json (v1.4-K legacy output path),delete,config/tool-paths-v14k.json,
+DELETE/EDIT,docs,"README.md K sections: line 36 v1.4-K hero, line 37 v1.6-K VisualFix, 95-106 v1.7-K historical block, 111 K真人50% retention mention, 126 K回归普通敏捷池, 133-134 K内嵌肖像",edit,README.md,"keep line 34 四英雄改名(含炸弹人→凯哥 general), 凯哥发福利 general system"
+DELETE/EDIT,reports,"reports/audit-v17-K-VisualSkillFix.html, reports/k-portrait-merge.json, reports/verification-v1.6-K-CompleteHero.json",delete(strip),reports/,K-only historical artifacts; pending audit confirmation
+DELETE/EDIT,reports,reports/noskin19-unchanged-assets.json K asset rows,edit,reports/noskin19-unchanged-assets.json,strip K entries; keep non-K hash record
+DELETE/EDIT,w3i,"two 24-byte ASCII slots @0x0C and @0xEA -> exact 24B ""OMG IMBA v1.8.6-NOK"" + 5 spaces padding; assert len==24; all other Force/player bytes identical to noskin19",edit,src/war3map.w3i,806B size preserved; no other byte touched
+KEEP,"HMD0 喵刀 hero (K24[39], stable index 117, SUIJI_POOL_SOURCE[117]=17, B891RandomHeroRange 117-skip)",KEEP,tail-shrink K54=117 leaves 117 intact,,
+KEEP,H00K 凯哥/炸弹人 (general renamed hero; sync_hero_visible_names_v11.py),KEEP,different rawcode; explicitly protected,,
+KEEP,KK_GAME_DIFFICULTY/KK_DIFFICULTY_*/KKGameTips_*/KK_AIMAXZB_EQUIPPED/AIMAXZB_*,KEEP,"general difficulty/tips/AI-item systems, prefix collision only",,
+KEEP,"KK_RELEASE_VERSION=""KK_B1122"" general match/sync/order log tag",KEEP,"used by B1037/B1111/B1120 logging, not hero K",,
+KEEP,"YY7(""我才是袁加凯！"") and UpdateLog 袁加凯 mentions",KEEP,"屠夫 rename, general hero",,
+KEEP,"凯哥发福利 welfare button, ATTR双杰抽属性, 斯神威神, 莱恩, 魔瓶族, 野怪掉落, 双击直售, 喵刀直选, syncfix chain, XOMG1, IMBA layer",KEEP,all non-K systems; semantic/hash preserved,,
+KEEP,generic BTNKeep/BTNKeeperGhostBlue/BTNKelThuzad/BTNKiljaedin/BTNKnight/BTNKobold*/BTNKotoBeast/BTNKrobWitchcraft buttons,KEEP,unrelated native UI,,
+KEEP,unrelated arrays indexed 118: HW4/HX4/HY4/HZ4 acidbomb-thunderbolt-bloodlust-auravamp; HR4..HU4 A6B7..A6CD; T64 title; h7/UK7 terrain remap,KEEP,"different indexing schemes, not K row",,
+RENAME,"SetMapName + XOMG_VERSION -> ""OMG IMBA v1.8.6-NOK"" / ""v1.8.6-NOK""",CHANGED,"legacy v1.7.1-K-W3IFix label NOT retained; player-visible name carries NOK tag only; w3i keeps 806B/2x24B NOK label",,

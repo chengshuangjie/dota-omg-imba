@@ -85,7 +85,6 @@ fill_logical = ('SuijiTavern_Fill' in j and 'OM7(heroHandle,mark+"Choice"+I2S(i)
 samples = {'A1WH': phys.get('A1WH') or alt.get('A1WH'),
            'A095': phys.get('A095') or alt.get('A095'),
            'A088': phys.get('A088') or alt.get('A088'),
-           'H0K0': None,
            'A0AY': phys.get('A0AY') or alt.get('A0AY')}  # butcher-ish sample placeholder
 
 os.makedirs(os.path.dirname(REPORT_CSV), exist_ok=True)

@@ -1,8 +1,8 @@
 ﻿{
-    "map":  "D:\\dota\\DOTA-OMG-IMBA-轻量化\\maps\\build\\OMG-IMBA-v1.8.5-SYNCF001-repro.w3x",
-    "time":  "2026-10-17T21:32:22.5304174+08:00",
+    "map":  "D:\\dota\\DOTA-OMG-IMBA-NOK-worktree\\maps\\build\\DOTA-OMG-IMBA-v1.8.6-NOK.w3x",
+    "time":  "2026-10-18T01:45:47.3960596+08:00",
     "passed":  true,
-    "total":  118,
+    "total":  80,
     "failedCount":  0,
     "failures":  ""
 }

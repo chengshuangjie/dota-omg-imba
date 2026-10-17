@@ -33,8 +33,7 @@ reports/                模式/资源/SLK/皮肤/充值链/XOMG1/IMBA 审计报�
 - **掉落实机诊断**：开局把`DROP_POOL_INIT`、前若干次`DROP_ROLL`及所有`DROP_OK`写入`1-miao-error\imba-runtime.text`；游戏内输入`-droptest`可显示池状态并生成测试装备，该命令只用于测试、不写存档。
 - **四英雄改名**（类型名、专有名、选择/复活/详细说明等玩家可见字段同步，rawcode/模型/技能不动）：屠夫→袁加凯、影魔→程双杰、炼金术士→土鸡、炸弹人→凯哥。
 - **技能 UI 实际值**：`CampaignAbilityStrings.txt` 与运行规则同步；例如沟壑显示并结算 220/320/420/520 伤害、2/2.5/3/3.5 秒眩晕、16 秒地形，施法距离仍为 1400。
-- **v1.4-K 独立新英雄 K（H0K0）**：近战敏捷原创英雄，四技能 KA01 猎手本能（击杀真实英雄永久敏捷+1/2/3/4，同次死亡去重）、KA02 捷刃（有效普攻20%额外物理=总敏捷×1/1.5/2/2.5，合成/反射不触发、防递归、不吃 IMBA×2）、KA03 加凯（800半径、当前总敏捷快照×2/3/4/5 魔法伤害、CD10、每目标一次，排友军/死亡/建筑/守卫A04R/魔免/无敌）、KA04 凯哥牛逼了（15/17/20秒、CD80/65/50、临时+S/2S/3S，重施先清旧、generation 防旧timer、死亡/到期只扣本次增量、永久成长保留）。模块直伤直减，不走 B67/XOMG 通用 IMBA 放大。
-- **版本标识 v1.6-K-VisualFix**：运行标识 `XOMG_VERSION="v1.6-K-VisualFix"`，`SetMapName("OMG IMBA v1.6-K-Visible")`，W3I 内置地图名同步。保留 v1.5 的能量圈原抽奖、独立“凯哥发福利”；K（H0K0）回归普通敏捷候选池自然抽取，无权重/保底/特殊排除。同时把K从加载诊断对象恢复为完整固定四技能英雄：`H0K0` 的 `modelScale` 从1.2校正为120，英雄选择头像不再使用黄色加点占位图，新增带相机的 `K_final_portrait.mdx`，KA01–KA04采用标准英雄学习等级并在创建/复活时恢复可见；K不再进入通用OMG随机技能分配。连续SLK、`K_Hero`模型名和1.24兼容BLP修复继续保留。
+- **v1.8.6-NOK（当前版本）**：已物理移除自定义英雄 K（H0K0 / KA01–KA04 / KK 模块 / K 资源与 NoK 包装），运行标识 `XOMG_VERSION="v1.8.6-NOK"`，`SetMapName("OMG IMBA v1.8.6-NOK")`，W3I 两个固定 24 字节名称槽均为 `OMG IMBA v1.8.6-NOK`（19 字符 + 5 空格）。稳定英雄池尾部收缩：K54=117（1..117 不重编号，HMD0=117 喵刀保留），敏捷池 K_4=39，扩展 OMG 技能池 119..134 稀疏规则不动。历史 K 版本说明仅作证据保留于下文版本小节，活动源码/构建输入/assets/tools/包内零 K 残留。
 - 玩家可见作者统一为“小生我怕怕”；最终胜利致谢固定为“感谢小生我怕怕、小生我看破、小生我顿悟”。
 - 物理移除车轮战、30 波防守、后加皮肤资源与运行逻辑。
 
@@ -92,23 +91,17 @@ PJASS 仅报当前 `location_m5 没有初始化`，为基图既有项，已在 `
 - `tools/transform` 是历史可复现脚本，不作为日常构建入口。
 - 达拉然缓存补丁、平台缓存与历史失败充值目录未带入本工程。
 
-## 版本标识 v1.7-K-VisualSkillFix（独立构建，不覆盖旧部署）
+## 历史版本：v1.7-K-VisualSkillFix（已在 v1.8.6-NOK 整体移除，仅作证据留存）
 
-- 运行标识 `XOMG_VERSION="v1.7-K-VisualSkillFix"`，`SetMapName("OMG IMBA v1.7-K-VisualSkillFix")`，W3I 内置地图名与 F9 全局描述同步；独立文件，不覆盖 v1.6-K-Visible/noskin5。
-- 四技能改为克隆本图已实机可学的原生母本，四个 basecode 互异、四个 order 互异，禁用 Aamk×2 / ANcl×2，不使用 ANcl/AOwk/Achl：
-  - KA01 猎手本能（被动）← AHad 虔诚光环母本，reqLevel1、4 级。
-  - KA02 捷刃（被动）← AEev 闪避母本，reqLevel1、4 级。
-  - KA03 加凯（无目标主动 AOE）← AHds 神圣护盾母本，order=divineshield，reqLevel1、4 级、CD10×4、cost0。
-  - KA04 凯哥牛逼了（大招）← ANdo 末日母本，order=doom，6/11/16 学习，3 级、levelSkip5、reqLevel6，CD80/65/50；不换模型、不改顶点色、不加蓝色滤镜、不进 ZCRG、不加炼金再生。
-- 视觉接入 K-v2：主模型 `K_final_v2.mdx`、`K_body.blp`、专属英雄按钮 `BTNK_Hero`/`DISBTNK_Hero`，四技能 Art/ResearchArt 全部改用包内专属 `BTNK*` 按钮并配各自 DIS；禁用 PASBTN，主模型 modelScale 校正为 1.0 附近。
-- 兼容链双保险：`SuijiMode_ChemicalRageCompatApply` 与 `SuijiMode_SetVisualForm` 两个入口均对 `H0K0`/`KA04` 直接 return，阻断炼金化学狂暴换模/换色/滤镜/再生链。
-- 完整保留 IMBA、初始化抽奖、中立野怪掉落、凯哥发福利/属性、A088、XOMG1、无皮肤、防守（已物理移除）、车轮（已物理移除）；K 原技能数值与模块（SK3 加凯等）不变。
-- 静态/构建级通过，未冒充实机；自定义 portrait 模型因 UnitUI/UnitData 无 portrait 字段、`MHUnit_SetPortrait` 为空 stub 暂未接线，作为动态缺口如实记录。
+> 以下为历史 K 英雄版本说明，活动源码中 K（H0K0/KA01–04/KK 模块/模型/按钮/NoK 包装）已全部物理删除，本节不再作为当前功能。
+
+- 历史运行标识 `XOMG_VERSION="v1.7-K-VisualSkillFix"`，四技能 KA01–KA04 克隆原生母本；K-v2 模型 `K_final_v2.mdx`/`K_body.blp`、专属 `BTNK_Hero` 按钮与兼容链 guard 均已随 NOK 删除。
+- 完整保留 IMBA、初始化抽奖、中立野怪掉落、凯哥发福利/属性、A088、XOMG1、无皮肤、防守（已物理移除）、车轮（已物理移除）。
 
 ## 版本标识 v1.8.5-SYNCF001（noskin19实机通过基线）
 
 - 权威来源为`noskin19`成品地图的包内回提内容；运行标识`XOMG_VERSION="v1.8.5-SYNCF001"`，W3I两个固定24字节名称槽均为`OMG IMBA v1.8.5-SYNCF001`。脚本`SetMapName`保持已验证可加载基线字符串，不为统一显示而修改已通过实机的脚本。
-- 累计保留v1.8的男神称号、双杰抽属性队友可见和弹窗保持、斯温/莱恩数值、魔瓶修复、K测试期真人50%候选逻辑、喵刀直选、HP4增强、无皮肤/无防守/无车轮边界。
+- 累计保留v1.8的男神称号、双杰抽属性队友可见和弹窗保持、斯温/莱恩数值、魔瓶修复、喵刀直选、HP4增强、无皮肤/无防守/无车轮边界（K 测试期真人50%候选逻辑已在 v1.8.6-NOK 随 K 一并删除）。
 - 野怪掉落前10分钟使用价格1–1000池，600秒后使用全部有效成品池，固定10%掉率不变。
 - 地面装备左键双击出售按半价结算；本地鼠标回调只发送玩家编号与点击坐标，物品枚举、认领、移除和金币写入均在同步回调中执行，避免各客户端用本机handle ID造成装备状态分叉。
 - 用户已完成单局实机验证：地图可正常完成对局、装备双击出售正常、10分钟后掉落规则未出现异常。长期双人同步仍建议持续观察。
@@ -123,12 +116,11 @@ PJASS 仅报当前 `location_m5 没有初始化`，为基图既有项，已在 `
 - **莱恩死亡一指 A095/A09W/Y0BZ/Y0C1**：SXI 两处 + SWYJ_DT 一处成长 +20→+50（精确 3 处），SWYJPD 去重保持，base+SWYJ 每目标仅一次进 B67；UI 明确基础+50/本图实际+100；浮字/-st 显示基础累计 X/实际 2X；FINGER_GROW 日志。
 - **魔瓶族**：12 索引 XZ/AZ/BZ/CZ/IA/YA/HJ0/HJ1/WA/QA/NA/JA 的 SU/ZU/BU 全族在 B1063 池构建与名称判据中排除（低价池候选=0）；野怪 CreateItem 后按 handleId 写来源标记(raw/price/time/claimed/sellable)；真人主英雄 PICKUP 标记+内部瓶态+缺 BottleTarget 时安全替换为满瓶 SU[XZ]=I00L，复制 charges/SetItemPlayer/SetItemDroppable/SetItemPawnable，BOTTLE_FIX 限流日志；商店瓶/空瓶装符不转换；D78 保持未启用。
 - **选人预览 UI**：`SuijiTavern_Fill` 以 logical rawcode 入 stock；`tools/transform/sync_preview_ui.py` 为可复现映射/逐字同步/覆盖生成器（check-only，116 池内文案一致；池外 32 处历史克隆差异不在本轮改动）。
-- **K 回归普通敏捷池**：撤销历史真人 50% 测试注入（删除 K_POOL_ROLLED/K_POOL_HIT、50% 骰、首敏捷槽强插、hit/miss 分支、NoK 排除与 K_POOL_ROLL 日志）；H0K0=K24[40] 以与同类相同的权重进入共享敏捷候选池，由池大小+J 不重复自然决定，无权重/保底/特殊排除；K 本体/四技能/模型/按钮/w3i 全部保留。
+- **（历史，已在 v1.8.6-NOK 删除）K 回归普通敏捷池**：历史上曾撤销真人 50% 测试注入让 H0K0=K24[40] 进入共享敏捷候选池；该英雄及其 K_POOL/NoK 包装在 NOK 版本整体物理移除，当前敏捷池 K_4=39、无 K 槽位。
 - 完整保留 IMBA、初始化抽奖、泉水/A4DK/B836 福利、中立野怪 10%、XOMG1、A088、无皮肤/防守/车轮。
 - **喵刀直选 HMD0（117）**：nMv4 选中记录 SELECT_MIAO_DISPLAY/CLICK；有权限（B891ArcMiaoActive+Human+未Replaced+未Busy）且 M7 空 → DzSyncData("MIAO_REQ") 并提示，无权限 X37 获取文案 + SELECT_MIAO_DENY；线上出生缝 Q19/通用循环在正常决出后、CreateUnitAtLoc 前，request+Allowed → UB7=117、J[117]=true、Replaced=true、SELECT_MIAO_CREATE；AI 不覆写；B891MiaoReplace 开局3分钟路径独立不动。HMD0 仍被普通/AI 池排除。
 - **野怪地面双击直售 DROP_SELL**：本地左键 0.35s 同玩家双击 → DzGetMouseTerrainX/Y → Rect 近邻枚举最近带标记/未认领/可售/非瓶族地面物 → DzSyncData；接收方确定性复核真人/M7活/IsUnitInRangeXY<=600/标记/地面/未认领，首达原子 claimed，sale=Get_Item_Price(raw)/2 下取整，清标 RemoveItem，SetPlayerState 加 gold（卖出不扣金），提示一次；失败限流 far/not-ground/not-marked/duplicate。PICKUP 已先清直售资格，DROP 清标不恢复。
 - **掉落 EARLY/LATE 双池**：EARLY=price 1..1000 有效成品，LATE=全部有效成品无 1000 上限，共用同一 B1063ItemEligible 探针（排魔瓶族/卷轴/任务奖励/powerup/不可售内部）；TimerGetElapsed(W)>=600 同步切 LATE，各自空池保护，GetRandomInt 同步；10% roll=GetRandomInt(1,10) roll==1 原样不动；日志 DROP_POOL_INIT early_count/late_count、DROP_ROLL、DROP_OK。
 - **AI 标记物保护**：GWF 公共选择器排带来源标记地面物（同时关拾取+攻击）；GXF 拾取 $D0003/攻击 $D000F 分支各自 marked skip；IHG 拾取事件在任何 MarkClear 前拒/不换件；Y9F/YDF/YUF/YBE/LDF 信使投递/售物回收/背包/靴落收集在 owned 判定后加 marked skip；限流 DROP_AI_*_SKIP/pid≤12；不影响 AI 商店购买/一键购/信使槽位/熊灵/Roshan/XVO/人类 DROP_SELL。
 - **HP4 15 个确认漏增强核心维度×2**：A0CY攻100/200/300、A1EJ攻速1.2/2.4/3.6、A0FV每层30+10L、A0VC敏捷80/120/160、A0ER回复50/100/150(神杖50/75/100不动)、A034护甲20/30/40(双写)、A04Q生命上限.6+.40L、A0E2永久护甲+4、A0NS窗口8+2BC7、A10Q减CD.75-.25L、A15J近距30+10WZ、A1IN脱战MS.6/.7/.8、A0VQ Wex攻速.4/.6/.8/1.0、A2CI获胜攻击16+8BC7；A12P 为引擎.02攻速硬上限/攻击保留率 tradeoff，无数值可翻，不伪改。范围/距离/召唤/自身CD/蓝耗一律不动。
-- **K 内嵌肖像**：count1 候选（内嵌 PortraitCam CAMS=1，前54029B 与原 v2 逐字节相同，VERS800/五序列/MTLS/TEXS/GEOS/BONE/PIVT 不变，11 处 K_body）合入运行时 K_final_v2.mdx；UnitUI 主模型路径不变，经典默认肖像读内嵌 CAMS；独立 K_final_portrait.mdx 保留。
-- **待实机确认（静态已 PASS）**：K 内嵌肖像游戏内取景构图需用户实机目测；2 冲突项/8 Unknown 禁猜、89 排除未动。
+- **（历史，已在 v1.8.6-NOK 删除）K 内嵌肖像/K_final_v2.mdx/K_body.blp/K_final_portrait.mdx**：随 K 英雄整体移除，活动树不再包含任何 K 模型/按钮/肖像资源。

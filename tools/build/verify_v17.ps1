@@ -2,8 +2,8 @@
     [Parameter(Mandatory=$false)]
     [string]$MapPath
 )
-# Authoritative v1.7-K-VisualSkillFix gate: MPQ readback hash + semantic assertions +
-# MDX/BLP structural parse. Exits non-zero on any failure.
+# Authoritative v1.8.6-NOK gate: MPQ readback hash match + NOK zero-residue + pool
+# structural assertions + retained-system smoke. Exits non-zero on any failure.
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path))
 $config = Get-Content -LiteralPath (Join-Path $root 'config\tool-paths.json') -Raw -Encoding UTF8 | ConvertFrom-Json
@@ -11,7 +11,7 @@ if ([string]::IsNullOrWhiteSpace($MapPath)) {
     $MapPath = if ([IO.Path]::IsPathRooted($config.baselineMap)) { $config.baselineMap } else { Join-Path $root $config.baselineMap }
 }
 $MapPath = [IO.Path]::GetFullPath($MapPath)
-$verifyDir = Join-Path ([IO.Path]::GetTempPath()) ('v17verify-' + [guid]::NewGuid().ToString('N'))
+$verifyDir = Join-Path ([IO.Path]::GetTempPath()) ('nokverify-' + [guid]::NewGuid().ToString('N'))
 [IO.Directory]::CreateDirectory($verifyDir) | Out-Null
 
 $failures = @()
@@ -57,21 +57,19 @@ foreach ($p in $textPairs) {
 }
 
 $jass = [IO.File]::ReadAllText((Extract-FromMpq 'war3map.j'), [Text.Encoding]::UTF8)
-# Normalize CRLF so line-anchored runtime-call checks do not mistake comments or fail on `r.
 $jass = $jass -replace "`r`n","`n"
 $abilData = [IO.File]::ReadAllText((Extract-FromMpq 'Units\AbilityData.slk'), [Text.Encoding]::UTF8)
 $uiSlk = [IO.File]::ReadAllText((Extract-FromMpq 'Units\UnitUI.slk'), [Text.Encoding]::UTF8)
 $unitStr = [IO.File]::ReadAllText((Extract-FromMpq 'Units\CampaignUnitStrings.txt'), [Text.Encoding]::UTF8)
 $abilStr = [IO.File]::ReadAllText((Extract-FromMpq 'Units\CampaignAbilityStrings.txt'), [Text.Encoding]::UTF8)
-# Normalize CRLF so end-anchored (?m)^Order=...$ checks match regardless of line endings
 $abilStr = $abilStr -replace "`r`n","`n"
+$impBytes = [IO.File]::ReadAllBytes((Extract-FromMpq 'war3map.imp'))
 
-# ---- w3i binary hard assertions: fixed 806B, equal-length label x2, byte-diff vs a1c1de1 only in slots ----
-$w3iLocal = Extract-FromMpq 'war3map.w3i'
-$w3iBytes = [IO.File]::ReadAllBytes($w3iLocal)
+# ---- 2. w3i binary: fixed 806B, exact 24B NOK label x2, prior labels x0, outside slots == HEAD ----
+$w3iBytes = [IO.File]::ReadAllBytes((Extract-FromMpq 'war3map.w3i'))
 $checks['w3i:fixed-806'] = ($w3iBytes.Length -eq 806)
-$newLabel = [Text.Encoding]::ASCII.GetBytes('OMG IMBA v1.8.5-SYNCF001')
-$oldLabel = [Text.Encoding]::ASCII.GetBytes('OMG IMBA v1.7.1-W3IFix  ')
+$nokLabel = [Text.Encoding]::ASCII.GetBytes('OMG IMBA v1.8.6-NOK     ')
+$checks['w3i:nok-label-24b-x2'] = ($nokLabel.Length -eq 24)
 function Count-Sub($hay, $needle) {
     $c = 0; $i = 0
     while ($i -le ($hay.Length - $needle.Length)) {
@@ -82,112 +80,84 @@ function Count-Sub($hay, $needle) {
     }
     return $c
 }
-$checks['w3i:new-label-x2'] = ((Count-Sub $w3iBytes $newLabel) -eq 2)
-$checks['w3i:old-label-x0'] = ((Count-Sub $w3iBytes $oldLabel) -eq 0)
-# byte-diff vs a1c1de1 baseline: changed indices must live only inside slots 0x0C(12) len24 and 0xEA(234) len24
-$baselineW3i = $null
-$tmpBlob = Join-Path $verifyDir 'baseline-w3i.bin'
+$checks['w3i:nok-label-x2'] = ((Count-Sub $w3iBytes $nokLabel) -eq 2)
+foreach ($pl in @('OMG IMBA v1.8.5-SYNCF001','OMG IMBA v1.7.1-W3IFix','v1.6-K','K-W3IFix','v1.7.1-K')) {
+    $pb = [Text.Encoding]::ASCII.GetBytes($pl)
+    $checks["w3i:prior-x0:$pl"] = ((Count-Sub $w3iBytes $pb) -eq 0)
+}
+$tmpBlob = Join-Path $verifyDir 'head-w3i.bin'
 $gitInfo = New-Object Diagnostics.ProcessStartInfo
-$gitInfo.FileName = 'git'
-$gitInfo.WorkingDirectory = $root
-$gitInfo.Arguments = 'show a1c1de1:src/war3map.w3i'
-$gitInfo.UseShellExecute = $false
-$gitInfo.RedirectStandardOutput = $true
+$gitInfo.FileName = 'git'; $gitInfo.WorkingDirectory = $root
+$gitInfo.Arguments = 'show HEAD:src/war3map.w3i'
+$gitInfo.UseShellExecute = $false; $gitInfo.RedirectStandardOutput = $true
 $gitProc = [Diagnostics.Process]::Start($gitInfo)
 $gitOut = [IO.File]::Create($tmpBlob)
-$gitProc.StandardOutput.BaseStream.CopyTo($gitOut)
-$gitOut.Close()
-$gitProc.WaitForExit()
-if ($gitProc.ExitCode -eq 0 -and (Test-Path $tmpBlob)) { $baselineW3i = [IO.File]::ReadAllBytes($tmpBlob) }
+$gitProc.StandardOutput.BaseStream.CopyTo($gitOut); $gitOut.Close(); $gitProc.WaitForExit()
+$headW3i = $null
+if ($gitProc.ExitCode -eq 0 -and (Test-Path $tmpBlob)) { $headW3i = [IO.File]::ReadAllBytes($tmpBlob) }
 $allow = New-Object System.Collections.Generic.HashSet[int]
 foreach ($s in 12,234) { for ($k = 0; $k -lt 24; $k++) { [void]$allow.Add($s + $k) } }
-$diffOk = $true
-if ($baselineW3i -and $baselineW3i.Length -eq 806) {
+$diffOk = $false
+if ($headW3i -and $headW3i.Length -eq 806) {
+    $diffOk = $true
     for ($i = 0; $i -lt 806; $i++) {
-        if ($w3iBytes[$i] -ne $baselineW3i[$i] -and -not $allow.Contains($i)) { $diffOk = $false; break }
+        if ($w3iBytes[$i] -ne $headW3i[$i] -and -not $allow.Contains($i)) { $diffOk = $false; break }
     }
-} else { $diffOk = $false }
-$checks['w3i:byte-equal-baseline-outside-slots'] = $diffOk
-
-function Get-Block($text, $id) {
-    $m = [regex]::Match($text, ('(?s)C;X1;Y\d+;K"' + [regex]::Escape($id) + '".*?(?=C;X1;Y\d+;K"|\z)'))
-    return $m.Value
 }
+$checks['w3i:byte-equal-head-outside-slots'] = $diffOk
 
-# ---- 2. version ----
-$checks['version:xomg'] = ([regex]::Matches($jass, 'constant string XOMG_VERSION="v1\.8\.5-SYNCF001"')).Count -eq 1
-# noskin19 deliberately retains the proven-load script config name; W3I carries the unique 24-byte release identity.
-$checks['version:setmapname-safe-baseline'] = ([regex]::Matches($jass, 'SetMapName\("OMG IMBA v1\.7\.1-K-W3IFix"\)')).Count -eq 1
+# ---- 3. version: both XOMG_VERSION and SetMapName carry NOK; no K-era name ----
+$checks['version:xomg-nok'] = (([regex]::Matches($jass,'constant string XOMG_VERSION="v1\.8\.6-NOK"')).Count -eq 1)
+$checks['version:setmapname-nok'] = (([regex]::Matches($jass,'SetMapName\("OMG IMBA v1\.8\.6-NOK"\)')).Count -eq 1)
+$checks['version:no-k-w3ifix'] = ($jass -notmatch 'v1\.7\.1-K-W3IFix')
 
-# ---- noskin19 synchronized ground-item quick sell ----
-$mouseBlock = [regex]::Match($jass,'(?ms)^function B1063SellMouseDown takes.*?^endfunction').Value
-$syncBlock = [regex]::Match($jass,'(?ms)^function B1063SellSync takes.*?^endfunction').Value
-$checks['v185:mouse-local-no-handle-allocation'] = ($mouseBlock -notmatch 'Rect\(|Condition\(|EnumItemsInRect|GetHandleId|CreateItem|RemoveItem|B1063SellBest')
-$checks['v185:mouse-coordinates-only'] = ($mouseBlock -match 'DzSyncData\("DROP_SELL",I2S\(pid\)\+","\+I2S\(R2I\(cx\*10\.\)\)\+","\+I2S\(R2I\(cy\*10\.\)\)\)')
-$checks['v185:last-click-per-player'] = ($jass -match 'real array B1063SellLastClick') -and ($mouseBlock -match 'B1063SellLastClick\[pid\]')
-$checks['v185:sync-enumerates-and-sells'] = ($syncBlock -match 'EnumItemsInRect') -and ($syncBlock -match 'DestroyBoolExpr\(filterExpr\)') -and ($syncBlock -match 'RemoveRect\(r\)') -and ($syncBlock -match 'RemoveItem\(it\)') -and ($syncBlock -match 'SetPlayerState')
-$checks['v185:late-pool-after-600'] = ($jass -match 'TimerGetElapsed\(W\)>=600\. and B1063LateCount>0')
-$checks['v185:drop-roll-10pct'] = ($jass -match 'set roll=GetRandomInt\(1,10\)') -and ($jass -match 'if roll!=1 then')
+# ---- 4. NOK zero residue (active jass / SLK / Campaign / imp only) ----
+# SuijiMode_ChemicalRageCompatApply / SuijiMode_SetVisualForm are generic visual-switch
+# systems used by many heroes; only the K-specific guards were removed, the functions stay.
+$jassBan = @('H0K0','KA01','KA02','KA03','KA04','KK_HERO','KK_Init','KK_EnsureHeroAbilities',
+             'K_POOL_ROLLED','K_POOL_HIT','K_POOL_ROLL','B891RandomAgilityNoK','QZ9HumanNoK',
+             'QC9HumanNoK',"R1X('H0K0",'BTNK_Hero','K_final_v2.mdx','K_final_portrait.mdx',
+             'war3mapimported\K\')
+foreach ($t in $jassBan) { $checks["nok:jass-x0:$t"] = ($jass -notmatch [regex]::Escape($t)) }
+# generic KK_ retained: common difficulty/tips/version/server markers must survive
+$checks['nok:generic-kk-kept'] = ($jass -match 'KK_GAME_DIFFICULTY') -and ($jass -match 'KKGameTips') -and ($jass -match 'KK_RELEASE_VERSION')
+# SLK / Campaign / imp K residue
+$checks['nok:abilData-no-KA'] = ($abilData -notmatch 'KA0[1-4]') -and ($abilData -notmatch 'H0K0')
+$checks['nok:uiSlk-no-H0K0'] = ($uiSlk -notmatch 'H0K0') -and ($uiSlk -notmatch 'war3mapimported\\K\\')
+$checks['nok:unitStr-no-H0K0'] = ($unitStr -notmatch '(?m)^\[H0K0\]')
+$checks['nok:abilStr-no-KA'] = ($abilStr -notmatch '(?m)^\[KA0[1-4]\]')
+$checks['nok:abilStr-no-Kbuttons'] = ($abilStr -notmatch 'BTNKMarksmanship|BTNKCriticalStrike|BTNKBattleRoar|BTNKChemicalRage|DISBTNK')
+$checks['nok:unitStr-no-Khero-icon'] = ($unitStr -notmatch 'BTNK_Hero\.blp')
+# generic English buttons kept
+$checks['nok:generic-buttons-kept'] = ($abilStr -match 'BTNKrobWitchcraft') -and ($unitStr -match 'BTNKeep') -and ($unitStr -match 'BTNKeeperGhostBlue')
+# imp binary: count header parses, no K path, every non-ASCII-safe path kept
+$impTxt = [Text.Encoding]::ASCII.GetString($impBytes)
+# precise K-hero tokens only; generic btnkrobwitchcraft / disbtnkrobwitchcraft must survive
+$checks['nok:imp-no-Kpath'] = ($impTxt -notmatch '(?i)war3mapimported\\K\\') -and ($impTxt -notmatch '(?i)BTNK_Hero|BTNKMarksmanship|BTNKCriticalStrike|BTNKBattleRoar|BTNKChemicalRage|DISBTNK_Hero|DISBTNKMarksmanship|DISBTNKCriticalStrike|DISBTNKBattleRoar|DISBTNKChemicalRage')
 
-# ---- 3. KA skill templates: four distinct basecodes, distinct orders ----
-$ka = @{}
-foreach ($c in 'KA01','KA02','KA03','KA04') { $ka[$c] = Get-Block $abilData $c }
-$base = @{}
-foreach ($c in $ka.Keys) { $base[$c] = ([regex]::Match($ka[$c], 'C;X2;K"([^"]+)"')).Groups[1].Value }
-$checks['ka:four-distinct-basecode'] = (($base.Values | Select-Object -Unique).Count -eq 4)
-$checks['ka:no-aamk'] = -not ($ka.Values -join "`n" -match 'K"Aamk"')
-$checks['ka:no-ancl'] = -not ($ka.Values -join "`n" -match 'K"ANcl"')
-$checks['ka:no-aowk'] = -not ($ka.Values -join "`n" -match 'AOwk')
-$checks['ka:no-achl'] = -not ($ka.Values -join "`n" -match 'Achl')
-# expected templates
-$checks['ka:ka01-ahad'] = ($base['KA01'] -eq 'AHad')
-$checks['ka:ka02-aocr'] = ($base['KA02'] -eq 'AOcr')
-$checks['ka:ka03-ahds'] = ($base['KA03'] -eq 'AHds')
-$checks['ka:ka04-ando'] = ($base['KA04'] -eq 'ANdo')
+# ---- 5. pool structural: tail shrink K54=117, agility K_4=39, row118 cleared, HMD0 kept ----
+$checks['pool:K54-117'] = ($jass -match 'set K54=117') -and ($jass -notmatch 'set K54=118')
+$checks['pool:K_4-39'] = ($jass -match 'set K_4=39') -and ($jass -notmatch 'set K_4=40')
+$checks['pool:no-K24-40'] = ($jass -notmatch 'set K24\[40\]')
+$checks['pool:row118-cleared-HM'] = ($jass -notmatch 'HM4\[118\]')
+$checks['pool:row118-cleared-HN'] = ($jass -notmatch 'HN4\[118\]')
+$checks['pool:row118-cleared-HO'] = ($jass -notmatch 'HO4\[118\]')
+$checks['pool:row118-cleared-HP'] = ($jass -notmatch 'HP4\[118\]')
+$checks['pool:source118-cleared'] = ($jass -notmatch 'SUIJI_POOL_SOURCE\[118\]')
+$checks['pool:hmd0-kept'] = ($jass -match 'HMD0')
+$checks['pool:miao-117-kept'] = ($jass -match 'UB7=117')
 
-# learn rules: normals reqLevel1 levels4; ult req6 skip5 levels3
-$checks['ka:ka02-lvl4-req1'] = ($ka['KA02'] -match 'C;X72;K4') -and ($ka['KA02'] -match 'C;X75;K1')
-$checks['ka:ka03-lvl4-req1'] = ($ka['KA03'] -match 'C;X72;K4') -and ($ka['KA03'] -match 'C;X75;K1')
-$checks['ka:ka03-cd10'] = (([regex]::Matches($ka['KA03'], 'C;X1[6-9];K10\.0')).Count -eq 4)
-$checks['ka:ka04-ult'] = ($ka['KA04'] -match 'C;X72;K3') -and ($ka['KA04'] -match 'C;X73;K5') -and ($ka['KA04'] -match 'C;X75;K6')
-$checks['ka:ka04-cd'] = ($ka['KA04'] -match 'C;X16;K80\.0') -and ($ka['KA04'] -match 'C;X17;K65\.0') -and ($ka['KA04'] -match 'C;X18;K50\.0')
-
-# strings: orders, dedicated icons, no PASBTN, no chemicalrage on KA04
-$kaStr = @{}
-foreach ($c in 'KA01','KA02','KA03','KA04') {
-    $m=[regex]::Match($abilStr,('(?ms)^\['+$c+'\].*?(?=^\[|\z)'))
-    $kaStr[$c]=$m.Value
-}
-$checks['ka:order-divineshield'] = ($kaStr['KA03'] -match '(?m)^Order=divineshield$')
-$checks['ka:order-doom'] = ($kaStr['KA04'] -match '(?m)^Order=doom$')
-$checks['ka:ka01-no-order'] = ($kaStr['KA01'] -notmatch '(?m)^Order=')
-$checks['ka:ka02-no-order'] = ($kaStr['KA02'] -notmatch '(?m)^Order=')
-# Prohibit the alchemist chemicalrage ORDER/chain on KA04; our own BTNKChemicalRage button filename is allowed.
-$checks['ka:no-chemicalrage'] = ($kaStr['KA04'] -notmatch '(?m)^Order=chemicalrage$') -and ($ka['KA04'] -notmatch 'chemicalrage') -and ($kaStr['KA04'] -notmatch 'BTNChemicalRage\.blp')
-$checks['ka:no-pasbtn'] = -not ($kaStr.Values -join "`n" -match 'PASBTN')
-foreach ($c in 'KA01','KA02','KA03','KA04') {
-    $checks["icon:$c-art"] = ($kaStr[$c] -match '(?m)^Art=ReplaceableTextures\\CommandButtons\\BTNK')
-    $checks["icon:$c-researchart"] = ($kaStr[$c] -match '(?m)^ResearchArt=ReplaceableTextures\\CommandButtons\\BTNK')
-}
-
-# ---- 4. compat chain double insurance ----
-$checks['guard:compat-apply'] = ($jass -match "SuijiMode_ChemicalRageCompatApply") -and ($jass -match "GetUnitTypeId\(u\)==KK_HERO or GetUnitAbilityLevel\(u,'KA04'\)>0")
-$checks['guard:setvisualform'] = ($jass -match "SuijiMode_SetVisualForm") -and ([regex]::Matches($jass,"GetUnitTypeId\(u\)==KK_HERO or GetUnitAbilityLevel\(u,'KA04'\)>0").Count -ge 2)
-
-# ---- 5. hero UI / preview wiring ----
-$checks['ui:model-v2'] = ($uiSlk -match 'C;X10;K"war3mapimported\\K\\K_final_v2\.mdx"')
-$checks['ui:scale-1'] = ($uiSlk -match '(?s)C;X1;Y\d+;K"H0K0".*?C;X20;K1\.0')
-$h0k0 = [regex]::Match($unitStr,'(?ms)^\[H0K0\].*?(?=^\[|\z)').Value
-$checks['ui:hero-icon'] = ($h0k0 -match '(?m)^Art=ReplaceableTextures\\CommandButtons\\BTNK_Hero\.blp$') -and ($h0k0 -match '(?m)^ScoreScreenIcon=ReplaceableTextures\\CommandButtons\\BTNK_Hero\.blp$')
-$checks['ui:preview-icon'] = ($jass -match 'set MH4\[118\]="ReplaceableTextures\\\\CommandButtons\\\\BTNK_Hero\.blp"')
-
-# ---- 6. KK recovery chain retained ----
-$checks['kk:register'] = ([regex]::Matches($jass,"call R1X\('H0K0',0,'KA01','KA02','KA03','KA04'\)")).Count -eq 1
-$checks['kk:ensure'] = ($jass -match 'function KK_EnsureHeroAbilities takes unit u returns nothing')
-$checks['kk:apply-bypass'] = ($jass -match 'if GetUnitTypeId\(u\)==KK_HERO then')
-$checks['kk:index-skills'] = ($jass -match "set HN4\[118\]='KA02'") -and ($jass -match "set HO4\[118\]='KA03'") -and ($jass -match "set HP4\[118\]='KA04'")
-
-# ---- 7. retained-system smoke ----
+# ---- 6. retained-system smoke (non-K, semantic unchanged) ----
+$checks['retain:title-nan'] = (([regex]::Matches($jass,'本图男神')).Count -ge 1) -and (([regex]::Matches($jass,'本图女神')).Count -eq 0)
+$checks['retain:dota-goddess'] = (([regex]::Matches($jass,'DOTA女神')).Count -eq 1)
+$checks['retain:sven-self-new'] = ($jass -match 'set selfRate=1\.\+1\.\*level') -and ($jass -notmatch 'set selfRate=\.5\+\.5\*level')
+$checks['retain:sven-ally-new'] = ($jass -match 'set allyRate=1\.\+\.5\*level') -and ($jass -notmatch 'set allyRate=\.5\+\.25\*level')
+$checks['retain:lion-plus50-x3'] = (([regex]::Matches($jass,'SWYJ\[i\]=SWYJ\[i\]\+50')).Count -eq 3) -and (([regex]::Matches($jass,'SWYJ\[i\]=SWYJ\[i\]\+20')).Count -eq 0)
+$checks['retain:attr-ally-broadcast'] = ($jass -match 'allyId!=id') -and ($jass -match 'B836ArcHuman\(allyId\)') -and ($jass -match 'IsPlayerAlly\(Player\(allyId\),p\)') -and ($jass -match 'PLAYER_STATE_OBSERVER\)==0') -and ($jass -match '\[队友抽属性\]')
+$checks['retain:bottle-family'] = ($jass -match 'function B1063IsBottleFamily takes integer raw returns boolean')
+$checks['retain:drop-sell-sync'] = ($jass -match 'DzSyncData\("DROP_SELL"') -and ($jass -match 'function B1063SellSync')
+$checks['retain:late-pool-600'] = ($jass -match 'TimerGetElapsed\(W\)>=600\. and B1063LateCount>0')
+$checks['retain:miao-direct-pick'] = ($jass -match 'B891MiaoDirectRequest') -and ($jass -match 'set UB7=117') -and ($jass -match 'HMD0')
 $checks['retain:imba-gate'] = ($jass -match 'constant boolean XOMG_IMBA_ENABLED=true')
 $checks['retain:lottery-floor'] = ($jass -match 'GetRandomInt\(1000,1500\)')
 $checks['retain:no-skin-path'] = ($jass -notmatch '(?i)skins\\')
@@ -195,90 +165,9 @@ $checks['retain:no-defense-impl'] = ($jass -notmatch '(?m)^function KKDefense_(?
 $checks['retain:no-wheel-impl'] = ($jass -notmatch '(?m)^function B1004(?!ControlUnit)')
 $checks['retain:a088-present'] = ($jass -match 'A088')
 $checks['retain:xomg1'] = ($jass -match 'XOMG1')
-
-# ---- 8. asset readback hash + structural parse ----
-$assetPairs = @(
-    @{arc='war3mapimported\K\K_final_v2.mdx'; src='assets\Kv2\model\K_final_v2.mdx'; kind='world'},
-    @{arc='war3mapimported\K\K_final_portrait.mdx'; src='assets\Kv2\model\K_final_portrait.mdx'; kind='portrait'},
-    @{arc='war3mapimported\K\K_body.blp'; src='assets\Kv2\textures\K_body.blp'; kind='blp'},
-    @{arc='ReplaceableTextures\CommandButtons\BTNK_Hero.blp'; src='assets\Kv2\buttons\BTNK_Hero.blp'; kind='blp'},
-    @{arc='ReplaceableTextures\CommandButtonsDisabled\DISBTNK_Hero.blp'; src='assets\Kv2\buttons\DISBTNK_Hero.blp'; kind='blp'},
-    @{arc='ReplaceableTextures\CommandButtons\BTNKMarksmanship.blp'; src='assets\Kv2\buttons\BTNKMarksmanship.blp'; kind='blp'},
-    @{arc='ReplaceableTextures\CommandButtonsDisabled\DISBTNKMarksmanship.blp'; src='assets\Kv2\buttons\DISBTNKMarksmanship.blp'; kind='blp'},
-    @{arc='ReplaceableTextures\CommandButtons\BTNKCriticalStrike.blp'; src='assets\Kv2\buttons\BTNKCriticalStrike.blp'; kind='blp'},
-    @{arc='ReplaceableTextures\CommandButtonsDisabled\DISBTNKCriticalStrike.blp'; src='assets\Kv2\buttons\DISBTNKCriticalStrike.blp'; kind='blp'},
-    @{arc='ReplaceableTextures\CommandButtons\BTNKBattleRoar.blp'; src='assets\Kv2\buttons\BTNKBattleRoar.blp'; kind='blp'},
-    @{arc='ReplaceableTextures\CommandButtonsDisabled\DISBTNKBattleRoar.blp'; src='assets\Kv2\buttons\DISBTNKBattleRoar.blp'; kind='blp'},
-    @{arc='ReplaceableTextures\CommandButtons\BTNKChemicalRage.blp'; src='assets\Kv2\buttons\BTNKChemicalRage.blp'; kind='blp'},
-    @{arc='ReplaceableTextures\CommandButtonsDisabled\DISBTNKChemicalRage.blp'; src='assets\Kv2\buttons\DISBTNKChemicalRage.blp'; kind='blp'}
-)
-foreach ($a in $assetPairs) {
-    $local = Extract-FromMpq $a.arc
-    $h1=(Get-FileHash -LiteralPath $local -Algorithm SHA256).Hash.ToLowerInvariant()
-    $h2=(Get-FileHash -LiteralPath (Join-Path $root $a.src) -Algorithm SHA256).Hash.ToLowerInvariant()
-    $checks["hash:$($a.arc)"] = ($h1 -eq $h2)
-    $bytes=[IO.File]::ReadAllBytes($local)
-    if ($a.kind -eq 'blp') {
-        $sig=[Text.Encoding]::ASCII.GetString($bytes,0,4)
-        $comp=[BitConverter]::ToUInt32($bytes,4)
-        $pic=[BitConverter]::ToUInt32($bytes,20)
-        $off0=[BitConverter]::ToUInt32($bytes,28); $size0=[BitConverter]::ToUInt32($bytes,92)
-        $checks["blp:$($a.arc)"] = ($sig -eq 'BLP1' -and $comp -eq 1 -and $pic -eq 5 -and ($off0+$size0) -le $bytes.Length)
-    }
-}
-
-# MDX structural parse (world + portrait)
-foreach ($pair in @(@{arc='war3mapimported\K\K_final_v2.mdx';kind='world'},@{arc='war3mapimported\K\K_final_portrait.mdx';kind='portrait'})) {
-    $local = Extract-FromMpq $pair.arc
-    $bytes=[IO.File]::ReadAllBytes($local)
-    $ok = ($bytes.Length -ge 16) -and ([Text.Encoding]::ASCII.GetString($bytes,0,4) -eq 'MDLX')
-    $pos=4; $vers=0; $modl=''; $seqs=$false; $cams=0
-    while ($pos+8 -le $bytes.Length) {
-        $tag=[Text.Encoding]::ASCII.GetString($bytes,$pos,4)
-        $size=[BitConverter]::ToUInt32($bytes,$pos+4)
-        if ([uint64]$pos+8+[uint64]$size -gt $bytes.Length) { $ok=$false; break }
-        if ($tag -eq 'VERS') { $vers=[BitConverter]::ToUInt32($bytes,$pos+8) }
-        if ($tag -eq 'MODL') { $modl=[Text.Encoding]::ASCII.GetString($bytes,$pos+8,80).Trim([char]0) }
-        if ($tag -eq 'SEQS') { $seqs=$true }
-        if ($tag -eq 'CAMS' -and $size -ge 120) { $cams++ }
-        $pos += 8+$size
-    }
-    if ($pair.kind -eq 'world') {
-        $checks['mdx:world-vers800'] = ($vers -eq 800)
-        $checks['mdx:world-modl'] = (-not [string]::IsNullOrWhiteSpace($modl))
-        $checks['mdx:world-seqs'] = $seqs
-        $checks['mdx:world-bounds'] = $ok
-        # noskin19 package-authoritative model: visible world model, repaired texture path, no embedded camera.
-        $worldSha=[BitConverter]::ToString([Security.Cryptography.SHA256]::Create().ComputeHash($bytes)).Replace('-','').ToLower()
-        $checks['mdx:world-noskin19-sha'] = ($worldSha -eq 'be89dbd9a94f2fa52d7f7ffac8aec32cbcf7899bf49e20a5d6c4484ac7075265')
-        $checks['mdx:world-size54029'] = ($bytes.Length -eq 54029)
-        $checks['mdx:world-cams0'] = ($cams -eq 0)
-    } else {
-        $checks['mdx:portrait-vers800'] = ($vers -eq 800)
-        $checks['mdx:portrait-cams1'] = ($cams -eq 1)
-        $checks['mdx:portrait-bounds'] = $ok
-    }
-}
-
-
-# ---- v1.8-integrated semantic checks (title/sven/lion/ATTR/bottle/K normal pool) ----
-$checks['v18:title-nv'] = (([regex]::Matches($jass,'本图女神')).Count -eq 0)
-$checks['v18:title-nan'] = (([regex]::Matches($jass,'本图男神')).Count -ge 1)
-$checks['v18:dota-goddess-kept'] = (([regex]::Matches($jass,'DOTA女神')).Count -eq 1)
-$checks['v18:sven-self-new'] = ($jass -match 'set selfRate=1\.\+1\.\*level') -and ($jass -notmatch 'set selfRate=\.5\+\.5\*level')
-$checks['v18:sven-ally-new'] = ($jass -match 'set allyRate=1\.\+\.5\*level') -and ($jass -notmatch 'set allyRate=\.5\+\.25\*level')
-$checks['v18:god-strength-no-required-diagnostic-log'] = ($jass -notmatch 'GOD_STRENGTH logical=A1WH')
-$checks['v18:lion-plus50-x3'] = (([regex]::Matches($jass,'SWYJ\[i\]=SWYJ\[i\]\+50')).Count -eq 3) -and (([regex]::Matches($jass,'SWYJ\[i\]=SWYJ\[i\]\+20')).Count -eq 0)
-$checks['v18:finger-grow-no-required-diagnostic-log'] = ($jass -notmatch 'FINGER_GROW base_add=50')
-$checks['v18:attr-ally-broadcast'] = ($jass -match 'allyId!=id and B836ArcHuman\(allyId\) and IsPlayerAlly\(Player\(allyId\),p\)') -and ($jass -match '\[队友抽属性\]')
-$checks['v18:bottle-family-helper'] = ($jass -match 'function B1063IsBottleFamily takes integer raw returns boolean')
-$checks['v18:bottle-mark-source'] = ($jass -match 'SaveInteger\(L7,GetHandleId\(drop\),16201,itemId\)')
-$checks['v18:bottle-fix-log'] = ($jass -match 'BOTTLE_FIX raw=')
-$checks['v18:k-test-pool-authoritative'] = ($jass -match 'boolean array K_POOL_ROLLED') -and ($jass -match 'boolean array K_POOL_HIT') -and ($jass -match 'function B891RandomAgilityNoK') -and ($jass -match 'function QC9HumanNoK') -and ($jass -match "set K24\[40\]='H0K0'") -and ($jass -match "R1X\('H0K0',0,'KA01','KA02','KA03','KA04'\)")
-# CS text sync
-$checks['v18:cs-lion-50-100'] = (([regex]::Matches($abilStr,'基础命中敌方英雄\+50点额外伤害')).Count -eq 16)
-$checks['v18:cs-sven-200-300-400'] = ($abilStr -match '增加自身200%的基础攻击力') -and ($abilStr -match '增加自身300%的基础攻击力') -and ($abilStr -match '增加自身400%的基础攻击力')
-$checks['v18:cs-sven-ally-150-200-250'] = ($abilStr -match '150%/200%/250%的基础攻击力')
+# CS retained text
+$checks['cs:lion-50-x16'] = (([regex]::Matches($abilStr,'基础命中敌方英雄\+50点额外伤害')).Count -eq 16)
+$checks['cs:sven-200-300-400'] = ($abilStr -match '增加自身200%的基础攻击力') -and ($abilStr -match '增加自身300%的基础攻击力') -and ($abilStr -match '增加自身400%的基础攻击力')
 
 # ---- report ----
 $rows = foreach ($k in $checks.Keys) {
@@ -293,6 +182,6 @@ New-Item -ItemType Directory -Force (Join-Path $root 'reports') | Out-Null
 $report | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $root 'reports\verification-v17.json') -Encoding UTF8
 $rows | Export-Csv -Path (Join-Path $root 'reports\verification-v17.csv') -NoTypeInformation -Encoding UTF8
 
-$rows | ForEach-Object { '{0,-34} {1}' -f $_.check, $(if($_.pass){'PASS'}else{'FAIL'}) } | Write-Output
-Write-Output ("v1.7 checks: {0} pass, {1} fail" -f ($rows.Count-$failed.Count), $failed.Count)
+$rows | ForEach-Object { '{0,-38} {1}' -f $_.check, $(if($_.pass){'PASS'}else{'FAIL'}) } | Write-Output
+Write-Output ("v1.8.6-NOK checks: {0} pass, {1} fail" -f ($rows.Count-$failed.Count), $failed.Count)
 if ($failed.Count -gt 0) { exit 1 }

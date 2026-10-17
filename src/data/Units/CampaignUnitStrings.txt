@@ -1935,27 +1935,26 @@ Buttonpos=1,1
 Missilearc=0.15
 Missileart=Abilities\Weapons\BrewmasterMissile\BrewmasterMissile.mdl
 Missilespeed=900
-Name=土鸡
-Propernames=土鸡
+Name=炼金术士
+Propernames=拉泽尔．黑酿
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNHeroAlchemist.blp
 Specialart=Objects\Spawnmodels\Human\HumanLargeDeathExplode\HumanLargeDeathExplode.mdl
 Ubertip=,
-Tip=土鸡
 
 [N01I]
 Art=ReplaceableTextures\CommandButtons\BTNHeroAlchemist.blp
 Attachmentanimprops=large
-Awakentip=复活 土鸡
+Awakentip=复活 炼金术士
 Missilearc=0.15
 Missileart=Abilities\Weapons\BrewmasterMissile\BrewmasterMissile.mdl
 Missilespeed=900
-Name=土鸡
-Propernames=土鸡
-Revivetip=复活 土鸡
+Name=炼金术士
+Propernames=拉泽尔．黑酿
+Revivetip=复活 炼金术士
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNHeroAlchemist.blp
 Specialart=Objects\Spawnmodels\Human\HumanLargeDeathExplode\HumanLargeDeathExplode.mdl
-Tip=土鸡
-Ubertip=土鸡对于试验的态度是永不懈怠，加入达拉然势力的编制也纯粹为了个人财富，以补助研究。为了得到可观的赏金，这个没良心的地精才不管采取什么残忍的手段。在麻醉或者毒害敌人的同时，他还能保持着客观冷静的态度，面不改色心不跳地聆听敌人痛苦的哀嚎。他以残酷和非人道声名远扬，让那些强大的黑暗势力在他的小小药瓶前不寒而栗。|n|n|cffff0303力量|r - 25 + 2.3|n|cff0042ff敏捷|r - 11 + 1.5 |n|cff0042ff智力|r - 25 + 1.8|n|n可以学习 酸性喷雾、不稳定化合物、地精的贪婪和|cffff8000化学狂暴|r。|n|n攻击距离 150（近战）|n移动速度 295
+Tip=炼金术士
+Ubertip=炼金术士对于试验的态度是永不懈怠，加入达拉然势力的编制也纯粹为了个人财富，以补助研究。为了得到可观的赏金，这个没良心的地精才不管采取什么残忍的手段。在麻醉或者毒害敌人的同时，他还能保持着客观冷静的态度，面不改色心不跳地聆听敌人痛苦的哀嚎。他以残酷和非人道声名远扬，让那些强大的黑暗势力在他的小小药瓶前不寒而栗。|n|n|cffff0303力量|r - 25 + 2.3|n|cff0042ff敏捷|r - 11 + 1.5 |n|cff0042ff智力|r - 25 + 1.8|n|n可以学习 酸性喷雾、不稳定化合物、地精的贪婪和|cffff8000化学狂暴|r。|n|n攻击距离 150（近战）|n移动速度 295
 
 [N01J]
 Art=ReplaceableTextures\CommandButtons\BTNHeroAlchemist.blp
@@ -1964,12 +1963,11 @@ Buttonpos=1,1
 Missilearc=0.15
 Missileart=Abilities\Weapons\BrewmasterMissile\BrewmasterMissile.mdl
 Missilespeed=900
-Name=土鸡
-Propernames=土鸡
+Name=炼金术士
+Propernames=拉泽尔．黑酿
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNHeroAlchemist.blp
 Specialart=Objects\Spawnmodels\Human\HumanLargeDeathExplode\HumanLargeDeathExplode.mdl
 Ubertip=,
-Tip=土鸡
 
 [N01O]
 Art=ReplaceableTextures\CommandButtons\BTNDruidOfTheClaw.blp
@@ -1995,12 +1993,11 @@ Buttonpos=1,1
 Missilearc=0.15
 Missileart=Abilities\Weapons\BrewmasterMissile\BrewmasterMissile.mdl
 Missilespeed=900
-Name=土鸡
-Propernames=土鸡
+Name=炼金术士
+Propernames=拉泽尔．黑酿
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNHeroAlchemist.blp
 Specialart=Objects\Spawnmodels\Human\HumanLargeDeathExplode\HumanLargeDeathExplode.mdl
 Ubertip=,
-Tip=土鸡
 
 [N01V]
 Art=ReplaceableTextures\CommandButtons\BTNPriestessOfTheMoon.blp
@@ -2717,19 +2714,19 @@ Ubertip=战斗型英雄，善于在战场上召唤野兽来加入战斗。可以
 
 [Nfir]
 Art=ReplaceableTextures\CommandButtons\BTNShade.blp
-Awakentip=复活 程双杰
+Awakentip=复活 影魔
 Buttonpos=,1
 Missilearc=0.08
 Missileart=war3mapImported\BlackDragonMissile.mdl
 MissileHoming=1
 Missilespeed=1200
-Name=程双杰
-Propernames=程双杰
-Revivetip=复活 程双杰
+Name=影魔
+Propernames=|c00FFFF00Loda|r,奈文魔尔,|c00FFFF00Yamateh|r,奈文魔尔,奈文魔尔,|c00FFFF00Loda|r,奈文魔尔,奈文魔尔,|c00FFFF00Loda|r,奈文魔尔,|c00FFFF00YaphetS|r
+Revivetip=复活 影魔
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNShade.blp
 Specialart=Objects\Spawnmodels\Demon\DemonLargeDeathExplode\DemonLargeDeathExplode.mdl
-Tip=程双杰
-Ubertip=程双杰是一种能吸收身体周围的灵魂的生物。他虽然是来自燃烧军团的魔鬼，但是却讨厌和同类的魔鬼一样蠕动，于是便重新伪装了自己。当程双杰投入到战斗的时候，便能通过吸收灵魂来增强自己的力量，还能用他被灵魂增强过的攻击以及强力的精神冲击去击败对手。在遭遇过他的少数幸存者的心目中，程双杰是最恐怖的对手，而那些被他残暴地杀死的人，才算见识过什么是世界上最卑鄙的杀人手段。|n|n|cff0042ff力量|r - 15 + 2.0|n|cffff0303敏捷|r - 20 + 2.9|n|cff0042ff智力|r - 18 + 2.0|n|n可以学习 毁灭阴影、支配死灵、魔王降临和|cffff8000魂之挽歌|r。|n|n攻击距离 500（远程）|n移动速度 305
+Tip=影魔
+Ubertip=影魔是一种能吸收身体周围的灵魂的生物。他虽然是来自燃烧军团的魔鬼，但是却讨厌和同类的魔鬼一样蠕动，于是便重新伪装了自己。当影魔投入到战斗的时候，便能通过吸收灵魂来增强自己的力量，还能用他被灵魂增强过的攻击以及强力的精神冲击去击败对手。在遭遇过他的少数幸存者的心目中，影魔是最恐怖的对手，而那些被他残暴地杀死的人，才算见识过什么是世界上最卑鄙的杀人手段。|n|n|cff0042ff力量|r - 15 + 2.0|n|cffff0303敏捷|r - 20 + 2.9|n|cff0042ff智力|r - 18 + 2.0|n|n可以学习 毁灭阴影、支配死灵、魔王降临和|cffff8000魂之挽歌|r。|n|n攻击距离 500（远程）|n移动速度 305
 
 [Nkjx]
 Art=ReplaceableTextures\CommandButtons\BTNKiljaedin.blp
@@ -3312,15 +3309,15 @@ Ubertip=在被一些自命神圣的人作为异端处决以后，死亡带给这
 [U00F]
 Art=ReplaceableTextures\CommandButtons\BTNAbomination.blp
 Attachmentanimprops=medium
-Awakentip=复活 袁加凯
+Awakentip=复活 屠夫
 Missilespeed=1500,1500
-Name=袁加凯
-Propernames=袁加凯
-Revivetip=复活 袁加凯
+Name=屠夫
+Propernames=胖子
+Revivetip=复活 屠夫
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNAbomination.blp
 Specialart=Objects\Spawnmodels\Undead\UndeadLargeDeathExplode\UndeadLargeDeathExplode.mdl
-Tip=袁加凯
-Ubertip=一只庞大的亡灵巨兽，看起来即使最强大的魔法也奈他不何。这只饥饿的憎恶在战场上游荡着，不断地寻找着粗心大意的猎物。据说，在刚刚隐约瞧见袁加凯这副庞大身型的时候，一个带锯齿的钩子就会随之而来，深深扎进猎物身体，血淋淋地被拖入阴影之中。他的大嘴会疯狂地撕碎猎物的身体，他的狂笑会淹没他们痛苦的悲鸣。难以言状的恐惧引起死一般的寂静，这是一个让人毛骨悚然的不祥之兆。|n|n|cffff0303力量|r - 25 + 3.2|n|cff0042ff敏捷|r - 14 + 1.5|n|cff0042ff智力|r - 14 + 1.5|n|n可以学习 肉钩、腐烂、腐肉堆积和|cffff8000肢解|r。|n|n攻击距离 150（近程）|n移动速度 285
+Tip=胖子
+Ubertip=一只庞大的亡灵巨兽，看起来即使最强大的魔法也奈他不何。这只饥饿的憎恶在战场上游荡着，不断地寻找着粗心大意的猎物。据说，在刚刚隐约瞧见屠夫这副庞大身型的时候，一个带锯齿的钩子就会随之而来，深深扎进猎物身体，血淋淋地被拖入阴影之中。他的大嘴会疯狂地撕碎猎物的身体，他的狂笑会淹没他们痛苦的悲鸣。难以言状的恐惧引起死一般的寂静，这是一个让人毛骨悚然的不祥之兆。|n|n|cffff0303力量|r - 25 + 3.2|n|cff0042ff敏捷|r - 14 + 1.5|n|cff0042ff智力|r - 14 + 1.5|n|n可以学习 肉钩、腐烂、腐肉堆积和|cffff8000肢解|r。|n|n攻击距离 150（近程）|n移动速度 285
 
 [U00K]
 Art=ReplaceableTextures\CommandButtons\BTNArachnathidGreen.blp
@@ -3836,16 +3833,16 @@ Ubertip=在被一些自命神圣的人作为异端处决以后，死亡带给这
 [Z00F]
 Art=ReplaceableTextures\CommandButtons\BTNAbomination.blp
 Attachmentanimprops=medium
-Awakentip=复活 袁加凯
+Awakentip=复活 屠夫
 Buttonpos=,2
 Missilespeed=1500,1500
-Name=袁加凯
-Propernames=袁加凯
-Revivetip=复活 袁加凯
+Name=屠夫
+Propernames=胖子
+Revivetip=复活 屠夫
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNAbomination.blp
 Specialart=Objects\Spawnmodels\Undead\UndeadLargeDeathExplode\UndeadLargeDeathExplode.mdl
-Tip=袁加凯
-Ubertip=一只庞大的亡灵巨兽，看起来即使最强大的魔法也奈他不何。这只饥饿的憎恶在战场上游荡着，不断地寻找着粗心大意的猎物。据说，在刚刚隐约瞧见袁加凯这副庞大身型的时候，一个带锯齿的钩子就会随之而来，深深扎进猎物身体，血淋淋地被拖入阴影之中。他的大嘴会疯狂地撕碎猎物的身体，他的狂笑会淹没他们痛苦的悲鸣。难以言状的恐惧引起死一般的寂静，这是一个让人毛骨悚然的不祥之兆。|n|n|cffff0303力量|r - 25 + 3.2|n|cff0042ff敏捷|r - 14 + 1.5|n|cff0042ff智力|r - 14 + 1.5|n|n可以学习 肉钩、腐烂、腐肉堆积和|cffff8000肢解|r。|n|n攻击距离 150（近程）|n移动速度 285
+Tip=胖子
+Ubertip=一只庞大的亡灵巨兽，看起来即使最强大的魔法也奈他不何。这只饥饿的憎恶在战场上游荡着，不断地寻找着粗心大意的猎物。据说，在刚刚隐约瞧见屠夫这副庞大身型的时候，一个带锯齿的钩子就会随之而来，深深扎进猎物身体，血淋淋地被拖入阴影之中。他的大嘴会疯狂地撕碎猎物的身体，他的狂笑会淹没他们痛苦的悲鸣。难以言状的恐惧引起死一般的寂静，这是一个让人毛骨悚然的不祥之兆。|n|n|cffff0303力量|r - 25 + 3.2|n|cff0042ff敏捷|r - 14 + 1.5|n|cff0042ff智力|r - 14 + 1.5|n|n可以学习 肉钩、腐烂、腐肉堆积和|cffff8000肢解|r。|n|n攻击距离 150（近程）|n移动速度 285
 
 [Z00J]
 Art=ReplaceableTextures\CommandButtons\BTNSpiritWalker.blp
@@ -4694,19 +4691,19 @@ Ubertip=在艾森娜的岩石峭壁中的隐约可见的山岭巨人由大山孕
 
 [Zfir]
 Art=ReplaceableTextures\CommandButtons\BTNShade.blp
-Awakentip=复活 程双杰
+Awakentip=复活 影魔
 Buttonpos=2,1
 Missilearc=0.08
 Missileart=model\Hero_ShadowFiend_N8_Missile.mdl
 MissileHoming=1
 Missilespeed=1200
-Name=程双杰
-Propernames=程双杰
-Revivetip=复活 程双杰
+Name=影魔
+Propernames=|c00FFFF00Loda|r,奈文魔尔,|c00FFFF00Yamateh|r,奈文魔尔,奈文魔尔,|c00FFFF00Loda|r,奈文魔尔,奈文魔尔,|c00FFFF00Loda|r,奈文魔尔,|c00FFFF00YaphetS|r
+Revivetip=复活 影魔
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNShade.blp
 Specialart=Objects\Spawnmodels\Demon\DemonLargeDeathExplode\DemonLargeDeathExplode.mdl
-Tip=程双杰
-Ubertip=程双杰是一种能吸收身体周围的灵魂的生物。他虽然是来自燃烧军团的魔鬼，但是却讨厌和同类的魔鬼一样蠕动，于是便重新伪装了自己。当程双杰投入到战斗的时候，便能通过吸收灵魂来增强自己的力量，还能用他被灵魂增强过的攻击以及强力的精神冲击去击败对手。在遭遇过他的少数幸存者的心目中，程双杰是最恐怖的对手，而那些被他残暴地杀死的人，才算见识过什么是世界上最卑鄙的杀人手段。|n|n|cff0042ff力量|r - 15 + 2.0|n|cffff0303敏捷|r - 20 + 2.9|n|cff0042ff智力|r - 18 + 2.0|n|n可以学习 毁灭阴影、支配死灵、魔王降临和|cffff8000魂之挽歌|r。|n|n攻击距离 500（远程）|n移动速度 305
+Tip=影魔
+Ubertip=影魔是一种能吸收身体周围的灵魂的生物。他虽然是来自燃烧军团的魔鬼，但是却讨厌和同类的魔鬼一样蠕动，于是便重新伪装了自己。当影魔投入到战斗的时候，便能通过吸收灵魂来增强自己的力量，还能用他被灵魂增强过的攻击以及强力的精神冲击去击败对手。在遭遇过他的少数幸存者的心目中，影魔是最恐怖的对手，而那些被他残暴地杀死的人，才算见识过什么是世界上最卑鄙的杀人手段。|n|n|cff0042ff力量|r - 15 + 2.0|n|cffff0303敏捷|r - 20 + 2.9|n|cff0042ff智力|r - 18 + 2.0|n|n可以学习 毁灭阴影、支配死灵、魔王降临和|cffff8000魂之挽歌|r。|n|n攻击距离 500（远程）|n移动速度 305
 
 [Zgem]
 Art=ReplaceableTextures\CommandButtons\BTNHeroDemonHunter.blp
@@ -4724,19 +4721,19 @@ Ubertip=作为伟大先知的双胞胎儿子，灵魂守卫和敌法师从一出
 
 [Zgir]
 Art=ReplaceableTextures\CommandButtons\BTNShade.blp
-Awakentip=复活 程双杰
+Awakentip=复活 影魔
 Buttonpos=2,1
 Missilearc=0.08
 Missileart=war3mapImported\BlackDragonMissile.mdl
 MissileHoming=1
 Missilespeed=1200
-Name=程双杰
-Propernames=程双杰
-Revivetip=复活 程双杰
+Name=影魔
+Propernames=|c00FFFF00Loda|r,奈文魔尔,|c00FFFF00Yamateh|r,奈文魔尔,奈文魔尔,|c00FFFF00Loda|r,奈文魔尔,奈文魔尔,|c00FFFF00Loda|r,奈文魔尔,|c00FFFF00YaphetS|r
+Revivetip=复活 影魔
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNShade.blp
 Specialart=Objects\Spawnmodels\Demon\DemonLargeDeathExplode\DemonLargeDeathExplode.mdl
-Tip=程双杰
-Ubertip=程双杰是一种能吸收身体周围的灵魂的生物。他虽然是来自燃烧军团的魔鬼，但是却讨厌和同类的魔鬼一样蠕动，于是便重新伪装了自己。当程双杰投入到战斗的时候，便能通过吸收灵魂来增强自己的力量，还能用他被灵魂增强过的攻击以及强力的精神冲击去击败对手。在遭遇过他的少数幸存者的心目中，程双杰是最恐怖的对手，而那些被他残暴地杀死的人，才算见识过什么是世界上最卑鄙的杀人手段。|n|n|cff0042ff力量|r - 15 + 2.0|n|cffff0303敏捷|r - 20 + 2.9|n|cff0042ff智力|r - 18 + 2.0|n|n可以学习 毁灭阴影、支配死灵、魔王降临和|cffff8000魂之挽歌|r。|n|n攻击距离 500（远程）|n移动速度 305
+Tip=影魔
+Ubertip=影魔是一种能吸收身体周围的灵魂的生物。他虽然是来自燃烧军团的魔鬼，但是却讨厌和同类的魔鬼一样蠕动，于是便重新伪装了自己。当影魔投入到战斗的时候，便能通过吸收灵魂来增强自己的力量，还能用他被灵魂增强过的攻击以及强力的精神冲击去击败对手。在遭遇过他的少数幸存者的心目中，影魔是最恐怖的对手，而那些被他残暴地杀死的人，才算见识过什么是世界上最卑鄙的杀人手段。|n|n|cff0042ff力量|r - 15 + 2.0|n|cffff0303敏捷|r - 20 + 2.9|n|cff0042ff智力|r - 18 + 2.0|n|n可以学习 毁灭阴影、支配死灵、魔王降临和|cffff8000魂之挽歌|r。|n|n攻击距离 500（远程）|n移动速度 305
 
 [Zhem]
 Art=ReplaceableTextures\CommandButtons\BTNHeroDemonHunter.blp
@@ -4754,19 +4751,19 @@ Ubertip=作为伟大先知的双胞胎儿子，灵魂守卫和敌法师从一出
 
 [Zhir]
 Art=ReplaceableTextures\CommandButtons\BTNShade.blp
-Awakentip=复活 程双杰
+Awakentip=复活 影魔
 Buttonpos=2,1
 Missilearc=0.08
 Missileart=model\Hero_ShadowFiend_N4_Missile.mdl
 MissileHoming=1
 Missilespeed=1200
-Name=程双杰
-Propernames=程双杰
-Revivetip=复活 程双杰
+Name=影魔
+Propernames=|c00FFFF00Loda|r,奈文魔尔,|c00FFFF00Yamateh|r,奈文魔尔,奈文魔尔,|c00FFFF00Loda|r,奈文魔尔,奈文魔尔,|c00FFFF00Loda|r,奈文魔尔,|c00FFFF00YaphetS|r
+Revivetip=复活 影魔
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNShade.blp
 Specialart=Objects\Spawnmodels\Demon\DemonLargeDeathExplode\DemonLargeDeathExplode.mdl
-Tip=程双杰
-Ubertip=程双杰是一种能吸收身体周围的灵魂的生物。他虽然是来自燃烧军团的魔鬼，但是却讨厌和同类的魔鬼一样蠕动，于是便重新伪装了自己。当程双杰投入到战斗的时候，便能通过吸收灵魂来增强自己的力量，还能用他被灵魂增强过的攻击以及强力的精神冲击去击败对手。在遭遇过他的少数幸存者的心目中，程双杰是最恐怖的对手，而那些被他残暴地杀死的人，才算见识过什么是世界上最卑鄙的杀人手段。|n|n|cff0042ff力量|r - 15 + 2.0|n|cffff0303敏捷|r - 20 + 2.9|n|cff0042ff智力|r - 18 + 2.0|n|n可以学习 毁灭阴影、支配死灵、魔王降临和|cffff8000魂之挽歌|r。|n|n攻击距离 500（远程）|n移动速度 305
+Tip=影魔
+Ubertip=影魔是一种能吸收身体周围的灵魂的生物。他虽然是来自燃烧军团的魔鬼，但是却讨厌和同类的魔鬼一样蠕动，于是便重新伪装了自己。当影魔投入到战斗的时候，便能通过吸收灵魂来增强自己的力量，还能用他被灵魂增强过的攻击以及强力的精神冲击去击败对手。在遭遇过他的少数幸存者的心目中，影魔是最恐怖的对手，而那些被他残暴地杀死的人，才算见识过什么是世界上最卑鄙的杀人手段。|n|n|cff0042ff力量|r - 15 + 2.0|n|cffff0303敏捷|r - 20 + 2.9|n|cff0042ff智力|r - 18 + 2.0|n|n可以学习 毁灭阴影、支配死灵、魔王降临和|cffff8000魂之挽歌|r。|n|n攻击距离 500（远程）|n移动速度 305
 
 [Zjai]
 Art=ReplaceableTextures\CommandButtons\BTNJaina.blp
@@ -17254,9 +17251,9 @@ Ubertip=,
 Art=ReplaceableTextures\CommandButtons\BTNGenericCreepBuilding.blp
 Description=一种由竹子做成的小型了望塔。
 Missilespeed=1500,1500
-Name=存档商店
-Tip=存档商店
-Ubertip=点击打开个人存档商店，或输入-archive。小屋物品栏的说明物品介绍抽奖、限时成品及硬币规则。
+Name=抽奖屋
+Tip=抽奖屋
+Ubertip=抽奖屋：幸运大抽奖（每局一次领1-1000金币）、1000抽属性（无限次，每次1000金币抽全属性）、梭哈抽属性（投入全部本局金币成功后三属性同增）。操作完重显本屋，主动关闭才隐藏；个人存档请另输入 -archive。
 
 [nC0G]
 Art=ReplaceableTextures\CommandButtons\BTNObsidianStatue.blp
@@ -30517,15 +30514,3 @@ Missilespeed=1500,1500
 Name=小狗
 Tip=训练小狗(|cffffcc00Z|r)
 Ubertip=虫族军队的小型近战攻击生物。虽然很脆弱，但是他们以极大的数量闻名。|n|cffffcc00能攻击地面单位。|r
-
-[H0K0]
-Art=ReplaceableTextures\CommandButtons\BTNK_Hero.blp
-Awakentip=复活 K
-Buttonpos=,2
-Description=K
-Name=K
-Propernames=K
-Revivetip=复活 K
-ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNK_Hero.blp
-Tip=K
-Ubertip=近战敏捷英雄 K。可以学习猎手本能、捷刃、加凯和|c00ff8000凯哥牛逼了|r。|n|n|c000042ff力量|r - 18 + 2.0|n|c00ff0303敏捷|r - 22 + 2.2|n|c000042ff智力|r - 16 + 1.5|n|n攻击距离 128（近战）|n移动速度 315。

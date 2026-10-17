@@ -61,13 +61,15 @@ $abilData = [IO.File]::ReadAllText((Extract-FromMpq 'Units\AbilityData.slk'), [T
 $uiSlk = [IO.File]::ReadAllText((Extract-FromMpq 'Units\UnitUI.slk'), [Text.Encoding]::UTF8)
 $unitStr = [IO.File]::ReadAllText((Extract-FromMpq 'Units\CampaignUnitStrings.txt'), [Text.Encoding]::UTF8)
 $abilStr = [IO.File]::ReadAllText((Extract-FromMpq 'Units\CampaignAbilityStrings.txt'), [Text.Encoding]::UTF8)
+# Normalize CRLF so end-anchored (?m)^Order=...$ checks match regardless of line endings
+$abilStr = $abilStr -replace "`r`n","`n"
 
 # ---- w3i binary hard assertions: fixed 806B, equal-length label x2, byte-diff vs a1c1de1 only in slots ----
 $w3iLocal = Extract-FromMpq 'war3map.w3i'
 $w3iBytes = [IO.File]::ReadAllBytes($w3iLocal)
 $checks['w3i:fixed-806'] = ($w3iBytes.Length -eq 806)
-$newLabel = [Text.Encoding]::ASCII.GetBytes('OMG IMBA v1.7.1-W3IFix  ')
-$oldLabel = [Text.Encoding]::ASCII.GetBytes('OMG IMBA v1.6-K-Visible ')
+$newLabel = [Text.Encoding]::ASCII.GetBytes('OMG IMBA v1.8-Integrated')
+$oldLabel = [Text.Encoding]::ASCII.GetBytes('OMG IMBA v1.7.1-W3IFix  ')
 function Count-Sub($hay, $needle) {
     $c = 0; $i = 0
     while ($i -le ($hay.Length - $needle.Length)) {
@@ -101,8 +103,8 @@ function Get-Block($text, $id) {
 }
 
 # ---- 2. version ----
-$checks['version:xomg'] = ([regex]::Matches($jass, 'constant string XOMG_VERSION="v1\.7\.1-K-W3IFix"')).Count -eq 1
-$checks['version:setmapname'] = ([regex]::Matches($jass, 'SetMapName\("OMG IMBA v1\.7\.1-K-W3IFix"\)')).Count -eq 1
+$checks['version:xomg'] = ([regex]::Matches($jass, 'constant string XOMG_VERSION="v1\.8-integrated"')).Count -eq 1
+$checks['version:setmapname'] = ([regex]::Matches($jass, 'SetMapName\("OMG IMBA v1\.8-Integrated"\)')).Count -eq 1
 
 # ---- 3. KA skill templates: four distinct basecodes, distinct orders ----
 $ka = @{}
@@ -229,6 +231,26 @@ foreach ($pair in @(@{arc='war3mapimported\K\K_final_v2.mdx';kind='world'},@{arc
         $checks['mdx:portrait-bounds'] = $ok
     }
 }
+
+
+# ---- v1.8-integrated semantic checks (title/sven/lion/ATTR/bottle/K normal pool) ----
+$checks['v18:title-nv'] = (([regex]::Matches($jass,'本图女神')).Count -eq 0)
+$checks['v18:title-nan'] = (([regex]::Matches($jass,'本图男神')).Count -ge 1)
+$checks['v18:dota-goddess-kept'] = (([regex]::Matches($jass,'DOTA女神')).Count -eq 1)
+$checks['v18:sven-self-new'] = ($jass -match 'set selfRate=1\.\+1\.\*level') -and ($jass -notmatch 'set selfRate=\.5\+\.5\*level')
+$checks['v18:sven-ally-new'] = ($jass -match 'set allyRate=1\.\+\.5\*level') -and ($jass -notmatch 'set allyRate=\.5\+\.25\*level')
+$checks['v18:god-strength-log'] = ($jass -match 'GOD_STRENGTH logical=A1WH')
+$checks['v18:lion-plus50-x3'] = (([regex]::Matches($jass,'SWYJ\[i\]=SWYJ\[i\]\+50')).Count -eq 3) -and (([regex]::Matches($jass,'SWYJ\[i\]=SWYJ\[i\]\+20')).Count -eq 0)
+$checks['v18:finger-grow-log'] = (([regex]::Matches($jass,'FINGER_GROW base_add=50')).Count -eq 3)
+$checks['v18:attr-ally-broadcast'] = ($jass -match 'GetLocalPlayer\(\)==abQ') -and ($jass -notmatch '双杰抽属性：本次\+')
+$checks['v18:bottle-family-helper'] = ($jass -match 'function B1063IsBottleFamily takes integer raw returns boolean')
+$checks['v18:bottle-mark-source'] = ($jass -match 'SaveInteger\(L7,GetHandleId\(drop\),16201,itemId\)')
+$checks['v18:bottle-fix-log'] = ($jass -match 'BOTTLE_FIX raw=')
+$checks['v18:k-normal-pool'] = ($jass -notmatch 'K_POOL_ROLLED') -and ($jass -notmatch 'K_POOL_HIT') -and ($jass -notmatch 'K_POOL_ROLL') -and ($jass -notmatch 'B891RandomAgilityNoK') -and ($jass -notmatch 'QC9HumanNoK') -and ($jass -match "set K24\[40\]='H0K0'") -and ($jass -match "R1X\('H0K0',0,'KA01','KA02','KA03','KA04'\)")
+# CS text sync
+$checks['v18:cs-lion-50-100'] = (([regex]::Matches($abilStr,'基础命中敌方英雄\+50点额外伤害')).Count -eq 16)
+$checks['v18:cs-sven-200-300-400'] = ($abilStr -match '增加自身200%的基础攻击力') -and ($abilStr -match '增加自身300%的基础攻击力') -and ($abilStr -match '增加自身400%的基础攻击力')
+$checks['v18:cs-sven-ally-150-200-250'] = ($abilStr -match '150%/200%/250%的基础攻击力')
 
 # ---- report ----
 $rows = foreach ($k in $checks.Keys) {

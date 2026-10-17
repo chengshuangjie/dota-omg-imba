@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-17",
+  "action": "Merge count1 embedded PortraitCam CAMS into K-v2 world model; independent portrait retained",
+  "candidate": {
+    "path": "agents/s_000EFyDrAHw/artifacts/K_portrait_merge/K_final_v2_portrait_merged_count1.mdx",
+    "size": 54157,
+    "sha256": "e42041389591493b0eb5b20eb550e3e24a996d356fc9c764140036c8f3148407"
+  },
+  "runtime": {
+    "path": "assets/Kv2/model/K_final_v2.mdx",
+    "archive": "war3mapimported/K/K_final_v2.mdx",
+    "size": 54157,
+    "sha256": "e42041389591493b0eb5b20eb550e3e24a996d356fc9c764140036c8f3148407"
+  },
+  "independent_portrait_retained": {
+    "path": "assets/Kv2/model/K_final_portrait.mdx",
+    "archive": "war3mapimported/K/K_final_portrait.mdx",
+    "modl": "K_Portrait",
+    "cams": 1
+  },
+  "checks": {
+    "prefix_54029_byte_identical_to_original_v2": "PASS",
+    "magic_MDLX": "PASS",
+    "VERS_800": "PASS",
+    "MODL_K_Hero_nonempty": "PASS",
+    "SEQS_Stand_Walk_Attack_Spell_Death": "PASS",
+    "MTLS_TEXS_GEOS_BONE_PIVT_byte_identical": "PASS",
+    "chunk_closure_to_EOF": "PASS",
+    "embedded_CAMS_count1_PortraitCam": "PASS",
+    "K_body_blp_refs_11": "PASS",
+    "UnitUI_main_model_path_unchanged_K_final_v2_mdx": "PASS",
+    "no_separate_portrait_field_in_UnitUI": "PASS"
+  },
+  "note": "Static structure PASS; in-game portrait framing still requires user live confirmation. No pack/build performed this turn."
+}

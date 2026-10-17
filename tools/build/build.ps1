@@ -189,8 +189,8 @@ if (-not $SkipSyntaxCheck) {
 $w3iSrc = Join-Path $root 'src\war3map.w3i'
 $w3iBytes = [IO.File]::ReadAllBytes($w3iSrc)
 if ($w3iBytes.Length -ne 806) { throw "war3map.w3i 必须为固定 806B，当前 $($w3iBytes.Length)B（禁止变长替换）" }
-$newLabel = [Text.Encoding]::ASCII.GetBytes('OMG IMBA v1.7.1-W3IFix  ')
-$oldLabel = [Text.Encoding]::ASCII.GetBytes('OMG IMBA v1.6-K-Visible ')
+$newLabel = [Text.Encoding]::ASCII.GetBytes('OMG IMBA v1.8-Integrated')
+$oldLabel = [Text.Encoding]::ASCII.GetBytes('OMG IMBA v1.7.1-W3IFix  ')
 function Count-Bytes($hay, $needle) {
     $c = 0; $i = 0
     while (($i = [Array]::IndexOf($hay, $needle[0], $i)) -ge 0) {

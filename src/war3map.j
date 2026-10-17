@@ -407,8 +407,6 @@ integer array XYMJ
 integer array Dragon_Unit
 integer array CHOUJIANGSTATE
 // Human K test probability: reset once per candidate-pool build/refresh; AI never reads these flags.
-boolean array K_POOL_ROLLED
-boolean array K_POOL_HIT
 // v1.3 welfare button (凯哥发福利): per-pid per-match claim mark + rate-limited logs
 boolean array LOTTERY_CLAIMED
 integer array LOTTERY_OPEN_LOG
@@ -417,6 +415,7 @@ integer array LOTTERY_REPEAT_LOG
 integer array ATTR_ROLL_TOTAL
 integer array ATTR_OK_LOG
 integer array ATTR_REJECT_LOG
+integer array ATTR_KEEP_LOG
 // v1.3: dev-only -droptest debug spawn; default OFF, hard cap 3 per match, no public infinite spawn.
 constant boolean DEV_DROP_TEST=false
 integer DROP_TEST_USES=0
@@ -751,7 +750,7 @@ boolean BP_MODE=false
 boolean XM_MODE=false
 constant real IMBA_POWER=2.
 constant boolean XOMG_IMBA_ENABLED=true
-constant string XOMG_VERSION="v1.7.1-K-W3IFix"
+constant string XOMG_VERSION="v1.8-integrated"
 integer imbaMult=2
 integer XOMG_DAMAGE_LOG_COUNT=0
 boolean imbaB67DpsExclude=false
@@ -3869,6 +3868,14 @@ boolean array B891ArcMiaoReplaced
 unit B891MiaoInstalling=null
 unit B896MiaoOldContext=null
 boolean array B897MiaoBusy
+boolean array MiaoDirectRequest
+real B1063SellLastClick=0.
+real array B1063SellThrottle
+real B1063SellCX=0.
+real B1063SellCY=0.
+item B1063SellBest=null
+real B1063SellBestDist=0.
+integer array B1063SellFailLog
 unit array B897MiaoOld
 unit array B897MiaoNew
 integer array B897MiaoStage
@@ -3919,6 +3926,7 @@ button array B836ArcDrawButton
 // v1.3: no-archive welfare + attribute rows in the archive dialog (replace old 双圣 draw entry)
 button array B836WelfareButton
 button array B836AttrButton
+button array B836ArcCloseButton
 button array B836ArcBookButton
 button array B836ArcClawButton
 button array B891ArcMiaoButton
@@ -4092,11 +4100,15 @@ integer array B1063LotteryPool
 integer B1063LotteryCount=0
 boolean B1063LotteryBuilt=false
 integer B1063LotteryMinPrice=0
+integer array B1063LatePool
+integer B1063LateCount=0
+boolean B1063LateBuilt=false
 integer B1063DropEligibleKills=0
 integer B1063DropRollCount=0
 integer B1063DropSuccessCount=0
 integer B1063DropLastRoll=0
 integer B1063DropLogCount=0
+integer array B1063AiSkipLog
 boolean array B1063CountFault
 string B1063FaultNote=""
 endglobals
@@ -22148,7 +22160,7 @@ if GetUnitAbilityLevel(u,'A2YR')>0 then
 set d=d-.08
 endif
 if IMaxBJ(B287_GetUnitAbilityLevel(u,'A10Q'),B287_GetUnitAbilityLevel(u,'A1DB'))>0 then
-set d=d*(0.875-0.125*IMaxBJ(B287_GetUnitAbilityLevel(u,'A10Q'),B287_GetUnitAbilityLevel(u,'A1DB')))
+set d=d*(0.75-0.25*IMaxBJ(B287_GetUnitAbilityLevel(u,'A10Q'),B287_GetUnitAbilityLevel(u,'A1DB')))
 endif
 return d
 endif
@@ -22173,7 +22185,7 @@ endif
 if GetUnitAbilityLevel(u,'A2YR')>0 then
 set d=d-.08
 endif
-set d=d*(0.875-0.125*level)
+set d=d*(0.75-0.25*level)
 return d
 endif
 return -1.
@@ -25002,11 +25014,6 @@ if b891Pick>=39 then
 set b891Pick=b891Pick+1
 endif
 return GetUnitPointValueByType(K24[b891Pick])
-endfunction
-// Human fallback pool excludes both Miao at slot 39 and K at slot 40.
-// K is injected once per human candidate-pool build by an explicit 50% roll.
-function B891RandomAgilityNoK takes nothing returns integer
-return GetUnitPointValueByType(K24[GetRandomInt(1,K_4-2)])
 endfunction
 function UR7 takes integer hI returns nothing
 call hi(hI,Z7[1])
@@ -37343,7 +37350,7 @@ call SuijiMode_ApplyRegisteredCooldown3(u,'A0ER',active,100.,100.,100.,80.,80.,8
 // such as regeneration or duration into ANcl DataC/channel duration slots.
 if B287_UsesAlternateCarrier(u,'A0ER')==false then
 call SuijiMode_ApplyRegisteredRealField3(u,'A0ER',active,ABILITY_DATA_AREA,900.,900.,900.,99999.,99999.,99999.)
-call SuijiMode_ApplyRegisteredRealField3(u,'A0ER',active,ABILITY_DATA_DATA_C,25.,50.,75.,50.,75.,100.)
+call SuijiMode_ApplyRegisteredRealField3(u,'A0ER',active,ABILITY_DATA_DATA_C,50.,100.,150.,50.,75.,100.)
 call SuijiMode_ApplyRegisteredRealField3(u,'A0ER',active,ABILITY_DATA_DUR,6.,7.,8.,8.,9.,10.)
 call SuijiMode_ApplyRegisteredRealField3(u,'A0ER',active,ABILITY_DATA_HERODUR,6.,7.,8.,8.,9.,10.)
 call SuijiMode_ApplyRegisteredIntegerDefinitionField(u,'A0ER','A2U2',active,ABILITY_DATA_TARGS,3,"Targs")
@@ -38501,7 +38508,7 @@ if r==1 then
     set name="小生我怕怕"
     set color=color_gold
 elseif r==2 then
-    set name="本图女神"
+    set name="本图男神"
 elseif r==3 then
     set name="技术主播"
     set color=color_pink
@@ -39764,9 +39771,25 @@ endif
 return false
 endfunction
 // ===== XOMG1 item pools (SU finished equip, probe-filtered) + neutral drop =====
+// v1.8: 12-index bottle family SU/ZU/BU (XZ/AZ/BZ/CZ/IA/YA/HJ0/HJ1/WA/QA/NA/JA). UZ=I041/I055/I0D6 ranged orb is NOT a bottle.
+function B1063IsBottleFamily takes integer raw returns boolean
+if raw=='I00L' or raw=='I05E' or raw=='I0AU' or raw=='I0AS' or raw=='I0AT' or raw=='I0GW' or raw=='I0PK' or raw=='I0Q6' or raw=='I0H2' or raw=='I0GV' or raw=='I0AR' or raw=='I0AQ' then
+return true
+endif
+if raw=='I0AV' or raw=='I0AM' or raw=='I0AN' or raw=='I0AO' or raw=='I0AP' or raw=='I0GY' or raw=='I0PL' or raw=='I0Q7' or raw=='I0GX' or raw=='I0H1' or raw=='I0H0' or raw=='I0GZ' then
+return true
+endif
+if raw=='I0DN' or raw=='I0DO' or raw=='I0DP' or raw=='I0DQ' or raw=='I0H3' or raw=='I0PM' or raw=='I0Q8' or raw=='I0DR' or raw=='I0H4' or raw=='I0H6' or raw=='I0H5' then
+return true
+endif
+return false
+endfunction
 function B1063ItemEligible takes integer rawcode returns boolean
 	local item probe=null
 	if rawcode==0 then
+	return false
+	endif
+	if B1063IsBottleFamily(rawcode) then
 	return false
 	endif
 	// inline denylist (was ED9): scripted reward/quest/Aegis set.
@@ -39778,6 +39801,11 @@ function B1063ItemEligible takes integer rawcode returns boolean
 	return false
 	endif
 	if IsItemPowerup(probe) then
+	call RemoveItem(probe)
+	set probe=null
+	return false
+	endif
+	if IsItemPawnable(probe)==false then
 	call RemoveItem(probe)
 	set probe=null
 	return false
@@ -39830,6 +39858,308 @@ function B1063BuildLotteryPool takes nothing returns nothing
 	endloop
 	set B1063LotteryBuilt=true
 endfunction
+function B1063BuildLatePool takes nothing returns nothing
+local integer i=1
+local integer p=0
+if B1063LateBuilt or EV<=0 then
+return
+endif
+set B1063LateCount=0
+loop
+exitwhen i>EV or B1063LateCount>=256
+if ZU[i]!=0 then
+set p=Get_Item_Price(ZU[i])
+if p>0 and B1063ItemEligible(ZU[i]) then
+set B1063LateCount=B1063LateCount+1
+set B1063LatePool[B1063LateCount]=ZU[i]
+endif
+endif
+set i=i+1
+endloop
+set B1063LateBuilt=true
+endfunction
+// Centralized authoritative mark probe: AI entries skip marked ground equipment; hooks await AI-entry audit.
+function B1063MarkedGroundItem takes item it returns boolean
+local integer h=0
+if it==null then
+return false
+endif
+set h=GetHandleId(it)
+return LoadInteger(L7,h,16201)!=0 and LoadBoolean(L7,h,16205)==true
+endfunction
+function B1063MarkClear takes item it returns nothing
+local integer h=0
+if it==null then
+return
+endif
+set h=GetHandleId(it)
+if LoadInteger(L7,h,16201)!=0 then
+call RemoveSavedInteger(L7,h,16201)
+call RemoveSavedInteger(L7,h,16202)
+call RemoveSavedReal(L7,h,16203)
+call RemoveSavedBoolean(L7,h,16204)
+call RemoveSavedBoolean(L7,h,16205)
+endif
+set h=0
+return
+endfunction
+// ===== v1.8 D1: neutral-drop ground double-click direct sell (DROP_SELL) =====
+// Local left-button double-click (0.35s, same player) -> terrain point -> nearest marked
+// ground non-bottle item -> DzSyncData; receiver deterministically rechecks and atomically
+// claims, refunds nothing (selling = +gold), removes item, pays half price floor.
+function B1063SellFilter takes nothing returns boolean
+local item it=GetFilterItem()
+local integer h=0
+if it==null then
+return false
+endif
+set h=GetHandleId(it)
+if LoadInteger(L7,h,16201)==0 then
+return false
+endif
+if LoadBoolean(L7,h,16204)==true then
+return false
+endif
+if LoadBoolean(L7,h,16205)==false then
+return false
+endif
+if B1063IsBottleFamily(LoadInteger(L7,h,16201)) then
+return false
+endif
+return GetWidgetLife(it)>0
+endfunction
+function B1063SellPickNearest takes nothing returns nothing
+local item it=GetEnumItem()
+local integer h=0
+local real dx=0.
+local real dy=0.
+local real d=0.
+if it==null then
+return
+endif
+set h=GetHandleId(it)
+if LoadInteger(L7,h,16201)==0 or LoadBoolean(L7,h,16204)==true or LoadBoolean(L7,h,16205)==false or B1063IsBottleFamily(LoadInteger(L7,h,16201)) then
+return
+endif
+set dx=GetItemX(it)-B1063SellCX
+set dy=GetItemY(it)-B1063SellCY
+set d=SquareRoot(dx*dx+dy*dy)
+if B1063SellBest==null or d<B1063SellBestDist then
+set B1063SellBest=it
+set B1063SellBestDist=d
+endif
+set it=null
+endfunction
+function B1063SellMouseDown takes nothing returns boolean
+local integer key=MHEvent_GetKey()
+local player p=GetLocalPlayer()
+local integer pid=GetPlayerId(p)
+local unit hero=null
+local real now=GetGameTime()
+local real cx=0.
+local real cy=0.
+local rect r=null
+local integer h=0
+if key!=1 then
+return false
+endif
+if pid<0 or pid>=12 then
+return false
+endif
+if MHUI_IsChatEditBarOn() or EditingHotKeyIndex>0 or IsSetUpUIEnable or UpdateLogIsShow or bMenuMainPanelIsEnable then
+return false
+endif
+set hero=M7[pid]
+if hero==null or not UnitAlive(hero) then
+return false
+endif
+if now-B1063SellLastClick>.35 or now<B1063SellLastClick then
+set B1063SellLastClick=now
+return false
+endif
+if now-B1063SellThrottle[pid]<.5 then
+return false
+endif
+set cx=DzGetMouseTerrainX()
+set cy=DzGetMouseTerrainY()
+if cx<-65536. or cx>65536. or cy<-65536. or cy>65536. then
+return false
+endif
+set B1063SellCX=cx
+set B1063SellCY=cy
+set B1063SellBest=null
+set B1063SellBestDist=0.
+set r=Rect(cx-140.,cy-140.,cx+140.,cy+140.)
+call EnumItemsInRect(r,Condition(function B1063SellFilter),function B1063SellPickNearest)
+set r=null
+if B1063SellBest!=null then
+set h=GetHandleId(B1063SellBest)
+set B1063SellThrottle[pid]=now
+call DzSyncData("DROP_SELL",I2S(pid)+","+I2S(h)+","+I2S(R2I(cx*10.))+","+I2S(R2I(cy*10.)))
+call XOMG_LogEvent("DROP_SELL_REQ pid="+I2S(pid)+" handle="+I2S(h)+" raw="+I2S(LoadInteger(L7,h,16201))+" dx="+I2S(R2I(B1063SellBestDist)))
+endif
+set B1063SellBest=null
+set hero=null
+set p=null
+return false
+endfunction
+function B1063SellSync takes nothing returns nothing
+local player p=DzGetTriggerSyncPlayer()
+local integer pid=GetPlayerId(p)
+local string data=DzGetTriggerSyncData()
+local integer length=StringLength(data)
+local integer c1=-1
+local integer c2=-1
+local integer c3=-1
+local integer i=0
+local integer sellHandle=0
+local real tx=0.
+local real ty=0.
+local unit hero=null
+local item it=null
+local integer h=0
+local integer raw=0
+local integer sale=0
+local integer price=0
+if pid<0 or pid>=12 or length<1 or length>40 then
+set p=null
+return
+endif
+if GetPlayerController(p)!=MAP_CONTROL_USER or GetPlayerSlotState(p)!=PLAYER_SLOT_STATE_PLAYING then
+set p=null
+return
+endif
+loop
+exitwhen i>=length
+if SubString(data,i,i+1)=="," then
+if c1==-1 then
+set c1=i
+elseif c2==-1 then
+set c2=i
+elseif c3==-1 then
+set c3=i
+endif
+endif
+set i=i+1
+endloop
+if c1<=0 or c2<=c1+1 or c3<=c2+1 then
+set p=null
+return
+endif
+if S2I(SubString(data,0,c1))!=pid then
+set p=null
+return
+endif
+set sellHandle=S2I(SubString(data,c1+1,c2))
+set tx=I2R(S2I(SubString(data,c2+1,c3)))/10.
+set ty=I2R(S2I(SubString(data,c3+1,length)))/10.
+set hero=M7[pid]
+if hero==null or not UnitAlive(hero) then
+call XOMG_LogEvent("DROP_SELL_FAIL pid="+I2S(pid)+" reason=no_hero handle="+I2S(sellHandle))
+set p=null
+return
+endif
+if not IsUnitInRangeXY(hero,tx,ty,600.) then
+call XOMG_LogEvent("DROP_SELL_FAIL pid="+I2S(pid)+" reason=far handle="+I2S(sellHandle))
+set p=null
+return
+endif
+// Deterministic enumeration near the point; match by handleId.
+set B1063SellCX=tx
+set B1063SellCY=ty
+set B1063SellBest=null
+set B1063SellBestDist=0.
+call EnumItemsInRect(Rect(tx-140.,ty-140.,tx+140.,ty+140.),Condition(function B1063SellFilter),function B1063SellPickNearest)
+set it=B1063SellBest
+set B1063SellBest=null
+if it==null or GetHandleId(it)!=sellHandle then
+if B1063SellFailLog[pid]<8 then
+set B1063SellFailLog[pid]=B1063SellFailLog[pid]+1
+call XOMG_LogEvent("DROP_SELL_FAIL pid="+I2S(pid)+" reason=not_marked handle="+I2S(sellHandle))
+endif
+set p=null
+return
+endif
+set h=GetHandleId(it)
+if LoadBoolean(L7,h,16204)==true then
+call XOMG_LogEvent("DROP_SELL_FAIL pid="+I2S(pid)+" reason=duplicate handle="+I2S(sellHandle))
+set p=null
+return
+endif
+// Atomic claim: first client to reach here owns the sale.
+call SaveBoolean(L7,h,16204,true)
+set raw=LoadInteger(L7,h,16201)
+set price=Get_Item_Price(raw)
+set sale=price/2
+call B1063MarkClear(it)
+call RemoveItem(it)
+call SetPlayerState(p,PLAYER_STATE_RESOURCE_GOLD,GetPlayerState(p,PLAYER_STATE_RESOURCE_GOLD)+sale)
+call DisplayTimedTextToPlayer(p,0,0,5.,"|cff00ff00[出售] 售出 "+GetObjectName(raw)+"，获得 "+I2S(sale)+" 金币|r")
+call XOMG_LogEvent("DROP_SELL_DELIVER pid="+I2S(pid)+" handle="+I2S(sellHandle)+" raw="+I2S(raw)+" price="+I2S(price)+" sale="+I2S(sale))
+set it=null
+set hero=null
+set p=null
+endfunction
+function B1063SellInit takes nothing returns nothing
+local trigger t=CreateTrigger()
+local trigger s=CreateTrigger()
+call MHMsgMouseDownEvent_Register(t)
+call TriggerAddCondition(t,Condition(function B1063SellMouseDown))
+call DzTriggerRegisterSyncData(s,"DROP_SELL",false)
+call TriggerAddAction(s,function B1063SellSync)
+set t=null
+set s=null
+endfunction
+// v1.8: PICKUP clears direct-sell qualification; a marked internal bottle-state converts to normal full SU[XZ]=I00L.
+// Shop bottles and empty rune-storing bottles (SU[XZ]/ZU[XZ]) are never converted; normal pickup has no mark.
+function B1063MarkPickupDrop takes nothing returns nothing
+local unit u=GetManipulatingUnit()
+local item it=GetManipulatedItem()
+local integer h=0
+local integer raw=0
+local item fresh=null
+local integer charges=0
+if it==null then
+return
+endif
+set h=GetHandleId(it)
+set raw=LoadInteger(L7,h,16201)
+if GetTriggerEventId()==EVENT_PLAYER_UNIT_DROP_ITEM then
+call B1063MarkClear(it)
+set it=null
+return
+endif
+if GetTriggerEventId()!=EVENT_PLAYER_UNIT_PICKUP_ITEM then
+set it=null
+return
+endif
+if raw!=0 then
+call B1063MarkClear(it)
+endif
+if u==null or not IsUnitType(u,UNIT_TYPE_HERO) then
+set u=null
+set it=null
+return
+endif
+if raw!=0 and B1063IsBottleFamily(raw) and raw!=SU[XZ] and raw!=ZU[XZ] and O77(GetHandleId(u),"BottleTargetUnit")==null and OM7(GetHandleId(u),"BottleTargetItemId")==0 then
+set charges=GetItemCharges(it)
+if charges>3 then
+set charges=3
+endif
+call RemoveItem(it)
+set fresh=CreateItem(SU[XZ],GetUnitX(u),GetUnitY(u))
+call SetItemCharges(fresh,charges)
+call SetItemPlayer(fresh,GetOwningPlayer(u),false)
+call SetItemDroppable(fresh,true)
+call SetItemPawnable(fresh,true)
+call UnitAddItem(u,fresh)
+call XOMG_LogEvent("BOTTLE_FIX raw="+I2S(raw)+" -> SU[XZ]=I00L charges="+I2S(charges))
+endif
+set u=null
+set it=null
+set fresh=null
+return
+endfunction
 function B1063NeutralDropAction takes nothing returns nothing
 	local unit victim=GetTriggerUnit()
 	local unit killer=GetKillingUnit()
@@ -39840,12 +40170,30 @@ function B1063NeutralDropAction takes nothing returns nothing
 	local integer itemId=0
 	local integer price=0
 	local item drop=null
+	local integer selPool=0
+	local integer selCount=0
+	local real elapsedReal=0.
 	if victim==null or not B832WardCreep(victim) then
 	set victim=null
 	set killer=null
 	return
 	endif
 	call B1063BuildCheapPool()
+	call B1063BuildLatePool()
+	set elapsedReal=TimerGetElapsed(W)
+	if elapsedReal>=600. and B1063LateCount>0 then
+	set selPool=2
+	set selCount=B1063LateCount
+	elseif B1063CheapCount>0 then
+	set selPool=1
+	set selCount=B1063CheapCount
+	elseif B1063LateCount>0 then
+	set selPool=2
+	set selCount=B1063LateCount
+	else
+	set selPool=0
+	set selCount=0
+	endif
 	set h=GetHandleId(victim)
 	if LoadBoolean(L7,h,16100) then
 	set victim=null
@@ -39854,7 +40202,7 @@ function B1063NeutralDropAction takes nothing returns nothing
 	endif
 	call SaveBoolean(L7,h,16100,true)
 	set B1063DropEligibleKills=B1063DropEligibleKills+1
-	if B1063CheapCount<=0 then
+	if selCount<=0 then
 	if B1063DropLogCount<12 then
 	set B1063DropLogCount=B1063DropLogCount+1
 	call XOMG_LogEvent("DROP_SKIP eligible="+I2S(B1063DropEligibleKills)+" pool=0 victim="+GetObjectName(GetUnitTypeId(victim)))
@@ -39868,19 +40216,29 @@ function B1063NeutralDropAction takes nothing returns nothing
 	set B1063DropLastRoll=roll
 	if B1063DropLogCount<12 then
 	set B1063DropLogCount=B1063DropLogCount+1
-	call XOMG_LogEvent("DROP_ROLL eligible="+I2S(B1063DropEligibleKills)+" roll="+I2S(roll)+" pool="+I2S(B1063CheapCount)+" victim="+GetObjectName(GetUnitTypeId(victim)))
+	call XOMG_LogEvent("DROP_ROLL elapsed="+I2S(R2I(elapsedReal))+" pool="+I2S(selPool)+" count="+I2S(selCount)+" roll="+I2S(roll)+" eligible="+I2S(B1063DropEligibleKills)+" victim="+GetObjectName(GetUnitTypeId(victim)))
 	endif
 	if roll!=1 then
 	set victim=null
 	set killer=null
 	return
 	endif
-	set pick=GetRandomInt(1,B1063CheapCount)
+	set pick=GetRandomInt(1,selCount)
+	if selPool==2 then
+	set itemId=B1063LatePool[pick]
+	else
 	set itemId=B1063CheapPool[pick]
+	endif
 	set price=Get_Item_Price(itemId)
 	set drop=CreateItem(itemId,GetUnitX(victim),GetUnitY(victim))
 	if drop!=null then
 	set B1063DropSuccessCount=B1063DropSuccessCount+1
+	// v1.8: unique source mark on the dropped item handle (raw/price/time/claimed/sellable)
+	call SaveInteger(L7,GetHandleId(drop),16201,itemId)
+	call SaveInteger(L7,GetHandleId(drop),16202,price)
+	call SaveReal(L7,GetHandleId(drop),16203,GetGameTime())
+	call SaveBoolean(L7,GetHandleId(drop),16204,false)
+	call SaveBoolean(L7,GetHandleId(drop),16205,true)
 	call XOMG_LogEvent("DROP_OK count="+I2S(B1063DropSuccessCount)+" item="+GetObjectName(itemId)+" raw="+I2S(itemId)+" price="+I2S(price)+" roll="+I2S(roll))
 	if killer!=null then
 	set killerOwner=GetOwningPlayer(killer)
@@ -39900,7 +40258,8 @@ function B1063DropPoolDeferred takes nothing returns nothing
 	local timer poolTimer=GetExpiredTimer()
 	call B1063BuildCheapPool()
 	call B1063BuildLotteryPool()
-	call XOMG_LogEvent("DROP_INIT ver="+XOMG_VERSION+" cheap_pool="+I2S(B1063CheapCount)+" lottery_pool="+I2S(B1063LotteryCount)+" chance=10 max_price=1000 source=ZU")
+	call B1063BuildLatePool()
+	call XOMG_LogEvent("DROP_POOL_INIT ver="+XOMG_VERSION+" early_count="+I2S(B1063CheapCount)+" late_count="+I2S(B1063LateCount)+" lottery_pool="+I2S(B1063LotteryCount)+" switch=600s")
 	call PauseTimer(poolTimer)
 	call DestroyTimer(poolTimer)
 	set poolTimer=null
@@ -39936,9 +40295,21 @@ endfunction
 function B1063NeutralDropInit takes nothing returns nothing
 	local trigger t=CreateTrigger()
 	local timer poolTimer=CreateTimer()
+	local trigger mk=CreateTrigger()
+	local integer mkPid=0
 	call TriggerRegisterPlayerUnitEvent(t,Player(12),EVENT_PLAYER_UNIT_DEATH,null)
 	call TriggerAddAction(t,function B1063NeutralDropAction)
 	call TimerStart(poolTimer,2.00,false,function B1063DropPoolDeferred)
+	call B1063SellInit()
+	// v1.8: per-player pickup/drop mark cleanup + guarded bottle conversion
+	set mkPid=0
+	loop
+	exitwhen mkPid>11
+	call TriggerRegisterPlayerUnitEvent(mk,Player(mkPid),EVENT_PLAYER_UNIT_PICKUP_ITEM,null)
+	call TriggerRegisterPlayerUnitEvent(mk,Player(mkPid),EVENT_PLAYER_UNIT_DROP_ITEM,null)
+	set mkPid=mkPid+1
+	endloop
+	call TriggerAddAction(mk,function B1063MarkPickupDrop)
 	set t=null
 	set poolTimer=null
 endfunction
@@ -58600,6 +58971,14 @@ endfunction
 function B836ArcHuman takes integer arcPid returns boolean
 return arcPid>=0 and arcPid<12 and KKServerScore_InitialHuman[arcPid] and not KKServerScore_Left[arcPid] and GetPlayerController(Player(arcPid))==MAP_CONTROL_USER and GetPlayerSlotState(Player(arcPid))==PLAYER_SLOT_STATE_PLAYING
 endfunction
+// Early permission gate for birth seams (defined before Q19; mirrors B891ArcMiaoActive without late helpers).
+function MiaoDirectPickReady takes integer pid returns boolean
+local boolean ok=false
+if pid>=0 and pid<12 then
+set ok=B836ArcHuman(pid) and (B892MiaoPermanent[pid] or (B836ArcLoaded[pid] and B891ArcMiao[pid]>B836ArcEpoch[pid]+R2I(TimerGetElapsed(W)))) and not B891ArcMiaoReplaced[pid] and not B897MiaoBusy[pid]
+endif
+return ok
+endfunction
 function KKDifficulty_ApplyNewbieSpeedCap takes nothing returns nothing
 local integer i=0
 local unit u=null
@@ -60972,58 +61351,12 @@ endloop
 set J[QB9]=true
 return QB9
 endfunction
-// Human candidate pools use an agility fallback which excludes K.
-function QZ9HumanNoK takes integer QA9 returns integer
-local integer QB9
-if QA9==1 then
-set QB9=B891RandomAgilityNoK()
-elseif QA9==2 then
-set QB9=GetUnitPointValueByType(M44[GetRandomInt(1,M74)])
-elseif QA9==3 then
-set QB9=GetUnitPointValueByType(M84[GetRandomInt(1,M94)])
-endif
-return QB9
-endfunction
-function QC9HumanNoK takes integer Q39,integer Q69,integer QA9 returns integer
-local integer QB9=QZ9HumanNoK(QA9)
-if X8 and Q39!=QB9 and Q69!=QB9 then
-return QB9
-endif
-loop
-exitwhen J[QB9]==false and Q39!=QB9 and Q69!=QB9
-set QB9=QZ9HumanNoK(QA9)
-endloop
-set J[QB9]=true
-return QB9
-endfunction
 function QC9ForPlayer takes player p,integer Q39,integer Q69,integer QA9 returns integer
-if GetPlayerController(p)==MAP_CONTROL_USER then
-return QC9HumanNoK(Q39,Q69,QA9)
-endif
 return QC9(Q39,Q69,QA9)
 endfunction
-// Called from every agility slot, but rolls only once per human candidate-pool build.
-// Hit: inject K (hero index 118) in the first available agility slot. Miss/follow-ups: fallback excludes K.
+// Agility slot uses the normal shared pool; H0K0 (K24[40]) rolls naturally with peers.
 function QC9HumanFirstAgility takes player p,integer Q39,integer Q69 returns integer
-local integer id=GetPlayerId(p)
-if GetPlayerController(p)!=MAP_CONTROL_USER then
 return QC9(Q39,Q69,1)
-endif
-if not K_POOL_ROLLED[id] then
-set K_POOL_ROLLED[id]=true
-set K_POOL_HIT[id]=GetRandomInt(1,100)<=50
-if K_POOL_HIT[id] then
-call XOMG_LogEvent("K_POOL_ROLL pid="+I2S(id)+" hit=1 hero=118 ver="+XOMG_VERSION)
-else
-call XOMG_LogEvent("K_POOL_ROLL pid="+I2S(id)+" hit=0 hero=0 ver="+XOMG_VERSION)
-endif
-endif
-if K_POOL_HIT[id] and Q39!=118 and Q69!=118 then
-set J[118]=true
-set K_POOL_HIT[id]=false
-return 118
-endif
-return QC9HumanNoK(Q39,Q69,1)
 endfunction
 function ShowShop takes boolean b returns nothing
     call ShowUnit(I34,b)
@@ -61092,8 +61425,6 @@ set p=Z7[i]
 set Q39=0
 set Q69=0
 set QL9=0
-set K_POOL_ROLLED[GetPlayerId(p)]=false
-set K_POOL_HIT[GetPlayerId(p)]=false
 if TY7(p)then
 call UnitRemoveAbility(KU4[GetPlayerId(p)],'A331')
 // call UnitRemoveAbility(KU4[GetPlayerId(p)],'A4AL')
@@ -61169,8 +61500,6 @@ set p=A7[i]
 set Q39=0
 set Q69=0
 set QL9=0
-set K_POOL_ROLLED[GetPlayerId(p)]=false
-set K_POOL_HIT[GetPlayerId(p)]=false
 if TY7(p)then
 call UnitRemoveAbility(KU4[GetPlayerId(p)],'A331')
 // call UnitRemoveAbility(KU4[GetPlayerId(p)],'A4AL')
@@ -62743,7 +63072,14 @@ set UB7=UZ7()
 else
 set UB7=UA7()
 endif
-if J[UB7]==false then
+if MiaoDirectRequest[GetPlayerId(p)] and MiaoDirectPickReady(GetPlayerId(p)) then
+set UB7=117
+set J[117]=true
+set B891ArcMiaoReplaced[GetPlayerId(p)]=true
+set MiaoDirectRequest[GetPlayerId(p)]=false
+call XOMG_LogEvent("SELECT_MIAO_CREATE pid="+I2S(GetPlayerId(p))+" MLI=0 U70=0 UB7=117 K34=HMD0 createdType=HMD0 source=miao_direct")
+set M7[GetPlayerId(p)]=CreateUnitAtLoc(p,K34[117],LV7,bj_UNIT_FACING)
+elseif J[UB7]==false then
 if not X8 and not RZ4 then
 set J[UB7]=true
 endif
@@ -62764,7 +63100,14 @@ set UB7=UZ7()
 else
 set UB7=UA7()
 endif
-if J[UB7]==false then
+if MiaoDirectRequest[GetPlayerId(p)] and MiaoDirectPickReady(GetPlayerId(p)) then
+set UB7=117
+set J[117]=true
+set B891ArcMiaoReplaced[GetPlayerId(p)]=true
+set MiaoDirectRequest[GetPlayerId(p)]=false
+call XOMG_LogEvent("SELECT_MIAO_CREATE pid="+I2S(GetPlayerId(p))+" MLI=0 U70=0 UB7=117 K34=HMD0 createdType=HMD0 source=miao_direct")
+set M7[GetPlayerId(p)]=CreateUnitAtLoc(p,K34[117],LW7,bj_UNIT_FACING)
+elseif J[UB7]==false then
 if not X8 then
 set J[UB7]=true
 endif
@@ -63640,7 +63983,18 @@ set UB7=GetRandomInt(KL4,K14)
 else
 set UB7=B891RandomHeroRange(K04,K54)
 endif
-if J[UB7]==false and lives==1 then
+if MiaoDirectRequest[rJ] and MiaoDirectPickReady(rJ) then
+set UB7=117
+set J[117]=true
+set B891ArcMiaoReplaced[rJ]=true
+set MiaoDirectRequest[rJ]=false
+call XOMG_LogEvent("SELECT_MIAO_CREATE pid="+I2S(rJ)+" MLI=0 U70=0 UB7=117 K34=HMD0 createdType=HMD0 source=miao_direct")
+if TV7(Player(rJ))then
+set M7[rJ]=CreateUnitAtLoc(Player(rJ),K34[117],LV7,bj_UNIT_FACING)
+else
+set M7[rJ]=CreateUnitAtLoc(Player(rJ),K34[117],LW7,bj_UNIT_FACING)
+endif
+elseif J[UB7]==false and lives==1 then
 if RZ4==false then
 set J[UB7]=true
 endif
@@ -66843,7 +67197,7 @@ function V79 takes nothing returns nothing
 	local integer WUV = LoadInteger(TABLE_P, GetHandleId(u),'WARL')
 	local integer i = R2I(.5 * WUV * WUV + .5 * WUV + 4)
 	local integer CJR
-	set CJR =(15 + 5 * WUV) * UYX //攻击力
+	set CJR =(30 + 10 * WUV) * UYX //攻击力
 	set N3X = UYX *(WUV + 2)  //移速
     call Change_MS(u,N3X)
 	call B_7(u,CJR)
@@ -66885,7 +67239,7 @@ local integer WUV=B287_GetUnitAbilityLevel(u,'A0FV')
         set u=null
 		return
 	endif
-	set CJR =(15 + 5 * WUV) * UYX //攻击力
+	set CJR =(30 + 10 * WUV) * UYX //攻击力
 	set t = CreateTimer()
 	set W0V = GetHandleId(t)
 	set N3X = UYX *(WUV + 2) //移速
@@ -92303,7 +92657,7 @@ set QXD=true
 else
 set BC7=SuijiMode_GetPairCastLevel(WX7,spellId,'A0NS','A1DA')
 endif
-set BZ7=4+BC7
+set BZ7=8+2*BC7
 if d>0 then
 set cooltime=cooltime*d
 endif
@@ -93374,7 +93728,7 @@ set BB7=CreateUnit(GetOwningPlayer(WI7),'e00E',0,0,0)
 call UnitRemoveAbility(IH7,'Aetl')
     call UnitDamageTarget(BB7,IH7,100000000.,true,false,ATTACK_TYPE_MELEE,DAMAGE_TYPE_NORMAL,WEAPON_TYPE_WHOKNOWS)
     if cullingHeroExecution and UnitAlive(IH7)==false then
-        set armor=IMinBJ(OM7(GetHandleId(WI7),"CullingBladePermanentArmor")+2,254)
+        set armor=IMinBJ(OM7(GetHandleId(WI7),"CullingBladePermanentArmor")+4,254)
         call NP7(GetHandleId(WI7),"CullingBladePermanentArmor",armor)
         call CullingBlade_SetPermanentArmor(WI7,armor)
     endif
@@ -95386,7 +95740,7 @@ if SuijiMode_ScepterRegistryIsActive(Z69,'A04Q') then
     set S9D=RMaxBJ(1200.,S9D)
 endif
 set SDD=R2I((.03+.02*KP7)*S9D)
-set SED=R2I((.3+.20*KP7)*S9D)
+set SED=R2I((.6+.40*KP7)*S9D)
 call B_7(Z69,SDD)
 call C77(Z69,SED)
 call XF7(Z69,'A1R0')
@@ -103942,13 +104296,13 @@ if d<250 then
 if BCD(p5)then
 set a=25+5*WZ
 else
-set a=15+5*WZ
+set a=30+10*WZ
 endif
 elseif d>=250 and d<750 then
 if BCD(p5)then
 set a=(20+5*WZ)-15*((d-250)/500)
 else
-set a=(15+5*WZ)-15*((d-250)/500)
+set a=(30+10*WZ)-30*((d-250)/500)
 endif
 else
 set a=0
@@ -132443,7 +132797,7 @@ local item QU8=GetEnumItem()
 local unit u=OI4
 local player p=GetOwningPlayer(u)
 local integer id=GetPlayerId(p)
-if GetWidgetLife(QU8)>0 and GetItemPlayer(QU8)==p then
+if GetWidgetLife(QU8)>0 and GetItemPlayer(QU8)==p and not B1063MarkedGroundItem(QU8) then
 call SetItemPosition(QU8,KV4[id],KW4[id])
 call SetItemVisible(QU8,false)
 call YAE(id,KU4[id],QU8,0)
@@ -144111,6 +144465,14 @@ if(GetWidgetLife(KA7)<=.405)then
 else
 set LH4=GetItemPlayer(KA7)
 set i1=KY7(KA7)
+if B1063MarkedGroundItem(KA7) then
+if B1063AiSkipLog[GS7]<12 then
+set B1063AiSkipLog[GS7]=B1063AiSkipLog[GS7]+1
+call XOMG_LogEvent("DROP_AI_SKIP selector pid="+I2S(GS7)+" raw="+I2S(GetItemTypeId(KA7)))
+endif
+set KA7=null
+return
+endif
 if(not IsVisibleToPlayer(GetItemX(KA7),GetItemY(KA7),Player(GS7)))and(i1!=X0 and i1!=B5 and i1!=C5 and i1!=EW)then
 elseif IsPlayerAlly(LH4,Player(GS7))and((IsUnitInRangeLoc(h9[16+GS7],M07(KA7),700)and(i1!=B5 and i1!=C5 and i1!=EW))or(IsUnitInRangeLoc(KU4[GetPlayerId(LH4)],M07(KA7),100))or((LH4!=Player(GS7))and(not IG4[GetPlayerId(LH4)])and(IsUnitInRangeXY(M7[GetPlayerId(LH4)],GetItemX(KA7),GetItemY(KA7),700))))then
 elseif IsUnitInRangeLoc(GQ7,M07(KA7),700)and(IsUnitType(bj_lastCreatedUnit,UNIT_TYPE_MELEE_ATTACKER))then
@@ -144172,7 +144534,7 @@ else
 set Hu=G87[336+O5]
 set eY[528+O5]=eY[528+O5]+1
 endif
-if((Hu!=null)and(iU(it)))then
+if((Hu!=null)and(iU(it))and(not B1063MarkedGroundItem(Hu)))then
 set i1=GR7
 set bj_forLoopAIndex=GetItemTypeId(Hu)
 set LH4=GetItemPlayer(Hu)
@@ -144198,15 +144560,31 @@ endif
 if(not GYF)then
 if IsUnitInRangeLoc(GQ7,M07(Hu),700)then
 else
+if B1063MarkedGroundItem(Hu) then
+if B1063AiSkipLog[O5]<12 then
+set B1063AiSkipLog[O5]=B1063AiSkipLog[O5]+1
+call XOMG_LogEvent("DROP_AI_PICK_SKIP pid="+I2S(O5)+" raw="+I2S(GetItemTypeId(Hu)))
+endif
+set G87[336+O5]=null
+else
 set J4=(B947IssueTargetOrderById("GXF @ war3map.j:140107 (B968)",it,$D0003,Hu))
 set G97[288+O5]=i1
+endif
 endif
 else
 //在泉水700范围内
 if IsUnitInRangeLoc(GQ7,M07(Hu),700)and(IsUnitType(bj_lastCreatedUnit,UNIT_TYPE_MELEE_ATTACKER))then
 else
 //A掉物品
+if B1063MarkedGroundItem(Hu) then
+if B1063AiSkipLog[O5]<12 then
+set B1063AiSkipLog[O5]=B1063AiSkipLog[O5]+1
+call XOMG_LogEvent("DROP_AI_ATK_SKIP pid="+I2S(O5)+" raw="+I2S(GetItemTypeId(Hu)))
+endif
+set G87[336+O5]=null
+else
 set J4=(B947IssueTargetOrderById("GXF @ war3map.j:140115 (B968)",it,$D000F,Hu))
+endif
 endif
 endif
 if J4 then
@@ -169439,8 +169817,13 @@ elseif level>3 then
 set level=3
 endif
 set HaveA=SuijiMode_GodStrengthHasScepter(u)
-set selfRate=.5+.5*level
-set allyRate=.5+.25*level
+set selfRate=1.+1.*level
+set allyRate=1.+.5*level
+// GOD_STRENGTH local throttled diagnosis: logical/physical/level/selfRate/allyRate/duration
+if GetGameTime()-LoadReal(L7,0,16301)>=3. then
+call SaveReal(L7,0,16301,GetGameTime())
+call XOMG_LogEvent("GOD_STRENGTH logical=A1WH physical="+I2S(B287_BoolToInt(randomModel))+" level="+I2S(level)+" selfRate="+R2S(selfRate)+" allyRate="+R2S(allyRate)+" duration="+R2S(duration)+" ver="+XOMG_VERSION)
+endif
 call SuijiMode_GodStrengthStopRandomState(u)
 set t=CreateTimer()
 set active=CreateGroup()
@@ -169684,7 +170067,8 @@ endif
 set g=WS7()
 set i=GetPlayerId(GetOwningPlayer(ZX7))
 if SWYJPD==1 and IsUnitType(IH7, UNIT_TYPE_HERO) then
-set SWYJ[i]=SWYJ[i]+20
+set SWYJ[i]=SWYJ[i]+50
+call XOMG_LogEvent("FINGER_GROW base_add=50 stored_after="+I2S(SWYJ[i])+" actual_add=100 actual_after="+I2S(SWYJ[i]*2))
 set SWYJPD=0
 endif
 set IN4=ZX7
@@ -169699,7 +170083,8 @@ call B67(ZX7,u,1,575+150*BC7+SWYJ[i])
 endif
 call GroupRemoveUnit(g,u)
 if SWYJPD==1 and IsUnitType(u, UNIT_TYPE_HERO) then
-set SWYJ[i]=SWYJ[i]+20
+set SWYJ[i]=SWYJ[i]+50
+call XOMG_LogEvent("FINGER_GROW base_add=50 stored_after="+I2S(SWYJ[i])+" actual_add=100 actual_after="+I2S(SWYJ[i]*2))
 set SWYJPD=0
 endif
 endloop
@@ -169735,7 +170120,7 @@ if SPEPLAYER[GetPlayerId(GetOwningPlayer(ZX7))]==1 and ISLABIKE(ZX7) then
     call YW7("我才是lion！",5,ZX7,.03,$FF,$FF,0,$FF)
 endif
 call SWYJ_TX(ZX7,IH7)
-call YW7("+"+I2S(SWYJ[i]),2,ZX7,.02,60,245,$FF,$FF)
+call YW7("基础"+I2S(SWYJ[i])+"/实际"+I2S(SWYJ[i]*2),2,ZX7,.02,60,245,$FF,$FF)
 call B67(ZX7,IH7,1,SWYJ[i]+575+150*BC7)
 call TimerStart(t,.25,false,function SXI)
 call SaveUnitHandle(L7,I97,0,ZX7)
@@ -169764,10 +170149,11 @@ if SPEPLAYER[GetPlayerId(GetOwningPlayer(ZX7))]==1 and ISLABIKE(ZX7) then
     call YW7("我才是lion！",5,ZX7,.03,$FF,$FF,0,$FF)
 endif
 call SWYJ_TX(ZX7,IH7)
-call YW7("+"+I2S(SWYJ[i]),2,ZX7,.02,60,245,$FF,$FF)
+call YW7("基础"+I2S(SWYJ[i])+"/实际"+I2S(SWYJ[i]*2),2,ZX7,.02,60,245,$FF,$FF)
 call B67(ZX7,IH7,1,SWYJ[i]+475+125*BC7)
 if IsUnitType(IH7, UNIT_TYPE_HERO) then
-set SWYJ[i]=SWYJ[i]+20
+set SWYJ[i]=SWYJ[i]+50
+call XOMG_LogEvent("FINGER_GROW base_add=50 stored_after="+I2S(SWYJ[i])+" actual_add=100 actual_after="+I2S(SWYJ[i]*2))
 endif
 call LINGXIA(ZX7,IH7)
 set ZX7=null
@@ -169813,7 +170199,7 @@ endfunction
 function SWYJSTCX takes nothing returns boolean
 local integer i=GetPlayerId(GetTriggerPlayer())
 if (GetUnitTypeId(M7[i])=='UC18' or GetUnitTypeId(M7[i])=='ZC18' or GetUnitTypeId(M7[i])=='E02X' or GetUnitTypeId(M7[i])=='Z02X') and SWYJ[i]>0 then
-call DisplayTimedTextToPlayer(GetTriggerPlayer(),0,E9,10.,"死亡一指额外伤害： |cFF00FF00"+I2S(SWYJ[i])+"|r")
+call DisplayTimedTextToPlayer(GetTriggerPlayer(),0,E9,10.,"死亡一指：基础累计 |cFF00FF00"+I2S(SWYJ[i])+"|r / 本图IMBA实际 |cFF00FF00"+I2S(SWYJ[i]*2)+"|r")
 endif
 return false
 endfunction
@@ -170800,7 +171186,7 @@ call NS7(GetHandleId(p5),"aiCrow|Away",false)
 endfunction
 function Y9F takes nothing returns nothing
 local item D88=GetEnumItem()
-if GetWidgetLife(D88)>0 and GetItemPlayer(D88)==G_4 and TJ4==0 and IsItemVisible(D88) then
+if GetWidgetLife(D88)>0 and GetItemPlayer(D88)==G_4 and TJ4==0 and IsItemVisible(D88) and not B1063MarkedGroundItem(D88) then
 set TJ4=TJ4+1
 call UnitAddItem(H44,D88)
 endif
@@ -170808,7 +171194,7 @@ set D88=null
 endfunction
 function YDF takes nothing returns nothing
 local item D88=GetEnumItem()
-if GetWidgetLife(D88)>0 and GetItemPlayer(D88)==G_4 and IsItemVisible(D88) then
+if GetWidgetLife(D88)>0 and GetItemPlayer(D88)==G_4 and IsItemVisible(D88) and not B1063MarkedGroundItem(D88) then
 call UnitAddItem(zh,D88)
 endif
 set D88=null
@@ -171385,7 +171771,7 @@ local item D88=GetEnumItem()
 local unit u=OI4
 local player p=GetOwningPlayer(u)
 local integer id=GetPlayerId(p)
-if GetWidgetLife(D88)>0 and GetItemPlayer(D88)==p and IsItemVisible(D88) then
+if GetWidgetLife(D88)>0 and GetItemPlayer(D88)==p and IsItemVisible(D88) and not B1063MarkedGroundItem(D88) then
 call SetItemPosition(D88,KV4[id],KW4[id])
 call UnitAddItem(OJ4,D88)
 endif
@@ -172272,8 +172658,6 @@ local integer Q69=0
 local integer QL9=0
 local integer left=LoadInteger(TABLE_XJ,I97,100)
 local boolean freeRandom=SpecialTitle_HasFreeRandom(p)
-set K_POOL_ROLLED[i]=false
-set K_POOL_HIT[i]=false
 if freeRandom==false and GetPlayerState(p,PLAYER_STATE_RESOURCE_GOLD)<100 then
 call X37(p,"刷新英雄需要100金币")
 set p=null
@@ -173531,6 +173915,10 @@ local integer roll=0
 local integer gain=0
 local integer gold=0
 local boolean jackpot=false
+local integer abJ=0
+local player abQ=null
+local string abMsg=""
+local string abJack=""
 local integer strBase=0
 local integer agiBase=0
 local integer intBase=0
@@ -173586,7 +173974,23 @@ if ATTR_OK_LOG[id]<12 then
 set ATTR_OK_LOG[id]=ATTR_OK_LOG[id]+1
 call XOMG_LogEvent("ATTR_ROLL pid="+I2S(id)+" cost=1000 roll="+I2S(roll)+" gain="+I2S(gain)+" jackpot="+I2S(B287_BoolToInt(jackpot))+" total="+I2S(ATTR_ROLL_TOTAL[id])+" gold_after="+I2S(gold-1000)+" ver="+XOMG_VERSION)
 endif
-call DisplayTimedTextToPlayer(p,0,0,6.,"|cFF00FF00双杰抽属性：本次+"+I2S(gain)+"全属性（累计+"+I2S(ATTR_ROLL_TOTAL[id])+"）|r")
+// v1.8: local-perspective ally broadcast; self replaces old text; enemy/observer/left excluded
+if jackpot then
+set abJack=" |cFFFFD700[大奖]|r"
+endif
+set abMsg="|cFF00FF00"+Q[id]+KZ4[id]+"|r 双杰抽属性 +"+I2S(gain)+"全属性（累计+"+I2S(ATTR_ROLL_TOTAL[id])+"）"+abJack+"|r"
+set abJ=0
+loop
+exitwhen abJ>11
+set abQ=Player(abJ)
+if GetLocalPlayer()==abQ and B836ArcHuman(abJ) and GetPlayerState(abQ,PLAYER_STATE_OBSERVER)==0 and (abJ==id or IsPlayerAlly(abQ,p)) then
+if abJ==id then
+call ClearTextMessages()
+endif
+call DisplayTimedTextToPlayer(abQ,0,0,6.,abMsg)
+endif
+set abJ=abJ+1
+endloop
 // jackpot visual only after charge and all three stat increases completed; reuse YW7 with the same
 // parameters as 父爱如山 (5s lifespan, size .03, yellow), auto-cleanup, no leak; non-jackpot silent.
 if jackpot then
@@ -178658,7 +179062,7 @@ local item QU8=GetEnumItem()
 local unit u=OI4
 local player p=GetOwningPlayer(u)
 local integer id=GetPlayerId(p)
-if GetWidgetLife(QU8)>0 and GetItemPlayer(QU8)==p and IsItemVisible(QU8) then
+if GetWidgetLife(QU8)>0 and GetItemPlayer(QU8)==p and IsItemVisible(QU8) and not B1063MarkedGroundItem(QU8) then
 call SetItemPosition(QU8,KV4[id],KW4[id])
 call UnitAddItem(KU4[id],QU8)
 endif
@@ -187132,6 +187536,15 @@ local unit it=null
 local item KA7=null
 local boolean J4=false
 local player p=null
+if B1063MarkedGroundItem(b1060GetManipulatedItem) then
+if B1063AiSkipLog[O5]<12 then
+set B1063AiSkipLog[O5]=B1063AiSkipLog[O5]+1
+call XOMG_LogEvent("DROP_AI_DROP_SKIP pid="+I2S(O5)+" raw="+I2S(GetItemTypeId(b1060GetManipulatedItem)))
+endif
+set b1060GetManipulatedItem=null
+set b1060GetTriggerUnit=null
+return
+endif
 if KKLeaveAI_Active[O5] or not QY4[O5] or GetItemTypeId(b1060GetManipulatedItem)=='I02M' or not IsTriggerEnabled(H94) or GetUnitTypeId(b1060GetTriggerUnit)=='e00E' or AIBRZB[O5]==1 then
 set b1060GetManipulatedItem=null
 set b1060GetTriggerUnit=null
@@ -217161,7 +217574,7 @@ set h=GetHandleId(u)
 set stacks=LoadInteger(TABLE_P,h,'A0FV')
 set level=LoadInteger(TABLE_P,h,'WARL')
 if stacks>0 and B287_GetUnitAbilityLevel(u,'A0FV')>0 then
-call B_7(u,(15+5*level)*stacks)
+call B_7(u,(30+10*level)*stacks)
 endif
 endfunction
 function WTG takes nothing returns boolean
@@ -219156,8 +219569,8 @@ local integer I97=GetHandleId(ZX7)
 local integer Y0G=(LoadInteger(L7,(I97),(739)))
 local integer O5=GetPlayerId(GetOwningPlayer(ZX7))
 if IsUnitType(IH7,UNIT_TYPE_HERO) then
-set JTJD[O5]=JTJD[O5]+8+4*BC7
-set Y0G=Y0G+8+4*BC7
+set JTJD[O5]=JTJD[O5]+16+8*BC7
+set Y0G=Y0G+16+8*BC7
 call SaveInteger(L7,(I97),(739),(Y0G))
 if SPEPLAYER[GetPlayerId(GetOwningPlayer(ZX7))]==1 and ISLABIKE(ZX7) then
     call YW7("我才是军团！",5,ZX7,.03,$FF,$FF,0,$FF)
@@ -224371,7 +224784,7 @@ if GetUnitAbilityLevel(ZX7,'A2YR')>0 then
     set d=d+8
 endif
 if B287_GetUnitAbilityLevel(ZX7,'A10Q')>0 then
-    set d=R2I(d+(100-d)*(0.125+0.125*B287_GetUnitAbilityLevel(ZX7,'A10Q')))
+    set d=R2I(d+(100-d)*(0.25+0.25*B287_GetUnitAbilityLevel(ZX7,'A10Q')))
 endif
 return I2S(d)
 endfunction
@@ -236000,6 +236413,24 @@ return false
 endif
 return B892MiaoPermanent[arcPid] or (B836ArcLoaded[arcPid] and B891ArcMiao[arcPid]>B836ArcNow(arcPid))
 endfunction
+function MiaoDirectPickAllowed takes integer pid returns boolean
+if pid<0 or pid>=12 then
+return false
+endif
+return B836ArcHuman(pid) and B891ArcMiaoActive(pid) and not B891ArcMiaoReplaced[pid] and not B897MiaoBusy[pid]
+endfunction
+function MiaoDirectPickSync takes nothing returns nothing
+local player p=DzGetTriggerSyncPlayer()
+local integer pid=GetPlayerId(p)
+local string data=DzGetTriggerSyncData()
+if pid>=0 and pid<12 and StringLength(data)>=1 and StringLength(data)<=3 then
+if S2I(data)==pid and MiaoDirectPickAllowed(pid) then
+set MiaoDirectRequest[pid]=true
+call XOMG_LogEvent("SELECT_CLICK pid="+I2S(pid)+" previewType=nMv4 reason=req_accepted")
+endif
+endif
+set p=null
+endfunction
 function B836ArcGrace takes nothing returns boolean
 return not B836ArcStarted or TimerGetElapsed(W)-M_4<=300.
 endfunction
@@ -237176,6 +237607,7 @@ endif
 set B1031ArchiveButton[arcPid]=null
 set B836WelfareButton[arcPid]=null
 set B836AttrButton[arcPid]=null
+set B836ArcCloseButton[arcPid]=null
 set B836ArcQueryButton[arcPid]=null
 set B836ArcExchangeButton[arcPid]=null
 set B836ArcDrawButton[arcPid]=null
@@ -237249,7 +237681,7 @@ endif
 endif
 set B836ArcRulesButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"规则说明（小屋内有说明物品）",0)
 call DialogSetMessage(B836ArcDialog[arcPid],arcText)
-call DialogAddButton(B836ArcDialog[arcPid],"关闭",0)
+set B836ArcCloseButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"关闭",0)
 call DialogDisplay(Player(arcPid),B836ArcDialog[arcPid],true)
 endfunction
 function B836ArcClaim takes integer arcPid,boolean arcIsBook returns nothing
@@ -238939,6 +239371,11 @@ elseif arcClicked==B836WelfareButton[arcPid] then
 call WELFARE_Claim(arcPid)
 elseif arcClicked==B836AttrButton[arcPid] then
 call ATTR_Core(arcPid)
+call DialogDisplay(Player(arcPid),B836ArcDialog[arcPid],true)
+if ATTR_KEEP_LOG[arcPid]<12 then
+set ATTR_KEEP_LOG[arcPid]=ATTR_KEEP_LOG[arcPid]+1
+call XOMG_LogEvent("ATTR_DIALOG_KEEP pid="+I2S(arcPid)+" ver="+XOMG_VERSION)
+endif
 elseif arcClicked==B891ArcMiaoBuyButton[arcPid] then
 call B836ArcTrade(arcPid,4)
 elseif arcClicked==B901QuitBuyButton[arcPid] then
@@ -238947,6 +239384,9 @@ elseif arcClicked==B836ArcBookButton[arcPid] then
 call B836ArcClaim(arcPid,true)
 elseif arcClicked==B836ArcClawButton[arcPid] then
 call B836ArcClaim(arcPid,false)
+elseif arcClicked==B836ArcCloseButton[arcPid] then
+call DialogDisplay(Player(arcPid),B836ArcDialog[arcPid],false)
+call XOMG_LogEvent("ATTR_DIALOG_CLOSE pid="+I2S(arcPid)+" ver="+XOMG_VERSION)
 endif
 set arcClicked=null
 endfunction
@@ -238956,9 +239396,20 @@ endfunction
 function B836ArcSelected takes nothing returns nothing
 local player b1060GetTriggerPlayer=GetTriggerPlayer()
 local unit b1060GetTriggerUnit=GetTriggerUnit()
+local integer b1060Pid=0
 // B890: retain verified read-only skill viewing; diagnostic text removed.
 if GetUnitTypeId(b1060GetTriggerUnit)=='nMv4' and GetLocalPlayer()==b1060GetTriggerPlayer then
 call MHUnit_EnableViewSkill(b1060GetTriggerUnit,b1060GetTriggerPlayer)
+set b1060Pid=GetPlayerId(b1060GetTriggerPlayer)
+call XOMG_LogEvent("SELECT_MIAO_DISPLAY pid="+I2S(b1060Pid)+" previewType=nMv4 MLI=0 U70=0 K34=117")
+if MiaoDirectPickAllowed(b1060Pid) and M7[b1060Pid]==null then
+call XOMG_LogEvent("SELECT_CLICK pid="+I2S(b1060Pid)+" previewType=nMv4 reason=allowed")
+call DzSyncData("MIAO_REQ",I2S(b1060Pid))
+call X37(b1060GetTriggerPlayer,"已选择喵刀，确认/下一出生将创建HMD0。")
+else
+call X37(b1060GetTriggerPlayer,"喵刀使用权限尚未获得或已到期。可用5硬币兑换1天权限。")
+call XOMG_LogEvent("SELECT_MIAO_DENY pid="+I2S(b1060Pid)+" reason=no_perm previewType=nMv4")
+endif
 set b1060GetTriggerPlayer=null
 set b1060GetTriggerUnit=null
 return
@@ -239206,6 +239657,8 @@ call DzTriggerRegisterSyncData(arcAckTrigger,"B836AA",false)
 call TriggerAddAction(arcAckTrigger,function B836ArcAck)
 call DzTriggerRegisterSyncData(arcOpenTrigger,"B836AO",false)
 call TriggerAddAction(arcOpenTrigger,function B836ArcOpenSync)
+call DzTriggerRegisterSyncData(arcOpenTrigger,"MIAO_REQ",false)
+call TriggerAddAction(arcOpenTrigger,function MiaoDirectPickSync)
 call TriggerAddAction(arcSelectTrigger,function B836ArcSelected)
 call TriggerAddAction(arcChatTrigger,function B836ArcChat)
 call TriggerAddAction(arcDialogTrigger,function B836ArcDialogClick)
@@ -250381,7 +250834,7 @@ call B957Init()
 call KK_Init()
 endfunction
 function config takes nothing returns nothing
-call SetMapName("OMG IMBA v1.7.1-K-W3IFix")
+call SetMapName("OMG IMBA v1.8-Integrated")
 call SetMapDescription("随机技能，强化AI，极限对抗。\n作者：小生我怕怕\n按F9查看地图信息。")
 call SetPlayers($A)
 call SetTeams($A)

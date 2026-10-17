@@ -4394,9 +4394,9 @@ ResearchArt=ReplaceableTextures\CommandButtons\BTNCorpseExplode.blp
 Researchbuttonpos=3
 Researchhotkey=F
 Researchtip=学习 死亡一指[|cffffcc00F|r] - [|cffffcc00等级 %d|r]|n(Finger of Death)
-Researchubertip=|cFF66CCFF[IMBA实际值]|r 在一瞬间撕裂目标，折腾得死去活来，造成巨大的伤害。（括号内为装备阿哈利姆神杖时的数值）|n|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r120(100)/80(60)/40(20)|n|cff99ccff魔法消耗：|r250/450/650|n|n|c00FF00FF该技能每次对敌方英雄造成伤害将永久增加40点额外伤害，释放时会显示额外伤害，也可使用-st查询|r|n|n|c00fffc01神杖升级：增加伤害，减少冷却时间，使技能变为范围伤害|r|n|n|cffffcc00等级 1|r - 造成600（725）点伤害|n|cffffcc00等级 2|r - 造成725（875）点伤害|n|cffffcc00等级 3|r - 造成850（1025）点伤害
+Researchubertip=|cFF66CCFF[IMBA实际值]|r 在一瞬间撕裂目标，折腾得死去活来，造成巨大的伤害。（括号内为装备阿哈利姆神杖时的数值）|n|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r120(100)/80(60)/40(20)|n|cff99ccff魔法消耗：|r250/450/650|n|n|c00FF00FF基础命中敌方英雄+50点额外伤害（基础累计）；本图IMBA实际+100点（=50×B67×2），释放显示基础累计/实际，可用-st查询|r|n|n|c00fffc01神杖升级：增加伤害，减少冷却时间，使技能变为范围伤害|r|n|n|cffffcc00等级 1|r - 造成600（725）点伤害|n|cffffcc00等级 2|r - 造成725（875）点伤害|n|cffffcc00等级 3|r - 造成850（1025）点伤害
 Tip=死亡一指[|cffffcc00F|r] - [|cffffcc00等级 1|r],死亡一指[|cffffcc00F|r] - [|cffffcc00等级 2|r],死亡一指[|cffffcc00F|r] - [|cffffcc00等级 3|r]
-Ubertip=|cFF66CCFF[IMBA实际值]|r 在一瞬间撕裂目标，折腾得死去活来，造成600（725）点伤害。|n|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r120(100)|n|n|c00FF00FF该技能每次对敌方英雄造成伤害将永久增加40点额外伤害，释放时会显示额外伤害，也可使用-st查询|r|n|n|c00fffc01神杖升级：增加伤害，减少冷却时间，使技能变为范围伤害|r,在一瞬间撕裂目标，折腾得死去活来，造成725（875）点伤害。|n|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r80(60)|n|n|c00FF00FF该技能每次对敌方英雄造成伤害将永久增加40点额外伤害，释放时会显示额外伤害，也可使用-st查询|r|n|n|c00fffc01神杖升级：增加伤害，减少冷却时间，使技能变为范围伤害|r,在一瞬间撕裂目标，折腾得死去活来，造成850（1025）点伤害。|n|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r40(20)|n|n|c00FF00FF该技能每次对敌方英雄造成伤害将永久增加40点额外伤害，释放时会显示额外伤害，也可使用-st查询|r|n|n|c00fffc01神杖升级：增加伤害，减少冷却时间，使技能变为范围伤害|r
+Ubertip=|cFF66CCFF[IMBA实际值]|r 在一瞬间撕裂目标，折腾得死去活来，造成600（725）点伤害。|n|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r120(100)|n|n|c00FF00FF基础命中敌方英雄+50点额外伤害（基础累计）；本图IMBA实际+100点（=50×B67×2），释放显示基础累计/实际，可用-st查询|r|n|n|c00fffc01神杖升级：增加伤害，减少冷却时间，使技能变为范围伤害|r,在一瞬间撕裂目标，折腾得死去活来，造成725（875）点伤害。|n|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r80(60)|n|n|c00FF00FF基础命中敌方英雄+50点额外伤害（基础累计）；本图IMBA实际+100点（=50×B67×2），释放显示基础累计/实际，可用-st查询|r|n|n|c00fffc01神杖升级：增加伤害，减少冷却时间，使技能变为范围伤害|r,在一瞬间撕裂目标，折腾得死去活来，造成850（1025）点伤害。|n|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r40(20)|n|n|c00FF00FF基础命中敌方英雄+50点额外伤害（基础累计）；本图IMBA实际+100点（=50×B67×2），释放显示基础累计/实际，可用-st查询|r|n|n|c00fffc01神杖升级：增加伤害，减少冷却时间，使技能变为范围伤害|r
 
 [A096]
 Art=ReplaceableTextures\CommandButtons\BTNStaffOfNegation.blp
@@ -4643,9 +4643,9 @@ ResearchArt=ReplaceableTextures\CommandButtons\BTNCorpseExplode.blp
 Researchbuttonpos=3
 Researchhotkey=F
 Researchtip=学习 死亡一指[|cffffcc00F|r] - [|cffffcc00等级 %d|r]|n(Finger of Death)
-Researchubertip=|cFF66CCFF[IMBA实际值]|r 在一瞬间撕裂目标，折腾得死去活来，同时对目标和其周围范围造成巨大的伤害。|n|n|cff99ccff作用范围：|r300|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r100/60/20|n|cff99ccff魔法消耗：|r250/450/650|n|n|cffffcc00等级 1|r - 造成1450点伤害。|n|cffffcc00等级 2|r - 造成1750点伤害。|n|cffffcc00等级 3|r - 造成2050点伤害|n|n|c00FF00FF该技能每次对敌方英雄造成伤害将永久增加40点额外伤害，释放时会显示额外伤害，也可使用-st查询|r
+Researchubertip=|cFF66CCFF[IMBA实际值]|r 在一瞬间撕裂目标，折腾得死去活来，同时对目标和其周围范围造成巨大的伤害。|n|n|cff99ccff作用范围：|r300|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r100/60/20|n|cff99ccff魔法消耗：|r250/450/650|n|n|cffffcc00等级 1|r - 造成1450点伤害。|n|cffffcc00等级 2|r - 造成1750点伤害。|n|cffffcc00等级 3|r - 造成2050点伤害|n|n|c00FF00FF基础命中敌方英雄+50点额外伤害（基础累计）；本图IMBA实际+100点（=50×B67×2），释放显示基础累计/实际，可用-st查询|r
 Tip=死亡一指[|cffffcc00F|r] - [|cffffcc00等级 1|r],死亡一指[|cffffcc00F|r] - [|cffffcc00等级 2|r],死亡一指[|cffffcc00F|r] - [|cffffcc00等级 3|r]
-Ubertip=|cFF66CCFF[IMBA实际值]|r 在一瞬间撕裂目标，折腾得死去活来，同时对目标和其周围范围造成1450点伤害。|n|n|cff99ccff作用范围：|r300|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r100|n|n|c00FF00FF该技能每次对敌方英雄造成伤害将永久增加40点额外伤害，释放时会显示额外伤害，也可使用-st查询|r,在一瞬间撕裂目标，折腾得死去活来，同时对目标和其周围范围造成1750点伤害。|n|n|cff99ccff作用范围：|r300|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r60|n|n|c00FF00FF该技能每次对敌方英雄造成伤害将永久增加40点额外伤害，释放时会显示额外伤害，也可使用-st查询|r,在一瞬间撕裂目标，折腾得死去活来，同时对目标和其周围范围造成2050点伤害。|n|n|cff99ccff作用范围：|r300|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r20|n|n|c00FF00FF该技能每次对敌方英雄造成伤害将永久增加40点额外伤害，释放时会显示额外伤害，也可使用-st查询|r
+Ubertip=|cFF66CCFF[IMBA实际值]|r 在一瞬间撕裂目标，折腾得死去活来，同时对目标和其周围范围造成1450点伤害。|n|n|cff99ccff作用范围：|r300|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r100|n|n|c00FF00FF基础命中敌方英雄+50点额外伤害（基础累计）；本图IMBA实际+100点（=50×B67×2），释放显示基础累计/实际，可用-st查询|r,在一瞬间撕裂目标，折腾得死去活来，同时对目标和其周围范围造成1750点伤害。|n|n|cff99ccff作用范围：|r300|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r60|n|n|c00FF00FF基础命中敌方英雄+50点额外伤害（基础累计）；本图IMBA实际+100点（=50×B67×2），释放显示基础累计/实际，可用-st查询|r,在一瞬间撕裂目标，折腾得死去活来，同时对目标和其周围范围造成2050点伤害。|n|n|cff99ccff作用范围：|r300|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r20|n|n|c00FF00FF基础命中敌方英雄+50点额外伤害（基础累计）；本图IMBA实际+100点（=50×B67×2），释放显示基础累计/实际，可用-st查询|r
 
 [A09X]
 Art=ReplaceableTextures\CommandButtons\BTNGlove.blp
@@ -26203,9 +26203,9 @@ ResearchArt=ReplaceableTextures\CommandButtons\BTNSvenGS.BLP
 Researchbuttonpos=3
 Researchhotkey=R
 Researchtip=学习 神之力量[|cffffcc00R|r] - [|cffffcc00等级 %d|r]|n(God's Strength)
-Researchubertip=流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，大幅增加自身的攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|cff99ccff魔法消耗：|r100/125/150|n|n|cffffcc00等级 1|r - 增加自身100%的基础攻击力|n|cffffcc00等级 2|r - 增加自身150%的基础攻击力|n|cffffcc00等级 3|r - 增加自身200%的基础攻击力|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军75%/100%/125%的基础攻击力，装备神杖该提示不会变化|r
+Researchubertip=流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，大幅增加自身的攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|cff99ccff魔法消耗：|r100/125/150|n|n|cffffcc00等级 1|r - 增加自身200%的基础攻击力|n|cffffcc00等级 2|r - 增加自身300%的基础攻击力|n|cffffcc00等级 3|r - 增加自身400%的基础攻击力|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军150%/200%/250%的基础攻击力，装备神杖该提示不会变化|r
 Tip=神之力量[|cffffcc00R|r] - [|cffffcc00等级 1|r],神之力量[|cffffcc00R|r] - [|cffffcc00等级 2|r],神之力量[|cffffcc00R|r] - [|cffffcc00等级 3|r]
-Ubertip=流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，增加自身100%的基础攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军75%的基础攻击力，装备神杖该提示不会变化|r,流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，增加自身150%的基础攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军100%的基础攻击力，装备神杖该提示不会变化|r,流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，增加自身200%的基础攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军125%的基础攻击力，装备神杖该提示不会变化|r
+Ubertip=流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，增加自身200%的基础攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军150%的基础攻击力，装备神杖该提示不会变化|r,流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，增加自身300%的基础攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军200%的基础攻击力，装备神杖该提示不会变化|r,流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，增加自身400%的基础攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军250%的基础攻击力，装备神杖该提示不会变化|r
 
 [A1WI]
 Art=ReplaceableTextures\CommandButtons\BTNGlyphScourge.blp
@@ -53058,9 +53058,9 @@ ResearchArt=ReplaceableTextures\CommandButtons\BTNSvenGS.BLP
 Researchbuttonpos=3
 Researchhotkey=R
 Researchtip=学习 神之力量[|cffffcc00R|r] - [|cffffcc00等级 %d|r]|n(God's Strength)
-Researchubertip=流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，大幅增加自身的攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|cff99ccff魔法消耗：|r100/125/150|n|n|cffffcc00等级 1|r - 增加自身100%的基础攻击力|n|cffffcc00等级 2|r - 增加自身150%的基础攻击力|n|cffffcc00等级 3|r - 增加自身200%的基础攻击力|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军75%/100%/125%的基础攻击力，装备神杖该提示不会变化|r
+Researchubertip=流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，大幅增加自身的攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|cff99ccff魔法消耗：|r100/125/150|n|n|cffffcc00等级 1|r - 增加自身200%的基础攻击力|n|cffffcc00等级 2|r - 增加自身300%的基础攻击力|n|cffffcc00等级 3|r - 增加自身400%的基础攻击力|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军150%/200%/250%的基础攻击力，装备神杖该提示不会变化|r
 Tip=神之力量[|cffffcc00R|r] - [|cffffcc00等级 1|r],神之力量[|cffffcc00R|r] - [|cffffcc00等级 2|r],神之力量[|cffffcc00R|r] - [|cffffcc00等级 3|r]
-Ubertip=流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，增加自身100%的基础攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军75%的基础攻击力，装备神杖该提示不会变化|r,流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，增加自身150%的基础攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军100%的基础攻击力，装备神杖该提示不会变化|r,流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，增加自身200%的基础攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军125%的基础攻击力，装备神杖该提示不会变化|r
+Ubertip=流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，增加自身200%的基础攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军150%的基础攻击力，装备神杖该提示不会变化|r,流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，增加自身300%的基础攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军200%的基础攻击力，装备神杖该提示不会变化|r,流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，增加自身400%的基础攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军250%的基础攻击力，装备神杖该提示不会变化|r
 
 [X1XK]
 Art=,
@@ -59215,9 +59215,9 @@ ResearchArt=ReplaceableTextures\CommandButtons\BTNCorpseExplode.blp
 Researchbuttonpos=2
 Researchhotkey=L
 Researchtip=学习 死亡一指[|cffffcc00F|r] - [|cffffcc00等级 %d|r]|n(Finger of Death)
-Researchubertip=|cFF66CCFF[IMBA实际值]|r 在一瞬间撕裂目标，折腾得死去活来，造成巨大的伤害。（括号内为装备阿哈利姆神杖时的数值）|n|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r120(100)/80(60)/40(20)|n|cff99ccff魔法消耗：|r250/450/650|n|n|c00FF00FF该技能每次对敌方英雄造成伤害将永久增加40点额外伤害，释放时会显示额外伤害，也可使用-st查询|r|n|n|c00fffc01神杖升级：增加伤害，减少冷却时间，使技能变为范围伤害|r|n|n|cffffcc00等级 1|r - 造成600（725）点伤害|n|cffffcc00等级 2|r - 造成725（875）点伤害|n|cffffcc00等级 3|r - 造成850（1025）点伤害
+Researchubertip=|cFF66CCFF[IMBA实际值]|r 在一瞬间撕裂目标，折腾得死去活来，造成巨大的伤害。（括号内为装备阿哈利姆神杖时的数值）|n|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r120(100)/80(60)/40(20)|n|cff99ccff魔法消耗：|r250/450/650|n|n|c00FF00FF基础命中敌方英雄+50点额外伤害（基础累计）；本图IMBA实际+100点（=50×B67×2），释放显示基础累计/实际，可用-st查询|r|n|n|c00fffc01神杖升级：增加伤害，减少冷却时间，使技能变为范围伤害|r|n|n|cffffcc00等级 1|r - 造成600（725）点伤害|n|cffffcc00等级 2|r - 造成725（875）点伤害|n|cffffcc00等级 3|r - 造成850（1025）点伤害
 Tip=死亡一指[|cffffcc00F|r] - [|cffffcc00等级 1|r],死亡一指[|cffffcc00F|r] - [|cffffcc00等级 2|r],死亡一指[|cffffcc00F|r] - [|cffffcc00等级 3|r]
-Ubertip=|cFF66CCFF[IMBA实际值]|r 在一瞬间撕裂目标，折腾得死去活来，造成600（725）点伤害。|n|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r120(100)|n|n|c00FF00FF该技能每次对敌方英雄造成伤害将永久增加40点额外伤害，释放时会显示额外伤害，也可使用-st查询|r|n|n|c00fffc01神杖升级：增加伤害，减少冷却时间，使技能变为范围伤害|r,在一瞬间撕裂目标，折腾得死去活来，造成725（875）点伤害。|n|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r80(60)|n|n|c00FF00FF该技能每次对敌方英雄造成伤害将永久增加40点额外伤害，释放时会显示额外伤害，也可使用-st查询|r|n|n|c00fffc01神杖升级：增加伤害，减少冷却时间，使技能变为范围伤害|r,在一瞬间撕裂目标，折腾得死去活来，造成850（1025）点伤害。|n|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r40(20)|n|n|c00FF00FF该技能每次对敌方英雄造成伤害将永久增加40点额外伤害，释放时会显示额外伤害，也可使用-st查询|r|n|n|c00fffc01神杖升级：增加伤害，减少冷却时间，使技能变为范围伤害|r
+Ubertip=|cFF66CCFF[IMBA实际值]|r 在一瞬间撕裂目标，折腾得死去活来，造成600（725）点伤害。|n|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r120(100)|n|n|c00FF00FF基础命中敌方英雄+50点额外伤害（基础累计）；本图IMBA实际+100点（=50×B67×2），释放显示基础累计/实际，可用-st查询|r|n|n|c00fffc01神杖升级：增加伤害，减少冷却时间，使技能变为范围伤害|r,在一瞬间撕裂目标，折腾得死去活来，造成725（875）点伤害。|n|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r80(60)|n|n|c00FF00FF基础命中敌方英雄+50点额外伤害（基础累计）；本图IMBA实际+100点（=50×B67×2），释放显示基础累计/实际，可用-st查询|r|n|n|c00fffc01神杖升级：增加伤害，减少冷却时间，使技能变为范围伤害|r,在一瞬间撕裂目标，折腾得死去活来，造成850（1025）点伤害。|n|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r40(20)|n|n|c00FF00FF基础命中敌方英雄+50点额外伤害（基础累计）；本图IMBA实际+100点（=50×B67×2），释放显示基础累计/实际，可用-st查询|r|n|n|c00fffc01神杖升级：增加伤害，减少冷却时间，使技能变为范围伤害|r
 UnButtonpos=2
 Unhotkey=L
 
@@ -59249,9 +59249,9 @@ ResearchArt=ReplaceableTextures\CommandButtons\BTNCorpseExplode.blp
 Researchbuttonpos=2
 Researchhotkey=L
 Researchtip=学习 死亡一指[|cffffcc00F|r] - [|cffffcc00等级 %d|r]|n(Finger of Death)
-Researchubertip=|cFF66CCFF[IMBA实际值]|r 在一瞬间撕裂目标，折腾得死去活来，同时对目标和其周围范围造成巨大的伤害。|n|n|cff99ccff作用范围：|r300|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r100/60/20|n|cff99ccff魔法消耗：|r250/450/650|n|n|cffffcc00等级 1|r - 造成1450点伤害。|n|cffffcc00等级 2|r - 造成1750点伤害。|n|cffffcc00等级 3|r - 造成2050点伤害|n|n|c00FF00FF该技能每次对敌方英雄造成伤害将永久增加40点额外伤害，释放时会显示额外伤害，也可使用-st查询|r
+Researchubertip=|cFF66CCFF[IMBA实际值]|r 在一瞬间撕裂目标，折腾得死去活来，同时对目标和其周围范围造成巨大的伤害。|n|n|cff99ccff作用范围：|r300|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r100/60/20|n|cff99ccff魔法消耗：|r250/450/650|n|n|cffffcc00等级 1|r - 造成1450点伤害。|n|cffffcc00等级 2|r - 造成1750点伤害。|n|cffffcc00等级 3|r - 造成2050点伤害|n|n|c00FF00FF基础命中敌方英雄+50点额外伤害（基础累计）；本图IMBA实际+100点（=50×B67×2），释放显示基础累计/实际，可用-st查询|r
 Tip=死亡一指[|cffffcc00F|r] - [|cffffcc00等级 1|r],死亡一指[|cffffcc00F|r] - [|cffffcc00等级 2|r],死亡一指[|cffffcc00F|r] - [|cffffcc00等级 3|r]
-Ubertip=|cFF66CCFF[IMBA实际值]|r 在一瞬间撕裂目标，折腾得死去活来，同时对目标和其周围范围造成1450点伤害。|n|n|cff99ccff作用范围：|r300|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r100|n|n|c00FF00FF该技能每次对敌方英雄造成伤害将永久增加40点额外伤害，释放时会显示额外伤害，也可使用-st查询|r,在一瞬间撕裂目标，折腾得死去活来，同时对目标和其周围范围造成1750点伤害。|n|n|cff99ccff作用范围：|r300|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r60|n|n|c00FF00FF该技能每次对敌方英雄造成伤害将永久增加40点额外伤害，释放时会显示额外伤害，也可使用-st查询|r,在一瞬间撕裂目标，折腾得死去活来，同时对目标和其周围范围造成2050点伤害。|n|n|cff99ccff作用范围：|r300|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r20|n|n|c00FF00FF该技能每次对敌方英雄造成伤害将永久增加40点额外伤害，释放时会显示额外伤害，也可使用-st查询|r
+Ubertip=|cFF66CCFF[IMBA实际值]|r 在一瞬间撕裂目标，折腾得死去活来，同时对目标和其周围范围造成1450点伤害。|n|n|cff99ccff作用范围：|r300|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r100|n|n|c00FF00FF基础命中敌方英雄+50点额外伤害（基础累计）；本图IMBA实际+100点（=50×B67×2），释放显示基础累计/实际，可用-st查询|r,在一瞬间撕裂目标，折腾得死去活来，同时对目标和其周围范围造成1750点伤害。|n|n|cff99ccff作用范围：|r300|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r60|n|n|c00FF00FF基础命中敌方英雄+50点额外伤害（基础累计）；本图IMBA实际+100点（=50×B67×2），释放显示基础累计/实际，可用-st查询|r,在一瞬间撕裂目标，折腾得死去活来，同时对目标和其周围范围造成2050点伤害。|n|n|cff99ccff作用范围：|r300|n|cff99ccff施法距离：|r900|n|cff99ccff冷却时间：|r20|n|n|c00FF00FF基础命中敌方英雄+50点额外伤害（基础累计）；本图IMBA实际+100点（=50×B67×2），释放显示基础累计/实际，可用-st查询|r
 UnButtonpos=2
 Unhotkey=L
 
@@ -61031,11 +61031,11 @@ ResearchArt=ReplaceableTextures\CommandButtons\BTNSvenGS.BLP
 Researchbuttonpos=2
 Researchhotkey=L
 Researchtip=学习 神之力量[|cffffcc00R|r] - [|cffffcc00等级 %d|r]|n(God's Strength)
-Researchubertip=流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，大幅增加自身的攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|cff99ccff魔法消耗：|r100/125/150|n|n|cffffcc00等级 1|r - 增加自身100%的基础攻击力|n|cffffcc00等级 2|r - 增加自身150%的基础攻击力|n|cffffcc00等级 3|r - 增加自身200%的基础攻击力|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军75%/100%/125%的基础攻击力，装备神杖该提示不会变化|r
+Researchubertip=流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，大幅增加自身的攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|cff99ccff魔法消耗：|r100/125/150|n|n|cffffcc00等级 1|r - 增加自身200%的基础攻击力|n|cffffcc00等级 2|r - 增加自身300%的基础攻击力|n|cffffcc00等级 3|r - 增加自身400%的基础攻击力|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军150%/200%/250%的基础攻击力，装备神杖该提示不会变化|r
 TargetArt=Abilities\Spells\Undead\DeathPact\DeathPactTarget.mdl
 Targetattach=origin
 Tip=神之力量[|cffffcc00R|r] - [|cffffcc00等级 1|r],神之力量[|cffffcc00R|r] - [|cffffcc00等级 2|r],神之力量[|cffffcc00R|r] - [|cffffcc00等级 3|r]
-Ubertip=流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，增加自身100%的基础攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军75%的基础攻击力，装备神杖该提示不会变化|r,流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，增加自身150%的基础攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军100%的基础攻击力，装备神杖该提示不会变化|r,流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，增加自身200%的基础攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军125%的基础攻击力，装备神杖该提示不会变化|r
+Ubertip=流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，增加自身200%的基础攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军150%的基础攻击力，装备神杖该提示不会变化|r,流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，增加自身300%的基础攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军200%的基础攻击力，装备神杖该提示不会变化|r,流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，增加自身400%的基础攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军250%的基础攻击力，装备神杖该提示不会变化|r
 UnButtonpos=2
 Unhotkey=L
 
@@ -65233,11 +65233,11 @@ ResearchArt=ReplaceableTextures\CommandButtons\BTNSvenGS.BLP
 Researchbuttonpos=2
 Researchhotkey=L
 Researchtip=学习 神之力量[|cffffcc00R|r] - [|cffffcc00等级 %d|r]|n(God's Strength)
-Researchubertip=流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，大幅增加自身的攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|cff99ccff魔法消耗：|r100/125/150|n|n|cffffcc00等级 1|r - 增加自身100%的基础攻击力|n|cffffcc00等级 2|r - 增加自身150%的基础攻击力|n|cffffcc00等级 3|r - 增加自身200%的基础攻击力|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军75%/100%/125%的基础攻击力，装备神杖该提示不会变化|r
+Researchubertip=流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，大幅增加自身的攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|cff99ccff魔法消耗：|r100/125/150|n|n|cffffcc00等级 1|r - 增加自身200%的基础攻击力|n|cffffcc00等级 2|r - 增加自身300%的基础攻击力|n|cffffcc00等级 3|r - 增加自身400%的基础攻击力|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军150%/200%/250%的基础攻击力，装备神杖该提示不会变化|r
 TargetArt=Abilities\Spells\Undead\DeathPact\DeathPactTarget.mdl
 Targetattach=origin
 Tip=神之力量[|cffffcc00R|r] - [|cffffcc00等级 1|r],神之力量[|cffffcc00R|r] - [|cffffcc00等级 2|r],神之力量[|cffffcc00R|r] - [|cffffcc00等级 3|r]
-Ubertip=流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，增加自身100%的基础攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军75%的基础攻击力，装备神杖该提示不会变化|r,流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，增加自身150%的基础攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军100%的基础攻击力，装备神杖该提示不会变化|r,流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，增加自身200%的基础攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军125%的基础攻击力，装备神杖该提示不会变化|r
+Ubertip=流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，增加自身200%的基础攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军150%的基础攻击力，装备神杖该提示不会变化|r,流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，增加自身300%的基础攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军200%的基础攻击力，装备神杖该提示不会变化|r,流浪剑客激发体内秩序之神的力量，与大剑正义合为一体，增加自身400%的基础攻击力。|n|n|cff99ccff作用范围：|r900|n|cff99ccff持续时间：|r25|n|cff99ccff冷却时间：|r80|n|n|c00fffc01神杖升级：持续时间增加10秒，并增加附近友军250%的基础攻击力，装备神杖该提示不会变化|r
 UnButtonpos=2
 Unhotkey=L
 

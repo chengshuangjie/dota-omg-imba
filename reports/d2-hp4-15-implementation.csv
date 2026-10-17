@@ -1,0 +1,16 @@
+﻿#,Raw逻辑,技能名,核心维度(唯一),原值每级,×2目标,修改位置,神杖/附属不动,状态
+1,A0CY,长大(Tiny Grow),SUIJI被动攻击力,50/100/150,100/200/300,AbilityData.slk A4T3 X24/25/26,MS40/50/60(tradeoff)/AS惩罚/神杖分裂不动,DONE
+2,A1EJ,战斗专注(Battle Trance),攻速增益,0.6/1.2/1.8,1.2/2.4/3.6,AbilityData.slk A0XF/A0XG/A0XH X28,持续5s/CD30/mana75/面积不动,DONE
+3,A0FV,战意(Warpath),每层攻击系数,15+5*L (20/25/30),30+10*L (40/50/60),war3map.j 施法/到期重算/恢复 三处,每层MS/叠加上限/神杖+3层不动,DONE
+4,A0VC,射手天赋(Marksmanship),永久敏捷,40/60/80,80/120/160,AbilityData.slk A2NX X24/25/26,450判定/神杖分裂0.4/CD/mana不动,DONE
+5,A0ER,守护天使(Guardian Angel),生命回复/s,25/50/75,50/100/150,j registry正常三元 + SLK A0ER/Y0CI X32-34双写,神杖50/75/100/时长6-8/面积900/CD/mana不动,DONE
+6,A12P,集中火力(Focus Fire),引擎攻速上限(结构型),无可翻倍数值,不适用(引擎.02硬上限),"无数值插点,不改.02/不改攻击保留率tradeoff",惩罚/CD60/45/30/mana75/range600/时长20s不动,NO-CHANGE(引擎硬上限)
+7,A034,伤害加深(Amplify Damage),护甲削减,10/15/20,20/30/40,SLK A034+Y0BD X24/25/26双写,CD5/mana25/range800/持续120/神杖独立块不动,DONE
+8,A04Q,死亡契约(Death Pact),生命上限系数,.3+.20*L (50/70/90%),.6+.40*L (100/140/180%),j SED系数; SDD攻击.03+.02L不动,攻击5/7/9%/神杖1200地板/CD/mana/range不动,DONE
+9,A0E2,淘汰之刃(Culling Blade),永久护甲/次,+2,+4,j CullingBladePermanentArmor字面量,斩杀线/伤害B67/友军ASMS/CD/mana/range不动,DONE
+10,A0NS,回光返照(Borrowed Time),转治疗窗口时长,4+BC7 (5/6/7s),8+2*BC7 (10/12/14s),j BZ7单点驱动窗口/特效/HGFZ,阈值400/500/600/100%转治疗/CD/mana不动,DONE
+11,A10Q,编织(Weave),给其他技能减CD因子,.875-.125*L,.75-.25*L (50/75/100%),j英雄+labike两处 + UI .25+.25L同步,主动护甲削A17N另一维度/自身CD/mana不动,DONE
+12,A15J,血肉傀儡(Flesh Golem),近距受伤放大,15+5*WZ (近20/25/30),30+10*WZ (近40/50/60);斜坡减项15→30,j近距+斜坡两处;神杖25+5WZ/(20+5WZ)-15不动,额外HP300+100L/死亡精华/CD/mana/range不动,DONE
+13,A1IN,暗影之舞(Shadow Dance),脱战移动速度(主维度),0.3/0.35/0.4 (30/35/40%),0.6/0.7/0.8 (60/70/80%),SLK A1I8/A1I9/A1IA X24;HP/MP回复不动,HP/s A1IC/ID/IB/MP1%/主动隐身4s/CD/mana不动,DONE
+14,A0VQ,灵动迅捷(Alacrity),Wex雷元素攻速,0.2/0.3/0.4/0.5,0.4/0.6/0.8/1.0,SLK A0VJ X24-27;火攻A109不动,Exort火攻/时长9s/CD15/mana45/range650不动,DONE
+15,A2CI,决斗(Duel),获胜永久攻击,8+4*BC7 (12/16/20),16+8*BC7 (24/32/40),j统计JTJD+实际Y0G两处,时长/CD50/35/mana75/range160/伤害转化不动,DONE

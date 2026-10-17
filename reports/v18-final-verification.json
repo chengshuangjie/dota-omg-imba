@@ -1,0 +1,38 @@
+{
+  "version": "v1.8-Integrated",
+  "static_audit": {
+    "pass": 38,
+    "fail": 0,
+    "total": 38
+  },
+  "package_readback_verify_v17": {
+    "pass": 109,
+    "fail": 0
+  },
+  "pjass": "only whitelisted location_m5 (build.ps1 single allow); 0 unexpected",
+  "w3i": {
+    "bytes": 806,
+    "new_label": "OMG IMBA v1.8-Integrated",
+    "label_occurrences": 2,
+    "outside_slots_equal_a1c1de1": true
+  },
+  "build_map": {
+    "path": "D:\\dota\\DOTA-OMG-IMBA-轻量化\\maps\\build\\DOTA-OMG-IMBA-v1.8-Integrated.w3x",
+    "size": 47529247,
+    "sha256": "3c67bbb54e3e93115bcd508b7959f8e9a0098af2d04daf2c44c41361fb2d0fb3"
+  },
+  "deploy": {
+    "dir": "D:\\游戏\\Warcraft III\\Maps\\omg\\noskin8",
+    "file_count": 1,
+    "files": [
+      "OMG-IMBA-v1.8-Integrated-只测试这一张.w3x"
+    ],
+    "sha_match": true
+  },
+  "deliverables": [
+    "reports/v18-audit.{md,json,csv}",
+    "reports/d2-hp4-15-implementation.csv",
+    "reports/k-portrait-merge.json",
+    "reports/v18-source-gates.md"
+  ]
+}

@@ -17302,7 +17302,7 @@ Description=一种由竹子做成的小型了望塔。
 Missilespeed=1500,1500
 Name=喵刀 · 英雄展示
 Tip=喵刀 · 英雄展示
-Ubertip=仅供查看喵刀模型及技能介绍，不可控制，不参与战斗。
+Ubertip=有权限玩家点击可直选喵刀(HMD0)，确认后下一出生创建；无权限仅展示，可用5硬币兑换1天权限。不可控制，不参与战斗。
 
 [nT90]
 Art=ReplaceableTextures\CommandButtons\BTNSelectHero.blp

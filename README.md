@@ -23,36 +23,42 @@
 
 - `src/`：当前权威 JASS、W3I、IMP 及 8 个对象数据/文本文件。
 - `assets/loading-screen/`：当前加载图、四分块 BLP 和地图预览图。
-- `maps/baseline/`：实机正常的 noskin19 稳定构建底包；构建脚本会校验其 SHA-256。
-- `maps/release/`：当前正式 W3X。
-- `maps/build/`：历史本地重建输出（本版正式件直接落 release）。
-- `tools/build/`：构建和两套回提验证脚本。
-- `toolchain/`：随项目保存的 MPQEditor、PJASS、common.j 和 blizzard.j（不入库同步）。
+- `maps/baseline/`：已纳入仓库的 noskin19 稳定构建底包；构建脚本强制校验 SHA-256 `93C1DF91…D7A7`。
+- `build-inputs/environment/`：已验收的 T2 `war3map.doo` 与 T5 `war3map.w3e` 冻结输入，构建时自动重注入并回提校验。
+- `maps/build/`：一键构建输出，默认生成 `Dota v6.90a OMG AI 1.0.w3x`；该目录不提交生成物。
+- `maps/release/`：本地正式发布目录；该目录不提交 W3X。
+- `tools/build/`：一键构建及权威回提验证脚本。
+- `toolchain/`：已纳入仓库的固定 MPQEditor、PJASS、common.j 与 blizzard.j；构建前逐项校验 SHA-256。
 - `reports/`：当前版本验证结果、历史阶段报告和本次发布证据。
 - `PROJECT_MANIFEST.json`：全文件哈希清单与正式版指针。
 
-## 构建
+## 完整复现构建
 
-在 PowerShell 5.1 中执行：
+要求：Windows PowerShell 5.1。克隆仓库后无需另找基线地图或手工重注入环境文件，直接在仓库根目录执行：
 
 ```powershell
-& "D:\Dota_OMG\tools\build\build.ps1"
+& ".\tools\build\build.ps1"
 ```
 
-默认输出（由 `config/tool-paths.json` 的 `outputMap` 指定）：
+若维护者存在 `config/tool-paths.json`，脚本优先使用该本机配置；普通克隆默认使用已提交的 `config/tool-paths.example.json` 和仓库相对路径。
+
+默认输出：
 
 ```text
-D:\Dota_OMG\maps\release\Dota v6.90a OMG AI 1.0.w3x
+maps\build\Dota v6.90a OMG AI 1.0.w3x
 ```
 
 构建流程会执行：
 
-1. 检查稳定底包 SHA-256；
-2. 运行 PJASS，只允许历史既有的 `location_m5` 诊断；
-3. 将权威条目先删除再按小写 `units\` 路径写入；
-4. 删除英雄 K 的 14 个专属物理资源；
-5. 构建后手动重注入 T2 `war3map.doo` 与 T5 `war3map.w3e`（冻结 SHA 见上）；
-6. 回提并校验脚本、对象数据、UI 文本、SLK 维度和功能锚点。
+1. 校验noskin19稳定底包及四个固定工具文件SHA-256；
+2. 校验T2 `war3map.doo`与T5 `war3map.w3e`冻结输入SHA-256；
+3. 运行PJASS，只允许历史既有的 `location_m5` 诊断；
+4. 将权威JASS、W3I、IMP、对象数据与加载图先删除再写入；
+5. 删除英雄K的14个专属物理资源；
+6. 自动重注入T2 `war3map.doo`与T5 `war3map.w3e`；
+7. 回提校验源码、对象数据、SLK结构、功能锚点及doo/w3e哈希。
+
+> 仓库能够生成内容和功能等价的完整地图；MPQ条目写入顺序、压缩布局或时间元数据可能导致最终W3X容器SHA与正式发布件不同，因此以122+2项语义/回提验证为权威，而不是要求整个W3X逐字节同哈希。
 
 ## 验证
 
@@ -60,7 +66,7 @@ D:\Dota_OMG\maps\release\Dota v6.90a OMG AI 1.0.w3x
 & "D:\Dota_OMG\tools\build\verify_v17.ps1" -MapPath "D:\Dota_OMG\maps\release\Dota v6.90a OMG AI 1.0.w3x"
 ```
 
-当前预期为 122 项通过、0 失败。PJASS 只允许基图已有的 `location_m5` 未初始化诊断（war3map.j:155341）。发布证据见 `reports/release-v6.90a-1.0/`。
+当前预期为 124 项通过、0 失败（含T2 `war3map.doo`与T5 `war3map.w3e`回提哈希）。PJASS 只允许基图已有的 `location_m5` 未初始化诊断（war3map.j:155341）。发布证据见 `reports/release-v6.90a-1.0/`。
 
 ## 当前功能边界
 
@@ -81,5 +87,5 @@ D:\Dota_OMG\maps\release\Dota v6.90a OMG AI 1.0.w3x
 - 禁止重新运行历史 K 生成器或从旧项目覆盖当前 SLK。
 - 删除 SLK 尾部对象时，必须同步更新 `B;Y` 声明，并保持唯一末尾 `E`。
 - 修改地图内条目时沿用“先 delete、后 add”，路径统一使用小写 `units\...`。
-- 新版本必须同步修改 `XOMG_VERSION`、`SetMapName` 及 W3I 两个固定 24 字节名称槽，并同步 `build.ps1`、`verify_v17.ps1`、`config/tool-paths.json`。
+- 新版本必须同步修改 `XOMG_VERSION`、`SetMapName` 及 W3I 两个固定 24 字节名称槽，并同步 `build.ps1`、`verify_v17.ps1`、`config/tool-paths.example.json`；本机需要覆盖工具路径时才维护不入库的 `config/tool-paths.json`。
 - 正式版先经构建与回提验证通过后，再部署到稳定目录；稳定目录旧件先备份核验哈希再移除。

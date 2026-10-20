@@ -1,8 +1,7 @@
-﻿{
-    "map":  "D:\\dota\\DOTA-OMG-IMBA-NOK-worktree\\maps\\build\\DOTA-OMG-IMBA-v1.8.6-NOK.w3x",
-    "time":  "2026-10-18T01:45:47.3960596+08:00",
+{
+    "map":  "maps/build/Dota v6.90a OMG AI 1.0.w3x",
     "passed":  true,
-    "total":  80,
+    "total":  124,
     "failedCount":  0,
     "failures":  ""
 }

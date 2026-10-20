@@ -5,7 +5,14 @@
 
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path))
-$config = Get-Content -LiteralPath (Join-Path $root 'config\tool-paths.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+$localConfig = Join-Path $root 'config\tool-paths.json'
+$configPath = if (Test-Path -LiteralPath $localConfig -PathType Leaf) { $localConfig } else { Join-Path $root 'config\tool-paths.example.json' }
+$config = Get-Content -LiteralPath $configPath -Raw -Encoding UTF8 | ConvertFrom-Json
+function Resolve-ProjectPath([string]$value) {
+    if ([IO.Path]::IsPathRooted($value)) { return $value }
+    return [IO.Path]::GetFullPath((Join-Path $root $value))
+}
+$config.mpqEditor = Resolve-ProjectPath $config.mpqEditor
 if ([string]::IsNullOrWhiteSpace($MapPath)) {
     $MapPath = if ([IO.Path]::IsPathRooted($config.baselineMap)) { $config.baselineMap } else { Join-Path $root $config.baselineMap }
 }

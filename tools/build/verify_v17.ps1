@@ -6,7 +6,14 @@
 # structural assertions + retained-system smoke. Exits non-zero on any failure.
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path))
-$config = Get-Content -LiteralPath (Join-Path $root 'config\tool-paths.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+$localConfig = Join-Path $root 'config\tool-paths.json'
+$configPath = if (Test-Path -LiteralPath $localConfig -PathType Leaf) { $localConfig } else { Join-Path $root 'config\tool-paths.example.json' }
+$config = Get-Content -LiteralPath $configPath -Raw -Encoding UTF8 | ConvertFrom-Json
+function Resolve-ProjectPath([string]$value) {
+    if ([IO.Path]::IsPathRooted($value)) { return $value }
+    return [IO.Path]::GetFullPath((Join-Path $root $value))
+}
+$config.mpqEditor = Resolve-ProjectPath $config.mpqEditor
 if ([string]::IsNullOrWhiteSpace($MapPath)) {
     $MapPath = if ([IO.Path]::IsPathRooted($config.baselineMap)) { $config.baselineMap } else { Join-Path $root $config.baselineMap }
 }
@@ -66,6 +73,10 @@ $unitStr = [IO.File]::ReadAllText((Extract-FromMpq 'units\campaignunitstrings.tx
 $abilStr = [IO.File]::ReadAllText((Extract-FromMpq 'units\campaignabilitystrings.txt'), [Text.Encoding]::UTF8)
 $abilStr = $abilStr -replace "`r`n","`n"
 $impBytes = [IO.File]::ReadAllBytes((Extract-FromMpq 'war3map.imp'))
+$dooReadback = Extract-FromMpq 'war3map.doo'
+$w3eReadback = Extract-FromMpq 'war3map.w3e'
+$checks['environment:doo-frozen-sha256'] = ((Get-FileHash -LiteralPath $dooReadback -Algorithm SHA256).Hash -eq 'F6EA5428531D04AC680F9D51B318BE5B65E776B58BC342BB5004E32B2F0BF915')
+$checks['environment:w3e-frozen-sha256'] = ((Get-FileHash -LiteralPath $w3eReadback -Algorithm SHA256).Hash -eq '55962DAE4021A0ECA6DAD6011E9A37B00459362BC062725260D6799FB8E9F593')
 
 # SLK tail-deletion safety: declared B;Y must exactly match the largest actual C;...;Y row.
 # Warcraft III 1.27 may exit during object preload before map logging when these diverge.
@@ -232,12 +243,18 @@ $rows = foreach ($k in $checks.Keys) {
 }
 $failed = @($rows | Where-Object { -not $_.pass })
 $failedCount = $failed.Count
+$reportMap = $MapPath
+$rootPrefix = $root.TrimEnd('\') + '\'
+if ($MapPath.StartsWith($rootPrefix, [StringComparison]::OrdinalIgnoreCase)) {
+    $reportMap = $MapPath.Substring($rootPrefix.Length).Replace('\','/')
+}
 $report = [PSCustomObject]@{
-    map=$MapPath; time=(Get-Date).ToString('o'); passed=($failedCount -eq 0)
+    map=$reportMap; passed=($failedCount -eq 0)
     total=$rows.Count; failedCount=$failedCount; failures=($failed.check -join '; ')
 }
 New-Item -ItemType Directory -Force (Join-Path $root 'reports') | Out-Null
-$report | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $root 'reports\verification-v17.json') -Encoding UTF8
+$reportJson = $report | ConvertTo-Json -Depth 5
+[IO.File]::WriteAllText((Join-Path $root 'reports\verification-v17.json'), $reportJson, (New-Object Text.UTF8Encoding $false))
 $rows | Export-Csv -Path (Join-Path $root 'reports\verification-v17.csv') -NoTypeInformation -Encoding UTF8
 
 $rows | ForEach-Object { '{0,-38} {1}' -f $_.check, $(if($_.pass){'PASS'}else{'FAIL'}) } | Write-Output

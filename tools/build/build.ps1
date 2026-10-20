@@ -6,13 +6,21 @@
 
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path))
-if (-not $ConfigPath) { $ConfigPath = Join-Path $root 'config\tool-paths.json' }
+if (-not $ConfigPath) {
+    $localConfig = Join-Path $root 'config\tool-paths.json'
+    $ConfigPath = if (Test-Path -LiteralPath $localConfig -PathType Leaf) { $localConfig } else { Join-Path $root 'config\tool-paths.example.json' }
+}
 $config = Get-Content -LiteralPath $ConfigPath -Raw -Encoding UTF8 | ConvertFrom-Json
 
 function Resolve-ProjectPath([string]$value) {
     if ([IO.Path]::IsPathRooted($value)) { return $value }
     return [IO.Path]::GetFullPath((Join-Path $root $value))
 }
+
+$config.mpqEditor = Resolve-ProjectPath $config.mpqEditor
+$config.pjass = Resolve-ProjectPath $config.pjass
+$config.commonJ = Resolve-ProjectPath $config.commonJ
+$config.blizzardJ = Resolve-ProjectPath $config.blizzardJ
 
 function Wait-FileStable([string]$path, [int]$timeoutSeconds = 30) {
     $deadline = [DateTime]::UtcNow.AddSeconds($timeoutSeconds)
@@ -46,6 +54,8 @@ function Invoke-MpqDelete([string]$mapPath, [string]$archivePath) {
 
 $baseline = Resolve-ProjectPath $config.baselineMap
 $output = if ($OutputMap) { Resolve-ProjectPath $OutputMap } else { Resolve-ProjectPath $config.outputMap }
+$environmentDoo = Join-Path $root 'build-inputs\environment\war3map.doo'
+$environmentW3e = Join-Path $root 'build-inputs\environment\war3map.w3e'
 if (Test-Path -LiteralPath $output -PathType Leaf) { Remove-Item -LiteralPath $output -Force }
 $src = Join-Path $root 'src\war3map.j'
 $imp = Join-Path $root 'src\war3map.imp'
@@ -62,7 +72,19 @@ if ($actualBaselineSha256 -ne $expectedBaselineSha256) {
     throw "构建基线不是noskin19实机稳定包：expected=$expectedBaselineSha256 actual=$actualBaselineSha256 path=$baseline"
 }
 if (-not (Test-Path -LiteralPath $src -PathType Leaf)) { throw "缺少主源码: $src" }
-if (-not (Test-Path -LiteralPath $config.mpqEditor -PathType Leaf)) { throw "缺少 MPQEditor: $($config.mpqEditor)" }
+$requiredInputs = @(
+    @{ Path = $environmentDoo; Name = 'T2 war3map.doo'; Sha256 = 'F6EA5428531D04AC680F9D51B318BE5B65E776B58BC342BB5004E32B2F0BF915' },
+    @{ Path = $environmentW3e; Name = 'T5 war3map.w3e'; Sha256 = '55962DAE4021A0ECA6DAD6011E9A37B00459362BC062725260D6799FB8E9F593' },
+    @{ Path = $config.mpqEditor; Name = 'MPQEditor'; Sha256 = '2B5EF9C728CD4BF0D8321EFDB9A155BB258900ABB90A3B7B2E87A3AD9EB0404D' },
+    @{ Path = $config.pjass; Name = 'PJASS'; Sha256 = '03B770834502A9829EE598DE534F83FDC36197F53B69090A3A3266A56AE0418D' },
+    @{ Path = $config.commonJ; Name = 'common.j'; Sha256 = 'F06B18A2DC38A35FD5559FAB6EBDCAD1BC88FEA7423F219466B803CE27E35E48' },
+    @{ Path = $config.blizzardJ; Name = 'blizzard.j'; Sha256 = '2940674DDD5D9DBAF84DF2490B609D3D606C66DB6C70FBF11A7940D4209DDFED' }
+)
+foreach ($input in $requiredInputs) {
+    if (-not (Test-Path -LiteralPath $input.Path -PathType Leaf)) { throw "缺少构建输入 $($input.Name): $($input.Path)" }
+    $actual = (Get-FileHash -LiteralPath $input.Path -Algorithm SHA256).Hash
+    if ($actual -ne $input.Sha256) { throw "构建输入哈希错误 $($input.Name): expected=$($input.Sha256) actual=$actual path=$($input.Path)" }
+}
 
 [IO.Directory]::CreateDirectory($stageDir) | Out-Null
 [IO.Directory]::CreateDirectory((Split-Path -Parent $output)) | Out-Null
@@ -174,21 +196,26 @@ foreach ($archivePath in $kArchiveEntries) {
     Invoke-MpqDelete $asciiMap $archivePath
 }
 
+# Reproducible ART683 environment layer: inject the frozen T2 decorations and T5 terrain
+# after the baseline copy and all source/object updates. These files are checked above by SHA-256.
+foreach ($environmentEntry in @(
+    @{ Source = $environmentDoo; Archive = 'war3map.doo' },
+    @{ Source = $environmentW3e; Archive = 'war3map.w3e' }
+)) {
+    Invoke-MpqDelete $asciiMap $environmentEntry.Archive
+    Invoke-MpqAdd $asciiMap $environmentEntry.Source $environmentEntry.Archive
+}
+
 Copy-Item -LiteralPath $asciiMap -Destination $output -Force
 Wait-FileStable $output 30
 
-# Legacy static gate: executed for retained-system evidence only; its K-specific
-# assertions have been converted to NOK zero-residue checks and must not block the build.
-& (Join-Path $root 'tools\build\verify.ps1') -MapPath $output | Out-Null
-Write-Output "遗留静态门已执行（仅留存系统证据；K 断言已转为 NOK 零残留门）"
-
-# Authoritative v1.8.6-NOK semantic + readback gate; must exit 0.
+# Authoritative v6.90a semantic + MPQ readback gate; must exit 0.
 $v17Ok = $false
 for ($attempt = 1; $attempt -le 3 -and -not $v17Ok; $attempt++) {
     Start-Sleep -Seconds 3
     & (Join-Path $root 'tools\build\verify_v17.ps1') -MapPath $output
     if ($LASTEXITCODE -eq 0) { $v17Ok = $true }
 }
-if (-not $v17Ok) { throw "v1.8.6-NOK 回读语义验证失败（3次重试后仍失败）" }
+if (-not $v17Ok) { throw "v6.90a 1.0 回读语义验证失败（3次重试后仍失败）" }
 
 Write-Output "构建完成: $output"

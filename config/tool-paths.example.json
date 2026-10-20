@@ -1,8 +1,8 @@
 {
-    "mpqEditor":  "C:/PATH/TO/MPQEditor.exe",
-    "pjass":  "C:/PATH/TO/pjass-latest.exe",
-    "commonJ":  "C:/PATH/TO/common.j",
-    "blizzardJ":  "C:/PATH/TO/blizzard.j",
+    "mpqEditor":  "toolchain\\mpqeditor\\MPQEditor.exe",
+    "pjass":  "toolchain\\pjass\\pjass-latest.exe",
+    "commonJ":  "toolchain\\jass\\24\\common.j",
+    "blizzardJ":  "toolchain\\jass\\24\\blizzard.j",
     "baselineMap":  "maps\\baseline\\DOTA-OMG-IMBA-v1.8.5-noskin19-live-tested.w3x",
-    "outputMap":  "maps\\release\\Dota v6.90a OMG AI 1.0.w3x"
+    "outputMap":  "maps\\build\\Dota v6.90a OMG AI 1.0.w3x"
 }

@@ -1,11 +1,13 @@
 # ---- Local machine tool paths (absolute, do not commit) ----
 config/tool-paths.json
 
-# ---- War3 map binaries (built locally; remote repo has no LFS) ----
-*.w3x
+# ---- War3 generated map binaries ----
 *.w3x.bak
 maps/build/*.w3x
-maps/baseline/*.w3x
+maps/release/*.w3x
+
+# The verified noskin19 baseline below is an intentional tracked build input.
+!maps/baseline/DOTA-OMG-IMBA-v1.8.5-noskin19-live-tested.w3x
 
 # ---- Local audit backups (large, contain prior map/source snapshots) ----
 reports/backup-*/
@@ -37,8 +39,6 @@ __pycache__/
 .netrc
 _kkauth/
 browser-profile/
-maps/release/*.w3x
-toolchain/
 backups/
 assets/environment/
 assets/reference-authorized/

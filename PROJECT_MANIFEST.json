@@ -1,151 +1,205 @@
 {
-  "project": "DOTA OMG IMBA",
-  "root": "D:\\Dota_OMG",
-  "release": {
-    "version": "v6.90a-OMG-AI-1.0",
-    "displayName": "Dota v6.90a OMG AI 1.0",
-    "path": "maps/release/Dota v6.90a OMG AI 1.0.w3x",
-    "bytes": 56712620,
-    "sha256": "dfd19f9bcb7c35a2050a512c072f968fdf803f4c32a4bceb84c9924561f68c29",
-    "stableDeployPath": "D:\\游戏\\Warcraft III\\Maps\\omg\\稳定\\Dota v6.90a OMG AI 1.0.w3x",
-    "stableSha256": "dfd19f9bcb7c35a2050a512c072f968fdf803f4c32a4bceb84c9924561f68c29",
-    "buildStableHashIdentical": true,
-    "labels": {
-      "versionLabel": {
-        "value": "v6.90a-OMG-AI-1.0",
-        "asciiBytes": 17,
-        "padTo": 24,
-        "paddingSpaces": 7,
-        "w3iSlot": "A@12",
-        "jassLiteral": "constant string XOMG_VERSION=\"v6.90a-OMG-AI-1.0\""
-      },
-      "displayName": {
-        "value": "Dota v6.90a OMG AI 1.0",
-        "asciiBytes": 22,
-        "padTo": 24,
-        "paddingSpaces": 2,
-        "w3iSlot": "B@234",
-        "jassLiteral": "call SetMapName(\"Dota v6.90a OMG AI 1.0\")"
-      }
-    }
-  },
-  "frozenInjectedAssets": {
-    "war3map.doo": {
-      "source": "T2 building model swap (ART683-T2), frozen from ART683-T10 stage",
-      "bytes": 269924,
-      "sha256": "f6ea5428531d04ac680f9d51b318be5b65e776b58bc342bb5004e32b2f0bf915"
-    },
-    "war3map.w3e": {
-      "source": "T5 64-cell Felwood terrain (ART683-T5), frozen from ART683-T10 stage",
-      "bytes": 116584,
-      "sha256": "55962dae4021a0eca6dad6011e9a37b00459362bc062725260d6799fb8e9f593"
-    },
-    "war3map.wpm": {
-      "bytes": 262160,
-      "sha256": "61ccf7597378fde26858b061ae174082543fbb25e07d0e4e3c91cb035a1f11a9"
-    }
-  },
-  "verification": {
-    "total": 122,
-    "passed": 122,
-    "failed": 0,
-    "pjassAllowedDiagnostic": "location_m5 only (war3map.j:155341, baseline-allowed)",
-    "deployHashIdentical": true,
-    "evidenceDir": "reports/release-v6.90a-1.0/"
-  },
-  "history": [
-    {
-      "version": "v1.8.9-UIFIX",
-      "path": "maps/release/DOTA-OMG-IMBA-v1.8.9-UIFIX.w3x",
-      "sha256": "dee6d1f5e96907fa6ecb056c58fd864608b9b15ef23cd720461fe93efc8eba1c",
-      "note": "前一正式版，历史保留；已被 v6.90a 1.0 取代"
-    },
-    {
-      "version": "v6.9-ART683-T10",
-      "note": "已验收测试基线（抽奖屋标题 -128/256、T2 建筑换模、T5 地形、T4 世界树），内容经 v6.90a 1.0 继承；测试标识已从活动版本门清除，仅历史报告保留"
-    }
-  ],
-  "generatedAt": "2026-10-20T16:58:00+08:00",
-  "files": [
-    {
-      "path": "src/war3map.j",
-      "bytes": 8581369,
-      "sha256": "7248db967b02863b000cb671a126a036c401fc78c541c07f943b18e25b712dda"
-    },
-    {
-      "path": "src/war3map.w3i",
-      "bytes": 806,
-      "sha256": "2d29ecaf9c819d9c5eb14f6ad081c2974a9eb09524c94dabb611901fffd43ea0"
-    },
-    {
-      "path": "src/war3map.imp",
-      "bytes": 89654,
-      "sha256": "1fb5c0b5389ae83c39bacb99aad48af86c253afb74357f47f65a8d651aa9846d"
-    },
-    {
-      "path": "src/data/Units/AbilityData.slk",
-      "bytes": 1597205,
-      "sha256": "4179c649515f4496ef3841d3058060c501b60e9f40e3253e6415a059847275dd"
-    },
-    {
-      "path": "src/data/Units/CampaignAbilityStrings.txt",
-      "bytes": 4976377,
-      "sha256": "f22afbbecd3657e2dbee936b7e97dbd80e63e67521ed36729246e8853fb30fe9"
-    },
-    {
-      "path": "src/data/Units/CampaignUnitStrings.txt",
-      "bytes": 1349158,
-      "sha256": "3afc4e7591b59494c2b72bde567f9ee371ea6b427549f1581620d24aa0320904"
-    },
-    {
-      "path": "src/data/Units/UnitAbilities.slk",
-      "bytes": 153295,
-      "sha256": "b9adfd23848dd9e54bed5ff28f076d83f5d2d6409896298b4fc7371fcc3f7a48"
-    },
-    {
-      "path": "src/data/Units/UnitBalance.slk",
-      "bytes": 893027,
-      "sha256": "a3cc7d90e4342b3a981d2313debcd8d184e613caa02e6f6058cc8d08adde3706"
-    },
-    {
-      "path": "src/data/Units/UnitData.slk",
-      "bytes": 532642,
-      "sha256": "230388043e30e93bc44757b563f26f54ad23f3654c64d84d506ec36a39a2663f"
-    },
-    {
-      "path": "src/data/Units/UnitUI.slk",
-      "bytes": 1069712,
-      "sha256": "c5a3888955f2ec3e0ca48067e0a21fdb208c6361d901467df6c5083c6744809c"
-    },
-    {
-      "path": "src/data/Units/UnitWeapons.slk",
-      "bytes": 1014044,
-      "sha256": "e498fb61b75024dba8cd0266140590a84671670ab447a36a2a7b4049a4084483"
-    },
-    {
-      "path": "tools/build/build.ps1",
-      "bytes": 11004,
-      "sha256": "fca97796da00ea822eb7bce50d02d048bebe83ba36cbd6821214d23cecbaadce"
-    },
-    {
-      "path": "tools/build/verify_v17.ps1",
-      "bytes": 18205,
-      "sha256": "20657549d9d0b4896d8c2db884a66f1f516d247db64ea1f3047a66ef86eacadd"
-    },
-    {
-      "path": "tools/build/strip_kk_persistence.py",
-      "bytes": 2927,
-      "sha256": "8ce98a7ab45804f620dfd31c62a732577800edf807ba55412ae16c8cbe5790cf"
-    },
-    {
-      "path": "config/tool-paths.example.json",
-      "bytes": 331,
-      "sha256": "afbe456e4543cb96ec781a10804975ccae26bc8869b8b556c36afc31b4cee178"
-    },
-    {
-      "path": "maps/release/Dota v6.90a OMG AI 1.0.w3x",
-      "bytes": 56712620,
-      "sha256": "dfd19f9bcb7c35a2050a512c072f968fdf803f4c32a4bceb84c9924561f68c29"
-    }
-  ]
+    "project":  "DOTA OMG IMBA",
+    "root":  ".",
+    "release":  {
+                    "version":  "v6.90a-OMG-AI-1.0",
+                    "displayName":  "Dota v6.90a OMG AI 1.0",
+                    "path":  "maps/release/Dota v6.90a OMG AI 1.0.w3x",
+                    "bytes":  56712620,
+                    "sha256":  "dfd19f9bcb7c35a2050a512c072f968fdf803f4c32a4bceb84c9924561f68c29",
+                    "stableDeployPath":  "D:\\游戏\\Warcraft III\\Maps\\omg\\稳定\\Dota v6.90a OMG AI 1.0.w3x",
+                    "stableSha256":  "dfd19f9bcb7c35a2050a512c072f968fdf803f4c32a4bceb84c9924561f68c29",
+                    "buildStableHashIdentical":  true,
+                    "labels":  {
+                                   "versionLabel":  {
+                                                        "value":  "v6.90a-OMG-AI-1.0",
+                                                        "asciiBytes":  17,
+                                                        "padTo":  24,
+                                                        "paddingSpaces":  7,
+                                                        "w3iSlot":  "A@12",
+                                                        "jassLiteral":  "constant string XOMG_VERSION=\"v6.90a-OMG-AI-1.0\""
+                                                    },
+                                   "displayName":  {
+                                                       "value":  "Dota v6.90a OMG AI 1.0",
+                                                       "asciiBytes":  22,
+                                                       "padTo":  24,
+                                                       "paddingSpaces":  2,
+                                                       "w3iSlot":  "B@234",
+                                                       "jassLiteral":  "call SetMapName(\"Dota v6.90a OMG AI 1.0\")"
+                                                   }
+                               }
+                },
+    "frozenInjectedAssets":  {
+                                 "war3map.doo":  {
+                                                     "source":  "T2 building model swap (ART683-T2), frozen from ART683-T10 stage",
+                                                     "bytes":  269924,
+                                                     "sha256":  "f6ea5428531d04ac680f9d51b318be5b65e776b58bc342bb5004e32b2f0bf915"
+                                                 },
+                                 "war3map.w3e":  {
+                                                     "source":  "T5 64-cell Felwood terrain (ART683-T5), frozen from ART683-T10 stage",
+                                                     "bytes":  116584,
+                                                     "sha256":  "55962dae4021a0eca6dad6011e9a37b00459362bc062725260d6799fb8e9f593"
+                                                 },
+                                 "war3map.wpm":  {
+                                                     "bytes":  262160,
+                                                     "sha256":  "61ccf7597378fde26858b061ae174082543fbb25e07d0e4e3c91cb035a1f11a9"
+                                                 }
+                             },
+    "verification":  {
+                         "total":  124,
+                         "passed":  124,
+                         "failed":  0,
+                         "pjassAllowedDiagnostic":  "location_m5 only (war3map.j:155341, baseline-allowed)",
+                         "deployHashIdentical":  true,
+                         "evidenceDir":  "reports/release-v6.90a-1.0/"
+                     },
+    "history":  [
+                    {
+                        "version":  "v1.8.9-UIFIX",
+                        "path":  "maps/release/DOTA-OMG-IMBA-v1.8.9-UIFIX.w3x",
+                        "sha256":  "dee6d1f5e96907fa6ecb056c58fd864608b9b15ef23cd720461fe93efc8eba1c",
+                        "note":  "前一正式版，历史保留；已被 v6.90a 1.0 取代"
+                    },
+                    {
+                        "version":  "v6.9-ART683-T10",
+                        "note":  "已验收测试基线（抽奖屋标题 -128/256、T2 建筑换模、T5 地形、T4 世界树），内容经 v6.90a 1.0 继承；测试标识已从活动版本门清除，仅历史报告保留"
+                    }
+                ],
+    "generatedAt":  "2026-10-20T17:54:35.6284702+08:00",
+    "files":  [
+                  {
+                      "path":  "src/war3map.j",
+                      "bytes":  8581369,
+                      "sha256":  "7248db967b02863b000cb671a126a036c401fc78c541c07f943b18e25b712dda"
+                  },
+                  {
+                      "path":  "src/war3map.w3i",
+                      "bytes":  806,
+                      "sha256":  "2d29ecaf9c819d9c5eb14f6ad081c2974a9eb09524c94dabb611901fffd43ea0"
+                  },
+                  {
+                      "path":  "src/war3map.imp",
+                      "bytes":  89654,
+                      "sha256":  "1fb5c0b5389ae83c39bacb99aad48af86c253afb74357f47f65a8d651aa9846d"
+                  },
+                  {
+                      "path":  "src/data/Units/AbilityData.slk",
+                      "bytes":  1597205,
+                      "sha256":  "4179c649515f4496ef3841d3058060c501b60e9f40e3253e6415a059847275dd"
+                  },
+                  {
+                      "path":  "src/data/Units/CampaignAbilityStrings.txt",
+                      "bytes":  4976377,
+                      "sha256":  "f22afbbecd3657e2dbee936b7e97dbd80e63e67521ed36729246e8853fb30fe9"
+                  },
+                  {
+                      "path":  "src/data/Units/CampaignUnitStrings.txt",
+                      "bytes":  1349158,
+                      "sha256":  "3afc4e7591b59494c2b72bde567f9ee371ea6b427549f1581620d24aa0320904"
+                  },
+                  {
+                      "path":  "src/data/Units/UnitAbilities.slk",
+                      "bytes":  153295,
+                      "sha256":  "b9adfd23848dd9e54bed5ff28f076d83f5d2d6409896298b4fc7371fcc3f7a48"
+                  },
+                  {
+                      "path":  "src/data/Units/UnitBalance.slk",
+                      "bytes":  893027,
+                      "sha256":  "a3cc7d90e4342b3a981d2313debcd8d184e613caa02e6f6058cc8d08adde3706"
+                  },
+                  {
+                      "path":  "src/data/Units/UnitData.slk",
+                      "bytes":  532642,
+                      "sha256":  "230388043e30e93bc44757b563f26f54ad23f3654c64d84d506ec36a39a2663f"
+                  },
+                  {
+                      "path":  "src/data/Units/UnitUI.slk",
+                      "bytes":  1069712,
+                      "sha256":  "c5a3888955f2ec3e0ca48067e0a21fdb208c6361d901467df6c5083c6744809c"
+                  },
+                  {
+                      "path":  "src/data/Units/UnitWeapons.slk",
+                      "bytes":  1014044,
+                      "sha256":  "e498fb61b75024dba8cd0266140590a84671670ab447a36a2a7b4049a4084483"
+                  },
+                  {
+                      "path":  "tools/build/build.ps1",
+                      "bytes":  11004,
+                      "sha256":  "fca97796da00ea822eb7bce50d02d048bebe83ba36cbd6821214d23cecbaadce"
+                  },
+                  {
+                      "path":  "tools/build/verify_v17.ps1",
+                      "bytes":  18205,
+                      "sha256":  "20657549d9d0b4896d8c2db884a66f1f516d247db64ea1f3047a66ef86eacadd"
+                  },
+                  {
+                      "path":  "tools/build/strip_kk_persistence.py",
+                      "bytes":  2927,
+                      "sha256":  "8ce98a7ab45804f620dfd31c62a732577800edf807ba55412ae16c8cbe5790cf"
+                  },
+                  {
+                      "path":  "config/tool-paths.example.json",
+                      "bytes":  331,
+                      "sha256":  "afbe456e4543cb96ec781a10804975ccae26bc8869b8b556c36afc31b4cee178"
+                  },
+                  {
+                      "path":  "maps/release/Dota v6.90a OMG AI 1.0.w3x",
+                      "bytes":  56712620,
+                      "sha256":  "dfd19f9bcb7c35a2050a512c072f968fdf803f4c32a4bceb84c9924561f68c29"
+                  }
+              ],
+    "reproducibleBuild":  {
+                              "platform":  "Windows PowerShell 5.1",
+                              "command":  "\u0026 .\\tools\\build\\build.ps1",
+                              "output":  "maps/build/Dota v6.90a OMG AI 1.0.w3x",
+                              "verification":  {
+                                                   "passed":  124,
+                                                   "failed":  0,
+                                                   "formalEntries":  1951,
+                                                   "rebuiltEntries":  1951,
+                                                   "contentEntriesIdentical":  1949,
+                                                   "metadataDifferences":  [
+                                                                               "(attributes)",
+                                                                               "(signature)"
+                                                                           ],
+                                                   "contentEquivalent":  true
+                                               },
+                              "inputs":  [
+                                             {
+                                                 "path":  "maps/baseline/DOTA-OMG-IMBA-v1.8.5-noskin19-live-tested.w3x",
+                                                 "bytes":  52800385,
+                                                 "sha256":  "93c1df91b954022a8cf454d9b42c2b3d36ed5a13ad3d35e37418fa6b5a52d7a7"
+                                             },
+                                             {
+                                                 "path":  "build-inputs/environment/war3map.doo",
+                                                 "bytes":  269924,
+                                                 "sha256":  "f6ea5428531d04ac680f9d51b318be5b65e776b58bc342bb5004e32b2f0bf915"
+                                             },
+                                             {
+                                                 "path":  "build-inputs/environment/war3map.w3e",
+                                                 "bytes":  116584,
+                                                 "sha256":  "55962dae4021a0eca6dad6011e9a37b00459362bc062725260d6799fb8e9f593"
+                                             },
+                                             {
+                                                 "path":  "toolchain/mpqeditor/MPQEditor.exe",
+                                                 "bytes":  2037248,
+                                                 "sha256":  "2b5ef9c728cd4bf0d8321efdb9a155bb258900abb90a3b7b2e87a3ad9eb0404d"
+                                             },
+                                             {
+                                                 "path":  "toolchain/pjass/pjass-latest.exe",
+                                                 "bytes":  96768,
+                                                 "sha256":  "03b770834502a9829ee598de534f83fdc36197f53b69090a3a3266a56ae0418d"
+                                             },
+                                             {
+                                                 "path":  "toolchain/jass/24/common.j",
+                                                 "bytes":  166507,
+                                                 "sha256":  "f06b18a2dc38a35fd5559fab6ebdcad1bc88fea7423f219466b803ce27e35e48"
+                                             },
+                                             {
+                                                 "path":  "toolchain/jass/24/blizzard.j",
+                                                 "bytes":  441618,
+                                                 "sha256":  "2940674ddd5d9dbaf84df2490b609d3d606c66db6c70fbf11a7940d4209ddfed"
+                                             }
+                                         ]
+                          }
 }

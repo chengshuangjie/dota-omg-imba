@@ -1,0 +1,12 @@
+# Preserve every SHA-pinned build input byte-for-byte across clones.
+maps/baseline/*.w3x binary
+build-inputs/environment/war3map.doo binary
+build-inputs/environment/war3map.w3e binary
+toolchain/**/*.exe binary
+toolchain/jass/**/*.j binary
+
+# Project-authored text stays normalized in the repository.
+*.ps1 text eol=crlf
+*.md text eol=crlf
+*.json text eol=crlf
+*.csv text eol=crlf

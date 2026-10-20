@@ -1,0 +1,93 @@
+{
+  "meta": {
+    "stage": "pre-release-readonly-freeze",
+    "frozen_at": "2026-10-20T16:41:37.579+08:00",
+    "operator": "independent-acceptance-agent",
+    "read_only": true,
+    "release_present": false,
+    "note": "新 release v6.90a-1.0 尚未出现；本文件只冻结发布前基线，未修改任何工程、工具或稳定目录文件。"
+  },
+  "stable_dir": {
+    "path": "D:\\游戏\\Warcraft III\\Maps\\omg\\稳定",
+    "files": [
+      {
+        "role": "v6.93a 保护文件（另一任务，发布前后哈希必须完全不变）",
+        "name": "Dota v6.93a OMG AI 1.0.w3x",
+        "bytes": 82298058,
+        "sha256": "BC7B71D74D96898AFBAA01C3BFC9D77FE637C88E9E0D941CD53170DEC1E94890",
+        "mtime": "2026-10-20T14:36:23"
+      },
+      {
+        "role": "旧 FISSURE（发布后须先备份并移出稳定目录，稳定目录不得再保留）",
+        "name": "DOTA-OMG-IMBA-v6.9-FISSURE-T1.w3x",
+        "bytes": 56602080,
+        "sha256": "1847C96BF5201072A569CEC2ECC24E79ACA163CB4C852CEF95E4AF5087842195",
+        "mtime": "2026-10-19T10:51:48"
+      }
+    ]
+  },
+  "t10_authoritative_package": {
+    "role": "T10 权威包（构建源快照；release 仅允许版本/标签替换，冻结项全部保持）",
+    "build_path": "D:\\Dota_OMG\\maps\\build\\DOTA-OMG-IMBA-v6.9-ART683-T10.w3x",
+    "deploy_path": "D:\\游戏\\Warcraft III\\Maps\\omg\\imba69\\DOTA-OMG-IMBA-v6.9-ART683-T10.w3x",
+    "bytes": 56712660,
+    "sha256": "D5E7A02D5A9A9276434FC8643461240256A7BD997A5A5FF394AFC2A9AC0E672A",
+    "build_equals_deploy": true,
+    "packed_j_bytes": 8581368,
+    "packed_j_equals_src_at_freeze": true,
+    "packed_doo_sha256": "F6EA5428531D04AC680F9D51B318BE5B65E776B58BC342BB5004E32B2F0BF915",
+    "packed_w3e_sha256": "55962DAE4021A0ECA6DAD6011E9A37B00459362BC062725260D6799FB8E9F593"
+  },
+  "reference_components": {
+    "doo_eq_T2": {
+      "expected_sha256": "F6EA5428531D04AC680F9D51B318BE5B65E776B58BC342BB5004E32B2F0BF915",
+      "bytes": 269924,
+      "source": "T2 构建包 maps\\build\\DOTA-OMG-IMBA-v6.9-ART683-T2.w3x 内 war3map.doo（独立复算匹配）"
+    },
+    "w3e_eq_T5": {
+      "expected_sha256": "55962DAE4021A0ECA6DAD6011E9A37B00459362BC062725260D6799FB8E9F593",
+      "bytes": 116584,
+      "source": "T5 构建包 maps\\build\\DOTA-OMG-IMBA-v6.9-ART683-T5.w3x 内 war3map.w3e（独立复算匹配）"
+    },
+    "wpm_eq_FISSURE": {
+      "expected_sha256": "61CCF7597378FDE26858B061AE174082543FBB25E07D0E4E3C91CB035A1F11A9",
+      "bytes": 262160,
+      "source": "旧 FISSURE 包内 war3map.wpm（独立复算冻结）"
+    }
+  },
+  "label_accounting": {
+    "slotA_offset": 12,
+    "slotB_offset": 234,
+    "slot_bytes": 24,
+    "slotA_XOMG_VERSION": {
+      "literal": "v6.90a-OMG-AI-1.0",
+      "ascii_bytes": 17,
+      "pad_spaces": 7,
+      "total": 24
+    },
+    "slotB_display_name": {
+      "literal": "Dota v6.90a OMG AI 1.0",
+      "ascii_bytes": 22,
+      "pad_spaces": 2,
+      "total": 24,
+      "rule": "显示名 22 字符 + 2 空格 = 24B"
+    }
+  },
+  "verification_baseline": {
+    "pjass_allowed_diagnostic": "仅既有 location_m5（war3map.j:L155341），其余诊断必须为 0",
+    "verify_v17_ref": "T10 实测 118 pass / 0 fail；v6.90a 以 0 fail 为硬门槛，pass 总数以实跑为准",
+    "formal_release_current": {
+      "path": "maps/release/DOTA-OMG-IMBA-v1.8.9-UIFIX.w3x",
+      "bytes": 56636379,
+      "sha256": "DEE6D1F5E96907FA6ECB056C58FD864608B9B15EF23CD720461FE93EFC8EBA1C"
+    }
+  },
+  "git_policy": {
+    "acceptance_executes_git": false,
+    "review_required_at_final": "最终独立报告须评审发布代理提供的 Git 同步清单：不得误含 toolchain 二进制、backups、游戏目录、参考素材、个人日志、其他任务 v6.93a；并列推荐上传与禁止上传路径，供主代理从干净 origin/main 同步。"
+  },
+  "observations": {
+    "src_mid_prep": "冻结时 src/war3map.j 与 src/war3map.w3i 正被构建方编辑（j 16:38:43、w3i 16:39:08），标签已切到 v6.90a；属瞬态，不作为权威冻结值，release 出现后以 release 包回读为准。",
+    "docs_stale_pending_update": "README.md 与 PROJECT_MANIFEST.json 当前仍描述旧版本（v1.8.9-UIFIX / v6.9-CLEAN-TEST）；验收时必须已更新为新 release 的路径/版本/哈希/大小，且 MANIFEST JSON 合法。"
+  }
+}

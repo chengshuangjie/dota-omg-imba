@@ -1,0 +1,48 @@
+{
+  "stage": "v6.90a 1.0",
+  "gitExecuted": false,
+  "gitDirModified": false,
+  "upload": {
+    "src": [
+      "src/war3map.j",
+      "src/war3map.w3i",
+      "src/war3map.imp",
+      "src/data/Units/AbilityData.slk",
+      "src/data/Units/CampaignAbilityStrings.txt",
+      "src/data/Units/CampaignUnitStrings.txt",
+      "src/data/Units/UnitAbilities.slk",
+      "src/data/Units/UnitBalance.slk",
+      "src/data/Units/UnitData.slk",
+      "src/data/Units/UnitUI.slk",
+      "src/data/Units/UnitWeapons.slk"
+    ],
+    "scriptsConfig": [
+      "tools/build/build.ps1",
+      "tools/build/verify_v17.ps1",
+      "tools/build/strip_kk_persistence.py",
+      "config/tool-paths.json",
+      "README.md",
+      "PROJECT_MANIFEST.json"
+    ],
+    "reports": [
+      "reports/release-v6.90a-1.0/release-v6.90a-1.0-report.md",
+      "reports/release-v6.90a-1.0/git-sync-checklist.md",
+      "reports/release-v6.90a-1.0/git-sync-checklist.json",
+      "reports/release-v6.90a-1.0/evidence/",
+      "reports/release-v6.90a-1.0/scripts/"
+    ],
+    "optionalMapArtifact": "maps/release/Dota v6.90a OMG AI 1.0.w3x"
+  },
+  "doNotUpload": [
+    "toolchain/ (MPQEditor.exe, pjass, jass/24/common.j, jass/24/blizzard.j)",
+    "backups/ (all pre-release and stable-pre backups)",
+    "system TEMP / build scratch / cache",
+    "D:\\游戏\\Warcraft III\\ entire game tree (stable deploy, imba69, test dirs)",
+    "assets/reference-authorized/ and third-party reference assets",
+    "other-task protected Dota v6.93a OMG AI 1.0.w3x and its directory",
+    "maps/baseline/ (52.8MB / 52,800,385B noskin19 baseline binary, large reference package, do not upload)",
+    "maps/build/ historical local rebuilds",
+    "personal paths, local logs, config/environment/",
+    "reports/art683/ large historical stage evidence (local only)"
+  ]
+}

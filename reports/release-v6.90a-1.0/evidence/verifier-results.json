@@ -1,0 +1,19 @@
+{
+  "verifierHub": "rubric.check-file-format / text.must-contain",
+  "checks": [
+    {"file": "release-v6.90a-1.0-report.md", "format": ".md", "formatPass": true, "mustContain": "10/10", "contentPass": true},
+    {"file": "git-sync-checklist.md", "format": ".md", "formatPass": true, "mustContain": "5/5", "contentPass": true},
+    {"file": "git-sync-checklist.json", "format": ".json", "formatPass": true, "jsonParse": true},
+    {"file": "evidence/readback-release.json", "format": ".json", "formatPass": true, "jsonParse": true},
+    {"file": "evidence/release-evidence.json", "format": ".json", "formatPass": true, "jsonParse": true},
+    {"file": "evidence/verification-v17-postreinject.json", "format": ".json", "formatPass": true, "jsonParse": true},
+    {"file": "evidence/verification-v17-postreinject.csv", "format": ".csv", "formatPass": true},
+    {"file": "evidence/verifier-results.json", "format": ".json", "formatPass": true, "jsonParse": true},
+    {"file": "evidence/pjass-release.txt", "format": ".txt", "formatPass": true},
+    {"file": "evidence/verify-preinject.log", "format": ".log", "formatPass": true},
+    {"file": "evidence/verify-postreinject.log", "format": ".log", "formatPass": true},
+    {"file": "README.md", "format": ".md", "formatPass": true, "mustContain": "4/4", "contentPass": true},
+    {"file": "PROJECT_MANIFEST.json", "format": ".json", "formatPass": true, "jsonParse": true, "validJson": true}
+  ],
+  "ALL_PASS": true
+}

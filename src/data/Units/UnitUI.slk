@@ -1,5 +1,5 @@
 ID;PWXL;N;E
-B;X39;Y3339;D0
+B;X39;Y3338;D0
 C;X1;Y1;K"unitUIID"
 C;X2;K"name"
 C;X3;K"armor"
@@ -1156,7 +1156,7 @@ C;X37;K"Shadow"
 C;X38;K"Beastmaster"
 C;X39;K250.0
 C;X1;Y48;K"Nfir"
-C;X2;K"³ÌË«½Ü"
+C;X2;K"ï¿½ï¿½Ë«ï¿½ï¿½"
 C;X3;K"Flesh"
 C;X4;K0.15
 C;X9;K50.0
@@ -3312,10 +3312,10 @@ C;X2;K"castle"
 C;X3;K"Wood"
 C;X4;K0.15
 C;X5;K255
-C;X6;K"ShadowCastle"
+C;X6;K"ShadowTreeofLife"
 C;X8;K4
 C;X9;K50.0
-C;X10;K"buildings\human\TownHall\TownHall"
+C;X10;K"buildings\nightelf\TreeofLife\TreeofLife"
 C;X13;K255
 C;X20;K1.0
 C;X23;K255
@@ -20860,7 +20860,7 @@ C;X37;K"Shadow"
 C;X38;K"Kobold"
 C;X39;K250.0
 C;X1;Y884;K"H00K"
-C;X2;K"¿­¸ç"
+C;X2;K"ï¿½ï¿½ï¿½ï¿½"
 C;X3;K"Flesh"
 C;X4;K0.15
 C;X5;K255
@@ -21728,7 +21728,7 @@ C;X3;K"Flesh"
 C;X4;K0.15
 C;X5;K255
 C;X9;K30.0
-C;X10;K"war3mapImported\Tendou_Kisaraä½?mdx"
+C;X10;K"war3mapImported\Tendou_Kisaraï¿½?mdx"
 C;X13;K255
 C;X15;K1
 C;X18;K10.0
@@ -21948,7 +21948,7 @@ C;X37;K"Shadow"
 C;X38;K"SpellBreaker"
 C;X39;K300.0
 C;X1;Y928;K"N01H"
-C;X2;K"ÍÁ¼¦"
+C;X2;K"ï¿½ï¿½ï¿½ï¿½"
 C;X3;K"Flesh"
 C;X4;K0.15
 C;X5;K255
@@ -21973,7 +21973,7 @@ C;X37;K"Shadow"
 C;X38;K"HeroGoblinAlchemist"
 C;X39;K250.0
 C;X1;Y929;K"N01I"
-C;X2;K"ÍÁ¼¦"
+C;X2;K"ï¿½ï¿½ï¿½ï¿½"
 C;X3;K"Flesh"
 C;X4;K0.15
 C;X5;K255
@@ -21998,7 +21998,7 @@ C;X37;K"Shadow"
 C;X38;K"HeroGoblinAlchemist"
 C;X39;K250.0
 C;X1;Y930;K"N01J"
-C;X2;K"ÍÁ¼¦"
+C;X2;K"ï¿½ï¿½ï¿½ï¿½"
 C;X3;K"Flesh"
 C;X4;K0.15
 C;X5;K255
@@ -22048,7 +22048,7 @@ C;X37;K"Shadow"
 C;X38;K"DruidOfTheClaw"
 C;X39;K240.0
 C;X1;Y932;K"N01T"
-C;X2;K"ÍÁ¼¦"
+C;X2;K"ï¿½ï¿½ï¿½ï¿½"
 C;X3;K"Flesh"
 C;X4;K0.15
 C;X5;K255
@@ -23338,7 +23338,7 @@ C;X37;K"Shadow"
 C;X38;K"Acolyte"
 C;X39;K200.0
 C;X1;Y983;K"U00F"
-C;X2;K"Ô¬¼Ó¿­"
+C;X2;K"Ô¬ï¿½Ó¿ï¿½"
 C;X3;K"Flesh"
 C;X4;K0.15
 C;X5;K255
@@ -23842,7 +23842,7 @@ C;X37;K"Shadow"
 C;X38;K"Acolyte"
 C;X39;K200.0
 C;X1;Y1003;K"Z00F"
-C;X2;K"Ô¬¼Ó¿­"
+C;X2;K"Ô¬ï¿½Ó¿ï¿½"
 C;X3;K"Flesh"
 C;X4;K0.15
 C;X5;K255
@@ -25272,7 +25272,7 @@ C;X37;K"Shadow"
 C;X38;K"MountainGiant"
 C;X39;K200.0
 C;X1;Y1060;K"Zfir"
-C;X2;K"³ÌË«½Ü"
+C;X2;K"ï¿½ï¿½Ë«ï¿½ï¿½"
 C;X3;K"Flesh"
 C;X4;K0.15
 C;X5;K255
@@ -25322,7 +25322,7 @@ C;X37;K"Shadow"
 C;X38;K"HeroDemonHunter"
 C;X39;K300.0
 C;X1;Y1062;K"Zgir"
-C;X2;K"³ÌË«½Ü"
+C;X2;K"ï¿½ï¿½Ë«ï¿½ï¿½"
 C;X3;K"Flesh"
 C;X4;K0.15
 C;X5;K255
@@ -25372,7 +25372,7 @@ C;X37;K"Shadow"
 C;X38;K"HeroDemonHunter"
 C;X39;K300.0
 C;X1;Y1064;K"Zhir"
-C;X2;K"³ÌË«½Ü"
+C;X2;K"ï¿½ï¿½Ë«ï¿½ï¿½"
 C;X3;K"Flesh"
 C;X4;K0.15
 C;X5;K255
@@ -28017,7 +28017,7 @@ C;X3;K"Ethereal"
 C;X4;K0.15
 C;X5;K255
 C;X9;K50.0
-C;X10;K"war3mapImported\HPBar100ä½?mdx"
+C;X10;K"war3mapImported\HPBar100ï¿½?mdx"
 C;X13;K255
 C;X17;K1
 C;X18;K25.0
@@ -28035,7 +28035,7 @@ C;X3;K"Ethereal"
 C;X4;K0.15
 C;X5;K255
 C;X9;K50.0
-C;X10;K"war3mapImported\swordmoon_bä½?mdx"
+C;X10;K"war3mapImported\swordmoon_bï¿½?mdx"
 C;X13;K255
 C;X17;K1
 C;X18;K25.0
@@ -28053,7 +28053,7 @@ C;X3;K"Ethereal"
 C;X4;K0.15
 C;X5;K255
 C;X9;K50.0
-C;X10;K"war3mapImported\KanranGKä½?mdx"
+C;X10;K"war3mapImported\KanranGKï¿½?mdx"
 C;X13;K255
 C;X17;K1
 C;X18;K25.0
@@ -28071,7 +28071,7 @@ C;X3;K"Ethereal"
 C;X4;K0.15
 C;X5;K255
 C;X9;K50.0
-C;X10;K"war3mapImported\luanzhanwhiteä½?mdx"
+C;X10;K"war3mapImported\luanzhanwhiteï¿½?mdx"
 C;X13;K255
 C;X17;K1
 C;X18;K25.0
@@ -28089,7 +28089,7 @@ C;X3;K"Ethereal"
 C;X4;K0.15
 C;X5;K255
 C;X9;K50.0
-C;X10;K"war3mapImported\Tendou_Kisaraä½?mdx"
+C;X10;K"war3mapImported\Tendou_Kisaraï¿½?mdx"
 C;X13;K255
 C;X17;K1
 C;X18;K25.0
@@ -28107,7 +28107,7 @@ C;X3;K"Ethereal"
 C;X4;K0.15
 C;X5;K255
 C;X9;K50.0
-C;X10;K"war3mapImported\Tendou_slashä½?mdx"
+C;X10;K"war3mapImported\Tendou_slashï¿½?mdx"
 C;X13;K255
 C;X17;K1
 C;X18;K25.0
@@ -41868,7 +41868,7 @@ C;X3;K"Flesh"
 C;X4;K0.15
 C;X5;K255
 C;X9;K50.0
-C;X10;K"war3mapImported\Tendou_Kisaraä½?mdx"
+C;X10;K"war3mapImported\Tendou_Kisaraï¿½?mdx"
 C;X13;K255
 C;X17;K1
 C;X18;K10.0
@@ -59481,7 +59481,7 @@ C;X5;K255
 C;X6;K"BuildingShadowSmall"
 C;X8;K4
 C;X9;K50.0
-C;X10;K"war3mapImported\Tendou_Kisaraä½?mdx"
+C;X10;K"war3mapImported\Tendou_Kisaraï¿½?mdx"
 C;X13;K255
 C;X17;K1
 C;X18;K7.0

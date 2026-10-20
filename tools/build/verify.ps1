@@ -18,14 +18,14 @@ $checks = @(
     @{ Archive = 'war3map.j'; Expected = (Join-Path $root 'src\war3map.j') },
     @{ Archive = 'war3map.w3i'; Expected = (Join-Path $root 'src\war3map.w3i') },
     @{ Archive = 'war3map.imp'; Expected = (Join-Path $root 'src\war3map.imp') },
-    @{ Archive = 'Units\CampaignAbilityStrings.txt'; Expected = (Join-Path $root 'src\data\Units\CampaignAbilityStrings.txt') },
-    @{ Archive = 'Units\CampaignUnitStrings.txt'; Expected = (Join-Path $root 'src\data\Units\CampaignUnitStrings.txt') },
-    @{ Archive = 'Units\UnitAbilities.slk'; Expected = (Join-Path $root 'src\data\Units\UnitAbilities.slk') },
-    @{ Archive = 'Units\UnitBalance.slk'; Expected = (Join-Path $root 'src\data\Units\UnitBalance.slk') },
-    @{ Archive = 'Units\UnitData.slk'; Expected = (Join-Path $root 'src\data\Units\UnitData.slk') },
-    @{ Archive = 'Units\UnitUI.slk'; Expected = (Join-Path $root 'src\data\Units\UnitUI.slk') },
-    @{ Archive = 'Units\UnitWeapons.slk'; Expected = (Join-Path $root 'src\data\Units\UnitWeapons.slk') },
-    @{ Archive = 'Units\AbilityData.slk'; Expected = (Join-Path $root 'src\data\Units\AbilityData.slk') }
+    @{ Archive = 'units\campaignabilitystrings.txt'; Expected = (Join-Path $root 'src\data\Units\CampaignAbilityStrings.txt') },
+    @{ Archive = 'units\campaignunitstrings.txt'; Expected = (Join-Path $root 'src\data\Units\CampaignUnitStrings.txt') },
+    @{ Archive = 'units\unitabilities.slk'; Expected = (Join-Path $root 'src\data\Units\UnitAbilities.slk') },
+    @{ Archive = 'units\unitbalance.slk'; Expected = (Join-Path $root 'src\data\Units\UnitBalance.slk') },
+    @{ Archive = 'units\unitdata.slk'; Expected = (Join-Path $root 'src\data\Units\UnitData.slk') },
+    @{ Archive = 'units\unitui.slk'; Expected = (Join-Path $root 'src\data\Units\UnitUI.slk') },
+    @{ Archive = 'units\unitweapons.slk'; Expected = (Join-Path $root 'src\data\Units\UnitWeapons.slk') },
+    @{ Archive = 'units\abilitydata.slk'; Expected = (Join-Path $root 'src\data\Units\AbilityData.slk') }
 )
 
 $results = @()

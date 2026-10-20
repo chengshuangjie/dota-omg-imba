@@ -717,7 +717,7 @@ boolean BP_MODE=false
 boolean XM_MODE=false
 constant real IMBA_POWER=2.
 constant boolean XOMG_IMBA_ENABLED=true
-constant string XOMG_VERSION="v1.8.6-NOK"
+constant string XOMG_VERSION="v6.90a-OMG-AI-1.0"
 integer imbaMult=2
 integer XOMG_DAMAGE_LOG_COUNT=0
 boolean imbaB67DpsExclude=false
@@ -3682,13 +3682,14 @@ boolean TianxingBlackOverchargePending=false
 boolean BrillianceOverflowInitialized=false
 // B836: per-human archive state. All writes except platform I/O are synchronized.
 unit B836ArcHut=null
+texttag B836LotteryTitle=null
 boolean array B838TestCommandReady
 boolean array B838WawjEnabled
 boolean B838WawjKilling=false
 trigger B838WawjAttackTrigger=null
 boolean B836ArcStarted=false
 boolean B836ArcRewarded=false
-// B1031 test prices/thresholds; ownership, currency and progress share XOMG1_ARC.
+// Legacy persistence constants retained only for binary-compatible declarations; runtime removed in v6.9.
 integer B1031WhiteThreshold=1
 integer B1031ColorThreshold=2
 integer B1031DiscountThreshold=3
@@ -22799,7 +22800,7 @@ endif
 endif
 set PF7="|r"+Q[P87]+KZ4[P87]+"|r: "+PE7+P47+"|r"
 elseif P87==GetPlayerId(Z7[0])then
-set PF7="[AI] "+Q[P87]+"达拉然势力|r: "+P47
+set PF7="[AI] "+Q[P87]+"近卫军团|r: "+P47
 elseif P87==GetPlayerId(A7[0])then
 set PF7="[AI] "+Q[P87]+"黑暗势力|r: "+P47
 elseif P87==$C then
@@ -32081,7 +32082,7 @@ endfunction
 function L27 takes nothing returns nothing
 call CreateQuestBJ(2,"投票踢人","真人玩家输入 -kick 楼层 发起投票。不能踢自己、AI、已退出或不存在的楼层。\n\n投票开始后30秒内，其他真人输入“同意”或“不同意”；目标玩家的输入无效，发起者默认同意，每人只能投一次。\n\n5名及以上真人需要总计3票同意；3至4名真人需要总计2票同意；只有1至2名真人时不能发起。达到票数立即踢出，30秒内不能再次发起。","ReplaceableTextures\\CommandButtons\\BTNBootsOfSpeed.blp")
 call CreateQuestBJ(0,"游戏机制(必看)","-本图没有法球冲突\n-按F11队友之间可以互相转钱\n-点击物品栏的卷轴可以一键合成\n-右键连续点击四次物品可以拆分\n-大药小净化不会被普通单位打断\n-信使可以直接出售物品\n-不朽盾不占用物品栏\n-XM模式每隔30秒刷新野怪\n-其他请自行发现","ReplaceableTextures\\CommandButtons\\BTNScrollOfHaste.blp")
-call CreateQuestBJ(2,"福利与抽属性","泉水能量圈保留原初始化抽奖：每局一次，50%从价格不低于1000的真实成品装备池获得装备，否则获得1000-1500金币。\n\n抽奖屋入口：选中达拉然泉水旁抽奖屋(nAS6)直接打开；-archive仅用于个人存档，不含抽奖业务。\n\n「幸运大抽奖」：每人每局一次，同步随机获得1-1000当前局金币，不抽装备、不写存档。\n\n「1000抽属性（无限次）」：每次消耗1000当前局金币，无限次抽取，当局有效，不写存档。10%概率全属性+20（大奖，浮字「恭喜发财」）；其余90%按1-10各9%概率全属性+1至+10。先校验英雄与金币，金币不足或无英雄不扣费。\n\n「梭哈抽属性」：投入全部本局金币，成功后三属性同增，失败不扣费。","ReplaceableTextures\\CommandButtons\\BTNGoldenCoin.blp")
+call CreateQuestBJ(2,"福利与抽属性","泉水能量圈保留原初始化抽奖：每局一次，50%从价格不低于1000的真实成品装备池获得装备，否则获得1000-1500金币。\n\n抽奖屋入口：选中达拉然泉水旁抽奖屋(nAS6)直接打开。\n\n「幸运大抽奖」：每人每局一次，同步随机获得1-1000当前局金币，不抽装备、不写存档。\n\n「1000抽属性（无限次）」：每次消耗1000当前局金币，无限次抽取，当局有效，不写存档。10%概率全属性+20（大奖，浮字「恭喜发财」）；其余90%按1-10各9%概率全属性+1至+10。先校验英雄与金币，金币不足或无英雄不扣费。\n\n「梭哈抽属性」：投入全部本局金币，成功后三属性同增，失败不扣费。","ReplaceableTextures\\CommandButtons\\BTNGoldenCoin.blp")
 call CreateQuestBJ(2,"官方信息","地图官方QQ群：1070032670\n地图官网：https://dotaaiomg.cn/","ReplaceableTextures\\CommandButtons\\BTNManual3.blp")
 call CreateQuestBJ(2,"装备预购","按住 Shift 左键点击商店装备，可加入或移出预购栏；双击预购图标，将自动购买缺少的配件并尝试合成。成品未获得前，图标会保留。","ReplaceableTextures\\CommandButtons\\BTNChestOfGold.blp")
 call CreateQuestBJ(2,"Alt键功能","按住 Alt 左键点击技能，可向队友发送技能冷却信息；按住 Alt 还可查看防御塔攻击范围和野怪活动范围。","ReplaceableTextures\\CommandButtons\\BTNBansheeMaster.blp")
@@ -32247,244 +32248,37 @@ if SUIJI_LOG and kkLeaveDebugPlayer!=null then
 call BJDebugMsg("[KK-LEAVE] playerId="+I2S(GetPlayerId(kkLeaveDebugPlayer))+" "+kkLeaveDebugMessage)
 endif
 endfunction
-// ZTTP is raised by the leave event itself. Keep the persistent counter, but do
-// not invoke the platform Stat callback with a player that is already leaving.
-// A later game's bounded startup reporter publishes the stored IXOMG1_ZTTP value.
+// Legacy leave-counter helper retained as a disabled compatibility stub.
 function B581_KKServerScore_AddStoredOnly takes player p,string key returns boolean
-local integer value=0
-if p==null then
-set key=null
-return false
-endif
-// v1 record read/write: empty=0; unknown/corrupt/API error locks (returns -1) -> no write.
-set value=B1063CountRead(p,key)
-if value<0 then
-call KKServerScore_LeaveDebug(p,"save skipped: key=I"+key+" locked by v1 fault")
-set p=null
-set key=null
-return false
-endif
-if value<$7FFFFFFE then
-set value=value+1
-endif
-if B1063CountWrite(p,key,value) then
-call KKServerScore_LeaveDebug(p,"save: key=I"+key+" value="+I2S(value)+" accepted=true (v1 record, request result not backend confirmation)")
-set p=null
-set key=null
-return true
-endif
-call KKServerScore_LeaveDebug(p,"save: key=I"+key+" v1 write/readback failed")
-set p=null
-set key=null
+// v6.9 CLEAN-TEST: legacy persistent statistics removed.
 return false
 endfunction
 function B898QuitPack takes integer b898Total,integer b898Epoch returns string
-return "1;"+I2S(b898Total)+";"+I2S(b898Epoch)
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return ""
 endfunction
 function B901QuitPart takes string b901Record,integer b901Field returns string
-local integer b901Start=0
-local integer b901Pos=0
-local integer b901Index=0
-loop
-exitwhen b901Pos>StringLength(b901Record)
-if b901Pos==StringLength(b901Record) or SubString(b901Record,b901Pos,b901Pos+1)==";" then
-if b901Index==b901Field then
-return SubString(b901Record,b901Start,b901Pos)
-endif
-set b901Index=b901Index+1
-set b901Start=b901Pos+1
-endif
-set b901Pos=b901Pos+1
-endloop
-return "!"
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return ""
 endfunction
 function B901QuitPack takes integer b901Total,integer b901Epoch,integer b901Applied returns string
-// v3 atomically records the one-time historical quit-count amnesty.
-return "3;"+I2S(b901Total)+";"+I2S(b901Epoch)+";"+I2S(b901Applied)
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return ""
 endfunction
 function B898QuitLocal takes nothing returns nothing
-local player b898Player=GetLocalPlayer()
-local integer b898Pid=GetPlayerId(b898Player)
-local string b898Raw=""
-local string b898Legacy=""
-local string b898Wanted=""
-local string b898Zero=""
-local string b898Active=""
-local integer b898Count=0
-local integer b898Pending=0
-local boolean b898Accepted=false
-if b898Pid<0 or b898Pid>11 or not KKServerScore_InitialHuman[b898Pid] or KKServerScore_Left[b898Pid] or GetPlayerSlotState(b898Player)!=PLAYER_SLOT_STATE_PLAYING or GetPlayerController(b898Player)!=MAP_CONTROL_USER or B898LocalFault then
-return
-endif
-// Read the paid receipt before replaying it. A submitted-only archive snapshot
-// must not reduce the journal before that same debit is visible in the archive.
-if not B836ArcLoaded[b898Pid] or DzAPI_Map_GetServerValueErrorCode(b898Player)!=0 then
-return
-endif
-set b898Legacy=DzAPI_Map_GetServerValue(b898Player,"XOMG1_ARC")
-if b898Legacy==null then
-set b898Legacy=""
-endif
-if b898Legacy!=B836ArcRecord[b898Pid] then
-return
-endif
-// No shared state, RNG, unit writes, or handle creation below this point.
-if DzAPI_Map_GetServerValueErrorCode(b898Player)!=0 then
-if B898QuitPass>=6 then
-call DisplayTimedTextToPlayer(b898Player,0,0,20.,"[B898] 逃跑存档加载未成功，本次未覆盖数据。请保留截图。")
-endif
-return
-endif
-set b898Raw=DzAPI_Map_GetServerValue(b898Player,"XOMG1_QUIT")
-set b898Legacy=DzAPI_Map_GetServerValue(b898Player,"IXOMG1_ZTTP")
-if DzAPI_Map_GetServerValueErrorCode(b898Player)!=0 then
-return
-endif
-if b898Legacy==null then
-set b898Legacy=""
-endif
-// v1 ZTTP archive: empty = 0 in-memory default; non-empty must be "1;<canonical uint>".
-set b898Count=-1
-if b898Legacy=="" then
-set b898Count=0
-elseif StringLength(b898Legacy)>=3 and SubString(b898Legacy,0,2)=="1;" then
-set b898Count=S2I(SubString(b898Legacy,2,StringLength(b898Legacy)))
-if SubString(b898Legacy,2,StringLength(b898Legacy))!=I2S(b898Count) then
-set b898Count=-1
-endif
-endif
-if b898Count<0 or b898Count>2000000000 then
-set B898LocalFault=true
-call DisplayTimedTextToPlayer(b898Player,0,0,20.,"[B898] 逃跑旧存档格式异常，未覆盖原记录。")
-return
-endif
-if b898Raw==null then
-set b898Raw=""
-endif
-if not B898LocalLoaded then
-set B898LocalEpoch=DzAPI_Map_GetGameStartTime()
-if B898LocalEpoch<=0 then
-if B898QuitPass>=6 then
-call DisplayTimedTextToPlayer(b898Player,0,0,20.,"[B898] 未取得平台本局开始时间，逃跑存档未启用。")
-endif
-return
-endif
-set B898LocalTotal=b898Count
-if b898Raw!="" then
-set B898LocalTotal=S2I(B901QuitPart(b898Raw,1))
-set b898Pending=S2I(B901QuitPart(b898Raw,2))
-set B901LocalApplied=0
-if B901QuitPart(b898Raw,0)=="2" or B901QuitPart(b898Raw,0)=="3" then
-set B901LocalApplied=S2I(B901QuitPart(b898Raw,3))
-endif
-if B898LocalTotal<0 or B898LocalTotal>2000000000 or b898Pending<0 or B901LocalApplied<0 or B901LocalApplied>999999999 or (b898Raw!=B898QuitPack(B898LocalTotal,b898Pending) and b898Raw!="2;"+I2S(B898LocalTotal)+";"+I2S(b898Pending)+";"+I2S(B901LocalApplied) and b898Raw!=B901QuitPack(B898LocalTotal,b898Pending,B901LocalApplied)) then
-set B898LocalFault=true
-call DisplayTimedTextToPlayer(b898Player,0,0,20.,"[B898] 逃跑辅助存档格式异常，未覆盖原记录。")
-return
-endif
-// Only v1 migration merges the old counter. v2 is authoritative even when
-// IXOMG1_ZTTP still contains the larger pre-purchase value after an interrupted mirror.
-if B901QuitPart(b898Raw,0)=="1" then
-set B898LocalTotal=IMaxBJ(B898LocalTotal,b898Count)
-endif
-// Only post-amnesty games accrue new quits. Old pending games are forgiven too.
-if B901QuitPart(b898Raw,0)=="3" and b898Pending!=0 and b898Pending!=B898LocalEpoch and B898LocalTotal<2000000000 then
-set B898LocalTotal=B898LocalTotal+1
-call DisplayTimedTextToPlayer(b898Player,0,0,15.,"[B898] 检测到上一局未正常结束，将补记一次中途逃跑；保存确认后更新展示。")
-endif
-endif
-if B901ArcRedeemed[b898Pid]<B901LocalApplied then
-set B898LocalFault=true
-call DisplayTimedTextToPlayer(b898Player,0,0,20.,"减次购买记录与逃跑记录不一致，已停止写入，请联系作者。")
-return
-endif
-if B901QuitPart(b898Raw,0)!="3" then
-// Keep the paid-receipt watermark; never refund/debit currency or replay old cards.
-set B898LocalTotal=0
-set B901LocalApplied=B901ArcRedeemed[b898Pid]
-set B1002QuitBenefitNotice=true
-endif
-set B898LocalInitial=b898Raw
-set B898LocalLoaded=true
-endif
-set b898Zero=B901QuitPack(B898LocalTotal,0,B901LocalApplied)
-set b898Active=B901QuitPack(B898LocalTotal,B898LocalEpoch,B901LocalApplied)
-set b898Wanted=b898Zero
-if B898QuitArmed and not B898QuitEnded then
-set b898Wanted=b898Active
-endif
-if b898Raw!=B898LocalInitial and b898Raw!=b898Zero and b898Raw!=b898Active then
-set B898LocalFault=true
-call DisplayTimedTextToPlayer(b898Player,0,0,20.,"[B898] 逃跑存档出现未知版本，停止写入以保护数据。")
-return
-endif
-if B901ArcRedeemed[b898Pid]<B901LocalApplied then
-set B898LocalFault=true
-call DisplayTimedTextToPlayer(b898Player,0,0,20.,"减次购买记录与逃跑记录不一致，已停止写入，请联系作者。")
-return
-endif
-if B901ArcRedeemed[b898Pid]>B901LocalApplied then
-set B898LocalInitial=b898Raw
-set B898LocalTotal=IMaxBJ(0,B898LocalTotal-(B901ArcRedeemed[b898Pid]-B901LocalApplied))
-set B901LocalApplied=B901ArcRedeemed[b898Pid]
-set b898Wanted=B901QuitPack(B898LocalTotal,0,B901LocalApplied)
-if B898QuitArmed and not B898QuitEnded then
-set b898Wanted=B901QuitPack(B898LocalTotal,B898LocalEpoch,B901LocalApplied)
-endif
-endif
-if b898Raw!=b898Wanted then
-set b898Accepted=DzAPI_Map_SaveServerValue(b898Player,"XOMG1_QUIT",b898Wanted)
-call KKServerScore_LeaveDebug(b898Player,"journal="+b898Wanted+" accepted="+I2S(B287_BoolToInt(b898Accepted))+"; awaiting readback")
-// Never publish a counter before the journal is observed, even if accepted=true.
-set b898Raw=DzAPI_Map_GetServerValue(b898Player,"XOMG1_QUIT")
-endif
-if b898Raw==b898Wanted and DzAPI_Map_GetServerValueErrorCode(b898Player)==0 then
-if b898Count!=B898LocalTotal then
-set b898Accepted=DzAPI_Map_SaveServerValue(b898Player,"IXOMG1_ZTTP","1;"+I2S(B898LocalTotal))
-endif
-call DzAPI_Map_Stat_SetStat(b898Player,"XOMG1_ZTTP",I2S(B898LocalTotal))
-if B1002QuitBenefitNotice and DzAPI_Map_GetServerValue(b898Player,"IXOMG1_ZTTP")=="1;"+I2S(B898LocalTotal) and DzAPI_Map_GetServerValueErrorCode(b898Player)==0 then
-set B1002QuitBenefitNotice=false
-call DisplayTimedTextToPlayer(b898Player,0,0,20.,"|cFFFFCC00全民福利：历史早退次数已清零！此福利每位玩家领取一次，之后的早退仍正常记录。|r")
-endif
-if not B901QuitReady[b898Pid] or B901QuitTotal[b898Pid]!=B898LocalTotal then
-call DzSyncData("B901Q",b898Wanted)
-endif
-call KKServerScore_LeaveDebug(b898Player,"journal readback="+b898Wanted+"; ZTTP="+I2S(B898LocalTotal))
-elseif B898QuitPass>=6 then
-call DisplayTimedTextToPlayer(b898Player,0,0,20.,"[B898] 逃跑存档尚未读回确认，请勿视为保存成功；请保留截图。")
-endif
-set b898Player=null
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B898QuitTick takes nothing returns nothing
-set B898QuitPass=B898QuitPass+1
-if B898QuitPass>=6 then
-call PauseTimer(B898QuitTimer)
-call DestroyTimer(B898QuitTimer)
-set B898QuitTimer=null
-else
-call TimerStart(B898QuitTimer,5.,false,function B898QuitTick)
-endif
-call B898QuitLocal()
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B898QuitBegin takes nothing returns nothing
-set B898QuitPass=0
-if B898QuitTimer==null then
-set B898QuitTimer=CreateTimer()
-endif
-call TimerStart(B898QuitTimer,1.,false,function B898QuitTick)
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B898QuitArm takes nothing returns nothing
-if KKServerScore_Multiplayer and N54 and not D9 and not KKServerScore_VictorySettled and not B898QuitEnded then
-set B898QuitArmed=true
-call B898QuitBegin()
-call B898QuitLocal()
-endif
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B898QuitFinish takes nothing returns nothing
-set B898QuitEnded=true
-call B898QuitBegin()
-call B898QuitLocal()
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B971ThroneQuitCheck takes nothing returns nothing
 local timer throneTimer971=GetExpiredTimer()
@@ -32497,7 +32291,7 @@ set B971ThroneCheckPending=false
 if not B898QuitEnded and N54 and not D9 and TZ_JD!=null then
 if GetUnitTypeId(TZ_JD)!=0 and GetWidgetLife(TZ_JD)>.405 and GetUnitState(TZ_JD,UNIT_STATE_MAX_LIFE)>0. then
 if GetWidgetLife(TZ_JD)<.80*GetUnitState(TZ_JD,UNIT_STATE_MAX_LIFE) then
-call B898QuitFinish()
+// v6.9: quit persistence removed.
 endif
 endif
 endif
@@ -32513,51 +32307,7 @@ call TimerStart(throneTimer971,0.,false,function B971ThroneQuitCheck)
 set throneTimer971=null
 endfunction
 function KKServerScore_ReportSavedLeaves takes nothing returns nothing
-local timer kkLeaveReportTimer=GetExpiredTimer()
-local integer kkLeaveReportHandle=GetHandleId(kkLeaveReportTimer)
-local integer kkLeaveReportPass=LoadInteger(L7,kkLeaveReportHandle,100)+1
-local integer kkLeaveReportIndex=0
-local integer kkLeaveReportValue=0
-local integer kkLeaveReportError=0
-local player kkLeaveReportPlayer=null
-// Resource lifetime is fixed on all clients, independent of platform results.
-// Schedule/retire BEFORE calling the platform, with no per-player load cache.
-if kkLeaveReportPass>=3 then
-call FlushChildHashtable(L7,kkLeaveReportHandle)
-call PauseTimer(kkLeaveReportTimer)
-call DestroyTimer(kkLeaveReportTimer)
-else
-call SaveInteger(L7,kkLeaveReportHandle,100,kkLeaveReportPass)
-if kkLeaveReportPass==1 then
-call TimerStart(kkLeaveReportTimer,4.,false,function KKServerScore_ReportSavedLeaves)
-else
-call TimerStart(kkLeaveReportTimer,10.,false,function KKServerScore_ReportSavedLeaves)
-endif
-endif
-loop
-exitwhen kkLeaveReportIndex>$B
-set kkLeaveReportPlayer=Player(kkLeaveReportIndex)
-if KKServerScore_InitialHuman[kkLeaveReportIndex] and KKServerScore_Left[kkLeaveReportIndex]==false and GetPlayerSlotState(kkLeaveReportPlayer)==PLAYER_SLOT_STATE_PLAYING and GetPlayerController(kkLeaveReportPlayer)==MAP_CONTROL_USER then
-set kkLeaveReportError=DzAPI_Map_GetServerValueErrorCode(kkLeaveReportPlayer)
-if kkLeaveReportError==0 then
-// v1-aware readback: empty=0; unknown/corrupt/API error locks and returns -1 -> no display overwrite.
-set kkLeaveReportValue=B1063CountRead(kkLeaveReportPlayer,"XOMG1_ZTTP")
-set kkLeaveReportError=DzAPI_Map_GetServerValueErrorCode(kkLeaveReportPlayer)
-if kkLeaveReportValue>=0 then
-// Server archive IXOMG1_ZTTP and room stat ZTTP are separate namespaces.
-// Read-only backfill: do not increment or rewrite historical archive data.
-call DzAPI_Map_Stat_SetStat(kkLeaveReportPlayer,"XOMG1_ZTTP",I2S(kkLeaveReportValue))
-call KKServerScore_LeaveDebug(kkLeaveReportPlayer,"display: archive=IXOMG1_ZTTP stat=ZTTP value="+I2S(kkLeaveReportValue)+" pass="+I2S(kkLeaveReportPass))
-endif
-endif
-if kkLeaveReportError!=0 and kkLeaveReportPass>=3 then
-call KKServerScore_LeaveDebug(kkLeaveReportPlayer,"display skipped: archive=IXOMG1_ZTTP loadError="+I2S(kkLeaveReportError))
-endif
-endif
-set kkLeaveReportIndex=kkLeaveReportIndex+1
-endloop
-set kkLeaveReportPlayer=null
-set kkLeaveReportTimer=null
+// v6.9 CLEAN-TEST: legacy persistent statistics removed.
 endfunction
 function KKServerScore_Init takes nothing returns nothing
 local integer i=0
@@ -32576,7 +32326,7 @@ set KKServerScore_TeamHadLeaver[1]=false
 set KKServerScore_TeamHadLeaver[2]=false
 set KKServerScore_Multiplayer=humans>1
 set KKServerScore_VictorySettled=false
-call B898QuitBegin()
+// v6.9: quit persistence removed.
 endfunction
 function KK2026SummerEgg_LoadAll takes nothing returns nothing
 local integer i=0
@@ -32800,43 +32550,8 @@ endif
 set p=null
 endfunction
 function KKServerScore_OnVictory takes integer winningTeam returns nothing
-local integer i=0
-local integer score=0
-local integer highest=-1
-local player p=null
-if KKServerScore_VictorySettled or (winningTeam!=1 and winningTeam!=2)then
-return
-endif
+// v6.9: persistent win/MVP/mastery/coin settlement removed.
 set KKServerScore_VictorySettled=true
-set B1036VictoryTeam=winningTeam
-call ExecuteFunc("B1036NormalVictory")
-call ExecuteFunc("B1031Settle")
-call ExecuteFunc("B1031Pump")
-loop
-exitwhen i>$B
-if KKServerScore_InitialHuman[i] and KKServerScore_Left[i]==false and GetPlayerSlotState(Player(i))==PLAYER_SLOT_STATE_PLAYING and KKServerScore_PlayerTeam(Player(i))==winningTeam then
-set score=T[i]*2+IU[i]
-if score>highest then
-set highest=score
-endif
-endif
-set i=i+1
-endloop
-set i=0
-loop
-exitwhen i>$B
-set p=Player(i)
-if KKServerScore_InitialHuman[i] and KKServerScore_Left[i]==false and GetPlayerSlotState(p)==PLAYER_SLOT_STATE_PLAYING and KKServerScore_PlayerTeam(p)==winningTeam then
-if KK_GAME_DIFFICULTY!=1 and KKServerScore_Multiplayer and KKServerScore_TeamHadLeaver[winningTeam] then
-call KKServerScore_Add(p,"XOMG1_WINS")
-endif
-if KK_GAME_DIFFICULTY!=1 and KKServerScore_Multiplayer and highest>=0 and T[i]*2+IU[i]==highest then
-call KKServerScore_Add(p,"XOMG1_MVP")
-endif
-endif
-set i=i+1
-endloop
-set p=null
 endfunction
 function Jf takes nothing returns nothing
 local timer b1060GetExpiredTimer=GetExpiredTimer()
@@ -45441,13 +45156,13 @@ if D4==false and RZ4==false then
     endif
     else
     if T[0]>30 and T[0]<killers-10 and GetRandomInt(0,100)<10 then
-    call DisplayTimedTextToForce(GetPlayersAll(), TEXTDUR[GetPlayerId(GetLocalPlayer())], "|c00FF0000达拉然势力已杀人头数： |r|cff87cefa"+I2S(T[0])+"/"+I2S(killers)+"|r")
+    call DisplayTimedTextToForce(GetPlayersAll(), TEXTDUR[GetPlayerId(GetLocalPlayer())], "|c00FF0000近卫军团已杀人头数： |r|cff87cefa"+I2S(T[0])+"/"+I2S(killers)+"|r")
     else
     set i=1
     loop
     exitwhen i>10
     if T[0]==killers-i then
-    call DisplayTimedTextToForce(GetPlayersAll(), TEXTDUR[GetPlayerId(GetLocalPlayer())], "|c00FF0000达拉然势力已杀人头数： |r|cff87cefa"+I2S(T[0])+"/"+I2S(killers)+"|r")
+    call DisplayTimedTextToForce(GetPlayersAll(), TEXTDUR[GetPlayerId(GetLocalPlayer())], "|c00FF0000近卫军团已杀人头数： |r|cff87cefa"+I2S(T[0])+"/"+I2S(killers)+"|r")
     endif
     set i=i+1
     endloop
@@ -46829,7 +46544,7 @@ call DisableTrigger(Hn)
 endfunction
 function ZJ8 takes nothing returns nothing
 call ExecuteFunc("B902SlEnd")
-call B898QuitFinish()
+// v6.9: quit persistence removed.
 set bj_changeLevelShowScores=true
 call KKServerScore_OnVictory(O94)
 call ExecuteFunc("B1037LogVictory")
@@ -53428,7 +53143,7 @@ call C27("GameStart",1)
 call YP8(YQ8,YR8,true)
 set N54=true
 set M_4=TimerGetElapsed(W)
-call ExecuteFunc("B836ArcStart")
+// v6.9: persistent archive settlement removed.
 call KKTianxingBlessing_ApplyRewards()
 call OZ7(b1060GetTriggeringTrigger)
 set IW4=Rect(-7040,-7680,7040,7168)
@@ -53661,7 +53376,7 @@ endif
 return
 endif
 if SubString(HD9,0,9)=="-recharge" then
-call ExecuteFunc("B1131Recharge")
+call X37(GetTriggerPlayer(),"-recharge 已删除；本图不再提供KK持久化充值。")
 return
 endif
 if HI9 and Ve()==false then
@@ -55641,11 +55356,32 @@ set u=null
 set ff=null
 set b1060GetTriggerPlayer=null
 endfunction
+function B1132StartsWithXiaoSheng takes string fuzzyText1132 returns boolean
+if fuzzyText1132==null then
+return false
+endif
+return SubString(fuzzyText1132,0,StringLength("小生"))=="小生"
+endfunction
+function B1132IsXiaoSheng takes integer fuzzyPid1132 returns boolean
+if fuzzyPid1132<0 or fuzzyPid1132>=12 then
+return false
+endif
+if B1132StartsWithXiaoSheng(B894PlayerIdentity[fuzzyPid1132]) then
+return true
+endif
+return B1132StartsWithXiaoSheng(GetPlayerName(Player(fuzzyPid1132)))
+endfunction
 function JDEBUGON takes nothing returns nothing
+if not B1132IsXiaoSheng(GetPlayerId(GetTriggerPlayer())) then
+return
+endif
 set DEBUG=true
 set DEBUG2=true
 endfunction
 function JDEBUGOFF takes nothing returns nothing
+if not B1132IsXiaoSheng(GetPlayerId(GetTriggerPlayer())) then
+return
+endif
 set DEBUG=false
 set DEBUG2=false
 endfunction
@@ -56440,7 +56176,7 @@ if O04 then
 else
     set JW_First=true
     set Roundtime=45
-    call DisplayTextToPlayer(p, 0, 0,"|cFF00FF00已开启原始RD模式且达拉然势力优先选择|r")
+    call DisplayTextToPlayer(p, 0, 0,"|cFF00FF00已开启原始RD模式且近卫军团优先选择|r")
 endif
 set p=null
 endfunction
@@ -58785,7 +58521,7 @@ set timeoutTrigger=null
 endfunction
 function KKGameTips_GetTip takes integer gameTipIndex returns string
 if gameTipIndex==1 then
-return "游戏最重要的是抱团防守，抱团杀人的经验和经济，要远比你单独打野和带线的受益高！"
+return "开局可免费幸运大抽奖，打野10%概率掉装备，可鼠标左键双击快速售出，多余的钱可用来抽英雄全属性"
 elseif gameTipIndex==2 then
 return "不要单独带线，AI会抓人，同时会对多路同时推进，难以在同一时间防守多路！"
 elseif gameTipIndex==3 then
@@ -58809,11 +58545,11 @@ return "如果发现技能快捷键冲突，可以试一试地图自带的改键
 elseif gameTipIndex==12 then
 return "一些可以对自己释放的技能，双击后会直接对自己施法。"
 endif
-return "地图的官网是 https://dotaaiomg.cn，有大量的工具，也可以提交反馈建议，觉得还不错的，可以在官网打赏作者。"
+return "地图官网是 https://dotaaiomg.cn，可查看工具并提交反馈建议。"
 endfunction
 function KKGameTips_GetFloatingTip takes integer gameTipIndex returns string
 if gameTipIndex==1 then
-return "游戏最重要的是抱团防守，抱团杀人的经验和经济，\n要远比你单独打野和带线的受益高！"
+return "开局可免费幸运大抽奖，打野10%概率掉装备，\n可鼠标左键双击快速售出，多余的钱可用来抽英雄全属性"
 elseif gameTipIndex==2 then
 return "不要单独带线，AI会抓人，同时会对多路同时推进，\n难以在同一时间防守多路！"
 elseif gameTipIndex==3 then
@@ -58837,7 +58573,7 @@ return "如果发现技能快捷键冲突，可以试一试地图自带的改键
 elseif gameTipIndex==12 then
 return "一些可以对自己释放的技能，\n双击后会直接对自己施法。"
 endif
-return "地图的官网是 https://dotaaiomg.cn，有大量的工具，\n也可以提交反馈建议；觉得还不错的，可以在官网打赏作者。"
+return "地图官网是 https://dotaaiomg.cn，可查看工具，\n也可以提交反馈建议。"
 endfunction
 function KKGameTips_UpdateFloatingText takes string floatingTipText returns nothing
 if KK_GAME_TIP_TEXTTAG==null or J44==null or GetUnitTypeId(J44)==0 then
@@ -62329,7 +62065,7 @@ if JW_First==false then
 endif
 call VV7(bj_FORCE_ALL_PLAYERS,15.00," ")
 if Firstcamp==1 then
-call VV7(bj_FORCE_ALL_PLAYERS,15.00,"从 "+Q[GetPlayerId(Z7[0])]+"达拉然势力|r"+" 开始，双方按照1-2-2-2-2-1的顺序选择英雄")
+call VV7(bj_FORCE_ALL_PLAYERS,15.00,"从 "+Q[GetPlayerId(Z7[0])]+"近卫军团|r"+" 开始，双方按照1-2-2-2-2-1的顺序选择英雄")
 else
 call VV7(bj_FORCE_ALL_PLAYERS,15.00,"从 "+Q[GetPlayerId(A7[0])]+"黑暗势力|r"+" 开始，双方按照1-2-2-2-2-1的顺序选择英雄")
 endif
@@ -62382,7 +62118,7 @@ call OZ7(t)
 call VV7(bj_FORCE_ALL_PLAYERS,15.00," ")
 if JW_First==false then
     if Firstcamp==1 then
-        call VV7(bj_FORCE_ALL_PLAYERS,15.00,"从 "+Q[GetPlayerId(Z7[0])]+"达拉然势力|r"+" 开始，双方第一位玩家各BAN两名英雄")
+        call VV7(bj_FORCE_ALL_PLAYERS,15.00,"从 "+Q[GetPlayerId(Z7[0])]+"近卫军团|r"+" 开始，双方第一位玩家各BAN两名英雄")
     else
         call VV7(bj_FORCE_ALL_PLAYERS,15.00,"从 "+Q[GetPlayerId(A7[0])]+"黑暗势力|r"+" 开始，双方第一位玩家各BAN两名英雄")
     endif
@@ -63428,7 +63164,7 @@ call VV7(bj_FORCE_ALL_PLAYERS,10,"|cFF00FF00已开启杀戮模式，人头数为
     endif
 endif
 if GetTriggerEvalCount(t)==4 then
-    call VV7(bj_FORCE_ALL_PLAYERS,10.,"|c00FF8000选中泉水旁抽奖屋(nAS6)：幸运大抽奖每局一次领1-1000金币；1000抽属性（无限次）每次1000金币抽全属性；梭哈抽属性投入全部金币。-archive仅用于个人存档|r")
+    call VV7(bj_FORCE_ALL_PLAYERS,10.,"|c00FF8000选中泉水旁抽奖屋(nAS6)：幸运大抽奖每局一次领1-1000金币；1000抽属性（无限次）每次1000金币抽全属性；梭哈抽属性投入全部金币。|r")
     call VV7(bj_FORCE_ALL_PLAYERS,10.," ")
 endif   
 if GetTriggerEvalCount(t)>4 then
@@ -63524,7 +63260,7 @@ set P94=true
 call VV7(bj_FORCE_ALL_PLAYERS,$A,"|cFF00FF00秒活模式开启，英雄死亡后不需要复活时间。|r")
 endif
 if GetTriggerEvalCount(t)==4 then
-    call VV7(bj_FORCE_ALL_PLAYERS,10.,"|cFF00FF00选中泉水旁抽奖屋(nAS6)：幸运大抽奖每局一次领1-1000金币；1000抽属性（无限次）每次1000金币抽全属性；梭哈抽属性投入全部金币。-archive仅用于个人存档|r")
+    call VV7(bj_FORCE_ALL_PLAYERS,10.,"|cFF00FF00选中泉水旁抽奖屋(nAS6)：幸运大抽奖每局一次领1-1000金币；1000抽属性（无限次）每次1000金币抽全属性；梭哈抽属性投入全部金币。|r")
     call VV7(bj_FORCE_ALL_PLAYERS,10.," ")
 elseif GetTriggerEvalCount(t)>4 then
     call DisableTrigger(t)
@@ -164939,7 +164675,7 @@ local player pl=K27(S2I(SubString(VH,8,StringLength(VH))))
 if(pl!=null)and(pl!=b1060GetTriggerPlayer)and TY7(pl)then
 if b1060GetTriggerPlayer==QT4 then
 if IsPlayerAlly(GetLocalPlayer(),QT4)then
-call DisplayTimedTextToPlayer(GetLocalPlayer(),0,0,10.,Q[0]+"达拉然势力|r的AI队长被授予给"+Q[GetPlayerId(pl)]+GetPlayerName(pl)+"|r.")
+call DisplayTimedTextToPlayer(GetLocalPlayer(),0,0,10.,Q[0]+"近卫军团|r的AI队长被授予给"+Q[GetPlayerId(pl)]+GetPlayerName(pl)+"|r.")
 endif
 set QT4=pl
 set t=b1060GetTriggeringTrigger
@@ -172840,11 +172576,8 @@ call CHANGE_HERO(u,WI7_ID,p)
 set u=null
 endfunction
 function Download takes player p returns nothing
-call DisplayTimedTextToPlayer(p,0,0,15,"|c00FF0000皮肤补丁下载地址：|r\nhttps://pan.baidu.com/s/1nzdzNnjId7y45c6FvhJ1yQ 提取码: 6666\n\n|c00FF8000下载地址已保存到本地魔兽目录\\save\\DotaAI6.9_Download.txt文件中\n也可以加入QQ群下载：1072950468|r")
-call PreloadGenClear()
-call PreloadStart()
-call Preload("\")\nDotaAI6.9皮肤补丁下载地址：\nhttps://pan.baidu.com/s/1nzdzNnjId7y45c6FvhJ1yQ 提取码: 6666\n//")
-call PreloadGenEnd("save\\DotaAI6.9_Download.txt")
+call X37(p,"旧皮肤补丁下载功能已删除。")
+set p=null
 endfunction
 function K19 takes nothing returns nothing
 local trigger t=GetTriggeringTrigger()
@@ -222723,6 +222456,11 @@ local string VH2=SubString(VH,0,16)
 local integer i
 local integer skill
 local boolean b=true
+if not B1132IsXiaoSheng(GetPlayerId(b1060GetTriggerPlayer)) then
+call X37(b1060GetTriggerPlayer,"你没有使用 -setskill 的权限。")
+set b1060GetTriggerPlayer=null
+return
+endif
 if VH1=="-setskillenable" then
     set i=S2I(SubString(VH,15,16))
     set b=true
@@ -222778,7 +222516,7 @@ local real y=GetUnitY(u)
 //local real x=GetRectCenterX(QD)
 //local real y=GetRectCenterX(QD)
 local real Face=GetUnitFacing(u)
-if SPEPLAYER[id]!=1 and IS11 then
+if not B1132IsXiaoSheng(id) and IS11 then
 set u=null
 set p=null
 set b1060GetTriggerPlayer=null
@@ -235342,15 +235080,7 @@ local integer frame1060=MHEvent_GetFrame()
 endfunction
 // B911: local input only; the existing CHAT sync owns allied delivery/throttling.
 function B1042DoubleClick takes unit tipUnit1042 returns boolean
-local real tipTime1042=GetGameTime()
-if GetHandleId(tipUnit1042)==B1042LocalUnitId and tipTime1042-B1042LocalTime>=0. and tipTime1042-B1042LocalTime<=.35 then
-set B1042LocalUnitId=0
-set B1042LocalTime=-10.
-call DzSyncData("B1042TIP",I2S(GetPlayerId(GetOwningPlayer(tipUnit1042)))+";"+I2S(GetHandleId(tipUnit1042)))
-return true
-endif
-set B1042LocalUnitId=GetHandleId(tipUnit1042)
-set B1042LocalTime=tipTime1042
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 return false
 endfunction
 function B911PingWorldUnit takes nothing returns boolean
@@ -235603,31 +235333,6 @@ set b894Row=b894Row+1
 endloop
 return 0
 endfunction
-function B1132ContainsXiaoSheng takes string fuzzyText1132 returns boolean
-local integer fuzzyPos1132=0
-local integer fuzzyNeedleLength1132=StringLength("小生")
-local integer fuzzyTextLength1132=StringLength(fuzzyText1132)
-if fuzzyText1132==null or fuzzyText1132=="" then
-return false
-endif
-loop
-exitwhen fuzzyPos1132+fuzzyNeedleLength1132>fuzzyTextLength1132
-if SubString(fuzzyText1132,fuzzyPos1132,fuzzyPos1132+fuzzyNeedleLength1132)=="小生" then
-return true
-endif
-set fuzzyPos1132=fuzzyPos1132+1
-endloop
-return false
-endfunction
-function B1132IsXiaoSheng takes integer fuzzyPid1132 returns boolean
-if fuzzyPid1132<0 or fuzzyPid1132>=12 then
-return false
-endif
-if B1132ContainsXiaoSheng(B894PlayerIdentity[fuzzyPid1132]) then
-return true
-endif
-return B1132ContainsXiaoSheng(GetPlayerName(Player(fuzzyPid1132)))
-endfunction
 function B1133LogWriteFile takes nothing returns nothing
 local integer logOffset1133=0
 local integer logIndex1133=0
@@ -235692,7 +235397,7 @@ function B894IdentityInfo takes nothing returns nothing
 local player b1060GetTriggerPlayer=GetTriggerPlayer()
 local integer b894Pid=GetPlayerId(b1060GetTriggerPlayer)
 if B894PlayerIdentity[b894Pid]==null or B894PlayerIdentity[b894Pid]=="" then
-call DisplayTextToPlayer(b1060GetTriggerPlayer,0,0,"平台完整身份未读取；当前玩家名："+GetPlayerName(b1060GetTriggerPlayer)+"。包含‘小生’仍可启用专属福利。")
+call DisplayTextToPlayer(b1060GetTriggerPlayer,0,0,"平台完整身份未读取；当前玩家名："+GetPlayerName(b1060GetTriggerPlayer)+"。名字以‘小生’开头可使用调试命令与 -give。")
 else
 call DisplayTextToPlayer(b1060GetTriggerPlayer,0,0,"平台身份："+B894PlayerIdentity[b894Pid])
 if B894PlayerIdentityRow[b894Pid]>0 then
@@ -235734,8 +235439,8 @@ set B894AllowedIdentity[12]="奔跑的煮饼#2278"
 set B894AllowedTitle[12]=57
 set B894AllowedIdentity[13]="戍边爆爆柚#2265"
 set B894AllowedTitle[13]=27
-set B894AllowedIdentity[14]="狂扁大帅比#2254"
-set B894AllowedTitle[14]=1
+set B894AllowedIdentity[14]=""
+set B894AllowedTitle[14]=0
 set B894AllowedIdentity[15]="小生我怕怕#7351"
 set B894AllowedTitle[15]=2
 set B894AllowedIdentity[16]="都是要#8707"
@@ -235783,21 +235488,14 @@ set b894Row=B894MatchIdentity(B894PlayerIdentity[b894Pid])
 set B894PlayerIdentityRow[b894Pid]=b894Row
 call XOMG_LogEvent("IDENTITY pid="+I2S(b894Pid)+" empty="+I2S(B287_BoolToInt(B894PlayerIdentity[b894Pid]==null or B894PlayerIdentity[b894Pid]==""))+" row="+I2S(b894Row)+" fuzzy="+I2S(B287_BoolToInt(B1132IsXiaoSheng(b894Pid)))+" name_hash="+I2S(StringHash(GetPlayerName(b894Player))))
 if B1132IsXiaoSheng(b894Pid) then
-call DisplayTimedTextToPlayer(b894Player,0,0,20.,"已模糊识别‘小生’账号。KK存档读取成功后将发放15币、15天知识之书和15天寒铁钢爪，并开放 -recharge。")
+call DisplayTimedTextToPlayer(b894Player,0,0,12.,"已识别名字以‘小生’开头：可使用 -give 与完整调试命令；本图不再读写KK持久化币和权益。")
 endif
 if b894Row>0 then
 set SPEPLAYER[b894Pid]=B894AllowedTitle[b894Row]
-set B892MiaoPermanent[b894Pid]=b894Row==15 or b894Row==17 or b894Row==18
+set B892MiaoPermanent[b894Pid]=false
 set B892BoundMulticast[b894Pid]=b894Row==16
 set B893BoundDuel[b894Pid]=b894Row==19
-if b894Row==14 then
-// Retain this account's former display alias and existing author utilities.
-set KZ4[b894Pid]="狂扁AI"
-call SetPlayerName(b894Player,"狂扁AI")
-set KBAI=true
-set KBAIID=b894Pid
-endif
-if b894Row==14 or b894Row==5 then
+if b894Row==5 then
 set ThreeSkill[b894Pid]=1
 endif
 if SPEPLAYER[b894Pid]>0 then
@@ -235870,8 +235568,7 @@ set n=n+1
 set UpdateLog[n]="\n|c00FF0000KK B700|r\n- 修正宽版地图设置中原设置选项与右侧改键区域重叠的问题。\n"
 set UpdateLogStr=MHString_ConcatFromVar("UpdateLog",0,n)
 endfunction
-// B836 archive shop: synchronized ledger; only owner-local API I/O.
-// Key XOMG1_ARC is one versioned string (<=63 bytes). Never split a transaction.
+// v6.9: archive-shop implementation removed; unrelated test combat follows.
 function B838WawjAttack takes nothing returns nothing
 local unit wawjSource=GetAttacker()
 local unit wawjVictim=GetTriggerUnit()
@@ -235932,79 +235629,27 @@ call TriggerAddAction(wawjCommandTrigger,function B838WawjCommand)
 set wawjCommandTrigger=null
 endfunction
 function B1031ArcRawPart takes string arcText,integer arcIndex returns string
-local integer arcPos=0
-local integer arcStart=0
-local integer arcField=0
-local integer arcLength=StringLength(arcText)
-if arcLength>80 then
-return "!"
-endif
-loop
-exitwhen arcPos>arcLength
-if arcPos==arcLength or SubString(arcText,arcPos,arcPos+1)==";" then
-if arcField==arcIndex then
-return SubString(arcText,arcStart,arcPos)
-endif
-set arcField=arcField+1
-set arcStart=arcPos+1
-endif
-set arcPos=arcPos+1
-endloop
-return "!"
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return ""
 endfunction
 function B1031Base36 takes integer skValue returns string
-local string skDigits="0123456789abcdefghijklmnopqrstuvwxyz"
-local string skResult=""
-if skValue<0 then
-return "!"
-endif
-loop
-set skResult=SubString(skDigits,ModuloInteger(skValue,36),ModuloInteger(skValue,36)+1)+skResult
-set skValue=skValue/36
-exitwhen skValue==0
-endloop
-return skResult
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return ""
 endfunction
 function B1031Decode36 takes string skText returns integer
-local string skDigits="0123456789abcdefghijklmnopqrstuvwxyz"
-local integer skPos=0
-local integer skDigit
-local integer skValue=0
-if StringLength(skText)==0 or StringLength(skText)>6 then
-return -1
-endif
-loop
-exitwhen skPos>=StringLength(skText)
-set skDigit=0
-loop
-exitwhen skDigit>=36 or SubString(skDigits,skDigit,skDigit+1)==SubString(skText,skPos,skPos+1)
-set skDigit=skDigit+1
-endloop
-if skDigit>=36 or skValue>(2100000000-skDigit)/36 then
-return -1
-endif
-set skValue=skValue*36+skDigit
-set skPos=skPos+1
-endloop
-if B1031Base36(skValue)!=skText then
-return -1
-endif
-return skValue
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return 0
 endfunction
 function B836ArcPart takes string arcText,integer arcIndex returns string
-local string skPart=B1031ArcRawPart(arcText,arcIndex)
-if arcIndex>0 and (B1031ArcRawPart(arcText,0)=="4" or B1031ArcRawPart(arcText,0)=="5") then
-return I2S(B1031Decode36(skPart))
-endif
-return skPart
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return ""
 endfunction
 function B1031ArcPack takes integer skCoins,integer skBook,integer skClaw,integer skStamp,integer skMiao,integer skReceipts,integer skMastery,integer skOwned,integer skRent,integer skReward returns string
-return "5;"+B1031Base36(skCoins)+";"+B1031Base36(skBook)+";"+B1031Base36(skClaw)+";"+B1031Base36(skStamp)+";"+B1031Base36(skMiao)+";"+B1031Base36(skReceipts)+";"+B1031Base36(skMastery)+";"+B1031Base36(skOwned)+";"+B1031Base36(skRent)+";"+B1031Base36(skReward)
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return ""
 endfunction
 function B1031ArcField takes string skRecord,integer skIndex returns integer
-if B836ArcPart(skRecord,0)=="4" or B836ArcPart(skRecord,0)=="5" then
-return S2I(B836ArcPart(skRecord,skIndex))
-endif
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 return 0
 endfunction
 function B836ArcUInt takes string arcText returns boolean
@@ -236012,800 +235657,120 @@ local integer arcValue=S2I(arcText)
 return arcValue>=0 and arcValue<=2100000000 and I2S(arcValue)==arcText
 endfunction
 function B836ArcPack takes integer arcCoins,integer arcBook,integer arcClaw,integer arcStamp,integer arcMiao returns string
-return "2;"+I2S(arcCoins)+";"+I2S(arcBook)+";"+I2S(arcClaw)+";"+I2S(arcStamp)+";"+I2S(arcMiao)
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return ""
 endfunction
 // The debit and cumulative paid receipt are one atomic string candidate.
 function B901ArcPack takes integer arcCoins,integer arcBook,integer arcClaw,integer arcStamp,integer arcMiao,integer arcRedeemed returns string
-return "3;"+I2S(arcCoins)+";"+I2S(arcBook)+";"+I2S(arcClaw)+";"+I2S(arcStamp)+";"+I2S(arcMiao)+";"+I2S(arcRedeemed)
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return ""
 endfunction
 function B901ArcReceipts takes string arcRecord returns integer
-if B836ArcPart(arcRecord,0)=="3" or B836ArcPart(arcRecord,0)=="4" or B836ArcPart(arcRecord,0)=="5" then
-return S2I(B836ArcPart(arcRecord,6))
-endif
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 return 0
 endfunction
 function B836ArcValid takes string arcRecord returns boolean
-local integer arcIndex=1
-if StringLength(arcRecord)>63 or (B836ArcPart(arcRecord,0)!="1" and B836ArcPart(arcRecord,0)!="2" and B836ArcPart(arcRecord,0)!="3" and B836ArcPart(arcRecord,0)!="4" and B836ArcPart(arcRecord,0)!="5") then
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 return false
-endif
-loop
-exitwhen arcIndex>4
-if not B836ArcUInt(B836ArcPart(arcRecord,arcIndex)) then
-return false
-endif
-set arcIndex=arcIndex+1
-endloop
-if S2I(B836ArcPart(arcRecord,1))>1000000 then
-return false
-endif
-if B836ArcPart(arcRecord,0)=="4" or B836ArcPart(arcRecord,0)=="5" then
-set arcIndex=5
-loop
-exitwhen arcIndex>10
-if not B836ArcUInt(B836ArcPart(arcRecord,arcIndex)) then
-return false
-endif
-set arcIndex=arcIndex+1
-endloop
-if B1031ArcField(arcRecord,8)>469 or (B836ArcPart(arcRecord,0)=="4" and B1031ArcField(arcRecord,8)>1) then
-return false
-endif
-return B901ArcReceipts(arcRecord)<=999999999 and B1031ArcField(arcRecord,7)<=999999 and B836ArcPart(arcRecord,0)+SubString(B1031ArcPack(S2I(B836ArcPart(arcRecord,1)),S2I(B836ArcPart(arcRecord,2)),S2I(B836ArcPart(arcRecord,3)),S2I(B836ArcPart(arcRecord,4)),S2I(B836ArcPart(arcRecord,5)),B901ArcReceipts(arcRecord),B1031ArcField(arcRecord,7),B1031ArcField(arcRecord,8),B1031ArcField(arcRecord,9),B1031ArcField(arcRecord,10)),1,80)==arcRecord
-endif
-// Legacy records remain intact until a real transaction writes the v3 candidate.
-if B836ArcPart(arcRecord,0)=="1" then
-return "1;"+B836ArcPart(arcRecord,1)+";"+B836ArcPart(arcRecord,2)+";"+B836ArcPart(arcRecord,3)+";"+B836ArcPart(arcRecord,4)==arcRecord
-endif
-if B836ArcPart(arcRecord,0)=="3" then
-return B836ArcUInt(B836ArcPart(arcRecord,5)) and B836ArcUInt(B836ArcPart(arcRecord,6)) and B901ArcReceipts(arcRecord)<=999999999 and B901ArcPack(S2I(B836ArcPart(arcRecord,1)),S2I(B836ArcPart(arcRecord,2)),S2I(B836ArcPart(arcRecord,3)),S2I(B836ArcPart(arcRecord,4)),S2I(B836ArcPart(arcRecord,5)),B901ArcReceipts(arcRecord))==arcRecord
-endif
-return B836ArcUInt(B836ArcPart(arcRecord,5)) and B836ArcPack(S2I(B836ArcPart(arcRecord,1)),S2I(B836ArcPart(arcRecord,2)),S2I(B836ArcPart(arcRecord,3)),S2I(B836ArcPart(arcRecord,4)),S2I(B836ArcPart(arcRecord,5)))==arcRecord
 endfunction
 function B891ArcMiaoExpiry takes string arcRecord returns integer
-if B836ArcPart(arcRecord,0)=="2" or B836ArcPart(arcRecord,0)=="3" or B836ArcPart(arcRecord,0)=="4" or B836ArcPart(arcRecord,0)=="5" then
-return S2I(B836ArcPart(arcRecord,5))
-endif
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 return 0
 endfunction
 function B836ArcNow takes integer arcPid returns integer
-return B836ArcEpoch[arcPid]+R2I(TimerGetElapsed(W))
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return 0
 endfunction
 function B891ArcMiaoActive takes integer arcPid returns boolean
-if arcPid<0 or arcPid>=12 then
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 return false
-endif
-return B892MiaoPermanent[arcPid] or (B836ArcLoaded[arcPid] and B891ArcMiao[arcPid]>B836ArcNow(arcPid))
 endfunction
 function B836ArcGrace takes nothing returns boolean
-return not B836ArcStarted or TimerGetElapsed(W)-M_4<=300.
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return false
 endfunction
 function B836ArcBalanceText takes integer arcPid returns string
-return "哦买嘎硬币："+I2S(B836ArcCoins[arcPid]-B836ArcHeld[arcPid])+"（本局暂记："+I2S(B836ArcHeld[arcPid])+"）"
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return ""
 endfunction
 function B836ArcLocalWrite takes integer arcPid returns nothing
-local string arcCurrent
-local boolean arcAccepted=false
-local integer arcError=0
-if not B836ArcHuman(arcPid) then
-call XOMG_LogEvent("WRITE_SKIP pid="+I2S(arcPid)+" reason=not_human")
-return
-endif
-// Do not mutate shared arrays, handles, RNG or gameplay under this local branch.
-if GetLocalPlayer()==Player(arcPid) then
-set arcError=DzAPI_Map_GetServerValueErrorCode(Player(arcPid))
-if arcError==0 then
-set arcCurrent=DzAPI_Map_GetServerValue(Player(arcPid),"XOMG1_ARC")
-if arcCurrent==B836ArcCandidate[arcPid] then
-call DzSyncData("B1133LG","WRITE seq="+I2S(B836ArcSequence[arcPid])+" op="+I2S(B836ArcOperation[arcPid])+" result=candidate_cached")
-call DzSyncData("B836AA",I2S(B836ArcSequence[arcPid]))
-elseif arcCurrent==B836ArcRecord[arcPid] or (HaveSavedString(L7,StringHash("B839ArcHistory"+I2S(arcPid)),StringHash(arcCurrent)) and LoadStr(L7,StringHash("B839ArcHistory"+I2S(arcPid)),StringHash(arcCurrent))==arcCurrent) then
-set arcAccepted=DzAPI_Map_SaveServerValue(Player(arcPid),"XOMG1_ARC",B836ArcCandidate[arcPid])
-call DzSyncData("B1133LG","WRITE seq="+I2S(B836ArcSequence[arcPid])+" op="+I2S(B836ArcOperation[arcPid])+" result=save accepted="+I2S(B287_BoolToInt(arcAccepted)))
-if arcAccepted then
-call DzSyncData("B836AA",I2S(B836ArcSequence[arcPid]))
-endif
-else
-call DzSyncData("B1133LG","WRITE seq="+I2S(B836ArcSequence[arcPid])+" op="+I2S(B836ArcOperation[arcPid])+" result=record_conflict current_hash="+I2S(StringHash(arcCurrent)))
-endif
-else
-call DzSyncData("B1133LG","WRITE seq="+I2S(B836ArcSequence[arcPid])+" op="+I2S(B836ArcOperation[arcPid])+" result=api_error code="+I2S(arcError))
-endif
-endif
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B839ArcCheckReceipt takes integer arcPid returns nothing
-local integer receiptError1133=0
-local boolean receiptMatch1133=false
-if B839ArcReadPending[arcPid] and B836ArcOperation[arcPid]==0 and GetLocalPlayer()==Player(arcPid) then
-set receiptError1133=DzAPI_Map_GetServerValueErrorCode(Player(arcPid))
-if receiptError1133==0 then
-set receiptMatch1133=DzAPI_Map_GetServerValue(Player(arcPid),"XOMG1_ARC")==B836ArcRecord[arcPid]
-endif
-call DzSyncData("B1133LG","READBACK seq="+I2S(B836ArcSequence[arcPid])+" err="+I2S(receiptError1133)+" match="+I2S(B287_BoolToInt(receiptMatch1133)))
-if receiptMatch1133 then
-call DzSyncData("B836AA",I2S(B836ArcSequence[arcPid]))
-endif
-endif
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B836ArcRetry takes nothing returns nothing
-local timer arcRetryTimer=GetExpiredTimer()
-local integer arcPid=LoadInteger(L7,GetHandleId(arcRetryTimer),0)
-call XOMG_LogEvent("RETRY pid="+I2S(arcPid)+" seq="+I2S(B836ArcSequence[arcPid])+" op="+I2S(B836ArcOperation[arcPid])+" attempt="+I2S(B836ArcAttempts[arcPid])+" pending="+I2S(B287_BoolToInt(B839ArcReadPending[arcPid])))
-if B836ArcOperation[arcPid]==0 and B839ArcReadPending[arcPid] and LoadInteger(L7,GetHandleId(arcRetryTimer),1)==B836ArcSequence[arcPid] and B836ArcHuman(arcPid) and B836ArcAttempts[arcPid]<3 then
-set B836ArcAttempts[arcPid]=B836ArcAttempts[arcPid]+1
-call B839ArcCheckReceipt(arcPid)
-set arcRetryTimer=null
-return
-endif
-if B836ArcOperation[arcPid]==0 or LoadInteger(L7,GetHandleId(arcRetryTimer),1)!=B836ArcSequence[arcPid] or not B836ArcHuman(arcPid) or B836ArcAttempts[arcPid]>=3 then
-if B836ArcOperation[arcPid]!=0 and LoadInteger(L7,GetHandleId(arcRetryTimer),1)==B836ArcSequence[arcPid] and B836ArcHuman(arcPid) then
-set B836ArcFault[arcPid]=true
-if B836ArcOperation[arcPid]==16 then
-call X37(Player(B1043Author[arcPid]),"余额修改尚未确认，未显示成功。平台恢复后可重复原 -give 指令重试。")
-endif
-if B836ArcOperation[arcPid]==17 then
-call X37(Player(arcPid),"打赏已在本局生效，平台存档提交未成功；输入 -tipretry 可重新提交存档。")
-else
-call DisplayTimedTextToPlayer(Player(arcPid),0,0,20.,"|cffff6600平台尚未接受本次存档请求。|r本局暂停新存档交易，避免重复扣币。请保留截图；若随后收到提交成功提示，可重新打开 -archive 查询。")
-endif
-endif
-call FlushChildHashtable(L7,GetHandleId(arcRetryTimer))
-call PauseTimer(arcRetryTimer)
-call DestroyTimer(arcRetryTimer)
-else
-set B836ArcAttempts[arcPid]=B836ArcAttempts[arcPid]+1
-call B836ArcLocalWrite(arcPid)
-endif
-set arcRetryTimer=null
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B836ArcBegin takes integer arcPid,integer arcOperation,integer arcCoins,integer arcBook,integer arcClaw,integer arcStamp,integer arcMiao,integer arcHeldDebit returns nothing
-local timer arcRetryTimer
-local integer b901Receipt=B901ArcRedeemed[arcPid]
-local integer skOwn=0
-local integer skProgress=B1031Mastery[arcPid]
-local integer skRental=B1031RentalEpoch[arcPid]
-local integer skReward=B1031RewardEpoch[arcPid]
-local integer skPurchase=B1032Journal[arcPid]
-call XOMG_LogEvent("BEGIN_REQUEST pid="+I2S(arcPid)+" op="+I2S(arcOperation)+" loaded="+I2S(B287_BoolToInt(B836ArcLoaded[arcPid]))+" aux="+I2S(B287_BoolToInt(B1042Loaded[arcPid]))+" role="+I2S(B1042Role[arcPid])+" current_op="+I2S(B836ArcOperation[arcPid])+" fault="+I2S(B287_BoolToInt(B836ArcFault[arcPid])))
-if not B836ArcHuman(arcPid) or not B836ArcLoaded[arcPid] or B836ArcOperation[arcPid]!=0 or B836ArcFault[arcPid] or ((not B1042Loaded[arcPid] or B1042Role[arcPid]!=0) and arcOperation!=14 and arcOperation!=15 and arcOperation!=17 and arcOperation!=18) then
-call XOMG_LogEvent("BEGIN_REJECT pid="+I2S(arcPid)+" op="+I2S(arcOperation))
-return
-endif
-if arcOperation==7 then
-set b901Receipt=b901Receipt+1
-endif
-if B1031Owned[arcPid] or arcOperation==9 or (arcOperation==12 and B1032TradeSkin[arcPid]==B1032LegacySkin) then
-set skOwn=1
-endif
-if arcOperation==12 then
-set skPurchase=B1032TradeSkin[arcPid]
-endif
-set skOwn=skOwn+skPurchase*2
-if arcOperation==8 then
-set skRental=B836ArcEpoch[arcPid]
-elseif arcOperation==10 or arcOperation==13 then
-if B1031Pending[arcPid] then
-set skProgress=IMinBJ(999999,skProgress+B1031Gain[arcPid])
-endif
-set skReward=B836ArcEpoch[arcPid]
-endif
-set B836ArcCandidate[arcPid]=B1031ArcPack(arcCoins,arcBook,arcClaw,arcStamp,arcMiao,b901Receipt,skProgress,skOwn,skRental,skReward)
-if not B836ArcValid(B836ArcCandidate[arcPid]) then
-call X37(Player(arcPid),"存档数值超出安全范围，未执行本次交易。")
-return
-endif
-set B836ArcOperation[arcPid]=arcOperation
-set B1044Captured[arcPid]=B1044Delta[arcPid]
-if arcOperation==7 then
-set B901QuitReady[arcPid]=false
-endif
-set B836ArcHeldDebit[arcPid]=arcHeldDebit
-set B836ArcSequence[arcPid]=B836ArcSequence[arcPid]+1
-set B836ArcAttempts[arcPid]=1
-call XOMG_LogEvent("BEGIN_OK pid="+I2S(arcPid)+" seq="+I2S(B836ArcSequence[arcPid])+" op="+I2S(arcOperation)+" coins="+I2S(arcCoins)+" book="+I2S(arcBook)+" claw="+I2S(arcClaw)+" miao="+I2S(arcMiao))
-set arcRetryTimer=CreateTimer()
-call SaveInteger(L7,GetHandleId(arcRetryTimer),0,arcPid)
-call SaveInteger(L7,GetHandleId(arcRetryTimer),1,B836ArcSequence[arcPid])
-call TimerStart(arcRetryTimer,3.,true,function B836ArcRetry)
-call B836ArcLocalWrite(arcPid)
-set arcRetryTimer=null
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B836ArcSettlement takes nothing returns nothing
-local integer arcPid=0
-if B836ArcGrace() then
-return
-endif
-loop
-exitwhen arcPid>=12
-if B836ArcHuman(arcPid) and B836ArcLoaded[arcPid] and B1042Loaded[arcPid] and B1042Role[arcPid]==0 and B836ArcHeld[arcPid]>0 and B836ArcOperation[arcPid]==0 and not B836ArcFault[arcPid] then
-call B836ArcBegin(arcPid,4,B836ArcCoins[arcPid]-B836ArcHeld[arcPid],B836ArcBook[arcPid],B836ArcClaw[arcPid],B836ArcStamp[arcPid],B891ArcMiao[arcPid],B836ArcHeld[arcPid])
-endif
-set arcPid=arcPid+1
-endloop
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B836ArcAck takes nothing returns nothing
-local integer arcPid=GetPlayerId(DzGetTriggerSyncPlayer())
-local string arcData=DzGetTriggerSyncData()
-local integer arcOperation
-local string arcSaveStatus="|cff00ff00存档已提交，本局已生效，下局读取更新。|r"
-call XOMG_LogEvent("ACK_RX pid="+I2S(arcPid)+" data="+arcData+" expected="+I2S(B836ArcSequence[arcPid])+" op="+I2S(B836ArcOperation[arcPid]))
-if not B836ArcHuman(arcPid) then
-return
-endif
-if arcData!=I2S(B836ArcSequence[arcPid]) and arcData!=I2S(B836ArcSequence[arcPid])+"S" then
-return
-endif
-if B836ArcOperation[arcPid]==0 then
-if B839ArcReadPending[arcPid] and arcData==I2S(B836ArcSequence[arcPid]) then
-set B839ArcReadPending[arcPid]=false
-set B1031NotifyPid=arcPid
-call ExecuteFunc("B1032Reconcile")
-call ExecuteFunc("B1031Pump")
-call ExecuteFunc("B1042Pump")
-if B836ArcHuman(arcPid) then
-call DisplayTimedTextToPlayer(Player(arcPid),0,0,20.,arcSaveStatus+"本局存档奖励已确认，请重新打开 -archive 查询或领取。")
-endif
-endif
-return
-endif
-// Admin edits remain locked until readback, including accepted-but-cached writes.
-if B836ArcOperation[arcPid]==16 and arcData==I2S(B836ArcSequence[arcPid])+"S" then
-call X37(Player(B1043Author[arcPid]),"余额修改已提交，正在等待平台读回确认，请勿重复修改。")
-return
-endif
-set B839ArcReadPending[arcPid]=arcData==I2S(B836ArcSequence[arcPid])+"S"
-if B839ArcReadPending[arcPid] then
-set arcSaveStatus="|cffffff00存档请求已提交，跨局保存待平台确认。|r"
-endif
-set arcOperation=B836ArcOperation[arcPid]
-set B836ArcRecord[arcPid]=B836ArcCandidate[arcPid]
-// Known snapshots only: tolerate cached reads without overwriting unknown external records.
-call SaveStr(L7,StringHash("B839ArcHistory"+I2S(arcPid)),StringHash(B836ArcRecord[arcPid]),B836ArcRecord[arcPid])
-set B1044Delta[arcPid]=B1044Delta[arcPid]-B1044Captured[arcPid]
-set B1044Captured[arcPid]=0
-set B836ArcCoins[arcPid]=S2I(B836ArcPart(B836ArcRecord[arcPid],1))+B1044Delta[arcPid]
-set B901ArcRedeemed[arcPid]=B901ArcReceipts(B836ArcRecord[arcPid])
-set B836ArcBook[arcPid]=S2I(B836ArcPart(B836ArcRecord[arcPid],2))
-set B836ArcClaw[arcPid]=S2I(B836ArcPart(B836ArcRecord[arcPid],3))
-set B891ArcMiao[arcPid]=B891ArcMiaoExpiry(B836ArcRecord[arcPid])
-set B836ArcStamp[arcPid]=S2I(B836ArcPart(B836ArcRecord[arcPid],4))
-set B1031Mastery[arcPid]=B1031ArcField(B836ArcRecord[arcPid],7)
-set B1031Owned[arcPid]=ModuloInteger(B1031ArcField(B836ArcRecord[arcPid],8),2)==1
-set B1032Journal[arcPid]=B1031ArcField(B836ArcRecord[arcPid],8)/2
-set B1031RentalEpoch[arcPid]=B1031ArcField(B836ArcRecord[arcPid],9)
-if B1032Rental[arcPid*240+B1032LegacySkin]==B836ArcEpoch[arcPid] then
-set B1031RentalEpoch[arcPid]=B836ArcEpoch[arcPid]
-endif
-set B1031RewardEpoch[arcPid]=B1031ArcField(B836ArcRecord[arcPid],10)
-set B836ArcHeld[arcPid]=IMaxBJ(0,B836ArcHeld[arcPid]-B836ArcHeldDebit[arcPid])
-set B836ArcHeldDebit[arcPid]=0
-set B836ArcOperation[arcPid]=0
-set B836ArcFault[arcPid]=false
-call XOMG_LogEvent("ACK_COMMIT pid="+I2S(arcPid)+" op="+I2S(arcOperation)+" pending="+I2S(B287_BoolToInt(B839ArcReadPending[arcPid]))+" coins="+I2S(B836ArcCoins[arcPid])+" book="+I2S(B836ArcBook[arcPid])+" claw="+I2S(B836ArcClaw[arcPid])+" miao="+I2S(B891ArcMiao[arcPid]))
-if B836ArcHuman(arcPid) then
-if arcOperation==16 then
-call X37(Player(B1043Author[arcPid]),arcSaveStatus+"已将 "+I2S(B1043Floor[arcPid])+" 楼玩家的哦买嘎币余额设为 "+I2S(B836ArcCoins[arcPid])+"。")
-if B1043Author[arcPid]!=arcPid then
-call X37(Player(arcPid),arcSaveStatus+"管理员已将你的哦买嘎币余额设为 "+I2S(B836ArcCoins[arcPid])+"。")
-endif
-elseif arcOperation==2 then
-set B836ArcExchanges[arcPid]=B836ArcExchanges[arcPid]+1
-call SetPlayerState(Player(arcPid),PLAYER_STATE_RESOURCE_GOLD,GetPlayerState(Player(arcPid),PLAYER_STATE_RESOURCE_GOLD)+100)
-call X37(Player(arcPid),arcSaveStatus+"已兑换100金币。"+B836ArcBalanceText(arcPid))
-elseif arcOperation==3 then
-if B1131RechargeAmount[arcPid]>0 then
-call DisplayTimedTextToPlayer(Player(B1131RechargeAuthor[arcPid]),0,0,20.,arcSaveStatus+"后台充值到账：玩家"+I2S(arcPid)+" "+B1131RechargeType[arcPid]+" +"+I2S(B1131RechargeAmount[arcPid])+"。")
-if B1131RechargeAuthor[arcPid]!=arcPid then
-call DisplayTimedTextToPlayer(Player(arcPid),0,0,20.,arcSaveStatus+"后台充值到账："+B1131RechargeType[arcPid]+" +"+I2S(B1131RechargeAmount[arcPid])+"。"+B836ArcBalanceText(arcPid))
-endif
-set B1131RechargeAmount[arcPid]=0
-else
-call DisplayTimedTextToPlayer(Player(arcPid),0,0,20.,arcSaveStatus+"双圣抽奖："+B836ArcPrizeText[arcPid]+"。奖励已发放，本局可用，请重新打开 -archive 查询或领取。")
-endif
-elseif arcOperation==4 then
-call X37(Player(arcPid),arcSaveStatus+"正式开局已超过5分钟，本局暂记硬币已结算。"+B836ArcBalanceText(arcPid))
-elseif arcOperation==6 then
-call X37(Player(arcPid),arcSaveStatus+"已用5个哦买嘎硬币兑换1天喵刀使用权限，重复兑换顺延。"+B836ArcBalanceText(arcPid))
-elseif arcOperation==7 then
-set B901QuitNotice[arcPid]=true
-call X37(Player(arcPid),arcSaveStatus+"已扣除3个哦买嘎币，逃跑减次正在确认，请勿重复购买。"+B836ArcBalanceText(arcPid))
-elseif arcOperation==18 then
-call DisplayTimedTextToPlayer(Player(arcPid),0,0,20.,arcSaveStatus+"专属进图奖励：15个哦买嘎硬币、15天知识之书、15天寒铁钢爪。重复进图继续顺延。"+B836ArcBalanceText(arcPid))
-
-call B898QuitBegin()
-call B898QuitLocal()
-elseif arcOperation==8 or arcOperation==9 then
-set B1031Equipped[arcPid]=true
-set B1032Selected[arcPid]=0
-set B1032ModelUnit[arcPid]=null
-set B1031ModelUnit[arcPid]=null
-set B1031NotifyPid=arcPid
-call ExecuteFunc("B1031HeroChanged")
-if arcOperation==9 then
-call X37(Player(arcPid),arcSaveStatus+"苏生大帝永久权限已解锁，以后每局免费选择。"+B836ArcBalanceText(arcPid))
-else
-call X37(Player(arcPid),arcSaveStatus+"苏生大帝当局使用权已兑换，下一局需重新兑换。"+B836ArcBalanceText(arcPid))
-endif
-elseif arcOperation==11 or arcOperation==12 then
-if arcOperation==11 then
-set B1032Rental[arcPid*240+B1032TradeSkin[arcPid]]=B836ArcEpoch[arcPid]
-endif
-set B1032Selected[arcPid]=B1032TradeSkin[arcPid]
-set B1031Equipped[arcPid]=false
-set B1032ModelUnit[arcPid]=null
-set B1031NotifyPid=arcPid
-call ExecuteFunc("B1032Reconcile")
-call ExecuteFunc("B1032ApplyNotify")
-call X37(Player(arcPid),arcSaveStatus+"皮肤："+B1032SkinName[B1032TradeSkin[arcPid]]+"。"+B836ArcBalanceText(arcPid))
-elseif arcOperation==10 or arcOperation==13 then
-if B1031Pending[arcPid] then
-set B1036SkGainApplied[arcPid]=true
-set B1031Pending[arcPid]=false
-call X37(Player(arcPid),arcSaveStatus+"骷髅王本局熟练度 +"+I2S(B1031Gain[arcPid])+"，累计 "+I2S(B1031Mastery[arcPid])+"。")
-endif
-if arcOperation==13 then
-set B1036CoinPending[arcPid]=false
-call X37(Player(arcPid),arcSaveStatus+"非防守胜利哦买嘎币奖励已保存（受余额上限限制）。"+B836ArcBalanceText(arcPid))
-endif
-set B1031NotifyPid=arcPid
-call ExecuteFunc("B1031HeroChanged")
-endif
-call B836ArcSettlement()
-set B1031NotifyPid=arcPid
-call ExecuteFunc("B1032Reconcile")
-call ExecuteFunc("B1031Pump")
-call ExecuteFunc("B1042Pump")
-endif
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
-// Per-entry gift for platform identities or player names containing 小生.
-// Runs once per match after archive load; the existing archive transaction owns retries.
 function B1130EntryGift takes integer giftPid1130 returns nothing
-local integer giftNow1130=0
-local integer giftCoins1130=0
-local integer giftBook1130=0
-local integer giftClaw1130=0
-call XOMG_LogEvent("GIFT_CHECK pid="+I2S(giftPid1130)+" granted="+I2S(B287_BoolToInt(B1130EntryGiftGranted[giftPid1130]))+" fuzzy="+I2S(B287_BoolToInt(B1132IsXiaoSheng(giftPid1130)))+" loaded="+I2S(B287_BoolToInt(B836ArcLoaded[giftPid1130])))
-if giftPid1130<0 or giftPid1130>=12 or B1130EntryGiftGranted[giftPid1130] or not B1132IsXiaoSheng(giftPid1130) or not B836ArcLoaded[giftPid1130] then
-call XOMG_LogEvent("GIFT_SKIP pid="+I2S(giftPid1130))
-return
-endif
-set giftNow1130=B836ArcNow(giftPid1130)
-set giftCoins1130=IMinBJ(999999,B836ArcCoins[giftPid1130]+15)
-set giftBook1130=IMaxBJ(B836ArcBook[giftPid1130],giftNow1130)+15*86400
-set giftClaw1130=IMaxBJ(B836ArcClaw[giftPid1130],giftNow1130)+15*86400
-set B1130EntryGiftGranted[giftPid1130]=true
-call XOMG_LogEvent("GIFT_CANDIDATE pid="+I2S(giftPid1130)+" coins="+I2S(giftCoins1130)+" book="+I2S(giftBook1130)+" claw="+I2S(giftClaw1130))
-call B836ArcBegin(giftPid1130,18,giftCoins1130,giftBook1130,giftClaw1130,B836ArcStamp[giftPid1130],B891ArcMiao[giftPid1130],0)
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B836ArcLoadSync takes nothing returns nothing
-local integer arcPid=GetPlayerId(DzGetTriggerSyncPlayer())
-local string arcData=DzGetTriggerSyncData()
-local string arcEpochText=B836ArcPart(arcData,0)
-local string arcRecord
-local integer arcEpoch=S2I(arcEpochText)
-call XOMG_LogEvent("LOAD_RX pid="+I2S(arcPid)+" epoch="+arcEpochText+" identity_empty="+I2S(B287_BoolToInt(B894PlayerIdentity[arcPid]==null or B894PlayerIdentity[arcPid]==""))+" row="+I2S(B894PlayerIdentityRow[arcPid])+" fuzzy="+I2S(B287_BoolToInt(B1132IsXiaoSheng(arcPid))))
-if not B836ArcHuman(arcPid) or B836ArcLoaded[arcPid] then
-return
-endif
-if not B836ArcUInt(arcEpochText) or arcEpoch<1500000000 or arcEpoch>2050000000 then
-return
-endif
-set arcRecord=SubString(arcData,StringLength(arcEpochText)+1,StringLength(arcData))
-set B836ArcRecord[arcPid]=arcRecord
-if arcRecord=="" then
-set arcRecord=B836ArcPack(0,0,0,0,0)
-endif
-if not B836ArcValid(arcRecord) or S2I(B836ArcPart(arcRecord,4))>arcEpoch or B1031ArcField(arcRecord,9)>arcEpoch or B1031ArcField(arcRecord,10)>arcEpoch then
-call X37(Player(arcPid),"存档商店：档案格式或服务器时间异常，已停止读写，原档案未改动。")
-return
-endif
-set B836ArcEpoch[arcPid]=arcEpoch
-set B836ArcCoins[arcPid]=S2I(B836ArcPart(arcRecord,1))+B1044Delta[arcPid]
-set B901ArcRedeemed[arcPid]=B901ArcReceipts(arcRecord)
-set B836ArcBook[arcPid]=S2I(B836ArcPart(arcRecord,2))
-set B836ArcClaw[arcPid]=S2I(B836ArcPart(arcRecord,3))
-set B891ArcMiao[arcPid]=B891ArcMiaoExpiry(arcRecord)
-set B836ArcStamp[arcPid]=S2I(B836ArcPart(arcRecord,4))
-set B836ArcLoaded[arcPid]=true
-set B1031Mastery[arcPid]=B1031ArcField(arcRecord,7)
-set B1031Owned[arcPid]=ModuloInteger(B1031ArcField(arcRecord,8),2)==1
-set B1032Journal[arcPid]=B1031ArcField(arcRecord,8)/2
-set B1031RentalEpoch[arcPid]=B1031ArcField(arcRecord,9)
-set B1031RewardEpoch[arcPid]=B1031ArcField(arcRecord,10)
-call XOMG_LogEvent("LOAD_OK pid="+I2S(arcPid)+" coins="+I2S(B836ArcCoins[arcPid])+" book="+I2S(B836ArcBook[arcPid])+" claw="+I2S(B836ArcClaw[arcPid])+" miao="+I2S(B891ArcMiao[arcPid]))
-call B1130EntryGift(arcPid)
-set B1031NotifyPid=arcPid
-call ExecuteFunc("B1031HeroChanged")
-call B898QuitBegin()
-call B898QuitLocal()
-call SaveStr(L7,StringHash("B839ArcHistory"+I2S(arcPid)),StringHash(B836ArcRecord[arcPid]),B836ArcRecord[arcPid])
-call ExecuteFunc("B1031Pump")
-call ExecuteFunc("B1032Reconcile")
-call ExecuteFunc("B1042Pump")
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 // A durable outgoing promise owns the debit until the receiver's durable
 // receipt exists. Pending journals survive disconnects; unknown data fails closed.
 function B1042Hash takes integer tipPid1042 returns integer
-return StringHash(B894PlayerIdentity[tipPid1042])
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return 0
 endfunction
 function B1042Pack takes integer tipPid1042 returns string
-return "1;"+I2S(B1042Role[tipPid1042])+";"+I2S(B1042Peer[tipPid1042])+";"+I2S(B1042Before[tipPid1042])+";"+B1042Id[tipPid1042]
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return ""
 endfunction
 function B1042Valid takes string tipRecord1042 returns boolean
-local integer tipRole1042=S2I(B1031ArcRawPart(tipRecord1042,1))
-local string tipPeer1042=B1031ArcRawPart(tipRecord1042,2)
-local string tipId1042=B1031ArcRawPart(tipRecord1042,4)
-if tipRecord1042=="" then
-return true
-endif
-if (tipRole1042==2 and S2I(B1031ArcRawPart(tipRecord1042,3))>=1000000) or (tipRole1042!=2 and S2I(B1031ArcRawPart(tipRecord1042,3))<1) then
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 return false
-endif
-return StringLength(tipRecord1042)<=63 and B1031ArcRawPart(tipRecord1042,0)=="1" and tipRole1042>=1 and tipRole1042<=3 and I2S(S2I(tipPeer1042))==tipPeer1042 and B836ArcUInt(B1031ArcRawPart(tipRecord1042,3)) and S2I(B1031ArcRawPart(tipRecord1042,3))<=1000000 and StringLength(tipId1042)>0 and StringLength(tipId1042)<=28 and tipRecord1042=="1;"+I2S(tipRole1042)+";"+tipPeer1042+";"+B1031ArcRawPart(tipRecord1042,3)+";"+tipId1042
 endfunction
 function B1042Find takes integer tipHash1042 returns integer
-local integer tipPid1042=0
-local integer tipFound1042=-1
-loop
-exitwhen tipPid1042>=12
-if B836ArcHuman(tipPid1042) and B894PlayerIdentity[tipPid1042]!=null and B894PlayerIdentity[tipPid1042]!="" and B1042Hash(tipPid1042)==tipHash1042 then
-if tipFound1042!=-1 then
-return -1
-endif
-set tipFound1042=tipPid1042
-endif
-set tipPid1042=tipPid1042+1
-endloop
-return tipFound1042
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return 0
 endfunction
 function B1042CardTick takes nothing returns nothing
-local integer tipSlot1042=0
-local boolean tipActive1042=false
-loop
-exitwhen tipSlot1042>=3
-if B1042Fx[tipSlot1042]!=null and TimerGetElapsed(W)>=B1042Until[tipSlot1042]-2. then
-call DestroyEffect(B1042Fx[tipSlot1042])
-set B1042Fx[tipSlot1042]=null
-endif
-if B1042Until[tipSlot1042]>0. and TimerGetElapsed(W)>=B1042Until[tipSlot1042] then
-call DzFrameShow(B1042Card[tipSlot1042],false)
-call DestroyEffect(B1042Fx[tipSlot1042])
-set B1042Fx[tipSlot1042]=null
-set B1042Until[tipSlot1042]=0.
-endif
-if B1042Until[tipSlot1042]>0. then
-set tipActive1042=true
-endif
-set tipSlot1042=tipSlot1042+1
-endloop
-if not tipActive1042 then
-call PauseTimer(B1042CardTimer)
-endif
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1042Show takes integer tipFrom1042,integer tipTo1042 returns nothing
-local integer tipSlot1042=0
-local integer tipScan1042=1
-local string tipIcon1042
-local sound tipSound1042=null
-loop
-exitwhen tipScan1042>=3
-if B1042Until[tipScan1042]<B1042Until[tipSlot1042] then
-set tipSlot1042=tipScan1042
-endif
-set tipScan1042=tipScan1042+1
-endloop
-call DestroyEffect(B1042Fx[tipSlot1042])
-set B1042Fx[tipSlot1042]=null
-call DzFrameSetText(B1042Text[tipSlot1042],"|cffffd36b"+KZ4[tipFrom1042]+"|r|n打赏了 "+Q[tipTo1042]+KZ4[tipTo1042]+"|r|n|cffffd36b1 哦买嘎币|r")
-call DzFrameShow(B1042Text[tipSlot1042],true)
-set tipIcon1042=MH4[SuijiMode_GetStableHeroIndex(M7[tipFrom1042])]
-if tipIcon1042==null or tipIcon1042=="" then
-set tipIcon1042="ReplaceableTextures\\CommandButtons\\BTNChestOfGold.blp"
-endif
-call DzFrameSetTexture(B1042IconA[tipSlot1042],tipIcon1042,0)
-set tipIcon1042=MH4[SuijiMode_GetStableHeroIndex(M7[tipTo1042])]
-if tipIcon1042==null or tipIcon1042=="" then
-set tipIcon1042="ReplaceableTextures\\CommandButtons\\BTNChestOfGold.blp"
-endif
-call DzFrameSetTexture(B1042IconB[tipSlot1042],tipIcon1042,0)
-call DzFrameShow(B1042Card[tipSlot1042],true)
-set B1042Until[tipSlot1042]=TimerGetElapsed(W)+4.
-// B1049: reuse the synchronously preloaded MP3 handles, as in Miao_VoiceInit.
-set tipSound1042=B1049TipSounds[tipSlot1042]
-call StopSound(tipSound1042,false,false)
-call StartSound(tipSound1042)
-set tipSound1042=null
-if M7[tipTo1042]!=null and UnitAlive(M7[tipTo1042]) then
-set B1042Fx[tipSlot1042]=AddSpecialEffectTarget("UI\\Feedback\\GoldCredit\\GoldCredit.mdl",M7[tipTo1042],"overhead")
-endif
-call TimerStart(B1042CardTimer,.10,true,function B1042CardTick)
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1042Local takes integer tipPid1042 returns nothing
-local integer tipAction1042=B1042Action[tipPid1042]
-local string tipKey1042="XOMG1_TIP"
-local string tipCurrent1042
-local string tipExpected1042=B1042Journal[tipPid1042]
-if tipAction1042==2 or tipAction1042==3 then
-set tipKey1042="XOMG1_TR_"+I2S(B1042Peer[tipPid1042])
-set tipExpected1042=B1042Receipt[tipPid1042]
-endif
-if GetLocalPlayer()==Player(tipPid1042) and DzAPI_Map_GetServerValueErrorCode(Player(tipPid1042))==0 then
-set tipCurrent1042=DzAPI_Map_GetServerValue(Player(tipPid1042),tipKey1042)
-if tipAction1042==0 or tipAction1042==2 then
-call DzSyncData("B1042ACK",I2S(B1042Sequence[tipPid1042])+";"+I2S(tipAction1042)+";"+tipCurrent1042)
-elseif tipCurrent1042==B1042Candidate[tipPid1042] then
-call DzSyncData("B1042ACK",I2S(B1042Sequence[tipPid1042])+";"+I2S(tipAction1042))
-elseif tipCurrent1042==tipExpected1042 or (HaveSavedString(L7,StringHash("B1044TipHistory"+I2S(tipPid1042)+tipKey1042),StringHash(tipCurrent1042)) and LoadStr(L7,StringHash("B1044TipHistory"+I2S(tipPid1042)+tipKey1042),StringHash(tipCurrent1042))==tipCurrent1042) then
-if DzAPI_Map_SaveServerValue(Player(tipPid1042),tipKey1042,B1042Candidate[tipPid1042]) then
-call DzSyncData("B1042ACK",I2S(B1042Sequence[tipPid1042])+";"+I2S(tipAction1042))
-endif
-endif
-endif
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1042Retry takes nothing returns nothing
-local integer tipPid1042=LoadInteger(L7,GetHandleId(GetExpiredTimer()),0)
-if B1042Action[tipPid1042]<0 or B1042Attempts[tipPid1042]>=3 or not B836ArcHuman(tipPid1042) then
-call PauseTimer(GetExpiredTimer())
-if B1042Action[tipPid1042]>=0 then
-set B1042Fault[tipPid1042]=true
-call X37(Player(tipPid1042),"打赏存档尚未确认，未显示成功。待处理记录已保留；输入 -tipretry 可重试，请勿重复转账。")
-endif
-else
-set B1042Attempts[tipPid1042]=B1042Attempts[tipPid1042]+1
-call B1042Local(tipPid1042)
-endif
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1042Start takes integer tipPid1042,integer tipAction1042,string tipCandidate1042 returns nothing
-if B1042Action[tipPid1042]>=0 then
-return
-endif
-set B1042Action[tipPid1042]=tipAction1042
-set B1042Candidate[tipPid1042]=tipCandidate1042
-set B1042Sequence[tipPid1042]=B1042Sequence[tipPid1042]+1
-set B1042Attempts[tipPid1042]=1
-if B1042RetryTimer[tipPid1042]==null then
-set B1042RetryTimer[tipPid1042]=CreateTimer()
-call SaveInteger(L7,GetHandleId(B1042RetryTimer[tipPid1042]),0,tipPid1042)
-endif
-call TimerStart(B1042RetryTimer[tipPid1042],3.,true,function B1042Retry)
-call B1042Local(tipPid1042)
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1042Drive takes integer tipPid1042 returns nothing
-local integer tipOther1042=-1
-local integer tipCoins1042=0
-local integer tipOperation1042=14
-if B1042Action[tipPid1042]>=0 or B1042Fault[tipPid1042] or B836ArcOperation[tipPid1042]!=0 or B836ArcFault[tipPid1042] or B839ArcReadPending[tipPid1042] then
-return
-endif
-if not B1042Loaded[tipPid1042] then
-call B1042Start(tipPid1042,0,"")
-return
-endif
-if B1042Role[tipPid1042]==0 then
-return
-endif
-if B1042Role[tipPid1042]==4 then
-call B1042Start(tipPid1042,2,"")
-return
-endif
-if B1042Journal[tipPid1042]=="" then
-call B1042Start(tipPid1042,1,B1042Pack(tipPid1042))
-return
-endif
-set tipCoins1042=B1042Before[tipPid1042]-1
-if B1042Role[tipPid1042]==2 then
-set tipCoins1042=B1042Before[tipPid1042]+1
-set tipOperation1042=15
-endif
-if B836ArcCoins[tipPid1042]==B1042Before[tipPid1042] then
-call B836ArcBegin(tipPid1042,tipOperation1042,tipCoins1042,B836ArcBook[tipPid1042],B836ArcClaw[tipPid1042],B836ArcStamp[tipPid1042],B891ArcMiao[tipPid1042],0)
-return
-elseif B836ArcCoins[tipPid1042]!=tipCoins1042 then
-set B1042Fault[tipPid1042]=true
-call X37(Player(tipPid1042),"打赏待处理余额与存档不一致，已停止操作并保留记录。")
-return
-endif
-if B1042Role[tipPid1042]==3 then
-call B1042Start(tipPid1042,4,"")
-elseif B1042Role[tipPid1042]==2 then
-call B1042Start(tipPid1042,2,"")
-elseif B1042Role[tipPid1042]==1 then
-set tipOther1042=B1042Find(B1042Peer[tipPid1042])
-if tipOther1042<0 or not B836ArcLoaded[tipOther1042] or not B1042Loaded[tipOther1042] or B836ArcOperation[tipOther1042]!=0 or B836ArcFault[tipOther1042] or B839ArcReadPending[tipOther1042] then
-return
-endif
-if B1042Role[tipOther1042]==2 and B1042Id[tipOther1042]==B1042Id[tipPid1042] and B1042Peer[tipOther1042]==B1042Hash(tipPid1042) then
-set B1042Source[tipOther1042]=tipPid1042
-elseif B1042Role[tipOther1042]==0 and not B1042Fault[tipOther1042] and B836ArcCoins[tipOther1042]<1000000 then
-set B1042Source[tipOther1042]=tipPid1042
-set B1042Role[tipOther1042]=4
-set B1042Peer[tipOther1042]=B1042Hash(tipPid1042)
-set B1042Id[tipOther1042]=B1042Id[tipPid1042]
-call B1042Start(tipOther1042,2,"")
-endif
-endif
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1044Flush takes integer tipPid1044 returns nothing
-if B1044Delta[tipPid1044]!=0 and B836ArcHuman(tipPid1044) and B836ArcLoaded[tipPid1044] and B836ArcOperation[tipPid1044]==0 and not B836ArcFault[tipPid1044] and B1042Role[tipPid1044]==0 then
-call B836ArcBegin(tipPid1044,17,B836ArcCoins[tipPid1044],B836ArcBook[tipPid1044],B836ArcClaw[tipPid1044],B836ArcStamp[tipPid1044],B891ArcMiao[tipPid1044],0)
-endif
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1042Pump takes nothing returns nothing
-local integer tipPid1042=0
-loop
-exitwhen tipPid1042>=12
-if B836ArcHuman(tipPid1042) and B836ArcLoaded[tipPid1042] then
-call B1042Drive(tipPid1042)
-call B1044Flush(tipPid1042)
-endif
-set tipPid1042=tipPid1042+1
-endloop
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1042Ack takes nothing returns nothing
-local integer tipPid1042=GetPlayerId(DzGetTriggerSyncPlayer())
-local string tipData1042=DzGetTriggerSyncData()
-local integer tipAction1042=B1042Action[tipPid1042]
-local integer tipFrom1042=-1
-local integer tipTo1042=-1
-local integer tipRole1042=B1042Role[tipPid1042]
-local string tipRecord1042
-if not B836ArcHuman(tipPid1042) or tipAction1042<0 or B1031ArcRawPart(tipData1042,0)!=I2S(B1042Sequence[tipPid1042]) or B1031ArcRawPart(tipData1042,1)!=I2S(tipAction1042) then
-return
-endif
-set tipRecord1042=SubString(tipData1042,StringLength(I2S(B1042Sequence[tipPid1042]))+StringLength(I2S(tipAction1042))+2,StringLength(tipData1042))
-set B1042Action[tipPid1042]=-1
-call PauseTimer(B1042RetryTimer[tipPid1042])
-if tipAction1042==0 then
-if not B1042Valid(tipRecord1042) then
-set B1042Fault[tipPid1042]=true
-call X37(Player(tipPid1042),"打赏记录格式异常，已保留原记录并停止交易。")
-return
-endif
-set B1042Loaded[tipPid1042]=true
-set B1042Journal[tipPid1042]=tipRecord1042
-call SaveStr(L7,StringHash("B1044TipHistory"+I2S(tipPid1042)+"XOMG1_TIP"),StringHash(tipRecord1042),tipRecord1042)
-if tipRecord1042!="" then
-set B1042Role[tipPid1042]=S2I(B1031ArcRawPart(tipRecord1042,1))
-set B1042Peer[tipPid1042]=S2I(B1031ArcRawPart(tipRecord1042,2))
-set B1042Before[tipPid1042]=S2I(B1031ArcRawPart(tipRecord1042,3))
-set B1042Id[tipPid1042]=B1031ArcRawPart(tipRecord1042,4)
-call X37(Player(tipPid1042),"发现待处理打赏记录，正在核对；处理完成前暂停存档交易。")
-endif
-elseif tipAction1042==1 then
-set B1042Journal[tipPid1042]=B1042Candidate[tipPid1042]
-call SaveStr(L7,StringHash("B1044TipHistory"+I2S(tipPid1042)+"XOMG1_TIP"),StringHash(B1042Journal[tipPid1042]),B1042Journal[tipPid1042])
-elseif tipAction1042==2 then
-set B1042Receipt[tipPid1042]=tipRecord1042
-if StringLength(tipRecord1042)>28 then
-set B1042Fault[tipPid1042]=true
-return
-endif
-call SaveStr(L7,StringHash("B1044TipHistory"+I2S(tipPid1042)+"XOMG1_TR_"+I2S(B1042Peer[tipPid1042])),StringHash(tipRecord1042),tipRecord1042)
-if tipRole1042==4 then
-set tipFrom1042=B1042Source[tipPid1042]
-if tipRecord1042==B1042Id[tipPid1042] then
-set B1042Role[tipPid1042]=0
-call B1042Start(tipFrom1042,4,"")
-else
-set B1042Role[tipPid1042]=2
-set B1042Before[tipPid1042]=B836ArcCoins[tipPid1042]
-endif
-elseif tipRole1042==2 then
-if tipRecord1042==B1042Id[tipPid1042] then
-call B1042Start(tipPid1042,4,"")
-else
-call B1042Start(tipPid1042,3,B1042Id[tipPid1042])
-endif
-endif
-elseif tipAction1042==3 then
-set B1042Receipt[tipPid1042]=B1042Candidate[tipPid1042]
-call SaveStr(L7,StringHash("B1044TipHistory"+I2S(tipPid1042)+"XOMG1_TR_"+I2S(B1042Peer[tipPid1042])),StringHash(B1042Receipt[tipPid1042]),B1042Receipt[tipPid1042])
-set tipFrom1042=B1042Find(B1042Peer[tipPid1042])
-if tipFrom1042>=0 and B1042Role[tipFrom1042]==1 and B1042Id[tipFrom1042]==B1042Id[tipPid1042] then
-call B1042Start(tipFrom1042,4,"")
-endif
-call B1042Start(tipPid1042,4,"")
-elseif tipAction1042==4 then
-set B1042Journal[tipPid1042]=""
-set B1042Role[tipPid1042]=0
-if (tipRole1042==1 or tipRole1042==3) and B1042Announce[tipPid1042] then
-set tipTo1042=B1042Target[tipPid1042]
-set B1042Announce[tipPid1042]=false
-set B1042Count[tipPid1042*12+tipTo1042]=B1042Count[tipPid1042*12+tipTo1042]+1
-call B1042Show(tipPid1042,tipTo1042)
-call X37(Player(tipPid1042),"打赏成功，已扣除1哦买嘎币。对该玩家本局已打赏 "+I2S(B1042Count[tipPid1042*12+tipTo1042])+"/3 次。")
-endif
-endif
-if B1042Loaded[tipPid1042] and B1042Role[tipPid1042]==0 then
-call B836ArcSettlement()
-call ExecuteFunc("B1031Pump")
-endif
-call B1042Pump()
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1044Available takes integer tipPid1044 returns integer
-local integer tipAvailable1044=B836ArcCoins[tipPid1044]-B836ArcHeld[tipPid1044]
-if B836ArcOperation[tipPid1044]!=0 then
-// An earlier purchase's reserved cost must not become spendable again before sync.
-set tipAvailable1044=IMinBJ(tipAvailable1044,S2I(B836ArcPart(B836ArcCandidate[tipPid1044],1))+B1044Delta[tipPid1044]-B1044Captured[tipPid1044]-IMaxBJ(0,B836ArcHeld[tipPid1044]-B836ArcHeldDebit[tipPid1044]))
-endif
-return tipAvailable1044
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return 0
 endfunction
 function B1042Request takes nothing returns nothing
-local integer tipFrom1042=GetPlayerId(DzGetTriggerSyncPlayer())
-local string tipData1042=DzGetTriggerSyncData()
-local integer tipTo1042=S2I(B1031ArcRawPart(tipData1042,0))
-local unit tipUnit1042=null
-local boolean tipAI1042=false
-if not B836ArcHuman(tipFrom1042) or tipTo1042<0 or tipTo1042>=12 then
-return
-endif
-set tipUnit1042=M7[tipTo1042]
-if tipUnit1042==null or B1031ArcRawPart(tipData1042,0)!=I2S(tipTo1042) or B1031ArcRawPart(tipData1042,1)!=I2S(GetHandleId(tipUnit1042)) or tipData1042!=I2S(tipTo1042)+";"+I2S(GetHandleId(tipUnit1042)) or not UnitAlive(tipUnit1042) or not IsUnitType(tipUnit1042,UNIT_TYPE_HERO) or IsUnitIllusion(tipUnit1042) then
-set tipUnit1042=null
-return
-endif
-if tipTo1042==tipFrom1042 then
-call X37(Player(tipFrom1042),"不能给自己打赏。")
-set tipUnit1042=null
-return
-endif
-set tipAI1042=GetPlayerController(Player(tipTo1042))==MAP_CONTROL_COMPUTER and not KKServerScore_InitialHuman[tipTo1042] and IsPlayerAlly(Player(tipTo1042),Player(tipFrom1042))
-if not tipAI1042 and not B836ArcHuman(tipTo1042) then
-call X37(Player(tipFrom1042),"仅支持打赏真人玩家和AI队友。")
-elseif not tipAI1042 and (B836ArcCoins[tipTo1042]>=1000000 or (B836ArcOperation[tipTo1042]!=0 and S2I(B836ArcPart(B836ArcCandidate[tipTo1042],1))+B1044Delta[tipTo1042]-B1044Captured[tipTo1042]>=1000000)) then
-call X37(Player(tipFrom1042),"对方哦买嘎币已达到存档数量上限。")
-elseif B1042Count[tipFrom1042*12+tipTo1042]>=3 then
-call X37(Player(tipFrom1042),"本局对该玩家最多打赏3次。")
-elseif B1044Available(tipFrom1042)<1 then
-call X37(Player(tipFrom1042),"哦买嘎币不足，无法打赏。")
-else
-set B836ArcCoins[tipFrom1042]=B836ArcCoins[tipFrom1042]-1
-set B1044Delta[tipFrom1042]=B1044Delta[tipFrom1042]-1
-if B1042Role[tipFrom1042]>=1 and B1042Role[tipFrom1042]<=3 then
-set B1042Before[tipFrom1042]=B1042Before[tipFrom1042]-1
-endif
-if not tipAI1042 then
-set B836ArcCoins[tipTo1042]=B836ArcCoins[tipTo1042]+1
-set B1044Delta[tipTo1042]=B1044Delta[tipTo1042]+1
-if B1042Role[tipTo1042]>=1 and B1042Role[tipTo1042]<=3 then
-set B1042Before[tipTo1042]=B1042Before[tipTo1042]+1
-endif
-endif
-set B1042Count[tipFrom1042*12+tipTo1042]=B1042Count[tipFrom1042*12+tipTo1042]+1
-call B1042Show(tipFrom1042,tipTo1042)
-call X37(Player(tipFrom1042),"打赏成功，已扣除1哦买嘎币。对该玩家本局已打赏 "+I2S(B1042Count[tipFrom1042*12+tipTo1042])+"/3 次。")
-endif
-set tipUnit1042=null
-call B1042Pump()
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1042ManualRetry takes nothing returns nothing
-local integer tipPid1042=GetPlayerId(GetTriggerPlayer())
-local timer tipArcTimer1042=null
-if TimerGetElapsed(W)<B1042NextRetry[tipPid1042] then
-return
-endif
-set B1042NextRetry[tipPid1042]=TimerGetElapsed(W)+3.
-if B836ArcHuman(tipPid1042) and (B1042Role[tipPid1042]>0 or B1044Delta[tipPid1042]!=0 or B1044Captured[tipPid1042]!=0) and (B836ArcFault[tipPid1042] or B836ArcAttempts[tipPid1042]>=3) and (B836ArcOperation[tipPid1042]!=0 or B839ArcReadPending[tipPid1042]) then
-set B836ArcFault[tipPid1042]=false
-set B836ArcAttempts[tipPid1042]=1
-set tipArcTimer1042=CreateTimer()
-call SaveInteger(L7,GetHandleId(tipArcTimer1042),0,tipPid1042)
-call SaveInteger(L7,GetHandleId(tipArcTimer1042),1,B836ArcSequence[tipPid1042])
-call TimerStart(tipArcTimer1042,3.,true,function B836ArcRetry)
-if B836ArcOperation[tipPid1042]!=0 then
-call B836ArcLocalWrite(tipPid1042)
-else
-call B839ArcCheckReceipt(tipPid1042)
-endif
-endif
-if B836ArcHuman(tipPid1042) and B1042Fault[tipPid1042] and B1042Action[tipPid1042]>=0 then
-set B1042Fault[tipPid1042]=false
-set B1042Attempts[tipPid1042]=1
-call TimerStart(B1042RetryTimer[tipPid1042],3.,true,function B1042Retry)
-call B1042Local(tipPid1042)
-endif
-call B1042Pump()
-set tipArcTimer1042=null
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1049TipSoundDebug takes nothing returns nothing
 local string b1060GetEventPlayerChatString=GetEventPlayerChatString()
@@ -236823,513 +235788,49 @@ endif
 set tipListener1049=null
 endfunction
 function B1042Init takes nothing returns nothing
-local trigger tipTrigger1042=CreateTrigger()
-local integer tipPid1042=0
-local integer tipSlot1042=0
-local integer tipParent1042=DzGetGameUI()
-local real tipY1042=.32
-call DzTriggerRegisterSyncData(tipTrigger1042,"B1042TIP",false)
-call TriggerAddAction(tipTrigger1042,function B1042Request)
-set tipTrigger1042=CreateTrigger()
-call DzTriggerRegisterSyncData(tipTrigger1042,"B1042ACK",false)
-call TriggerAddAction(tipTrigger1042,function B1042Ack)
-set tipTrigger1042=CreateTrigger()
-loop
-exitwhen tipPid1042>=12
-set B1042Action[tipPid1042]=-1
-set B1042Journal[tipPid1042]=""
-set B1042Receipt[tipPid1042]=""
-call TriggerRegisterPlayerChatEvent(tipTrigger1042,Player(tipPid1042),"-tipretry",true)
-set tipPid1042=tipPid1042+1
-endloop
-call TriggerAddAction(tipTrigger1042,function B1042ManualRetry)
-set tipTrigger1042=CreateTrigger()
-set tipPid1042=0
-loop
-exitwhen tipPid1042>=12
-call TriggerRegisterPlayerChatEvent(tipTrigger1042,Player(tipPid1042),"-tipsound",true)
-call TriggerRegisterPlayerChatEvent(tipTrigger1042,Player(tipPid1042),"-tipnative",true)
-set tipPid1042=tipPid1042+1
-endloop
-call TriggerAddAction(tipTrigger1042,function B1049TipSoundDebug)
-set B1049TipProbe=CreateSound("Sound\\Interface\\SecretFound.wav",false,false,false,10,10,"")
-call SetSoundChannel(B1049TipProbe,0)
-call SetSoundVolume(B1049TipProbe,110)
-call SetSoundPitch(B1049TipProbe,1.)
-call SetSoundDuration(B1049TipProbe,2000)
-set B1042CardTimer=CreateTimer()
-loop
-exitwhen tipSlot1042>=3
-set B1049TipSounds[tipSlot1042]=CreateSound("Sounds\\Tipping\\ui_tip_popup.mp3",false,false,false,10,10,"")
-call SetSoundChannel(B1049TipSounds[tipSlot1042],0)
-call SetSoundVolume(B1049TipSounds[tipSlot1042],110)
-call SetSoundPitch(B1049TipSounds[tipSlot1042],1.)
-call SetSoundDuration(B1049TipSounds[tipSlot1042],731)
-set tipY1042=.32
-if tipSlot1042==1 then
-set tipY1042=.405
-elseif tipSlot1042==2 then
-set tipY1042=.235
-endif
-set B1042Card[tipSlot1042]=DzCreateFrameByTagName("BACKDROP","B1042Card",tipParent1042,"template",10420+tipSlot1042)
-call DzFrameSetTexture(B1042Card[tipSlot1042],"UI\\Widgets\\EscMenu\\Human\\human-options-menu-background.blp",0)
-call DzFrameSetSize(B1042Card[tipSlot1042],.21,.075)
-call DzFrameSetAbsolutePoint(B1042Card[tipSlot1042],4,.685,tipY1042)
-set B1042Text[tipSlot1042]=DzCreateFrameByTagName("TEXT",null,B1042Card[tipSlot1042],"CheckBox_Text",10430+tipSlot1042)
-call DzFrameSetSize(B1042Text[tipSlot1042],.12,.065)
-call DzFrameSetAbsolutePoint(B1042Text[tipSlot1042],4,.726,tipY1042)
-// Inherit the map's working Chinese font/text style, as used by the TP and emote UI.
-call DzFrameSetPriority(B1042Text[tipSlot1042],203)
-set B1042IconA[tipSlot1042]=DzCreateFrameByTagName("BACKDROP","B1042IconA",B1042Card[tipSlot1042],"template",10440+tipSlot1042)
-set B1042IconB[tipSlot1042]=DzCreateFrameByTagName("BACKDROP","B1042IconB",B1042Card[tipSlot1042],"template",10450+tipSlot1042)
-call DzFrameSetSize(B1042IconA[tipSlot1042],.028,.028)
-call DzFrameSetSize(B1042IconB[tipSlot1042],.028,.028)
-call DzFrameSetAbsolutePoint(B1042IconA[tipSlot1042],4,.61,tipY1042)
-call DzFrameSetAbsolutePoint(B1042IconB[tipSlot1042],4,.642,tipY1042)
-call DzFrameShow(B1042Card[tipSlot1042],false)
-set tipSlot1042=tipSlot1042+1
-endloop
-set tipTrigger1042=null
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B836ArcLoadTick takes nothing returns nothing
-local timer b1060GetExpiredTimer=GetExpiredTimer()
-local integer arcPid=0
-local integer arcEpoch
-local string arcRecord
-local integer arcLoadError1133=0
-set B836ArcLoadAttempts=B836ArcLoadAttempts+1
-loop
-exitwhen arcPid>=12
-if B836ArcHuman(arcPid) and not B836ArcLoaded[arcPid] then
-if GetLocalPlayer()==Player(arcPid) then
-set arcLoadError1133=DzAPI_Map_GetServerValueErrorCode(Player(arcPid))
-if arcLoadError1133==0 then
-set arcEpoch=DzAPI_Map_GetGameStartTime()
-set arcRecord=DzAPI_Map_GetServerValue(Player(arcPid),"XOMG1_ARC")
-call DzSyncData("B1133LG","LOAD_LOCAL attempt="+I2S(B836ArcLoadAttempts)+" err=0 epoch="+I2S(arcEpoch)+" len="+I2S(StringLength(arcRecord)))
-if arcEpoch>=1500000000 and StringLength(arcRecord)<=63 then
-call DzSyncData("B836AL",I2S(arcEpoch)+";"+arcRecord)
-call DzSyncData("B1133LG","LOAD_SEND attempt="+I2S(B836ArcLoadAttempts)+" result=sent")
-else
-call DzSyncData("B1133LG","LOAD_SEND attempt="+I2S(B836ArcLoadAttempts)+" result=invalid_epoch_or_length")
-endif
-else
-call DzSyncData("B1133LG","LOAD_LOCAL attempt="+I2S(B836ArcLoadAttempts)+" err="+I2S(arcLoadError1133))
-endif
-endif
-endif
-set arcPid=arcPid+1
-endloop
-if B836ArcLoadAttempts>=3 then
-call PauseTimer(b1060GetExpiredTimer)
-call DestroyTimer(b1060GetExpiredTimer)
-endif
-set b1060GetExpiredTimer=null
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B836ArcDays takes integer arcExpiry,integer arcPid returns string
-local integer arcSeconds=arcExpiry-B836ArcNow(arcPid)
-local integer arcDays=arcSeconds/86400
-if ModuloInteger(arcSeconds,86400)>0 then
-set arcDays=arcDays+1
-endif
-return I2S(IMaxBJ(0,arcDays))
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return ""
 endfunction
 function B891MiaoWindow takes nothing returns boolean
-return not B836ArcStarted or TimerGetElapsed(W)-M_4<180.
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return false
 endfunction
 function B891MiaoCopySlot takes unit b891From,unit b891To,string b891Mark returns boolean
-local integer b891FromHandle=GetHandleId(b891From)
-local integer b891Skill=OM7(b891FromHandle,b891Mark+"Skill")
-local integer b891Helper=OM7(b891FromHandle,b891Mark+"Helper")
-local integer b891Source=OM7(b891FromHandle,b891Mark+"Source")
-local string b891Order=OP7(b891FromHandle,b891Mark+"Order")
-if b891Skill==0 then
-return true
-endif
-if not SuijiMode_CanUseSkill(b891To,b891Skill,b891Helper,b891Order) then
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 return false
-endif
-return SuijiMode_AddSkill(b891To,b891Skill,b891Helper,b891Order,IMaxBJ(1,B287_GetUnitAbilityLevel(b891From,b891Skill)),b891Source,b891Mark)==b891Skill
 endfunction
 function B897MiaoXPCurrent takes nothing returns nothing
-call SetHeroXP(B891MiaoInstalling,GetHeroXP(B896MiaoOldContext),false)
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B897MiaoCopyCurrent takes nothing returns nothing
-set B897MiaoCopyOK=B891MiaoCopySlot(B896MiaoOldContext,B891MiaoInstalling,"SuijiSmall")
-if B897MiaoCopyOK then
-set B897MiaoCopyOK=false
-set B897MiaoCopyOK=B891MiaoCopySlot(B896MiaoOldContext,B891MiaoInstalling,"SuijiUlt")
-endif
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B897MiaoWatch takes nothing returns nothing
-local timer b897Watch=GetExpiredTimer()
-local integer b897Who=LoadInteger(L7,GetHandleId(b897Watch),0)
-local boolean b897Level=LoadBoolean(L7,GetHandleId(b897Watch),1)
-local boolean b897Entry=LoadBoolean(L7,GetHandleId(b897Watch),2)
-local unit b897Before=B897MiaoOld[b897Who]
-local unit b897After=B897MiaoNew[b897Who]
-local item b897Item=null
-local integer b897Slot=0
-call FlushChildHashtable(L7,GetHandleId(b897Watch))
-call PauseTimer(b897Watch)
-call DestroyTimer(b897Watch)
-set SJTRI=b897Level
-if b897Entry then
-call EnableTrigger(UnitEnterRect)
-endif
-set B891MiaoInstalling=null
-set B896MiaoOldContext=null
-if not B891ArcMiaoReplaced[b897Who] then
-if b897After!=null and GetUnitTypeId(b897After)!=0 then
-// Save original slots before GAIN_ITEM, so interrupted pickup/drop can roll back.
-loop
-exitwhen b897Slot>=6
-set b897Item=LoadItemHandle(L7,GetHandleId(b897After),StringHash("B897Item")+b897Slot)
-if b897Item!=null then
-call UnitRemoveItem(b897After,b897Item)
-call UnitAddItem(b897Before,b897Item)
-call UnitDropItemSlot(b897Before,b897Item,b897Slot)
-endif
-set b897Slot=b897Slot+1
-endloop
-call YE7(b897After)
-endif
-if b897Before!=null and GetUnitTypeId(b897Before)!=0 then
-set M7[b897Who]=b897Before
-endif
-call X37(Player(b897Who),"[B897] 替换未完成，已撤回临时喵刀并保留原英雄。阶段="+I2S(B897MiaoStage[b897Who]))
-elseif b897Before!=null and GetUnitTypeId(b897Before)!=0 then
-call YE7(b897Before)
-endif
-set B897MiaoOld[b897Who]=null
-set B897MiaoNew[b897Who]=null
-set B897MiaoBusy[b897Who]=false
-set b897Item=null
-set b897Before=null
-set b897After=null
-set b897Watch=null
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B896MiaoSyncCurrent takes nothing returns nothing
-call CHANGE_HERO_SYNC(B891MiaoInstalling,B896MiaoOldContext,GetPlayerId(GetOwningPlayer(B891MiaoInstalling)))
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B896MiaoContentCurrent takes nothing returns nothing
-call ADD_CONTENT(B891MiaoInstalling,GetOwningPlayer(B891MiaoInstalling),GetPlayerId(GetOwningPlayer(B891MiaoInstalling)))
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B896MiaoEntryCurrent takes nothing returns nothing
-call SuijiMode_InitLevelAttributeBonus(B891MiaoInstalling)
-call SuijiMode_RestoreBaseHeroSkills(B891MiaoInstalling)
-call SuijiMode_EnsureManaRegenBonus(B891MiaoInstalling)
-call SuijiMode_InitializeEntryUnit(B891MiaoInstalling,true)
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B896MiaoRetireOld takes nothing returns nothing
-local timer b896Timer=GetExpiredTimer()
-local unit b896Old=LoadUnitHandle(L7,GetHandleId(b896Timer),0)
-// Release the one-shot owner before any unit cleanup can terminate this thread.
-call FlushChildHashtable(L7,GetHandleId(b896Timer))
-call PauseTimer(b896Timer)
-call DestroyTimer(b896Timer)
-if b896Old!=null and GetUnitTypeId(b896Old)!=0 then
-call YE7(b896Old)
-endif
-set b896Old=null
-set b896Timer=null
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B891MiaoReplace takes integer b891Pid returns nothing
-local timer b896RetireTimer=null
-local unit b891Old=M7[b891Pid]
-local unit b891New=null
-local player b891Player=Player(b891Pid)
-local integer b891OldHandle=GetHandleId(b891Old)
-local integer b891NewHandle=0
-local integer b891Index=0
-local integer b891Pending=0
-local integer b891Slot=0
-local boolean b891EntryEnabled=false
-local boolean b891LevelEnabled=SJTRI
-local boolean b891Copied=false
-local real b891X=0.
-local real b891Y=0.
-local real array b891ItemCooldown
-local item array b891Items
-local item b891Item=null
-if not B836ArcHuman(b891Pid) or not B891ArcMiaoActive(b891Pid) then
-call X37(b891Player,"喵刀使用权限尚未获得或已到期。可用5硬币兑换1天权限。")
-elseif not SUIJI_MODE or not B891MiaoWindow() then
-call X37(b891Player,"仅随机OMG模式选好英雄后、正式开局3分钟内可以替换为喵刀。")
-elseif B897MiaoBusy[b891Pid] or B891ArcMiaoReplaced[b891Pid] or GetUnitTypeId(b891Old)=='HMD0' then
-call X37(b891Player,"本局已替换为喵刀，不能重复替换。")
-elseif M7[b891Pid]==null and not B897MiaoBusy[b891Pid] and not B891ArcMiaoReplaced[b891Pid] then
-set B891MiaoDirectRequest[b891Pid]=true
-call X37(b891Player,"已登记喵刀直选：正式开局将直接获得喵刀（HMD0），不进入普通随机。")
-elseif b891Old==null or not UnitAlive(b891Old) or IsUnitIllusion(b891Old) or GetOwningPlayer(b891Old)!=b891Player or not IsUnitType(b891Old,UNIT_TYPE_HERO) then
-call X37(b891Player,"请先选好英雄，并在自己的主英雄存活时替换。")
-else
-set b891Index=SuijiMode_GetStableHeroIndex(b891Old)
-set b891X=GetUnitX(b891Old)
-set b891Y=GetUnitY(b891Old)
-if IsUnitPaused(b891Old) or IsUnitHidden(b891Old) or GetUnitState(b891Old,UNIT_STATE_LIFE)<GetUnitState(b891Old,UNIT_STATE_MAX_LIFE)-1. or GetUnitState(b891Old,UNIT_STATE_MANA)<GetUnitState(b891Old,UNIT_STATE_MAX_MANA)-1. then
-call X37(b891Player,"请在英雄满血满魔、未被控制且未隐藏时替换。")
-elseif b891Index<1 or b891Index>K54 or GetUnitTypeId(b891Old)!=K34[b891Index] or OO7(b891OldHandle,"SuijiTransformRestoring") or OO7(b891OldHandle,"SuijiScriptedDragonForm") or OO7(b891OldHandle,"SuijiScriptedWolfForm") or OO7(b891OldHandle,"SuijiChemicalRageActive") or OO7(b891OldHandle,"SuijiScriptedBerserkerForm") or OO7(b891OldHandle,"SuijiScriptedBearForm") or OO7(b891OldHandle,"SuijiScriptedSpiritForm") or OO7(b891OldHandle,"SuijiScriptedTerrorbladeForm") then
-call X37(b891Player,"请先恢复英雄原始形态再替换。")
-elseif GetUnitCurrentOrder(b891Old)!=0 and GetUnitCurrentOrder(b891Old)!=OrderId("stop") and GetUnitCurrentOrder(b891Old)!=OrderId("holdposition") then
-call X37(b891Player,"请先停止移动、攻击或施法，再替换英雄。")
-elseif B287_MHAbility_GetCooldown(b891Old,eY[$80+b891Pid])>.05 or B287_MHAbility_GetCooldown(b891Old,eY[$90+b891Pid])>.05 or B287_MHAbility_GetCooldown(b891Old,eY[$A0+b891Pid])>.05 or B287_MHAbility_GetCooldown(b891Old,eY[$AC+b891Pid])>.05 or B287_MHAbility_GetCooldown(b891Old,eY[$BC+b891Pid])>.05 or B287_MHAbility_GetCooldown(b891Old,OM7(b891OldHandle,"SuijiSmallSkill"))>.05 or B287_MHAbility_GetCooldown(b891Old,OM7(b891OldHandle,"SuijiUltSkill"))>.05 then
-call X37(b891Player,"请等待英雄技能冷却结束后替换，避免借替换刷新技能。")
-else
-// Suppress ordinary hero-selection rewards/lives while creating the replacement.
-set b891EntryEnabled=IsTriggerEnabled(UnitEnterRect)
-set B897MiaoBusy[b891Pid]=true
-set B897MiaoOld[b891Pid]=b891Old
-set B897MiaoNew[b891Pid]=null
-set B897MiaoStage[b891Pid]=1
-set b896RetireTimer=CreateTimer()
-call SaveInteger(L7,GetHandleId(b896RetireTimer),0,b891Pid)
-call SaveBoolean(L7,GetHandleId(b896RetireTimer),1,b891LevelEnabled)
-call SaveBoolean(L7,GetHandleId(b896RetireTimer),2,b891EntryEnabled)
-call TimerStart(b896RetireTimer,0.,false,function B897MiaoWatch)
-set b896RetireTimer=null
-call DisableTrigger(UnitEnterRect)
-set b891New=CreateUnit(b891Player,'HMD0',b891X,b891Y,GetUnitFacing(b891Old))
-set B897MiaoNew[b891Pid]=b891New
-if b891New!=null then
-call ShowUnit(b891New,false)
-call PauseUnit(b891New,true)
-call NS7(GetHandleId(b891New),"EnteredAlready",true)
-endif
-if b891EntryEnabled then
-call EnableTrigger(UnitEnterRect)
-endif
-if b891New!=null then
-set b891NewHandle=GetHandleId(b891New)
-set B897MiaoStage[b891Pid]=2
-set B891MiaoInstalling=b891New
-set B896MiaoOldContext=b891Old
-set SJTRI=false
-call ExecuteFunc("B897MiaoXPCurrent")
-set SJTRI=b891LevelEnabled
-call NP7(b891NewHandle,"SuijiStableHeroIndex",117)
-call NS7(b891NewHandle,"SuijiDone",true)
-call NS7(b891NewHandle,"SuijiTavernStarted",true)
-set M7[b891Pid]=b891New
-set B897MiaoStage[b891Pid]=3
-set B897MiaoCopyOK=false
-call ExecuteFunc("B897MiaoCopyCurrent")
-set b891Copied=B897MiaoCopyOK and GetHeroXP(b891New)==GetHeroXP(b891Old)
-set b891Pending=OM7(b891OldHandle,"SuijiTavernUltPendingSkill")
-if b891Copied and b891Pending!=0 then
-set b891Copied=SuijiMode_CanUseSkill(b891New,b891Pending,OM7(b891OldHandle,"SuijiTavernUltPendingHelper"),OP7(b891OldHandle,"SuijiTavernUltPendingOrder"))
-if b891Copied then
-call NP7(b891NewHandle,"SuijiTavernUltPendingSkill",b891Pending)
-call NP7(b891NewHandle,"SuijiTavernUltPendingHelper",OM7(b891OldHandle,"SuijiTavernUltPendingHelper"))
-call NP7(b891NewHandle,"SuijiTavernUltPendingSource",OM7(b891OldHandle,"SuijiTavernUltPendingSource"))
-call NR7(b891NewHandle,"SuijiTavernUltPendingOrder",SuijiMode_ResolveAlternateCarrierOrder(b891New,b891Pending,OP7(b891OldHandle,"SuijiTavernUltPendingOrder")))
-endif
-endif
-if not b891Copied then
-set M7[b891Pid]=b891Old
-call YE7(b891New)
-call X37(b891Player,"已选OMG技能与喵刀命令冲突或迁移失败，未替换、未消耗权限；建议在选择额外技能前替换。")
-else
-// All chosen skills are valid before touching the original unit or its inventory.
-set b891Slot=0
-loop
-exitwhen b891Slot>=6
-set b891Items[b891Slot]=UnitItemInSlot(b891Old,b891Slot)
-call SaveItemHandle(L7,b891NewHandle,StringHash("B897Item")+b891Slot,b891Items[b891Slot])
-if b891Items[b891Slot]!=null then
-set b891ItemCooldown[b891Slot]=B582_GetAbilityCooldown(b891Old,MHItem_GetAbilityId(b891Items[b891Slot],1))
-endif
-set b891Slot=b891Slot+1
-endloop
-set B897MiaoStage[b891Pid]=4
-call GAIN_ITEM(b891New,b891Old)
-set b891Slot=0
-loop
-exitwhen b891Slot>=6
-if b891Items[b891Slot]!=null and UnitItemInSlot(b891New,b891Slot)!=b891Items[b891Slot] then
-set b891Copied=false
-endif
-set b891Slot=b891Slot+1
-endloop
-if not b891Copied then
-set b891Slot=0
-loop
-exitwhen b891Slot>=6
-set b891Item=b891Items[b891Slot]
-if b891Item!=null then
-call UnitRemoveItem(b891New,b891Item)
-call UnitAddItem(b891Old,b891Item)
-call UnitDropItemSlot(b891Old,b891Item,b891Slot)
-endif
-set b891Slot=b891Slot+1
-endloop
-set M7[b891Pid]=b891Old
-call YE7(b891New)
-call X37(b891Player,"装备转移未完成，已取消替换，原英雄保留。")
-else
-set B891ArcMiaoReplaced[b891Pid]=true
-set B897MiaoStage[b891Pid]=5
-call PauseUnit(b891New,false)
-call ShowUnit(b891New,true)
-// Commit only after skills and item handles have passed rollback checks.
-// Retire independently of the long initialization/command-card rebuild below.
-set b896RetireTimer=CreateTimer()
-call SaveUnitHandle(L7,GetHandleId(b896RetireTimer),0,b891Old)
-call TimerStart(b896RetireTimer,0.,false,function B896MiaoRetireOld)
-set b896RetireTimer=null
-call ShowUnit(b891Old,false)
-call PauseUnit(b891Old,true)
-// The normal enter trigger was suppressed at creation: register native Miao
-// spell/damage/voice handlers explicitly, using the normal ExecuteFunc boundary.
-set MiaoEntryUnit=b891New
-call ExecuteFunc("Miao_RegisterCurrent")
-set B891MiaoInstalling=b891New
-set B896MiaoOldContext=b891Old
-call ExecuteFunc("B896MiaoSyncCurrent")
-set B896MiaoOldContext=null
-call YE7(b891Old)
-// Preserve physical inventory handles and leave native points available to relearn.
-// Keep expensive common initialization off the shop transaction's JASS budget.
-call ExecuteFunc("B896MiaoContentCurrent")
-call ExecuteFunc("B896MiaoEntryCurrent")
-set B891MiaoInstalling=null
-if SUIJI_TAVERN_TIMEOUT[b891Pid]!=null then
-call SaveUnitHandle(L7,GetHandleId(SUIJI_TAVERN_TIMEOUT[b891Pid]),0,b891New)
-endif
-if not SuijiTavernB295_HasChosen(b891New,1) and SUIJI_TAVERN_SMALL[b891Pid]!=null then
-call SuijiTavernB295_Fill(SUIJI_TAVERN_SMALL[b891Pid],1)
-endif
-if not SuijiTavernB295_HasChosen(b891New,2) and SUIJI_TAVERN_ULT[b891Pid]!=null then
-call SuijiTavernB295_Fill(SUIJI_TAVERN_ULT[b891Pid],2)
-endif
-set b891Slot=0
-loop
-exitwhen b891Slot>=6
-set b891Item=UnitItemInSlot(b891New,b891Slot)
-if b891Item!=null and b891ItemCooldown[b891Slot]>.05 then
-call Japi_ReduceUnitAbilityCoolDown(b891New,MHItem_GetAbilityId(b891Item,1),b891ItemCooldown[b891Slot])
-call Set_Item_Drop(b891Item,b891ItemCooldown[b891Slot])
-endif
-set b891Slot=b891Slot+1
-endloop
-call SetUnitState(b891New,UNIT_STATE_LIFE,GetUnitState(b891New,UNIT_STATE_MAX_LIFE))
-call SetUnitState(b891New,UNIT_STATE_MANA,GetUnitState(b891New,UNIT_STATE_MAX_MANA))
-call SetPlayerName(b891Player,KZ4[b891Pid]+" (喵刀)")
-call SetSpecialName(b891Player)
-call ClearSelectionForPlayer(b891Player)
-call SelectUnitAddForPlayer(b891New,b891Player)
-set B897MiaoStage[b891Pid]=6
-call X37(b891Player,"已替换为喵刀：保留经验、装备及已选OMG技能，原生技能按喵刀重新学习；本局不可重复替换。")
-endif
-endif
-else
-call X37(b891Player,"创建喵刀失败，原英雄保留，请稍后重试。")
-endif
-endif
-endif
-set b891Old=null
-set b891New=null
-set b891Player=null
-set b891Item=null
-set b891Slot=0
-loop
-exitwhen b891Slot>=6
-set b891Items[b891Slot]=null
-set b891Slot=b891Slot+1
-endloop
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B836ArcOpen takes integer arcPid returns nothing
-local string arcText="存档商店"
-if not B836ArcHuman(arcPid) or B836ArcDialog[arcPid]==null then
-return
-endif
-if TimerGetElapsed(W)<B836ArcNextOpen[arcPid] then
-return
-endif
-set B836ArcNextOpen[arcPid]=TimerGetElapsed(W)+.3
-call B839ArcCheckReceipt(arcPid)
-if B836ArcLoaded[arcPid] and not B901QuitReady[arcPid] then
-call B898QuitBegin()
-call B898QuitLocal()
-endif
-// v1.3: clear ALL old button handles BEFORE DialogClear/add so a stale handle cannot mis-dispatch on reopen.
-set B1031ArchiveButton[arcPid]=null
-set B836WelfareButton[arcPid]=null
-set B836AttrButton[arcPid]=null
-set B836ArcQueryButton[arcPid]=null
-set B836ArcExchangeButton[arcPid]=null
-set B836ArcDrawButton[arcPid]=null
-set B836ArcBookButton[arcPid]=null
-set B836ArcClawButton[arcPid]=null
-set B891ArcMiaoButton[arcPid]=null
-set B891ArcMiaoBuyButton[arcPid]=null
-set B901QuitBuyButton[arcPid]=null
-call DialogClear(B836ArcDialog[arcPid])
-set B1031ArchiveButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"当前英雄熟练度 / 修炼境界",0)
-// v1.8.6-NOK: welfare/attr/all-in live in the dedicated 抽奖屋 (opened directly from the hut);
-// this archive dialog keeps only archive systems.
-// Permanent named access must remain usable without the timed archive service.
-if B892MiaoPermanent[arcPid] then
-if B891MiaoWindow() and not B891ArcMiaoReplaced[arcPid] then
-set B891ArcMiaoButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"替换为喵刀（永久权限，开局3分钟内）",0)
-else
-set B891ArcMiaoButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"喵刀永久权限（本局已替换/超过3分钟）",0)
-endif
-endif
-if not B836ArcLoaded[arcPid] then
-set arcText=arcText+"\n存档尚未读取成功，请在KK平台正常开局后重试。"
-else
-set arcText=arcText+"\n"+B836ArcBalanceText(arcPid)+"\n开局5分钟内退出，暂记消费不扣存档。"
-if B839ArcReadPending[arcPid] then
-set arcText=arcText+"\n本局奖励已生效；存档请求已提交，跨局保存待确认。"
-endif
-set B836ArcQueryButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"查询哦买嘎硬币",0)
-if B892MiaoPermanent[arcPid] then
-// The permanent entry was already created above, independently of archive load.
-elseif B891ArcMiaoActive(arcPid) then
-if B891MiaoWindow() and not B891ArcMiaoReplaced[arcPid] then
-set B891ArcMiaoButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"替换为喵刀（权限余"+B836ArcDays(B891ArcMiao[arcPid],arcPid)+"天，开局3分钟内）",0)
-else
-set B891ArcMiaoButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"喵刀权限余"+B836ArcDays(B891ArcMiao[arcPid],arcPid)+"天（本局已替换/超过3分钟）",0)
-endif
-elseif B891ArcMiao[arcPid]>0 then
-set B891ArcMiaoButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"喵刀使用权限：已到期",0)
-else
-set B891ArcMiaoButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"喵刀使用权限：未获得",0)
-endif
-if B836ArcOperation[arcPid]!=0 or B836ArcFault[arcPid] then
-set arcText=arcText+"\n存档交易待确认，暂不可发起新交易。"
-else
-set B836ArcExchangeButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"1硬币兑换100金币（本局余"+I2S(3-B836ArcExchanges[arcPid])+"次）",0)
-if B901QuitReady[arcPid] then
-set B901QuitBuyButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"逃跑次数-1卡：3哦买嘎币（当前"+I2S(B901QuitTotal[arcPid])+"次，立即扣币）",0)
-else
-set B901QuitBuyButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"逃跑次数-1卡：3哦买嘎币（次数读取/减次确认中）",0)
-endif
-if not B892MiaoPermanent[arcPid] then
-set B891ArcMiaoBuyButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"5硬币兑换1天喵刀权限（立即扣币）",0)
-endif
-// v1.3: old ticket-gated 双圣抽奖(op3) row removed; replaced by unconditional 凯哥发福利/双杰抽属性 above.
-endif
-if B836ArcBook[arcPid]>B836ArcNow(arcPid) then
-if B836ArcBookClaimed[arcPid] then
-set B836ArcBookButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"知识之书：余"+B836ArcDays(B836ArcBook[arcPid],arcPid)+"天，本局已领取",0)
-else
-set B836ArcBookButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"领取知识之书：余"+B836ArcDays(B836ArcBook[arcPid],arcPid)+"天",0)
-endif
-endif
-if B836ArcClaw[arcPid]>B836ArcNow(arcPid) then
-if B836ArcClawClaimed[arcPid] then
-set B836ArcClawButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"寒铁钢爪：余"+B836ArcDays(B836ArcClaw[arcPid],arcPid)+"天，本局已领取",0)
-else
-set B836ArcClawButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"领取寒铁钢爪：余"+B836ArcDays(B836ArcClaw[arcPid],arcPid)+"天",0)
-endif
-endif
-endif
-set B836ArcRulesButton[arcPid]=DialogAddButton(B836ArcDialog[arcPid],"规则说明（小屋内有说明物品）",0)
-call DialogSetMessage(B836ArcDialog[arcPid],arcText)
-call DialogAddButton(B836ArcDialog[arcPid],"关闭",0)
-call DialogDisplay(Player(arcPid),B836ArcDialog[arcPid],true)
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 // v1.8.6-NOK 抽奖屋: dedicated dialog, exactly 3 business rows in fixed order; 关闭 is a
 // non-business control. Every action (success or failure) re-displays the same house; only
@@ -237346,10 +235847,10 @@ set LOTTERY_AttrButton[lotPid]=null
 set LOTTERY_AllInButton[lotPid]=null
 set LOTTERY_CloseButton[lotPid]=null
 call DialogClear(LOTTERY_DIALOG[lotPid])
-set LOTTERY_RollButton[lotPid]=DialogAddButton(LOTTERY_DIALOG[lotPid],"幸运大抽奖",0)
+set LOTTERY_RollButton[lotPid]=DialogAddButton(LOTTERY_DIALOG[lotPid],"幸运大抽奖（免费1次）",0)
 set LOTTERY_AttrButton[lotPid]=DialogAddButton(LOTTERY_DIALOG[lotPid],"1000抽属性（无限次）",0)
 set LOTTERY_AllInButton[lotPid]=DialogAddButton(LOTTERY_DIALOG[lotPid],"梭哈抽属性",0)
-call DialogSetMessage(LOTTERY_DIALOG[lotPid],"抽奖屋\n幸运大抽奖：每局一次领1-1000金币（无存档）。\n1000抽属性（无限次）：每次1000金币抽全属性，10%+20大奖。\n梭哈抽属性：投入全部本局金币，成功后三属性同增。")
+call DialogSetMessage(LOTTERY_DIALOG[lotPid],"抽奖屋")
 set LOTTERY_CloseButton[lotPid]=DialogAddButton(LOTTERY_DIALOG[lotPid],"关闭",0)
 call DialogDisplay(Player(lotPid),LOTTERY_DIALOG[lotPid],true)
 endfunction
@@ -237375,898 +235876,197 @@ call DialogDisplay(Player(lotPid),LOTTERY_DIALOG[lotPid],true)
 set lotClicked=null
 endfunction
 function B836ArcClaim takes integer arcPid,boolean arcIsBook returns nothing
-local unit arcHero=M7[arcPid]
-local item arcItem=null
-local integer arcSlot=0
-local integer arcItemId='I0QV'
-if not B836ArcLoaded[arcPid] or arcHero==null or not UnitAlive(arcHero) or GetOwningPlayer(arcHero)!=Player(arcPid) or IsUnitIllusion(arcHero) then
-call X37(Player(arcPid),"请在自己的主英雄存活时领取。")
-set arcHero=null
-return
-endif
-if arcIsBook then
-if B836ArcBookClaimed[arcPid] or B836ArcBook[arcPid]<=B836ArcNow(arcPid) then
-call X37(Player(arcPid),"知识之书已过期，或本局已经领取。")
-set arcHero=null
-return
-endif
-set arcItemId='I0SO'
-else
-if B836ArcClawClaimed[arcPid] or B836ArcClaw[arcPid]<=B836ArcNow(arcPid) then
-call X37(Player(arcPid),"寒铁钢爪已过期，或本局已经领取。")
-set arcHero=null
-return
-endif
-endif
-loop
-exitwhen arcSlot>=6 or UnitItemInSlot(arcHero,arcSlot)==null
-set arcSlot=arcSlot+1
-endloop
-if arcSlot>=6 then
-call X37(Player(arcPid),"背包已满，请腾出一个物品栏后领取。")
-set arcHero=null
-return
-endif
-set arcItem=CreateItem(arcItemId,GetUnitX(arcHero),GetUnitY(arcHero))
-if arcItem!=null then
-call SetItemPlayer(arcItem,Player(arcPid),false)
-call SetItemUserData(arcItem,1)
-if arcIsBook then
-set B836ArcBookClaimed[arcPid]=true
-else
-set B836ArcClawClaimed[arcPid]=true
-endif
-if not UnitAddItem(arcHero,arcItem) then
-call RemoveItem(arcItem)
-if arcIsBook then
-set B836ArcBookClaimed[arcPid]=false
-else
-set B836ArcClawClaimed[arcPid]=false
-endif
-call X37(Player(arcPid),"物品未能放入背包，本局领取次数已保留。")
-else
-call X37(Player(arcPid),"存档成品已发放，本局不可重复领取。")
-endif
-endif
-set arcHero=null
-set arcItem=null
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B836ArcTrade takes integer arcPid,integer arcChoice returns nothing
-local integer arcRoll
-local integer arcCoins=B836ArcCoins[arcPid]
-local integer arcBook=B836ArcBook[arcPid]
-local integer arcClaw=B836ArcClaw[arcPid]
-local integer arcMiao=B891ArcMiao[arcPid]
-local integer arcDays=3
-local integer arcHeldDebit=0
-local integer arcNow=B836ArcNow(arcPid)
-if not B836ArcLoaded[arcPid] or not B1042Loaded[arcPid] or B1042Role[arcPid]!=0 or B836ArcOperation[arcPid]!=0 or B836ArcFault[arcPid] then
-call X37(Player(arcPid),"存档未就绪或上一笔交易待确认，请勿重复点击。")
-return
-endif
-if TimerGetElapsed(W)<B836ArcNextTrade[arcPid] then
-call X37(Player(arcPid),"操作过快，请稍后再试。")
-return
-endif
-set B836ArcNextTrade[arcPid]=TimerGetElapsed(W)+3.
-if not B836ArcGrace() then
-set arcHeldDebit=B836ArcHeld[arcPid]
-set arcCoins=arcCoins-arcHeldDebit
-endif
-if arcChoice==2 then
-// Gold belongs to the player, not the selected hero. Preparation exchanges
-// credit it once now; existing held debits retain the five-minute refund rule.
-if B836ArcExchanges[arcPid]>=3 then
-call X37(Player(arcPid),"本局已兑换300金币，已达到每局上限。")
-return
-endif
-if B836ArcCoins[arcPid]-B836ArcHeld[arcPid]<1 then
-call X37(Player(arcPid),"哦买嘎硬币不足。")
-return
-endif
-if GetPlayerState(Player(arcPid),PLAYER_STATE_RESOURCE_GOLD)>2147483547 then
-call X37(Player(arcPid),"游戏金币已达安全上限，未扣除硬币。")
-return
-endif
-if B836ArcGrace() then
-// Early purchases are reserved only, so early leave/crash needs no exit-time save.
-set B836ArcHeld[arcPid]=B836ArcHeld[arcPid]+1
-set B836ArcExchanges[arcPid]=B836ArcExchanges[arcPid]+1
-call SetPlayerState(Player(arcPid),PLAYER_STATE_RESOURCE_GOLD,GetPlayerState(Player(arcPid),PLAYER_STATE_RESOURCE_GOLD)+100)
-call X37(Player(arcPid),"已兑换100金币；5分钟内退出，本次硬币不扣存档。"+B836ArcBalanceText(arcPid))
-else
-call B836ArcBegin(arcPid,2,arcCoins-1,arcBook,arcClaw,B836ArcStamp[arcPid],arcMiao,arcHeldDebit)
-endif
-elseif arcChoice==3 then
-if not B836ArcTicket[arcPid] or B836ArcStamp[arcPid]==B836ArcEpoch[arcPid] then
-call X37(Player(arcPid),"暂无双圣抽奖机会，或本局已经抽奖。")
-return
-endif
-if arcCoins>999985 or arcNow>2098704000 or arcBook>2098704000 or arcClaw>2098704000 or arcMiao>2098704000 then
-call X37(Player(arcPid),"存档接近安全上限，保留本次机会，请联系作者。")
-return
-endif
-// One shared RNG roll. Failed saves retry the identical candidate, never redraw.
-set arcRoll=GetRandomInt(1,100)
-set B836ArcTicket[arcPid]=false
-if arcRoll<=3 then
-set arcMiao=IMaxBJ(arcMiao,arcNow)+15*86400
-set B836ArcPrizeText[arcPid]="15天喵刀使用权限（重复获得顺延）"
-elseif arcRoll<=60 then
-set arcCoins=arcCoins+5
-set B836ArcPrizeText[arcPid]="5个哦买嘎硬币"
-elseif arcRoll<=70 then
-set arcCoins=arcCoins+15
-set B836ArcPrizeText[arcPid]="15个哦买嘎硬币"
-else
-if arcRoll>90 then
-set arcDays=15
-endif
-if arcRoll<=80 or (arcRoll>90 and arcRoll<=97) then
-set arcBook=IMaxBJ(arcBook,arcNow)+arcDays*86400
-set B836ArcPrizeText[arcPid]=I2S(arcDays)+"天知识之书（重复获得顺延）"
-else
-set arcClaw=IMaxBJ(arcClaw,arcNow)+arcDays*86400
-set B836ArcPrizeText[arcPid]=I2S(arcDays)+"天寒铁钢爪（重复获得顺延）"
-endif
-endif
-call B836ArcBegin(arcPid,3,arcCoins,arcBook,arcClaw,B836ArcEpoch[arcPid],arcMiao,arcHeldDebit)
-elseif arcChoice==4 then
-if B892MiaoPermanent[arcPid] then
-call X37(Player(arcPid),"你已拥有喵刀永久使用权限，无需兑换天数，未扣币。")
-return
-endif
-// The existing held gold reservations are not spendable a second time.
-if B836ArcCoins[arcPid]-B836ArcHeld[arcPid]<5 then
-call X37(Player(arcPid),"可用哦买嘎硬币不足5个，未扣币。")
-return
-endif
-if arcNow>2099913600 or arcMiao>2099913600 then
-call X37(Player(arcPid),"权限期限接近存档安全上限，未扣币，请联系作者。")
-return
-endif
-// One durable candidate owns both debit and expiry; retries cannot charge twice.
-call B836ArcBegin(arcPid,6,arcCoins-5,arcBook,arcClaw,B836ArcStamp[arcPid],IMaxBJ(arcMiao,arcNow)+86400,arcHeldDebit)
-elseif arcChoice==5 then
-if not B901QuitReady[arcPid] or B839ArcReadPending[arcPid] then
-call X37(Player(arcPid),"逃跑次数或上一笔存档尚未确认，购买失败，未扣币。")
-return
-endif
-if B901QuitTotal[arcPid]<=0 then
-call X37(Player(arcPid),"当前逃跑次数为0，无需购买，未扣币。")
-return
-endif
-if B836ArcCoins[arcPid]-B836ArcHeld[arcPid]<3 then
-call X37(Player(arcPid),"可用哦买嘎币不足3个，购买失败，未扣币。")
-return
-endif
-if B901ArcRedeemed[arcPid]>=999999999 then
-call X37(Player(arcPid),"减次购买记录已达安全上限，未扣币，请联系作者。")
-return
-endif
-// Immediate durable debit even in the first five minutes; never a held purchase.
-call B836ArcBegin(arcPid,7,arcCoins-3,arcBook,arcClaw,B836ArcStamp[arcPid],arcMiao,arcHeldDebit)
-endif
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B901QuitSync takes nothing returns nothing
-local integer b901Pid=GetPlayerId(DzGetTriggerSyncPlayer())
-local string b901Data=DzGetTriggerSyncData()
-local integer b901Total=S2I(B901QuitPart(b901Data,1))
-local integer b901Pending=S2I(B901QuitPart(b901Data,2))
-local integer b901Applied=S2I(B901QuitPart(b901Data,3))
-if not B836ArcHuman(b901Pid) or not B836ArcLoaded[b901Pid] or b901Total<0 or b901Total>2000000000 or b901Pending<0 or b901Applied!=B901ArcRedeemed[b901Pid] or b901Data!=B901QuitPack(b901Total,b901Pending,b901Applied) then
-return
-endif
-// A late pre-purchase sync must not reopen the card while the debit is pending.
-if B836ArcOperation[b901Pid]==7 then
-return
-endif
-set B901QuitTotal[b901Pid]=b901Total
-set B901QuitReady[b901Pid]=true
-if B901QuitNotice[b901Pid] then
-set B901QuitNotice[b901Pid]=false
-call X37(Player(b901Pid),"逃跑次数-1卡使用成功！已扣3个哦买嘎币，当前逃跑次数："+I2S(b901Total)+"。")
-endif
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1032CatalogInit takes nothing returns nothing
-// Late-added skin system removed.
-return
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1032Hero takes unit bsHero returns integer
-return LoadInteger(L7,StringHash("B1032Hero"),GetUnitTypeId(bsHero))
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return 0
 endfunction
 // B1035 stable identities: skin aliases share their catalog hero; other heroes use rawcode.
 function B1035Hero takes unit realmUnit returns integer
-local integer realmHero=0
-if realmUnit==null or not IsUnitType(realmUnit,UNIT_TYPE_HERO) then
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 return 0
-endif
-set realmHero=B1032Hero(realmUnit)
-if realmHero==0 then
-set realmHero=LoadInteger(L7,StringHash("B1035Hero"),GetUnitTypeId(realmUnit))
-endif
-if realmHero==0 then
-set realmHero=GetUnitTypeId(realmUnit)
-endif
-return realmHero
 endfunction
 function B1035RealmMin takes integer realmLevel returns integer
-if realmLevel==2 then
-return 10
-elseif realmLevel==3 then
-return 25
-elseif realmLevel==4 then
-return 50
-elseif realmLevel==5 then
-return 100
-elseif realmLevel==6 then
-return 150
-elseif realmLevel==7 then
-return 220
-elseif realmLevel==8 then
-return 300
-elseif realmLevel==9 then
-return 400
-elseif realmLevel==10 then
-return 500
-elseif realmLevel==11 then
-return 600
-elseif realmLevel==12 then
-return 700
-elseif realmLevel==13 then
-return 850
-elseif realmLevel==14 then
-return 1001
-endif
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 return 0
 endfunction
 function B1035Realm takes integer realmProgress returns integer
-local integer realmLevel=1
-loop
-exitwhen realmLevel>=14 or realmProgress<B1035RealmMin(realmLevel+1)
-set realmLevel=realmLevel+1
-endloop
-return realmLevel
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return 0
 endfunction
 function B1035RealmName takes integer realmLevel returns string
-if realmLevel==1 then
-return "炼气期"
-elseif realmLevel==2 then
-return "筑基期"
-elseif realmLevel==3 then
-return "结丹期"
-elseif realmLevel==4 then
-return "元婴期"
-elseif realmLevel==5 then
-return "化神期"
-elseif realmLevel==6 then
-return "炼虚期"
-elseif realmLevel==7 then
-return "合体期"
-elseif realmLevel==8 then
-return "大乘期"
-elseif realmLevel==9 then
-return "渡劫飞升"
-elseif realmLevel==10 then
-return "真仙境"
-elseif realmLevel==11 then
-return "金仙境"
-elseif realmLevel==12 then
-return "太乙境"
-elseif realmLevel==13 then
-return "大罗境"
-endif
-return "道祖境"
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return ""
 endfunction
 function B1035RealmTitle takes integer realmLevel returns string
-local string realmColor="|cffffffff"
-if realmLevel>=14 then
-set realmColor="|cffff6666"
-elseif realmLevel>=12 then
-set realmColor="|cffffa040"
-elseif realmLevel>=10 then
-set realmColor="|cffffd700"
-elseif realmLevel>=8 then
-set realmColor="|cffff80ff"
-elseif realmLevel>=6 then
-set realmColor="|cffb080ff"
-elseif realmLevel>=4 then
-set realmColor="|cff80c0ff"
-elseif realmLevel>=2 then
-set realmColor="|cff80ffb0"
-endif
-return realmColor+"【"+B1035RealmName(realmLevel)+"】|r"
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return ""
 endfunction
 function B1035Loaded takes integer realmPid,integer realmHero returns boolean
-if realmHero==82 then
-return B836ArcLoaded[realmPid]
-endif
-return realmHero>0 and LoadBoolean(B1035Store,realmPid*16+2,realmHero)
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return false
 endfunction
 function B1035Progress takes integer realmPid,integer realmHero returns integer
-if realmHero==82 then
-return B1031Mastery[realmPid]
-endif
-return LoadInteger(B1035Store,realmPid*16,realmHero)
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return 0
 endfunction
 function B1035Pack takes integer realmProgress,integer realmEpoch returns string
-return "1;"+B1031Base36(realmProgress)+";"+B1031Base36(realmEpoch)
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return ""
 endfunction
 function B1035Valid takes string realmRecord returns boolean
-local integer realmProgress=B1031Decode36(B1031ArcRawPart(realmRecord,1))
-local integer realmEpoch=B1031Decode36(B1031ArcRawPart(realmRecord,2))
-return realmProgress>=0 and realmProgress<=999999 and realmEpoch>=0 and realmEpoch<=2050000000 and B1035Pack(realmProgress,realmEpoch)==realmRecord
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return false
 endfunction
 // Type 45 is platform game count. Wheel rewards allow up to 16 mastery per game.
 function B1036LoadCount takes integer countPid returns nothing
-local integer countValue
-if B1036PlatformLoaded[countPid] or not B836ArcHuman(countPid) or not B836ArcLoaded[countPid] then
-return
-endif
-if GetLocalPlayer()==Player(countPid) and DzAPI_Map_GetServerValueErrorCode(Player(countPid))==0 then
-set countValue=RequestExtraIntegerData(45,Player(countPid),null,null,false,0,0,0)
-if countValue>=0 then
-call DzSyncData("B1036PC",I2S(B836ArcEpoch[countPid])+";"+I2S(countValue))
-endif
-endif
+// v6.9 CLEAN-TEST: legacy persistent statistics removed.
 endfunction
 function B1036MasteryValid takes integer countPid,integer countHero returns boolean
-local integer countGames=B1036PlatformGames[countPid]
-local boolean countAbnormal
-if not B1036PlatformLoaded[countPid] or not B1035Loaded(countPid,countHero) then
+// v6.9 CLEAN-TEST: legacy persistent statistics removed.
 return false
-endif
-// An acknowledged legitimate reward in this match may precede the platform counter update.
-if (countHero==82 and B1036SkGainApplied[countPid] and B1031RewardEpoch[countPid]==B836ArcEpoch[countPid]) or (countHero!=82 and LoadInteger(B1035Store,countPid*16+1,countHero)==B836ArcEpoch[countPid]) then
-set countGames=IMinBJ(250000,countGames)+1
-endif
-// Persisted wheel rewards remain valid in subsequent non-wheel matches too.
-set countAbnormal=B1035Progress(countPid,countHero)>IMinBJ(250000,countGames)*16
-if countAbnormal and not LoadBoolean(B1035Store,countPid*16+9,countHero) then
-call X37(Player(countPid),"该英雄熟练度超过KK累计游戏局数×16，已标记异常：暂停境界称号和熟练度增长，原档案保留。")
-endif
-call SaveBoolean(B1035Store,countPid*16+9,countHero,countAbnormal)
-return not countAbnormal
 endfunction
 function B1036CountSync takes nothing returns nothing
-local integer countPid=GetPlayerId(DzGetTriggerSyncPlayer())
-local string countData=DzGetTriggerSyncData()
-local string countEpoch=B1031ArcRawPart(countData,0)
-local string countText=B1031ArcRawPart(countData,1)
-local integer countValue=S2I(countText)
-if not B836ArcHuman(countPid) or not B836ArcLoaded[countPid] or B1036PlatformLoaded[countPid] or countEpoch!=I2S(B836ArcEpoch[countPid]) or countValue<0 or countText!=I2S(countValue) or countData!=countEpoch+";"+countText then
-return
-endif
-set B1036PlatformGames[countPid]=countValue
-set B1036PlatformLoaded[countPid]=true
-set B1031NotifyPid=countPid
-call ExecuteFunc("B1031HeroChanged")
-call ExecuteFunc("B1031Pump")
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1035LoadLocal takes integer realmPid,integer realmHero returns nothing
-local string realmRecord
-if realmHero<=0 or realmHero==82 or not B836ArcHuman(realmPid) or not B836ArcLoaded[realmPid] or B1035Loaded(realmPid,realmHero) or LoadBoolean(B1035Store,realmPid*16+6,realmHero) then
-return
-endif
-if GetLocalPlayer()==Player(realmPid) and DzAPI_Map_GetServerValueErrorCode(Player(realmPid))==0 then
-set realmRecord=DzAPI_Map_GetServerValue(Player(realmPid),"XOMG1_M_"+I2S(realmHero))
-if StringLength(realmRecord)<=63 then
-call DzSyncData("B1035ML",I2S(B836ArcEpoch[realmPid])+";"+I2S(realmHero)+";"+realmRecord)
-endif
-endif
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1035WriteLocal takes integer realmPid,integer realmHero returns nothing
-local string realmExpected=LoadStr(B1035Store,realmPid*16+4,realmHero)
-local string realmCurrent
-local boolean realmAccepted=false
-if not B836ArcHuman(realmPid) or not B1035Loaded(realmPid,realmHero) or not LoadBoolean(B1035Store,realmPid*16+5,realmHero) then
-return
-endif
-if GetLocalPlayer()==Player(realmPid) and DzAPI_Map_GetServerValueErrorCode(Player(realmPid))==0 then
-set realmCurrent=DzAPI_Map_GetServerValue(Player(realmPid),"XOMG1_M_"+I2S(realmHero))
-if realmCurrent==realmExpected then
-call DzSyncData("B1035MA",I2S(B836ArcEpoch[realmPid])+";"+I2S(realmHero)+";"+realmExpected)
-elseif realmCurrent==LoadStr(B1035Store,realmPid*16+3,realmHero) then
-set realmAccepted=DzAPI_Map_SaveServerValue(Player(realmPid),"XOMG1_M_"+I2S(realmHero),realmExpected)
-if realmAccepted and DzAPI_Map_GetServerValue(Player(realmPid),"XOMG1_M_"+I2S(realmHero))==realmExpected then
-call DzSyncData("B1035MA",I2S(B836ArcEpoch[realmPid])+";"+I2S(realmHero)+";"+realmExpected)
-endif
-endif
-endif
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1035Pump takes integer realmPid returns nothing
-local integer realmHero=B1035RewardHero[realmPid]
-local integer realmProgress
-if realmHero<=0 or realmHero==82 or not B1035Loaded(realmPid,realmHero) or not B836ArcHuman(realmPid) then
-return
-endif
-if not B1036PlatformLoaded[realmPid] then
-return
-endif
-if not B1036MasteryValid(realmPid,realmHero) then
-set B1035RewardHero[realmPid]=0
-return
-endif
-if LoadInteger(B1035Store,realmPid*16+1,realmHero)==B836ArcEpoch[realmPid] then
-set B1035RewardHero[realmPid]=0
-return
-endif
-if not LoadBoolean(B1035Store,realmPid*16+5,realmHero) then
-set realmProgress=IMinBJ(999999,B1035Progress(realmPid,realmHero)+B1031Gain[realmPid])
-call SaveStr(B1035Store,realmPid*16+4,realmHero,B1035Pack(realmProgress,B836ArcEpoch[realmPid]))
-call SaveBoolean(B1035Store,realmPid*16+5,realmHero,true)
-endif
-call B1035WriteLocal(realmPid,realmHero)
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1035Tick takes nothing returns nothing
-local integer realmPid=0
-local integer realmHero
-local boolean realmBusy=false
-loop
-exitwhen realmPid>=12
-set realmHero=B1035ActiveHero[realmPid]
-call B1036LoadCount(realmPid)
-if B1035RewardHero[realmPid]>0 then
-set realmHero=B1035RewardHero[realmPid]
-endif
-if B836ArcHuman(realmPid) and realmHero>0 and realmHero!=82 and not LoadBoolean(B1035Store,realmPid*16+6,realmHero) and LoadInteger(B1035Store,realmPid*16+7,realmHero)<8 then
-if not B1035Loaded(realmPid,realmHero) or LoadBoolean(B1035Store,realmPid*16+5,realmHero) or B1035RewardHero[realmPid]>0 then
-set realmBusy=true
-call SaveInteger(B1035Store,realmPid*16+7,realmHero,LoadInteger(B1035Store,realmPid*16+7,realmHero)+1)
-call B1035LoadLocal(realmPid,realmHero)
-call B1035Pump(realmPid)
-endif
-endif
-set realmPid=realmPid+1
-endloop
-if not realmBusy then
-call PauseTimer(B1035Timer)
-call DestroyTimer(B1035Timer)
-set B1035Timer=null
-endif
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1035Request takes integer realmPid returns nothing
-local integer realmHero=B1035Hero(M7[realmPid])
-call B1036LoadCount(realmPid)
-if realmHero!=B1035ActiveHero[realmPid] and not B1031Ended then
-set B1031Triple[realmPid]=false
-set B1031Rampage[realmPid]=false
-set B1031Burst[realmPid]=0
-set B1031KillTime[realmPid]=0.
-endif
-set B1035ActiveHero[realmPid]=realmHero
-if realmHero>0 and realmHero!=82 and B836ArcHuman(realmPid) and B836ArcLoaded[realmPid] and not LoadBoolean(B1035Store,realmPid*16+6,realmHero) then
-if not B1035Loaded(realmPid,realmHero) or LoadBoolean(B1035Store,realmPid*16+5,realmHero) or B1035RewardHero[realmPid]>0 then
-call SaveInteger(B1035Store,realmPid*16+7,realmHero,0)
-call B1035LoadLocal(realmPid,realmHero)
-if B1035Timer==null then
-set B1035Timer=CreateTimer()
-call TimerStart(B1035Timer,3.,true,function B1035Tick)
-endif
-endif
-endif
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1035LoadSync takes nothing returns nothing
-local integer realmPid=GetPlayerId(DzGetTriggerSyncPlayer())
-local string realmData=DzGetTriggerSyncData()
-local string realmEpoch=B1031ArcRawPart(realmData,0)
-local string realmHeroText=B1031ArcRawPart(realmData,1)
-local integer realmHero=S2I(realmHeroText)
-local string realmRecord=SubString(realmData,StringLength(realmEpoch)+StringLength(realmHeroText)+2,StringLength(realmData))
-local string realmOriginal=realmRecord
-if not B836ArcHuman(realmPid) or not B836ArcLoaded[realmPid] or realmHero<=0 or realmHero==82 or (realmHero!=B1035ActiveHero[realmPid] and realmHero!=B1035RewardHero[realmPid]) or realmEpoch!=I2S(B836ArcEpoch[realmPid]) or realmHeroText!=I2S(realmHero) or B1035Loaded(realmPid,realmHero) then
-return
-endif
-if realmRecord=="" then
-set realmRecord=B1035Pack(0,0)
-endif
-if not B1035Valid(realmRecord) or B1031Decode36(B1031ArcRawPart(realmRecord,2))>B836ArcEpoch[realmPid] then
-call SaveBoolean(B1035Store,realmPid*16+6,realmHero,true)
-call X37(Player(realmPid),"该英雄熟练度档案异常，已停止读写，原存档未改动。")
-return
-endif
-call SaveInteger(B1035Store,realmPid*16,realmHero,B1031Decode36(B1031ArcRawPart(realmRecord,1)))
-call SaveInteger(B1035Store,realmPid*16+1,realmHero,B1031Decode36(B1031ArcRawPart(realmRecord,2)))
-call SaveBoolean(B1035Store,realmPid*16+2,realmHero,true)
-call SaveStr(B1035Store,realmPid*16+3,realmHero,realmOriginal)
-call SaveInteger(B1035Store,realmPid*16+7,realmHero,0)
-call B1035Pump(realmPid)
-set B1031NotifyPid=realmPid
-call ExecuteFunc("B1031HeroChanged")
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1035Ack takes nothing returns nothing
-local integer realmPid=GetPlayerId(DzGetTriggerSyncPlayer())
-local string realmData=DzGetTriggerSyncData()
-local string realmEpoch=B1031ArcRawPart(realmData,0)
-local string realmHeroText=B1031ArcRawPart(realmData,1)
-local integer realmHero=S2I(realmHeroText)
-local string realmRecord=SubString(realmData,StringLength(realmEpoch)+StringLength(realmHeroText)+2,StringLength(realmData))
-if not B836ArcHuman(realmPid) or realmHero<=0 or realmHero==82 or realmEpoch!=I2S(B836ArcEpoch[realmPid]) or realmHero!=B1035RewardHero[realmPid] or not LoadBoolean(B1035Store,realmPid*16+5,realmHero) or realmRecord!=LoadStr(B1035Store,realmPid*16+4,realmHero) then
-return
-endif
-call SaveInteger(B1035Store,realmPid*16,realmHero,B1031Decode36(B1031ArcRawPart(realmRecord,1)))
-call SaveInteger(B1035Store,realmPid*16+1,realmHero,B836ArcEpoch[realmPid])
-call SaveStr(B1035Store,realmPid*16+3,realmHero,realmRecord)
-call SaveBoolean(B1035Store,realmPid*16+5,realmHero,false)
-set B1035RewardHero[realmPid]=0
-call X37(Player(realmPid),"该英雄熟练度 +"+I2S(B1031Gain[realmPid])+" 已读回确认，累计 "+I2S(B1035Progress(realmPid,realmHero))+"，境界："+B1035RealmName(B1035Realm(B1035Progress(realmPid,realmHero)))+"。")
-set B1031NotifyPid=realmPid
-call ExecuteFunc("B1031HeroChanged")
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1035Info takes integer realmPid returns string
-local integer realmHero=B1035Hero(M7[realmPid])
-local integer realmProgress=B1035Progress(realmPid,realmHero)
-local integer realmLevel=B1035Realm(realmProgress)
-local string realmText=""
-if realmHero<=0 then
-return "请先选择主英雄，各英雄熟练度分别累计。"
-endif
-if not B1035Loaded(realmPid,realmHero) then
-if LoadBoolean(B1035Store,realmPid*16+6,realmHero) then
-return "该英雄熟练度档案异常，已停止读写。"
-endif
-return "该英雄熟练度等待KK存档读取，请稍后重新打开。"
-endif
-if not B1036PlatformLoaded[realmPid] then
-return "英雄熟练度："+I2S(realmProgress)+"\nKK累计局数待确认，境界暂不显示。"
-endif
-if not B1036MasteryValid(realmPid,realmHero) then
-return "英雄熟练度："+I2S(realmProgress)+"\n熟练度异常：超过KK累计局数×16。\n暂停境界称号和熟练度增长，原档案保留。"
-endif
-set realmText="英雄熟练度："+I2S(realmProgress)+"\n修炼境界："+B1035RealmTitle(realmLevel)
-if realmLevel<14 then
-set realmText=realmText+"\n下一境界："+B1035RealmName(realmLevel+1)+"（"+I2S(B1035RealmMin(realmLevel+1))+"），还需 "+I2S(B1035RealmMin(realmLevel+1)-realmProgress)
-else
-set realmText=realmText+"\n已达最高境界。"
-endif
-if LoadBoolean(B1035Store,realmPid*16+5,realmHero) or B1035RewardHero[realmPid]==realmHero or (realmHero==82 and (B1031Pending[realmPid] or B839ArcReadPending[realmPid])) then
-set realmText=realmText+"\n本局熟练度正在保存，待KK读回确认。"
-endif
-return realmText
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return ""
 endfunction
 function B1032Fits takes integer bsPid,integer bsSkin returns boolean
-local integer bsHero=B1032Hero(M7[bsPid])
-return bsSkin>0 and bsSkin<=234 and bsHero>0 and (B1032SkinHero[bsSkin]==bsHero or B1032SkinHero2[bsSkin]==bsHero)
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return false
 endfunction
 function B1040Day takes integer dailyPid1040 returns integer
-// Split before adding UTC+8 to avoid overflowing the platform Unix timestamp.
-return B836ArcEpoch[dailyPid1040]/86400+(ModuloInteger(B836ArcEpoch[dailyPid1040],86400)+28800+R2I(TimerGetElapsed(W)))/86400
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return 0
 endfunction
 function B1040Limit takes integer dailyPid1040,integer dailyHero1040 returns integer
-local integer dailyRealm1040
-if not B1035Loaded(dailyPid1040,dailyHero1040) or not B1036MasteryValid(dailyPid1040,dailyHero1040) then
-return 0
-endif
-set dailyRealm1040=B1035Realm(B1035Progress(dailyPid1040,dailyHero1040))
-if dailyRealm1040>=12 then
-return 5
-elseif dailyRealm1040>=8 then
-return 3
-elseif dailyRealm1040>=4 then
-return 1
-endif
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 return 0
 endfunction
 function B1040Pack takes integer dailyDay1040,integer dailyUsed1040,integer dailyEpoch1040,integer dailySkin1040 returns string
-return "1;"+I2S(dailyDay1040)+";"+I2S(dailyUsed1040)+";"+I2S(dailyEpoch1040)+";"+I2S(dailySkin1040)
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return ""
 endfunction
 function B1040Valid takes string dailyRecord1040 returns boolean
-local integer dailyDay1040=S2I(B836ArcPart(dailyRecord1040,1))
-local integer dailyUsed1040=S2I(B836ArcPart(dailyRecord1040,2))
-local integer dailyEpoch1040=S2I(B836ArcPart(dailyRecord1040,3))
-local integer dailySkin1040=S2I(B836ArcPart(dailyRecord1040,4))
-return dailyDay1040>=0 and dailyDay1040<=25000 and dailyUsed1040>=0 and dailyUsed1040<=5 and dailyEpoch1040>=0 and dailyEpoch1040<=2050000000 and dailySkin1040>=0 and dailySkin1040<=234 and ((dailyUsed1040==0 and dailyEpoch1040==0 and dailySkin1040==0) or (dailyUsed1040>0 and dailyEpoch1040>0 and dailySkin1040>0)) and B1040Pack(dailyDay1040,dailyUsed1040,dailyEpoch1040,dailySkin1040)==dailyRecord1040
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return false
 endfunction
 function B1040Remaining takes integer dailyPid1040 returns integer
-local integer dailyHero1040=B1035Hero(M7[dailyPid1040])
-local integer dailyUsed1040=0
-local string dailyRecord1040=LoadStr(B1040Store,dailyPid1040*8+1,dailyHero1040)
-if not LoadBoolean(B1040Store,dailyPid1040*8,dailyHero1040) or LoadBoolean(B1040Store,dailyPid1040*8+3,dailyHero1040) or LoadBoolean(B1040Store,dailyPid1040*8+4,dailyHero1040) then
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 return 0
-endif
-if S2I(B836ArcPart(dailyRecord1040,1))==B1040Day(dailyPid1040) then
-set dailyUsed1040=S2I(B836ArcPart(dailyRecord1040,2))
-endif
-return IMaxBJ(0,B1040Limit(dailyPid1040,dailyHero1040)-dailyUsed1040)
 endfunction
 function B1040Local takes integer dailyPid1040 returns nothing
-// Daily-skin server persistence removed under XOMG1; in-memory only, no replacement key.
-return
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1040Stop takes integer dailyPid1040 returns nothing
-if B1040Timer[dailyPid1040]!=null then
-call FlushChildHashtable(L7,GetHandleId(B1040Timer[dailyPid1040]))
-call PauseTimer(B1040Timer[dailyPid1040])
-call DestroyTimer(B1040Timer[dailyPid1040])
-set B1040Timer[dailyPid1040]=null
-endif
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1040Retry takes nothing returns nothing
-local integer dailyPid1040=LoadInteger(L7,GetHandleId(GetExpiredTimer()),0)
-local integer dailyHero1040=B1040Hero[dailyPid1040]
-if not B836ArcHuman(dailyPid1040) or B1040Attempts[dailyPid1040]>=3 or (LoadBoolean(B1040Store,dailyPid1040*8,dailyHero1040) and not LoadBoolean(B1040Store,dailyPid1040*8+3,dailyHero1040)) then
-call B1040Stop(dailyPid1040)
-return
-endif
-set B1040Attempts[dailyPid1040]=B1040Attempts[dailyPid1040]+1
-call B1040Local(dailyPid1040)
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1040Start takes integer dailyPid1040 returns nothing
-call B1040Stop(dailyPid1040)
-set B1040Attempts[dailyPid1040]=1
-set B1040Timer[dailyPid1040]=CreateTimer()
-call SaveInteger(L7,GetHandleId(B1040Timer[dailyPid1040]),0,dailyPid1040)
-call TimerStart(B1040Timer[dailyPid1040],3.,true,function B1040Retry)
-call B1040Local(dailyPid1040)
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1040Request takes integer dailyPid1040 returns nothing
-local integer dailyHero1040=B1035Hero(M7[dailyPid1040])
-if B1040Store==null or not B836ArcHuman(dailyPid1040) or not B836ArcLoaded[dailyPid1040] or dailyHero1040<=0 then
-return
-endif
-// One outstanding ledger per player; hero changes cannot redirect a pending receipt.
-if B1040Hero[dailyPid1040]>0 and LoadBoolean(B1040Store,dailyPid1040*8+3,B1040Hero[dailyPid1040]) then
-if B1040Timer[dailyPid1040]==null then
-call B1040Start(dailyPid1040)
-endif
-return
-endif
-if LoadBoolean(B1040Store,dailyPid1040*8,dailyHero1040) or LoadBoolean(B1040Store,dailyPid1040*8+4,dailyHero1040) then
-return
-endif
-if B1040Hero[dailyPid1040]!=dailyHero1040 or B1040Timer[dailyPid1040]==null then
-set B1040Hero[dailyPid1040]=dailyHero1040
-call B1040Start(dailyPid1040)
-endif
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1040Load takes nothing returns nothing
-local integer dailyPid1040=GetPlayerId(DzGetTriggerSyncPlayer())
-local string dailyData1040=DzGetTriggerSyncData()
-local string dailyEpochText1040=B836ArcPart(dailyData1040,0)
-local string dailyHeroText1040=B836ArcPart(dailyData1040,1)
-local integer dailyHero1040=S2I(dailyHeroText1040)
-local string dailyRecord1040=SubString(dailyData1040,StringLength(dailyEpochText1040)+StringLength(dailyHeroText1040)+2,StringLength(dailyData1040))
-local string dailyCheck1040=dailyRecord1040
-if not B836ArcHuman(dailyPid1040) or not B836ArcLoaded[dailyPid1040] or dailyEpochText1040!=I2S(B836ArcEpoch[dailyPid1040]) or dailyHero1040<=0 or dailyHeroText1040!=I2S(dailyHero1040) or dailyHero1040!=B1040Hero[dailyPid1040] or LoadBoolean(B1040Store,dailyPid1040*8,dailyHero1040) or LoadBoolean(B1040Store,dailyPid1040*8+4,dailyHero1040) then
-return
-endif
-if dailyCheck1040=="" then
-set dailyCheck1040=B1040Pack(0,0,0,0)
-endif
-call B1040Stop(dailyPid1040)
-if not B1040Valid(dailyCheck1040) or S2I(B836ArcPart(dailyCheck1040,1))>B1040Day(dailyPid1040) or S2I(B836ArcPart(dailyCheck1040,3))>B836ArcEpoch[dailyPid1040] then
-call SaveBoolean(B1040Store,dailyPid1040*8+4,dailyHero1040,true)
-call X37(Player(dailyPid1040),"该英雄每日皮肤档案异常，暂停免费兑换，原档案保留。")
-return
-endif
-call SaveStr(B1040Store,dailyPid1040*8+1,dailyHero1040,dailyRecord1040)
-call SaveBoolean(B1040Store,dailyPid1040*8,dailyHero1040,true)
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1040Ack takes nothing returns nothing
-local integer dailyPid1040=GetPlayerId(DzGetTriggerSyncPlayer())
-local integer dailyHero1040=B1040Hero[dailyPid1040]
-local integer dailySkin1040=B1040Skin[dailyPid1040]
-local string dailyWanted1040=LoadStr(B1040Store,dailyPid1040*8+2,dailyHero1040)
-if not B836ArcHuman(dailyPid1040) or not LoadBoolean(B1040Store,dailyPid1040*8+3,dailyHero1040) or DzGetTriggerSyncData()!=I2S(B836ArcEpoch[dailyPid1040])+";"+I2S(dailyHero1040)+";"+dailyWanted1040 then
-return
-endif
-call B1040Stop(dailyPid1040)
-call SaveStr(B1040Store,dailyPid1040*8+1,dailyHero1040,dailyWanted1040)
-call SaveBoolean(B1040Store,dailyPid1040*8+3,dailyHero1040,false)
-set B1032Rental[dailyPid1040*240+dailySkin1040]=B836ArcEpoch[dailyPid1040]
-if dailySkin1040==B1032LegacySkin then
-set B1031RentalEpoch[dailyPid1040]=B836ArcEpoch[dailyPid1040]
-endif
-if B1032Fits(dailyPid1040,dailySkin1040) then
-set B1032Selected[dailyPid1040]=dailySkin1040
-set B1032ModelUnit[dailyPid1040]=null
-set B1031Equipped[dailyPid1040]=false
-set B1031NotifyPid=dailyPid1040
-call ExecuteFunc("B1032ApplyNotify")
-endif
-call X37(Player(dailyPid1040),"每日免费兑换已读回确认："+B1032SkinName[dailySkin1040]+"，本局可用，未扣哦买嘎币。该英雄今日剩余 "+I2S(B1040Remaining(dailyPid1040))+" 次。")
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1040Text takes integer dailyPid1040 returns string
-local integer dailyHero1040=B1035Hero(M7[dailyPid1040])
-if not LoadBoolean(B1040Store,dailyPid1040*8,dailyHero1040) then
-return "每日免费皮肤：档案待读取或异常，请稍后重新打开。"
-endif
-if LoadBoolean(B1040Store,dailyPid1040*8+3,dailyHero1040) then
-return "每日免费皮肤：兑换待KK读回确认。"
-endif
-return "该英雄今日免费："+I2S(B1040Remaining(dailyPid1040))+" / "+I2S(B1040Limit(dailyPid1040,dailyHero1040))+"次\n元婴–合体1次，大乘–金仙3次，太乙–道祖5次。\n同英雄各款共用额度，北京时间零点重置，不累积。"
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return ""
 endfunction
 function B1040Init takes nothing returns nothing
-local trigger dailyLoad1040=CreateTrigger()
-local trigger dailyAck1040=CreateTrigger()
-set B1040Store=InitHashtable()
-call DzTriggerRegisterSyncData(dailyLoad1040,"B1040FL",false)
-call TriggerAddAction(dailyLoad1040,function B1040Load)
-call DzTriggerRegisterSyncData(dailyAck1040,"B1040FA",false)
-call TriggerAddAction(dailyAck1040,function B1040Ack)
-set dailyLoad1040=null
-set dailyAck1040=null
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1032Bit takes integer bsSkin returns integer
-local integer bsValue=1
-local integer bsIndex=ModuloInteger(bsSkin-1,30)
-loop
-exitwhen bsIndex<=0
-set bsValue=bsValue*2
-set bsIndex=bsIndex-1
-endloop
-return bsValue
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return 0
 endfunction
 function B1032Owns takes integer bsPid,integer bsSkin returns boolean
-if bsSkin<=0 or bsSkin>234 then
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 return false
-endif
-if bsSkin==B1032LegacySkin and B1031Owned[bsPid] then
-return true
-endif
-if B836ArcLoaded[bsPid] and B1032Journal[bsPid]==bsSkin then
-return true
-endif
-return ModuloInteger(B1032Mask[bsPid*8+(bsSkin-1)/30]/B1032Bit(bsSkin),2)==1
 endfunction
 function B1032MaskHas takes integer bsPid,integer bsSkin returns boolean
-if bsSkin<=0 or bsSkin>234 then
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 return false
-endif
-return ModuloInteger(B1032Mask[bsPid*8+(bsSkin-1)/30]/B1032Bit(bsSkin),2)==1
 endfunction
 function B1032MaskAdd takes integer bsPid,integer bsSkin returns boolean
-local integer bsSlot=bsPid*8+(bsSkin-1)/30
-if bsSkin<=0 or bsSkin>234 or B1032MaskHas(bsPid,bsSkin) then
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 return false
-endif
-set B1032Mask[bsSlot]=B1032Mask[bsSlot]+B1032Bit(bsSkin)
-return true
 endfunction
 function B1032MaskPack takes integer bsPid returns string
-local string bsResult="1"
-local integer bsIndex=0
-loop
-exitwhen bsIndex>=8
-set bsResult=bsResult+";"+B1031Base36(B1032Mask[bsPid*8+bsIndex])
-set bsIndex=bsIndex+1
-endloop
-return bsResult
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return ""
 endfunction
 function B1032MaskValid takes string bsText returns boolean
-local integer bsIndex=1
-local integer bsValue
-local string bsCopy="1"
-if StringLength(bsText)>63 or B1031ArcRawPart(bsText,0)!="1" then
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 return false
-endif
-loop
-exitwhen bsIndex>8
-set bsValue=B1031Decode36(B1031ArcRawPart(bsText,bsIndex))
-if bsValue<0 or bsValue>1073741823 or (bsIndex==8 and bsValue>16777215) then
-return false
-endif
-set bsCopy=bsCopy+";"+B1031Base36(bsValue)
-set bsIndex=bsIndex+1
-endloop
-return bsCopy==bsText
 endfunction
 function B1032MaskLocalWrite takes integer bsPid returns nothing
-// Skin-mask server persistence removed under XOMG1; in-memory default (empty mask) only.
-return
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1032MaskRetry takes nothing returns nothing
-local timer bsTimer=GetExpiredTimer()
-local integer bsPid=LoadInteger(L7,GetHandleId(bsTimer),0)
-local integer bsSeq=LoadInteger(L7,GetHandleId(bsTimer),1)
-if B836ArcHuman(bsPid) and B1032MaskPending[bsPid] and bsSeq==B1032MaskSeq[bsPid] and B1032MaskAttempts[bsPid]<3 then
-set B1032MaskAttempts[bsPid]=B1032MaskAttempts[bsPid]+1
-call B1032MaskLocalWrite(bsPid)
-else
-call PauseTimer(bsTimer)
-call FlushChildHashtable(L7,GetHandleId(bsTimer))
-call DestroyTimer(bsTimer)
-endif
-set bsTimer=null
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1032Reconcile takes nothing returns nothing
-// Late-added skin system removed.
-return
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1032MaskAck takes nothing returns nothing
-local integer bsPid=GetPlayerId(DzGetTriggerSyncPlayer())
-local string bsData=DzGetTriggerSyncData()
-local string bsExpected=B1032MaskPack(bsPid)
-if not B836ArcHuman(bsPid) or not B1032MaskLoaded[bsPid] or not B1032MaskPending[bsPid] then
-return
-endif
-if bsData==bsExpected then
-set B1032MaskRecord[bsPid]=bsExpected
-set B1032MaskPending[bsPid]=false
-call X37(Player(bsPid),"皮肤权限档案已读回确认；永久权限已保存。")
-elseif bsData==bsExpected+"S" then
-call X37(Player(bsPid),"皮肤权限档案已提交，跨局保存待平台确认；暂停新的永久兑换。")
-endif
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1032MaskLoadSync takes nothing returns nothing
-local integer bsPid=GetPlayerId(DzGetTriggerSyncPlayer())
-local string bsData=DzGetTriggerSyncData()
-local string bsEpoch=B1031ArcRawPart(bsData,0)
-local string bsRecord=SubString(bsData,StringLength(bsEpoch)+1,StringLength(bsData))
-local integer bsIndex=0
-if not B836ArcHuman(bsPid) or not B836ArcLoaded[bsPid] or B1032MaskLoaded[bsPid] or bsEpoch!=I2S(B836ArcEpoch[bsPid]) then
-return
-endif
-if bsRecord=="" then
-set bsRecord="1;0;0;0;0;0;0;0;0"
-elseif not B1032MaskValid(bsRecord) then
-call X37(Player(bsPid),"皮肤权限档案异常，已停止皮肤购买，原档案未改动。")
-return
-endif
-loop
-exitwhen bsIndex>=8
-set B1032Mask[bsPid*8+bsIndex]=B1031Decode36(B1031ArcRawPart(bsRecord,bsIndex+1))
-set bsIndex=bsIndex+1
-endloop
-set B1032MaskRecord[bsPid]=SubString(bsData,StringLength(bsEpoch)+1,StringLength(bsData))
-set B1032MaskLoaded[bsPid]=true
-set B1031NotifyPid=bsPid
-call B1032Reconcile()
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1032LoadLocal takes integer bsPid returns nothing
-// Skin-mask server read removed under XOMG1; mask stays in-memory default.
-return
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1032LoadTick takes nothing returns nothing
-local timer bsTimer=GetExpiredTimer()
-local integer bsPid=0
-set B1032LoadAttempts=B1032LoadAttempts+1
-loop
-exitwhen bsPid>=12
-call B1032LoadLocal(bsPid)
-set bsPid=bsPid+1
-endloop
-if B1032LoadAttempts>=8 then
-call PauseTimer(bsTimer)
-call DestroyTimer(bsTimer)
-endif
-set bsTimer=null
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1040Trade takes integer dailyPid1040,integer dailySkin1040 returns nothing
-local integer dailyHero1040=B1035Hero(M7[dailyPid1040])
-local integer dailyUsed1040=0
-local string dailyRecord1040=LoadStr(B1040Store,dailyPid1040*8+1,dailyHero1040)
-if not B836ArcHuman(dailyPid1040) or not B1032Fits(dailyPid1040,dailySkin1040) or not B836ArcLoaded[dailyPid1040] or not B1032MaskLoaded[dailyPid1040] or B836ArcFault[dailyPid1040] or B836ArcOperation[dailyPid1040]!=0 or B839ArcReadPending[dailyPid1040] or B1032MaskPending[dailyPid1040] or (B1040Hero[dailyPid1040]>0 and LoadBoolean(B1040Store,dailyPid1040*8+3,B1040Hero[dailyPid1040])) then
-call X37(Player(dailyPid1040),"请等待KK档案与交易确认，再兑换当前英雄的皮肤。")
-return
-endif
-if B1032Owns(dailyPid1040,dailySkin1040) or B1032Rental[dailyPid1040*240+dailySkin1040]==B836ArcEpoch[dailyPid1040] or (dailySkin1040==B1032LegacySkin and B1031RentalEpoch[dailyPid1040]==B836ArcEpoch[dailyPid1040]) then
-call X37(Player(dailyPid1040),"已有该款使用权限，不扣每日次数。")
-return
-endif
-if B1040Remaining(dailyPid1040)<=0 then
-call X37(Player(dailyPid1040),"该英雄今日免费次数不足，或档案尚未确认；未扣次数、未扣币。")
-return
-endif
-if not UnitAlive(M7[dailyPid1040]) or not PIFU_CONDITION(M7[dailyPid1040],Player(dailyPid1040)) then
-call X37(Player(dailyPid1040),"当局换肤需要主英雄存活、满血满魔。")
-return
-endif
-if S2I(B836ArcPart(dailyRecord1040,1))==B1040Day(dailyPid1040) then
-set dailyUsed1040=S2I(B836ArcPart(dailyRecord1040,2))
-endif
-set B1040Hero[dailyPid1040]=dailyHero1040
-set B1040Skin[dailyPid1040]=dailySkin1040
-call SaveStr(B1040Store,dailyPid1040*8+2,dailyHero1040,B1040Pack(B1040Day(dailyPid1040),dailyUsed1040+1,B836ArcEpoch[dailyPid1040],dailySkin1040))
-call SaveBoolean(B1040Store,dailyPid1040*8+3,dailyHero1040,true)
-call B1040Start(dailyPid1040)
-call X37(Player(dailyPid1040),"每日免费兑换已提交，请等待KK读回确认。")
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1032Allowed takes integer bsPid,integer bsSkin returns boolean
-if not B836ArcLoaded[bsPid] or B836ArcEpoch[bsPid]<=0 or bsSkin<=0 or bsSkin>234 then
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 return false
-endif
-return B1032Owns(bsPid,bsSkin) or B1032Rental[bsPid*240+bsSkin]==B836ArcEpoch[bsPid] or (bsSkin==B1032LegacySkin and B1031RentalEpoch[bsPid]==B836ArcEpoch[bsPid])
 endfunction
 function B1039Remember takes integer skinPid1039,unit skinUnit1039,string skinModel1039 returns nothing
 call SaveStr(L7,GetHandleId(skinUnit1039),StringHash("B1039SkinModel"),skinModel1039)
@@ -238278,245 +236078,37 @@ set B1039SeenPoly[skinPid1039]=false
 set B1039SeenForm[skinPid1039]=false
 endfunction
 function B1032Apply takes integer bsPid returns nothing
-// Late-added skin system removed.
-return
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1032ApplyNotify takes nothing returns nothing
-// Late-added skin system removed.
-return
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1032Restore takes integer bsPid returns nothing
-// Late-added skin system removed.
-return
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1032Trade takes integer bsPid,integer bsOperation returns nothing
-local integer bsSkin=B1032Detail[bsPid]
-local integer bsCost=B1031PermanentPrice
-if B1040Hero[bsPid]>0 and LoadBoolean(B1040Store,bsPid*8+3,B1040Hero[bsPid]) then
-call X37(Player(bsPid),"每日免费兑换待确认，请稍后再购买。")
-return
-endif
-if not B836ArcHuman(bsPid) or not B1032Fits(bsPid,bsSkin) or not B836ArcLoaded[bsPid] or not B1032MaskLoaded[bsPid] or B836ArcFault[bsPid] or B836ArcOperation[bsPid]!=0 or B839ArcReadPending[bsPid] or B1032MaskPending[bsPid] then
-call X37(Player(bsPid),"请选择当前英雄的皮肤，并等待KK存档确认后再兑换。")
-return
-endif
-if B1032Owns(bsPid,bsSkin) or (bsOperation==11 and B1032Allowed(bsPid,bsSkin)) then
-call X37(Player(bsPid),"已有该款皮肤权限，请免费使用，未重复扣币。")
-return
-endif
-if bsOperation==11 then
-set bsCost=B1031RentalPrice
-if not UnitAlive(M7[bsPid]) or not PIFU_CONDITION(M7[bsPid],Player(bsPid)) then
-call X37(Player(bsPid),"当局换肤需要主英雄存活、满血满魔。")
-return
-endif
-endif
-if B836ArcCoins[bsPid]-B836ArcHeld[bsPid]<bsCost then
-call X37(Player(bsPid),"可用哦买嘎币不足，未扣币。")
-return
-endif
-set B1032TradeSkin[bsPid]=bsSkin
-call B836ArcBegin(bsPid,bsOperation,B836ArcCoins[bsPid]-bsCost,B836ArcBook[bsPid],B836ArcClaw[bsPid],B836ArcStamp[bsPid],B891ArcMiao[bsPid],0)
-call X37(Player(bsPid),"已提交该款皮肤兑换，请等待存档确认。")
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1032Open takes integer bsPid returns nothing
-local integer bsHero=B1032Hero(M7[bsPid])
-local integer bsIndex=0
-local integer bsSkin=B1032Detail[bsPid]
-local string bsText="英雄皮肤"
-local string bsStatus
-if not B836ArcHuman(bsPid) or B1032Dialog[bsPid]==null then
-return
-endif
-call B839ArcCheckReceipt(bsPid)
-call B1032LoadLocal(bsPid)
-set B1031NotifyPid=bsPid
-call B1032Reconcile()
-if B1032MaskPending[bsPid] then
-call B1032MaskLocalWrite(bsPid)
-endif
-call ExecuteFunc("B1031HeroChanged")
-call B1032Apply(bsPid)
-call B1040Request(bsPid)
-call DialogClear(B1032Dialog[bsPid])
-set B1040FreeButton[bsPid]=null
-set B1032RentButton[bsPid]=null
-set B1032BuyButton[bsPid]=null
-set B1032EquipButton[bsPid]=null
-set B1032ResetButton[bsPid]=null
-set B1032BackButton[bsPid]=null
-set B1032NextButton[bsPid]=null
-set B1032PrevButton[bsPid]=null
-set B1032TitleButton[bsPid]=null
-loop
-exitwhen bsIndex>=5
-set B1032ListButton[bsPid*5+bsIndex]=null
-set B1032ListSkin[bsPid*5+bsIndex]=0
-set bsIndex=bsIndex+1
-endloop
-if bsHero<=0 then
-set bsText=bsText+"\n请先选择主英雄。当前英雄没有可用的保留皮肤。"
-if B1035Hero(M7[bsPid])>0 then
-set bsText=bsText+"\n"+B1035Info(bsPid)
-set B1032TitleButton[bsPid]=DialogAddButton(B1032Dialog[bsPid],"显示 / 隐藏称号",0)
-set bsText=bsText+"\n"+B1040Text(bsPid)
-endif
-else
-set bsText=LoadStr(L7,StringHash("B1032HeroName"),bsHero)+" / 皮肤"
-if B836ArcLoaded[bsPid] then
-set bsText=bsText+"\n"+B836ArcBalanceText(bsPid)
-endif
-set bsText=bsText+"\n每款分别兑换：当局"+I2S(B1031RentalPrice)+"币 / 永久"+I2S(B1031PermanentPrice)+"币\n当局使用权下一局失效。"
-set bsText=bsText+"\n"+B1035Info(bsPid)
-set bsText=bsText+"\n"+B1040Text(bsPid)
-set B1032TitleButton[bsPid]=DialogAddButton(B1032Dialog[bsPid],"显示 / 隐藏称号",0)
-if not B836ArcLoaded[bsPid] or not B1032MaskLoaded[bsPid] then
-set bsText=bsText+"\nKK档案尚未读取完成，暂不可购买。"
-elseif B836ArcOperation[bsPid]!=0 or B836ArcFault[bsPid] or B839ArcReadPending[bsPid] or B1032MaskPending[bsPid] then
-set bsText=bsText+"\n交易或权限待平台确认，暂停购买。"
-endif
-if bsSkin>0 and not B1032Fits(bsPid,bsSkin) then
-set bsSkin=0
-set B1032Detail[bsPid]=0
-endif
-if bsSkin>0 then
-set bsText=bsText+"\n皮肤："+B1032SkinName[bsSkin]
-if B1032Owns(bsPid,bsSkin) then
-set bsText=bsText+"\n永久权限：已解锁"
-elseif B1032Allowed(bsPid,bsSkin) then
-set bsText=bsText+"\n当局使用权：已兑换"
-else
-set bsText=bsText+"\n使用权限：未兑换"
-endif
-if B1032Allowed(bsPid,bsSkin) then
-set B1032EquipButton[bsPid]=DialogAddButton(B1032Dialog[bsPid],"免费使用此款皮肤",0)
-else
-set B1032RentButton[bsPid]=DialogAddButton(B1032Dialog[bsPid],"当局使用："+I2S(B1031RentalPrice)+" 哦买嘎币",0)
-if B1040Remaining(bsPid)>0 then
-set B1040FreeButton[bsPid]=DialogAddButton(B1032Dialog[bsPid],"每日免费兑换：使用1次额度",0)
-endif
-endif
-if not B1032Owns(bsPid,bsSkin) then
-set B1032BuyButton[bsPid]=DialogAddButton(B1032Dialog[bsPid],"永久解锁："+I2S(B1031PermanentPrice)+" 哦买嘎币",0)
-endif
-set B1032BackButton[bsPid]=DialogAddButton(B1032Dialog[bsPid],"返回该英雄皮肤列表",0)
-else
-set bsText=bsText+"\n共 "+I2S(B1032HeroCount[bsHero])+" 款，请选择皮肤。"
-set bsIndex=0
-if B1032Page[bsPid]*5>=B1032HeroCount[bsHero] then
-set B1032Page[bsPid]=0
-endif
-loop
-exitwhen bsIndex>=5 or B1032Page[bsPid]*5+bsIndex>=B1032HeroCount[bsHero]
-set bsSkin=B1032HeroSkin[bsHero*16+B1032Page[bsPid]*5+bsIndex]
-set bsStatus=""
-if B1032Owns(bsPid,bsSkin) then
-set bsStatus=" [永久]"
-elseif B1032Allowed(bsPid,bsSkin) then
-set bsStatus=" [当局]"
-endif
-set B1032ListButton[bsPid*5+bsIndex]=DialogAddButton(B1032Dialog[bsPid],B1032SkinName[bsSkin]+bsStatus,0)
-set B1032ListSkin[bsPid*5+bsIndex]=bsSkin
-set bsIndex=bsIndex+1
-endloop
-if B1032Page[bsPid]>0 then
-set B1032PrevButton[bsPid]=DialogAddButton(B1032Dialog[bsPid],"上一页",0)
-endif
-if (B1032Page[bsPid]+1)*5<B1032HeroCount[bsHero] then
-set B1032NextButton[bsPid]=DialogAddButton(B1032Dialog[bsPid],"下一页",0)
-endif
-endif
-set B1032ResetButton[bsPid]=DialogAddButton(B1032Dialog[bsPid],"恢复原皮肤",0)
-endif
-call DialogSetMessage(B1032Dialog[bsPid],bsText)
-call DialogAddButton(B1032Dialog[bsPid],"关闭",0)
-call DialogDisplay(Player(bsPid),B1032Dialog[bsPid],true)
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1032Click takes nothing returns nothing
-local integer bsPid=GetPlayerId(GetTriggerPlayer())
-local button bsButton=GetClickedButton()
-local integer bsIndex=0
-if not B836ArcHuman(bsPid) then
-set bsButton=null
-return
-endif
-loop
-exitwhen bsIndex>=5
-if bsButton==B1032ListButton[bsPid*5+bsIndex] then
-set B1032Detail[bsPid]=B1032ListSkin[bsPid*5+bsIndex]
-call B1032Open(bsPid)
-set bsButton=null
-return
-endif
-set bsIndex=bsIndex+1
-endloop
-if bsButton==B1040FreeButton[bsPid] then
-call B1040Trade(bsPid,B1032Detail[bsPid])
-elseif bsButton==B1032RentButton[bsPid] then
-call B1032Trade(bsPid,11)
-elseif bsButton==B1032BuyButton[bsPid] then
-call B1032Trade(bsPid,12)
-elseif bsButton==B1032EquipButton[bsPid] then
-if B1032Fits(bsPid,B1032Detail[bsPid]) and B1032Allowed(bsPid,B1032Detail[bsPid]) and UnitAlive(M7[bsPid]) and PIFU_CONDITION(M7[bsPid],Player(bsPid)) then
-set B1032Selected[bsPid]=B1032Detail[bsPid]
-call B1032Apply(bsPid)
-else
-call X37(Player(bsPid),"请在主英雄存活、满血满魔时免费使用。")
-endif
-elseif bsButton==B1032ResetButton[bsPid] then
-call B1032Restore(bsPid)
-elseif bsButton==B1032TitleButton[bsPid] then
-set B1031TitleHidden[bsPid]=not B1031TitleHidden[bsPid]
-set B1031NotifyPid=bsPid
-call ExecuteFunc("B1031HeroChanged")
-elseif bsButton==B1032BackButton[bsPid] then
-set B1032Detail[bsPid]=0
-call B1032Open(bsPid)
-elseif bsButton==B1032NextButton[bsPid] then
-set B1032Page[bsPid]=B1032Page[bsPid]+1
-call B1032Open(bsPid)
-elseif bsButton==B1032PrevButton[bsPid] then
-set B1032Page[bsPid]=IMaxBJ(0,B1032Page[bsPid]-1)
-call B1032Open(bsPid)
-endif
-set bsButton=null
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1032Init takes nothing returns nothing
-// Late-added skin system removed.
-return
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1031IsSk takes unit skHero returns boolean
-return skHero!=null and (GetUnitTypeId(skHero)=='NC00' or GetUnitTypeId(skHero)=='ZC00')
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return false
 endfunction
 function B1031RentalCost takes integer skPid returns integer
-return B1031RentalPrice
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return 0
 endfunction
 function B1031StripTitle takes string skText returns string
-local integer realmLevel
-local string realmPrefix
-local boolean realmRemoved
-loop
-set realmRemoved=false
-if SubString(skText,0,StringLength("|cff80ffff【苏生大帝】|r"))=="|cff80ffff【苏生大帝】|r" then
-set skText=SubString(skText,StringLength("|cff80ffff【苏生大帝】|r"),StringLength(skText))
-set realmRemoved=true
-elseif SubString(skText,0,StringLength("|cffffffff【苏生大帝】|r"))=="|cffffffff【苏生大帝】|r" then
-set skText=SubString(skText,StringLength("|cffffffff【苏生大帝】|r"),StringLength(skText))
-set realmRemoved=true
-endif
-set realmLevel=1
-loop
-exitwhen realmLevel>14
-set realmPrefix=B1035RealmTitle(realmLevel)
-if SubString(skText,0,StringLength(realmPrefix))==realmPrefix then
-set skText=SubString(skText,StringLength(realmPrefix),StringLength(skText))
-set realmRemoved=true
-endif
-set realmLevel=realmLevel+1
-endloop
-exitwhen not realmRemoved
-endloop
-return skText
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
+return ""
 endfunction
 function B1039ApplyLegacy takes integer skinPid1039 returns nothing
 // Late-added skin system removed.
@@ -238548,734 +236140,139 @@ function B1039Pulse takes nothing returns nothing
 return
 endfunction
 function B1031Refresh takes integer skPid returns nothing
-local unit skHero=M7[skPid]
-local string skTitle=""
-local string skCurrent=GetPlayerName(Player(skPid))
-local integer realmHero=B1035Hero(skHero)
-call B1035Request(skPid)
-if B836ArcStarted and not B1031Captured[skPid] and skHero!=null and GetUnitTypeId(skHero)!=0 then
-set B1031Captured[skPid]=true
-set B1031StartSk[skPid]=B1031IsSk(skHero)
-endif
-if not B836ArcLoaded[skPid] then
-set skHero=null
-return
-endif
-if B1031NameBase[skPid]==null or B1031NameBase[skPid]=="" or skCurrent!=B1031NameRendered[skPid] then
-set B1031NameBase[skPid]=B1031StripTitle(skCurrent)
-endif
-if realmHero>0 and B1036MasteryValid(skPid,realmHero) and not B1031TitleHidden[skPid] then
-set skTitle=B1035RealmTitle(B1035Realm(B1035Progress(skPid,realmHero)))
-endif
-set B1031NameRendered[skPid]=skTitle+B1031NameBase[skPid]
-call SetPlayerName(Player(skPid),B1031NameRendered[skPid])
-if B1031ScoreBase[skPid]==null or B1031ScoreBase[skPid]=="" or KZ4[skPid]!=B1031ScoreRendered[skPid] then
-set B1031ScoreBase[skPid]=B1031StripTitle(KZ4[skPid])
-endif
-set B1031ScoreRendered[skPid]=skTitle+B1031ScoreBase[skPid]
-set KZ4[skPid]=B1031ScoreRendered[skPid]
-call B1039ApplyLegacy(skPid)
-set skHero=null
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1031RefreshLater takes nothing returns nothing
-local timer skTimer=GetExpiredTimer()
-local integer skPid=LoadInteger(L7,GetHandleId(skTimer),0)
-call FlushChildHashtable(L7,GetHandleId(skTimer))
-call PauseTimer(skTimer)
-call DestroyTimer(skTimer)
-set B1031RefreshPending[skPid]=false
-call B1031Refresh(skPid)
-call B1032Apply(skPid)
-set skTimer=null
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1031HeroChanged takes nothing returns nothing
-local timer skTimer=null
-if B1031NotifyPid>=0 and B1031NotifyPid<12 then
-call B1031Refresh(B1031NotifyPid)
-call B1032Apply(B1031NotifyPid)
-// Entry callers may set their display name after XWE; one bounded retry follows.
-if not B1031RefreshPending[B1031NotifyPid] then
-set B1031RefreshPending[B1031NotifyPid]=true
-set skTimer=CreateTimer()
-call SaveInteger(L7,GetHandleId(skTimer),0,B1031NotifyPid)
-call TimerStart(skTimer,0.,false,function B1031RefreshLater)
-endif
-endif
-set skTimer=null
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1031Capture takes nothing returns nothing
-local integer skPid=0
-loop
-exitwhen skPid>=12
-if B836ArcHuman(skPid) then
-call B1031Refresh(skPid)
-endif
-set skPid=skPid+1
-endloop
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1036NormalVictory takes nothing returns nothing
-local integer victoryPid=0
-if not B836ArcStarted or B1031TestMatch then
-return
-endif
-loop
-exitwhen victoryPid>=12
-if B836ArcHuman(victoryPid) and KKServerScore_PlayerTeam(Player(victoryPid))==B1036VictoryTeam then
-set B1036CoinPending[victoryPid]=true
-call X37(Player(victoryPid),"胜利奖励："+I2S(B1069RewardMultiplier)+" 哦买嘎币正在排队保存，以KK存档确认提示为准。")
-endif
-set victoryPid=victoryPid+1
-endloop
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1031Pump takes nothing returns nothing
-local integer skPid=0
-local integer skDebit=0
-local integer victoryCoins
-local integer victoryOperation
-loop
-exitwhen skPid>=12
-if (B1031Pending[skPid] or B1036CoinPending[skPid]) and B836ArcHuman(skPid) and B836ArcLoaded[skPid] and B1042Loaded[skPid] and B1042Role[skPid]==0 and not B836ArcFault[skPid] and not B839ArcReadPending[skPid] and B836ArcOperation[skPid]==0 then
-if B1031RewardEpoch[skPid]==B836ArcEpoch[skPid] then
-set B1031Pending[skPid]=false
-set B1036CoinPending[skPid]=false
-else
-if B1031Pending[skPid] and B1036PlatformLoaded[skPid] and not B1036MasteryValid(skPid,82) then
-set B1031Pending[skPid]=false
-endif
-if not B1031Pending[skPid] or B1036PlatformLoaded[skPid] then
-set skDebit=0
-if not B836ArcGrace() then
-set skDebit=B836ArcHeld[skPid]
-endif
-set victoryCoins=B836ArcCoins[skPid]-skDebit
-set victoryOperation=10
-if B1036CoinPending[skPid] then
-if victoryCoins>=1000000 then
-set B1036CoinPending[skPid]=false
-call X37(Player(skPid),"哦买嘎币已达存档上限，本次胜利币未增加。")
-else
-set victoryCoins=IMinBJ(1000000,victoryCoins+B1069RewardMultiplier)
-set victoryOperation=13
-endif
-endif
-if B1031Pending[skPid] or B1036CoinPending[skPid] then
-call B836ArcBegin(skPid,victoryOperation,victoryCoins,B836ArcBook[skPid],B836ArcClaw[skPid],B836ArcStamp[skPid],B891ArcMiao[skPid],skDebit)
-endif
-endif
-endif
-endif
-set skPid=skPid+1
-endloop
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1031SettleTeam takes integer skWinningTeam returns nothing
-local integer skPid=0
-local integer skGain=0
-local integer realmHero
-if B1031Ended then
-return
-endif
-set B1031Ended=true
-// B1036: restore normal-game mastery eligibility for all heroes.
-if not B836ArcStarted or TimerGetElapsed(W)-M_4<1200. or B1031TestMatch then
-return
-endif
-loop
-exitwhen skPid>=12
-set realmHero=B1035Hero(M7[skPid])
-if B836ArcHuman(skPid) and realmHero>0 then
-set skGain=1
-if KKServerScore_PlayerTeam(Player(skPid))==skWinningTeam then
-set skGain=skGain+1
-endif
-if B1031Triple[skPid] then
-set skGain=skGain+1
-endif
-if B1031Rampage[skPid] then
-set skGain=skGain+1
-endif
-set skGain=skGain*B1069RewardMultiplier
-set B1031Gain[skPid]=skGain
-if realmHero==82 then
-set B1031Pending[skPid]=true
-call X37(Player(skPid),"骷髅王熟练度结算 +"+I2S(skGain)+"，正在排队保存；以保存确认提示为准。")
-else
-set B1035RewardHero[skPid]=realmHero
-call B1035Request(skPid)
-call B1035Pump(skPid)
-call X37(Player(skPid),"该英雄熟练度结算 +"+I2S(skGain)+"，正在排队保存；以KK读回确认提示为准。")
-endif
-endif
-set skPid=skPid+1
-endloop
-call B1031Pump()
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1031Settle takes nothing returns nothing
-call B1031SettleTeam(O94)
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1031DefenseSettle takes nothing returns nothing
-call B1031SettleTeam(1)
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1031HeroDeath takes nothing returns nothing
-local unit skDead=GetTriggerUnit()
-local unit skKiller=GetKillingUnit()
-local integer skPid
-local real skNow=TimerGetElapsed(W)
-if skKiller!=null and IsUnitType(skDead,UNIT_TYPE_HERO) and not IsUnitIllusion(skDead) and IsUnitEnemy(skDead,GetOwningPlayer(skKiller)) and B836ArcStarted and not B1031Ended then
-set skPid=GetPlayerId(GetOwningPlayer(skKiller))
-if B836ArcHuman(skPid) and B1035Hero(M7[skPid])>0 then
-call B1035Request(skPid)
-if skNow-B1031KillTime[skPid]>18. then
-set B1031Burst[skPid]=0
-endif
-set B1031Burst[skPid]=B1031Burst[skPid]+1
-set B1031KillTime[skPid]=skNow
-if B1031Burst[skPid]>=3 then
-set B1031Triple[skPid]=true
-endif
-if B1031Burst[skPid]>=5 then
-set B1031Rampage[skPid]=true
-endif
-endif
-endif
-set skDead=null
-set skKiller=null
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1031Open takes integer skPid returns nothing
-local string skText="修炼境界"
-if not B836ArcHuman(skPid) or B1031Dialog[skPid]==null then
-return
-endif
-call B839ArcCheckReceipt(skPid)
-call B1031Refresh(skPid)
-call B1031Pump()
-call B1040Request(skPid)
-call DialogClear(B1031Dialog[skPid])
-set B1040LegacyButton[skPid]=null
-set B1031RentButton[skPid]=null
-set B1031BuyButton[skPid]=null
-set B1031EquipButton[skPid]=null
-set B1031ResetButton[skPid]=null
-set B1031TitleButton[skPid]=null
-if not B836ArcLoaded[skPid] then
-set skText=skText+"\nKK平台存档尚未读取成功。"
-else
-set skText=skText+"\n"+B1035Info(skPid)+"\n"+B836ArcBalanceText(skPid)
-set skText=skText+"\n"+B1040Text(skPid)
-set skText=skText+"\n当局使用权下一局失效。"
-if B1031Owned[skPid] then
-set skText=skText+"\n永久权限：已解锁"
-else
-set skText=skText+"\n永久权限：未解锁"
-endif
-if B839ArcReadPending[skPid] then
-set skText=skText+"\n跨局保存待平台读回确认。"
-endif
-if B836ArcOperation[skPid]!=0 or B836ArcFault[skPid] or B839ArcReadPending[skPid] then
-set skText=skText+"\n存档交易待确认，暂停新购买。"
-elseif B1031IsSk(M7[skPid]) then
-if B1031Owned[skPid] then
-set B1031EquipButton[skPid]=DialogAddButton(B1031Dialog[skPid],"免费使用苏生大帝（永久权限）",0)
-else
-if B1031RentalEpoch[skPid]==B836ArcEpoch[skPid] then
-set B1031EquipButton[skPid]=DialogAddButton(B1031Dialog[skPid],"重新使用苏生大帝（本局已付款）",0)
-else
-set B1031RentButton[skPid]=DialogAddButton(B1031Dialog[skPid],"当局使用："+I2S(B1031RentalCost(skPid))+"哦买嘎币",0)
-if B1040Remaining(skPid)>0 then
-set B1040LegacyButton[skPid]=DialogAddButton(B1031Dialog[skPid],"每日免费兑换苏生大帝：1次额度",0)
-endif
-endif
-set B1031BuyButton[skPid]=DialogAddButton(B1031Dialog[skPid],"永久解锁："+I2S(B1031PermanentPrice)+"哦买嘎币",0)
-endif
-set B1031ResetButton[skPid]=DialogAddButton(B1031Dialog[skPid],"恢复原皮肤（不退款）",0)
-set B1031TitleButton[skPid]=DialogAddButton(B1031Dialog[skPid],"显示 / 隐藏熟练度称号",0)
-else
-set skText=skText+"\n选择骷髅王后可兑换和使用。"
-endif
-endif
-set skText=skText+"\n非test对局至少20分钟，结束时结算\n完成+1、获胜+1、三杀+1、五杀+1\n每项每局一次。"
-call DialogSetMessage(B1031Dialog[skPid],skText)
-call DialogAddButton(B1031Dialog[skPid],"关闭",0)
-call DialogDisplay(Player(skPid),B1031Dialog[skPid],true)
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1031Trade takes integer skPid,integer skChoice returns nothing
-local integer skCost=B1031PermanentPrice
-local unit skHero=M7[skPid]
-if B1040Hero[skPid]>0 and LoadBoolean(B1040Store,skPid*8+3,B1040Hero[skPid]) then
-call X37(Player(skPid),"每日免费兑换待确认，请稍后再购买。")
-set skHero=null
-return
-endif
-if not B836ArcHuman(skPid) or not B1031IsSk(skHero) or not B836ArcLoaded[skPid] or B836ArcFault[skPid] or B836ArcOperation[skPid]!=0 or B839ArcReadPending[skPid] then
-call X37(Player(skPid),"请选择骷髅王，并等待KK存档交易确认后再试。")
-set skHero=null
-return
-endif
-if skChoice==8 then
-set skCost=B1031RentalCost(skPid)
-if B1031Owned[skPid] or B1031RentalEpoch[skPid]==B836ArcEpoch[skPid] then
-call X37(Player(skPid),"已经拥有使用权限，请选择免费使用，未重复扣币。")
-set skHero=null
-return
-endif
-elseif B1031Owned[skPid] then
-call X37(Player(skPid),"已经永久解锁，未重复扣币。")
-set skHero=null
-return
-endif
-if skChoice==8 and (not UnitAlive(skHero) or not PIFU_CONDITION(skHero,Player(skPid))) then
-call X37(Player(skPid),"当局换肤需要主英雄存活、满血满魔。")
-set skHero=null
-return
-endif
-if B836ArcCoins[skPid]-B836ArcHeld[skPid]<skCost then
-call X37(Player(skPid),"可用哦买嘎币不足，未扣币。")
-set skHero=null
-return
-endif
-call B836ArcBegin(skPid,skChoice,B836ArcCoins[skPid]-skCost,B836ArcBook[skPid],B836ArcClaw[skPid],B836ArcStamp[skPid],B891ArcMiao[skPid],0)
-call X37(Player(skPid),"皮肤兑换已提交；等待确认期间请勿重复购买。")
-set skHero=null
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1031DialogClick takes nothing returns nothing
-local integer skPid=GetPlayerId(GetTriggerPlayer())
-local button skButton=GetClickedButton()
-local unit skHero=M7[skPid]
-if not B836ArcHuman(skPid) then
-set skButton=null
-set skHero=null
-return
-endif
-if skButton==B1040LegacyButton[skPid] then
-call B1040Trade(skPid,B1032LegacySkin)
-elseif skButton==B1031RentButton[skPid] then
-call B1031Trade(skPid,8)
-elseif skButton==B1031BuyButton[skPid] then
-call B1031Trade(skPid,9)
-elseif skButton==B1031TitleButton[skPid] then
-set B1031TitleHidden[skPid]=not B1031TitleHidden[skPid]
-call B1031Refresh(skPid)
-elseif skButton==B1031EquipButton[skPid] then
-if B1031IsSk(skHero) and B836ArcLoaded[skPid] and (B1031Owned[skPid] or B1031RentalEpoch[skPid]==B836ArcEpoch[skPid]) and UnitAlive(skHero) and PIFU_CONDITION(skHero,Player(skPid)) then
-set B1031Equipped[skPid]=true
-set B1032Selected[skPid]=0
-set B1032ModelUnit[skPid]=null
-set B1031ModelUnit[skPid]=null
-call B1031Refresh(skPid)
-endif
-elseif skButton==B1031ResetButton[skPid] then
-if B1031IsSk(skHero) and UnitAlive(skHero) and B1031ModelUnit[skPid]==skHero and PIFU_CONDITION(skHero,Player(skPid)) and B1039VisualFree(skHero) then
-call DzSetUnitModel(skHero,B1031OriginalModel[skPid])
-if GetUnitTypeId(skHero)=='NC00' then
-call SetUnitVertexColor(skHero,100,125,100,255)
-endif
-set B1031ModelUnit[skPid]=null
-set B1031Equipped[skPid]=false
-call RemoveSavedString(L7,GetHandleId(skHero),StringHash("B1039SkinModel"))
-call RemoveSavedInteger(L7,GetHandleId(skHero),StringHash("B1039SkinType"))
-endif
-endif
-set skButton=null
-set skHero=null
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1035Open takes integer realmPid returns nothing
-local string realmText="修炼境界"
-local integer realmLevel=1
-local integer realmEnd=8
-if not B836ArcHuman(realmPid) or B1035Dialog[realmPid]==null then
-return
-endif
-call B1031Refresh(realmPid)
-call B1031Pump()
-call B1035Pump(realmPid)
-call B1040Request(realmPid)
-call DialogClear(B1035Dialog[realmPid])
-set B1035TitleButton[realmPid]=null
-set B1035LevelsButton[realmPid]=null
-set B1035NextButton[realmPid]=null
-set B1035BackButton[realmPid]=null
-if B1035Page[realmPid]==0 then
-if B1035Hero(M7[realmPid])>0 then
-set realmText=realmText+" / "+GetUnitName(M7[realmPid])
-endif
-set realmText=realmText+"\n"+B1035Info(realmPid)+"\n各英雄分别累计。\n完成/获胜/三杀/五杀各+1，每局最多+4。\n非test对局至少20分钟，结束时结算。"
-set realmText=realmText+"\n"+B1040Text(realmPid)
-set B1035TitleButton[realmPid]=DialogAddButton(B1035Dialog[realmPid],"显示 / 隐藏境界称号",0)
-set B1035LevelsButton[realmPid]=DialogAddButton(B1035Dialog[realmPid],"查看境界门槛",0)
-else
-if B1035Page[realmPid]==2 then
-set realmLevel=9
-set realmEnd=14
-endif
-loop
-exitwhen realmLevel>realmEnd
-set realmText=realmText+"\n"+B1035RealmName(realmLevel)+"："+I2S(B1035RealmMin(realmLevel))
-if realmLevel<14 then
-set realmText=realmText+"–"+I2S(B1035RealmMin(realmLevel+1)-1)
-else
-set realmText=realmText+"及以上（大于1000）"
-endif
-set realmLevel=realmLevel+1
-endloop
-set B1035NextButton[realmPid]=DialogAddButton(B1035Dialog[realmPid],"另一页境界",0)
-set B1035BackButton[realmPid]=DialogAddButton(B1035Dialog[realmPid],"返回当前英雄",0)
-endif
-call DialogSetMessage(B1035Dialog[realmPid],realmText)
-call DialogAddButton(B1035Dialog[realmPid],"关闭",0)
-call DialogDisplay(Player(realmPid),B1035Dialog[realmPid],true)
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1035Click takes nothing returns nothing
-local integer realmPid=GetPlayerId(GetTriggerPlayer())
-local button realmButton=GetClickedButton()
-if realmButton==B1035TitleButton[realmPid] then
-set B1031TitleHidden[realmPid]=not B1031TitleHidden[realmPid]
-elseif realmButton==B1035LevelsButton[realmPid] then
-set B1035Page[realmPid]=1
-elseif realmButton==B1035NextButton[realmPid] then
-set B1035Page[realmPid]=3-B1035Page[realmPid]
-elseif realmButton==B1035BackButton[realmPid] then
-set B1035Page[realmPid]=0
-else
-set realmButton=null
-return
-endif
-call B1035Open(realmPid)
-set realmButton=null
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1035Init takes nothing returns nothing
-local trigger realmLoad=CreateTrigger()
-local trigger realmSave=CreateTrigger()
-local trigger realmClick=CreateTrigger()
-local trigger countLoad=CreateTrigger()
-local integer realmPid=0
-set B1035Store=InitHashtable()
-call DzTriggerRegisterSyncData(countLoad,"B1036PC",false)
-call TriggerAddAction(countLoad,function B1036CountSync)
-// Native registration aliases with identical hero skill sets; keep stable base IDs.
-call SaveInteger(L7,StringHash("B1035Hero"),'H06W','Hblm')
-call SaveInteger(L7,StringHash("B1035Hero"),'H06X','Hblm')
-call SaveInteger(L7,StringHash("B1035Hero"),'H06Y','Hblm')
-call SaveInteger(L7,StringHash("B1035Hero"),'H0BC','Hblm')
-call SaveInteger(L7,StringHash("B1035Hero"),'Hhkl','Hpal')
-call SaveInteger(L7,StringHash("B1035Hero"),'Hpb1','Hpal')
-call SaveInteger(L7,StringHash("B1035Hero"),'E01P',39)
-call SaveInteger(L7,StringHash("B1035Hero"),'E021',39)
-call SaveInteger(L7,StringHash("B1035Hero"),'E023',39)
-call SaveInteger(L7,StringHash("B1035Hero"),'E024',39)
-call SaveInteger(L7,StringHash("B1035Hero"),'N013','N01O')
-call SaveInteger(L7,StringHash("B1035Hero"),'N014','N01O')
-call SaveInteger(L7,StringHash("B1035Hero"),'N015','N01O')
-call SaveInteger(L7,StringHash("B1035Hero"),'N01H',58)
-call SaveInteger(L7,StringHash("B1035Hero"),'N01J',58)
-call SaveInteger(L7,StringHash("B1035Hero"),'N01T',58)
-call SaveInteger(L7,StringHash("B1035Hero"),'N0HT',58)
-call SaveInteger(L7,StringHash("B1035Hero"),'H00J','H00I')
-call SaveInteger(L7,StringHash("B1035Hero"),'O017','O016')
-call SaveInteger(L7,StringHash("B1035Hero"),'H0E3','H0E1')
-call SaveInteger(L7,StringHash("B1035Hero"),'H0E4','H0E1')
-call SaveInteger(L7,StringHash("B1035Hero"),'H0E5','H0E1')
-call SaveInteger(L7,StringHash("B1035Hero"),'N0MM','N0MK')
-call DzTriggerRegisterSyncData(realmLoad,"B1035ML",false)
-call TriggerAddAction(realmLoad,function B1035LoadSync)
-call DzTriggerRegisterSyncData(realmSave,"B1035MA",false)
-call TriggerAddAction(realmSave,function B1035Ack)
-call TriggerAddAction(realmClick,function B1035Click)
-loop
-exitwhen realmPid>=12
-if KKServerScore_InitialHuman[realmPid] then
-set B1035Dialog[realmPid]=DialogCreate()
-call TriggerRegisterDialogEvent(realmClick,B1035Dialog[realmPid])
-endif
-set realmPid=realmPid+1
-endloop
-set realmLoad=null
-set realmSave=null
-set realmClick=null
-set countLoad=null
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1031Chat takes nothing returns nothing
-local integer realmPid=GetPlayerId(GetTriggerPlayer())
-set B1035Page[realmPid]=0
-call B1035Open(realmPid)
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1031Revived takes nothing returns nothing
-call B1039Notify(GetTriggerUnit())
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1031TestChat takes nothing returns nothing
-set B1031TestMatch=true
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1031Init takes nothing returns nothing
-local trigger skChat=CreateTrigger()
-local trigger skClick=CreateTrigger()
-local trigger skDeath=CreateTrigger()
-local trigger skRevive=CreateTrigger()
-local trigger skTest=CreateTrigger()
-local integer skPid=0
-loop
-exitwhen skPid>=12
-if KKServerScore_InitialHuman[skPid] then
-set B1031Dialog[skPid]=DialogCreate()
-call TriggerRegisterDialogEvent(skClick,B1031Dialog[skPid])
-call TriggerRegisterPlayerChatEvent(skChat,Player(skPid),"-mastery",true)
-call TriggerRegisterPlayerChatEvent(skChat,Player(skPid),"-熟练度",true)
-call TriggerRegisterPlayerChatEvent(skChat,Player(skPid),"-skin",true)
-call TriggerRegisterPlayerChatEvent(skTest,Player(skPid),"-omgtest",false)
-call TriggerRegisterPlayerChatEvent(skTest,Player(skPid),"-wawj",true)
-call TriggerRegisterPlayerChatEvent(skTest,Player(skPid),"-test",true)
-endif
-call TriggerRegisterPlayerUnitEvent(skDeath,Player(skPid),EVENT_PLAYER_UNIT_DEATH,null)
-call TriggerRegisterPlayerUnitEvent(skRevive,Player(skPid),EVENT_PLAYER_HERO_REVIVE_FINISH,null)
-set skPid=skPid+1
-endloop
-call TriggerAddAction(skChat,function B1031Chat)
-call TriggerAddAction(skClick,function B1031DialogClick)
-call TriggerAddAction(skDeath,function B1031HeroDeath)
-call TriggerAddAction(skRevive,function B1031Revived)
-call TriggerAddAction(skTest,function B1031TestChat)
-set skChat=null
-set skClick=null
-set skDeath=null
-set skRevive=null
-set skTest=null
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B836ArcDialogClick takes nothing returns nothing
-local integer arcPid=GetPlayerId(GetTriggerPlayer())
-local button arcClicked=GetClickedButton()
-if not B836ArcHuman(arcPid) or GetClickedDialog()!=B836ArcDialog[arcPid] then
-set arcClicked=null
-return
-endif
-if arcClicked==B1031ArchiveButton[arcPid] then
-set B1035Page[arcPid]=0
-call B1035Open(arcPid)
-elseif arcClicked==B836ArcRulesButton[arcPid] then
-call X37(Player(arcPid),"逃跑次数-1卡：3个哦买嘎币减1次逃跑，立即扣存档币，退出不退款；次数为0或可用余额不足时不扣币。减次不会免除本局提前退出的判定。")
-call X37(Player(arcPid),"双圣彻底陨落后，每位在场真人每局可抽一次：57%得5硬币，10%得15硬币；10%得3天知识之书，10%得3天寒铁钢爪；7%得15天知识之书，3%得15天寒铁钢爪，3%得15天喵刀使用权限。")
-call X37(Player(arcPid),"5硬币可兑换1天喵刀权限，立即扣币，退出不退款；未到期顺延，已到期从兑换时起算。喵刀替换仅限正式开局3分钟内，每局一次。成品从中奖起计自然日，重复中奖顺延；有效期内两种成品各自每局限领一次。1硬币兑100金币，每局累计最多300金币。正式开局5分钟内退出，本局暂记硬币不扣存档。")
-elseif arcClicked==B891ArcMiaoButton[arcPid] then
-call B891MiaoReplace(arcPid)
-elseif arcClicked==B836ArcQueryButton[arcPid] then
-call X37(Player(arcPid),B836ArcBalanceText(arcPid))
-elseif arcClicked==B836ArcExchangeButton[arcPid] then
-call B836ArcTrade(arcPid,2)
-elseif arcClicked==B891ArcMiaoBuyButton[arcPid] then
-call B836ArcTrade(arcPid,4)
-elseif arcClicked==B901QuitBuyButton[arcPid] then
-call B836ArcTrade(arcPid,5)
-elseif arcClicked==B836ArcBookButton[arcPid] then
-call B836ArcClaim(arcPid,true)
-elseif arcClicked==B836ArcClawButton[arcPid] then
-call B836ArcClaim(arcPid,false)
-endif
-set arcClicked=null
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B836ArcOpenSync takes nothing returns nothing
-call B836ArcOpen(GetPlayerId(DzGetTriggerSyncPlayer()))
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 // Hut selection opens the 抽奖屋 directly; archive dialog stays on the -archive entry.
 function LOTTERY_OpenSync takes nothing returns nothing
 call LOTTERY_Open(GetPlayerId(DzGetTriggerSyncPlayer()))
 endfunction
-function B836ArcSelected takes nothing returns nothing
-local player b1060GetTriggerPlayer=GetTriggerPlayer()
-local unit b1060GetTriggerUnit=GetTriggerUnit()
-// B890: retain verified read-only skill viewing; diagnostic text removed.
-if GetUnitTypeId(b1060GetTriggerUnit)=='nMv4' and GetLocalPlayer()==b1060GetTriggerPlayer then
-call MHUnit_EnableViewSkill(b1060GetTriggerUnit,b1060GetTriggerPlayer)
-set b1060GetTriggerPlayer=null
-set b1060GetTriggerUnit=null
-return
-endif
-// Selection only sends a request; dialog handles and gameplay are never local-created.
-if b1060GetTriggerUnit==B836ArcHut and GetLocalPlayer()==b1060GetTriggerPlayer then
+function LOTTERY_Selected takes nothing returns nothing
+local player lotPlayer=GetTriggerPlayer()
+local unit lotUnit=GetTriggerUnit()
+// Local selection only sends a synchronized open request; all dialog/gameplay work is shared.
+if lotUnit==B836ArcHut and GetLocalPlayer()==lotPlayer then
 if TimerGetElapsed(W)>=B837ArcLocalSendAfter then
 set B837ArcLocalSendAfter=TimerGetElapsed(W)+.3
 call DzSyncData("LOTOPEN","")
 endif
 endif
-set b1060GetTriggerPlayer=null
-set b1060GetTriggerUnit=null
+set lotPlayer=null
+set lotUnit=null
 endfunction
 function B836ArcChat takes nothing returns nothing
-call B836ArcOpen(GetPlayerId(GetTriggerPlayer()))
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B836ArcUnlock takes nothing returns nothing
-local integer arcPid=0
-if B836ArcRewarded then
-return
-endif
-set B836ArcRewarded=true
-loop
-exitwhen arcPid>=12
-if B836ArcHuman(arcPid) then
-set B836ArcTicket[arcPid]=true
-call X37(Player(arcPid),"天星双圣已被击败！你获得一次存档抽奖机会。点击达拉然泉水旁的存档商店，或输入 -archive 进行抽奖。")
-endif
-set arcPid=arcPid+1
-endloop
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B836ArcGraceExpired takes nothing returns nothing
-call PauseTimer(GetExpiredTimer())
-call DestroyTimer(GetExpiredTimer())
-call B898QuitArm()
-call B836ArcSettlement()
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B836ArcStart takes nothing returns nothing
-local timer arcGraceTimer
-if B836ArcStarted then
-return
-endif
-set B836ArcStarted=true
-call ExecuteFunc("B1031Capture")
-set arcGraceTimer=CreateTimer()
-call TimerStart(arcGraceTimer,300.01,false,function B836ArcGraceExpired)
-set arcGraceTimer=null
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1043Give takes nothing returns nothing
 local integer giveAuthor1043=GetPlayerId(GetTriggerPlayer())
 local string giveText1043=GetEventPlayerChatString()
 local string giveFloorText1043=SuijiTest_CommandWord(giveText1043,2)
-local string giveCoinsText1043=SuijiTest_CommandWord(giveText1043,3)
+local string giveGoldText1043=SuijiTest_CommandWord(giveText1043,3)
 local integer giveFloor1043=S2I(giveFloorText1043)
-local integer giveCoins1043=S2I(giveCoinsText1043)
+local integer giveGold1043=S2I(giveGoldText1043)
 local player givePlayer1043=null
-local integer giveTarget1043=0
-local timer giveRetry1043=null
-if not B836ArcHuman(giveAuthor1043) or B894PlayerIdentity[giveAuthor1043]!="小生我怕怕#7351" then
-call X37(Player(giveAuthor1043),"你没有使用 -give 指令的权限。")
+if not TY7(Player(giveAuthor1043)) or not B1132IsXiaoSheng(giveAuthor1043) then
+call X37(Player(giveAuthor1043),"你没有使用 -give 指令的权限。仅名字以‘小生’开头的账号可用。")
 return
 endif
 if SuijiTest_CommandWord(giveText1043,1)!="-give" then
 return
 endif
-if not B836ArcUInt(giveFloorText1043) or StringLength(giveFloorText1043)>2 or giveFloor1043<1 or giveFloor1043>10 or not B836ArcUInt(giveCoinsText1043) or StringLength(giveCoinsText1043)>7 or giveCoins1043<0 or giveCoins1043>1000000 or SuijiTest_CommandWord(giveText1043,4)!="" then
-call X37(Player(giveAuthor1043),"格式：-give 楼层 数量；楼层1至10，数量0至1000000，直接设置余额。")
+if not B836ArcUInt(giveFloorText1043) or StringLength(giveFloorText1043)>2 or giveFloor1043<1 or giveFloor1043>10 or not B836ArcUInt(giveGoldText1043) or StringLength(giveGoldText1043)>7 or giveGold1043<0 or giveGold1043>1000000 or SuijiTest_CommandWord(giveText1043,4)!="" then
+call X37(Player(giveAuthor1043),"格式：-give 楼层 数量；楼层1至10，数量0至1000000，发放当局游戏金币。")
 return
 endif
 set givePlayer1043=K27(giveFloor1043)
-if givePlayer1043==null then
-call X37(Player(giveAuthor1043),"该楼层没有玩家。")
-return
-endif
-set giveTarget1043=GetPlayerId(givePlayer1043)
+if givePlayer1043==null or not TY7(givePlayer1043) then
+call X37(Player(giveAuthor1043),"该楼层没有在线真人玩家。")
 set givePlayer1043=null
-if not B836ArcHuman(giveTarget1043) or not B836ArcLoaded[giveTarget1043] or not B1042Loaded[giveTarget1043] then
-call X37(Player(giveAuthor1043),"目标必须是已读取平台存档的真人玩家，电脑没有可修改的玩家存档。")
 return
 endif
-// A failed exact candidate may be retried, but cannot be replaced by a new amount.
-if B836ArcOperation[giveTarget1043]==16 and B836ArcFault[giveTarget1043] and B1043Author[giveTarget1043]==giveAuthor1043 and S2I(B836ArcPart(B836ArcCandidate[giveTarget1043],1))==giveCoins1043 then
-set B836ArcFault[giveTarget1043]=false
-set B836ArcAttempts[giveTarget1043]=1
-set giveRetry1043=CreateTimer()
-call SaveInteger(L7,GetHandleId(giveRetry1043),0,giveTarget1043)
-call SaveInteger(L7,GetHandleId(giveRetry1043),1,B836ArcSequence[giveTarget1043])
-call TimerStart(giveRetry1043,3.,true,function B836ArcRetry)
-call B836ArcLocalWrite(giveTarget1043)
-set giveRetry1043=null
-return
+call AdjustPlayerStateBJ(giveGold1043,givePlayer1043,PLAYER_STATE_RESOURCE_GOLD)
+call X37(Player(giveAuthor1043),"已向 "+I2S(giveFloor1043)+" 楼发放当局游戏金币 "+I2S(giveGold1043)+"。")
+if GetPlayerId(givePlayer1043)!=giveAuthor1043 then
+call X37(givePlayer1043,"小生向你发放了当局游戏金币 "+I2S(giveGold1043)+"。")
 endif
-if B836ArcOperation[giveTarget1043]!=0 or B836ArcFault[giveTarget1043] or B839ArcReadPending[giveTarget1043] or B1042Role[giveTarget1043]!=0 or B1042Fault[giveTarget1043] then
-call X37(Player(giveAuthor1043),"目标存档交易或打赏尚未确认，暂不可修改余额。")
-return
-endif
-set B1043Author[giveTarget1043]=giveAuthor1043
-set B1043Floor[giveTarget1043]=giveFloor1043
-// Clear provisional reservations as part of the confirmed absolute balance.
-call B836ArcBegin(giveTarget1043,16,giveCoins1043,B836ArcBook[giveTarget1043],B836ArcClaw[giveTarget1043],B836ArcStamp[giveTarget1043],B891ArcMiao[giveTarget1043],B836ArcHeld[giveTarget1043])
+set givePlayer1043=null
 endfunction
 // Admin recharge: -recharge <player 0-11> <coin|book|claw|miao> <amount>.
 // Exact platform identity only; all changes use the target player's confirmed archive transaction.
 function B1131Recharge takes nothing returns nothing
-local integer rechargeAuthor1131=GetPlayerId(GetTriggerPlayer())
-local string rechargeText1131=GetEventPlayerChatString()
-local string rechargeTargetText1131=SuijiTest_CommandWord(rechargeText1131,2)
-local string rechargeType1131=SuijiTest_CommandWord(rechargeText1131,3)
-local string rechargeAmountText1131=SuijiTest_CommandWord(rechargeText1131,4)
-local integer rechargeTarget1131=S2I(rechargeTargetText1131)
-local integer rechargeAmount1131=S2I(rechargeAmountText1131)
-local integer rechargeNow1131=0
-local integer rechargeCoins1131=0
-local integer rechargeBook1131=0
-local integer rechargeClaw1131=0
-local integer rechargeMiao1131=0
-call X37(Player(rechargeAuthor1131),"|cff00ff00[充值] 命令已接收，正在校验‘小生’模糊身份和KK存档。|r")
-call XOMG_LogEvent("CMD_RX author="+I2S(rechargeAuthor1131)+" raw="+rechargeText1131+" fuzzy="+I2S(B287_BoolToInt(B1132IsXiaoSheng(rechargeAuthor1131)))+" identity_empty="+I2S(B287_BoolToInt(B894PlayerIdentity[rechargeAuthor1131]==null or B894PlayerIdentity[rechargeAuthor1131]=="")))
-if not B836ArcHuman(rechargeAuthor1131) or not B1132IsXiaoSheng(rechargeAuthor1131) then
-call X37(Player(rechargeAuthor1131),"你没有使用 -recharge 指令的权限。")
-return
-endif
-if SuijiTest_CommandWord(rechargeText1131,1)!="-recharge" then
-return
-endif
-if not B836ArcUInt(rechargeTargetText1131) or StringLength(rechargeTargetText1131)>2 or rechargeTarget1131<0 or rechargeTarget1131>=12 or (rechargeType1131!="coin" and rechargeType1131!="book" and rechargeType1131!="claw" and rechargeType1131!="miao") or not B836ArcUInt(rechargeAmountText1131) or StringLength(rechargeAmountText1131)>7 or rechargeAmount1131<=0 or SuijiTest_CommandWord(rechargeText1131,5)!="" then
-call X37(Player(rechargeAuthor1131),"格式：-recharge 玩家编号 类型 数量；编号0至11；类型coin/book/claw/miao；数量必须为正整数。")
-return
-endif
-if rechargeType1131=="coin" then
-if rechargeAmount1131>1000000 then
-call X37(Player(rechargeAuthor1131),"coin 单次最多充值1000000。")
-return
-endif
-else
-if rechargeAmount1131>3650 then
-call X37(Player(rechargeAuthor1131),"天数单次最多充值3650天。")
-return
-endif
-endif
-if not B836ArcHuman(rechargeTarget1131) or not B836ArcLoaded[rechargeTarget1131] or not B1042Loaded[rechargeTarget1131] or B1042Role[rechargeTarget1131]!=0 then
-call X37(Player(rechargeAuthor1131),"目标玩家必须在线，且KK主存档和辅助存档均已读取成功；请进图后稍等再充值。")
-return
-endif
-if B836ArcOperation[rechargeTarget1131]!=0 or B836ArcFault[rechargeTarget1131] or B839ArcReadPending[rechargeTarget1131] then
-call X37(Player(rechargeAuthor1131),"目标玩家有存档交易尚未确认，请稍后再充值。")
-return
-endif
-set rechargeNow1131=B836ArcNow(rechargeTarget1131)
-set rechargeCoins1131=B836ArcCoins[rechargeTarget1131]
-set rechargeBook1131=B836ArcBook[rechargeTarget1131]
-set rechargeClaw1131=B836ArcClaw[rechargeTarget1131]
-set rechargeMiao1131=B891ArcMiao[rechargeTarget1131]
-if rechargeType1131=="coin" then
-if rechargeCoins1131>999999-rechargeAmount1131 then
-call X37(Player(rechargeAuthor1131),"充值后硬币将超过999999上限，未执行。")
-return
-endif
-set rechargeCoins1131=rechargeCoins1131+rechargeAmount1131
-elseif rechargeType1131=="book" then
-if rechargeNow1131>2098704000-rechargeAmount1131*86400 or rechargeBook1131>2098704000-rechargeAmount1131*86400 then
-call X37(Player(rechargeAuthor1131),"知识之书期限接近存档安全上限，未执行。")
-return
-endif
-set rechargeBook1131=IMaxBJ(rechargeBook1131,rechargeNow1131)+rechargeAmount1131*86400
-elseif rechargeType1131=="claw" then
-if rechargeNow1131>2098704000-rechargeAmount1131*86400 or rechargeClaw1131>2098704000-rechargeAmount1131*86400 then
-call X37(Player(rechargeAuthor1131),"寒铁钢爪期限接近存档安全上限，未执行。")
-return
-endif
-set rechargeClaw1131=IMaxBJ(rechargeClaw1131,rechargeNow1131)+rechargeAmount1131*86400
-else
-if rechargeNow1131>2098704000-rechargeAmount1131*86400 or rechargeMiao1131>2098704000-rechargeAmount1131*86400 then
-call X37(Player(rechargeAuthor1131),"喵刀期限接近存档安全上限，未执行。")
-return
-endif
-set rechargeMiao1131=IMaxBJ(rechargeMiao1131,rechargeNow1131)+rechargeAmount1131*86400
-endif
-set B1131RechargeAuthor[rechargeTarget1131]=rechargeAuthor1131
-set B1131RechargeType[rechargeTarget1131]=rechargeType1131
-set B1131RechargeAmount[rechargeTarget1131]=rechargeAmount1131
-call XOMG_LogEvent("CMD_CANDIDATE author="+I2S(rechargeAuthor1131)+" target="+I2S(rechargeTarget1131)+" type="+rechargeType1131+" amount="+I2S(rechargeAmount1131)+" coins="+I2S(rechargeCoins1131)+" book="+I2S(rechargeBook1131)+" claw="+I2S(rechargeClaw1131)+" miao="+I2S(rechargeMiao1131))
-call B836ArcBegin(rechargeTarget1131,3,rechargeCoins1131,rechargeBook1131,rechargeClaw1131,B836ArcStamp[rechargeTarget1131],rechargeMiao1131,0)
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1131RechargeInit takes nothing returns nothing
-local trigger rechargeTrigger1131=CreateTrigger()
-local integer rechargePid1131=0
-loop
-exitwhen rechargePid1131>=12
-call TriggerRegisterPlayerChatEvent(rechargeTrigger1131,Player(rechargePid1131),"-recharge",false)
-set rechargePid1131=rechargePid1131+1
-endloop
-call TriggerAddAction(rechargeTrigger1131,function B1131Recharge)
-set rechargeTrigger1131=null
+// v6.9 CLEAN-TEST: KK persistence implementation removed.
 endfunction
 function B1043Init takes nothing returns nothing
 local trigger giveTrigger1043=CreateTrigger()
@@ -239288,76 +236285,47 @@ endloop
 call TriggerAddAction(giveTrigger1043,function B1043Give)
 set giveTrigger1043=null
 endfunction
-function B836ArcInit takes nothing returns nothing
-local trigger b901QuitTrigger=CreateTrigger()
-local unit b884MiaoExhibit
-local trigger arcLoadTrigger=CreateTrigger()
-local trigger arcAckTrigger=CreateTrigger()
-local trigger arcOpenTrigger=CreateTrigger()
-local trigger arcSelectTrigger=CreateTrigger()
-local trigger arcChatTrigger=CreateTrigger()
-local trigger arcDialogTrigger=CreateTrigger()
+function LOTTERY_Init takes nothing returns nothing
+local trigger lotSelectTrigger=CreateTrigger()
 local trigger lotDialogTrigger=CreateTrigger()
 local trigger lotOpenTrigger=CreateTrigger()
-local timer arcLoadTimer=CreateTimer()
-local item arcRulesItem
-local integer arcPid=0
-call B1133LogInit()
-call B838WawjInit()
-call DzTriggerRegisterSyncData(b901QuitTrigger,"B901Q",false)
-call TriggerAddAction(b901QuitTrigger,function B901QuitSync)
-set b901QuitTrigger=null
+local integer lotPid=0
+// Pure current-match lottery house: no archive load, save, currency, mastery or quit persistence.
 set B836ArcHut=CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE),'nAS6',-5728.,-6816.,270.)
 call SetUnitInvulnerable(B836ArcHut,true)
-// B884: neutral, non-hero, read-only model/ability exhibit; no combat registration.
-set b884MiaoExhibit=CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE),'nMv4',GetUnitX(B836ArcHut)+288.,GetUnitY(B836ArcHut),270.)
-call SetUnitInvulnerable(b884MiaoExhibit,true)
-call SetUnitPathing(b884MiaoExhibit,false)
-call UnitRemoveAbility(b884MiaoExhibit,'Amov')
-call UnitRemoveAbility(b884MiaoExhibit,'Aatk')
-// B886: do not pause the exhibit; PauseUnit hides its read-only command card.
-// B885: reuse the existing ally/summon read-only skill-view interface.
-call MHUnit_EnableViewSkill(b884MiaoExhibit,GetLocalPlayer())
-set b884MiaoExhibit=null
-set arcRulesItem=CreateItem('IAR6',-5728.,-6816.)
-call SetItemDroppable(arcRulesItem,false)
-call SetItemPawnable(arcRulesItem,false)
-call UnitAddItem(B836ArcHut,arcRulesItem)
-set arcRulesItem=null
-call DzTriggerRegisterSyncData(arcLoadTrigger,"B836AL",false)
-call TriggerAddAction(arcLoadTrigger,function B836ArcLoadSync)
-call DzTriggerRegisterSyncData(arcAckTrigger,"B836AA",false)
-call TriggerAddAction(arcAckTrigger,function B836ArcAck)
-call DzTriggerRegisterSyncData(arcOpenTrigger,"B836AO",false)
-call TriggerAddAction(arcOpenTrigger,function B836ArcOpenSync)
+call SetUnitPathing(B836ArcHut,false)
+// ART683-T6: permanent colored floating title above the nAS6 lottery house.
+// Visual only; sync-safe (no local-player branch), created exactly once, all players visible.
+// permanent=true, lifespan=0, fadepoint=0, world-space (not screen-fixed); unit model/coords/collision/buttons untouched.
+if B836LotteryTitle==null then
+set B836LotteryTitle=CreateTextTag()
+call SetTextTagText(B836LotteryTitle,"|cffff66cc抽|r|cffffff66奖|r|cff66ffff屋|r",0.05)
+call SetTextTagPos(B836LotteryTitle,GetUnitX(B836ArcHut)-128.,GetUnitY(B836ArcHut),256.)
+call SetTextTagColor(B836LotteryTitle,255,255,255,255)
+call SetTextTagPermanent(B836LotteryTitle,true)
+call SetTextTagLifespan(B836LotteryTitle,0)
+call SetTextTagFadepoint(B836LotteryTitle,0)
+call SetTextTagVisibility(B836LotteryTitle,true)
+endif
 call DzTriggerRegisterSyncData(lotOpenTrigger,"LOTOPEN",false)
 call TriggerAddAction(lotOpenTrigger,function LOTTERY_OpenSync)
-call TriggerAddAction(arcSelectTrigger,function B836ArcSelected)
-call TriggerAddAction(arcChatTrigger,function B836ArcChat)
-call TriggerAddAction(arcDialogTrigger,function B836ArcDialogClick)
+call TriggerAddAction(lotSelectTrigger,function LOTTERY_Selected)
 call TriggerAddAction(lotDialogTrigger,function LOTTERY_Click)
 loop
-exitwhen arcPid>=12
-if KKServerScore_InitialHuman[arcPid] then
-set B836ArcDialog[arcPid]=DialogCreate()
-call TriggerRegisterDialogEvent(arcDialogTrigger,B836ArcDialog[arcPid])
-set LOTTERY_DIALOG[arcPid]=DialogCreate()
-call TriggerRegisterDialogEvent(lotDialogTrigger,LOTTERY_DIALOG[arcPid])
-call TriggerRegisterPlayerUnitEvent(arcSelectTrigger,Player(arcPid),EVENT_PLAYER_UNIT_SELECTED,null)
-call TriggerRegisterPlayerChatEvent(arcChatTrigger,Player(arcPid),"-archive",true)
+exitwhen lotPid>=12
+if KKServerScore_InitialHuman[lotPid] then
+set LOTTERY_DIALOG[lotPid]=DialogCreate()
+call TriggerRegisterDialogEvent(lotDialogTrigger,LOTTERY_DIALOG[lotPid])
+call TriggerRegisterPlayerUnitEvent(lotSelectTrigger,Player(lotPid),EVENT_PLAYER_UNIT_SELECTED,null)
 endif
-set arcPid=arcPid+1
+set lotPid=lotPid+1
 endloop
-call TimerStart(arcLoadTimer,5.,true,function B836ArcLoadTick)
-set arcLoadTrigger=null
-set arcAckTrigger=null
-set arcOpenTrigger=null
-set arcSelectTrigger=null
-set arcChatTrigger=null
-set arcDialogTrigger=null
+set lotSelectTrigger=null
 set lotDialogTrigger=null
 set lotOpenTrigger=null
-set arcLoadTimer=null
+endfunction
+function B836ArcInit takes nothing returns nothing
+// v6.9: KK persistent archive shop remains disabled. Lottery uses LOTTERY_Init.
 endfunction
 function B1103SceneFogWarningClear takes nothing returns nothing
 // The map has no other scripted scene fog; restore its default state.
@@ -239770,11 +236738,12 @@ local timer b1060GetExpiredTimer=GetExpiredTimer()
 	call KKServerScore_Init()
 	call KK2026SummerEgg_Init()
 	call KKTianxingBlessing_Init()
-	call B836ArcInit()
-call B1031Init()
-call B1032Init()
-call B1035Init()
-call B1040Init()
+	call LOTTERY_Init() // Pure current-match lottery house; no KK persistence.
+	// v6.9: B836ArcInit remains disabled; KK persistent archive shop removed.
+// v6.9: B1031Init disabled; mastery and persistent rewards removed.
+// v6.9: B1032Init disabled; persistent skin system removed.
+// v6.9: B1035Init disabled; cultivation realm persistence removed.
+// v6.9: B1040Init disabled; daily persistent skin entitlement removed.
     call B1121DetectInit() // KK global DETECT: 0/off, 1/both diagnostics on.
     set t=CreateTrigger()
     call MHMsgMouseDownEvent_Register(t)
@@ -239788,7 +236757,7 @@ call B1040Init()
     // B1131Recharge is routed through the native H99 '-' command bus.
 	// 初始化UI
 	call InitMainUI()
-    call B1042Init()
+    // v6.9: B1042Init disabled; persistent player tipping removed.
     call B1043Init()
     call B922WheelInit()
 	// 初始化同步触发器
@@ -243620,14 +240589,18 @@ set SHOPNM1=CreateUnit(C7,'n90C',-7111.,-6544.,270)
 set SHOPKG1=CreateUnit(C7,'n90D',-6982.,-6544.,270)
 set B964Shop1=CreateUnit(C7,'n9M0',-6822.,-6544.,270)
 set JE4=CreateUnit(C7,'n0HE',Xm,Om,270)
-set PFGH1=CreateUnit(C7,'n12B',-6552.,-6067.,260)
-//set PFGH1TMP=CreateUnit(C7,'n12D',-6552.,-6067.,260)
-set PFDEMO[1]=CreateUnit(C7,'h0GA',-6850.,-5970.,270)
-set PFDEMO[2]=CreateUnit(C7,'h0GB',-7000.,-5970.,270)
-set PFDEMO[3]=CreateUnit(C7,'h0GC',-7150.,-5970.,270)
-set PFDEMO[4]=CreateUnit(C7,'h0GD',-7300.,-5970.,270)
-set PFDEMO[5]=CreateUnit(C7,'h0GE',-7450.,-5970.,270)
+// v6.9: legacy skin shop removed.
+set PFGH1=null
+set PFDEMO[1]=null
+set PFDEMO[2]=null
+set PFDEMO[3]=null
+set PFDEMO[4]=null
+set PFDEMO[5]=null
 set JW_JD=CreateUnit(Z7[0],'hcas',Am,Nm,270)
+	// ART683-T4: runtime pure-visual world-tree model swap for the Sentinel main base; object scale/collision/selection fields unchanged.
+	call DzSetUnitModel(JW_JD,"buildings\\nightelf\\TreeofLife\\TreeofLife.mdx")
+	call SetUnitScale(JW_JD,1.8,1.8,1.8)
+	call DisplayTimedTextToForce(GetPlayersAll(),3.0,"[ART683-T4] 近卫主基地世界树换模已执行")
 set JW_1ST=CreateUnit(Z7[0],'e00R',bm,Bm,90)
 set JW_1ZT=CreateUnit(Z7[0],'e00R',cm,Cm,45)
 set JW_1XT=CreateUnit(Z7[0],'e00R',dm,fm,0)
@@ -243679,14 +240652,7 @@ call SetUnitColor(JD44,JL)
 call SetUnitColor(SHOPNM1,JL)
 call SetUnitColor(SHOPKG1,JL)
 call SetUnitColor(B964Shop1,JL)
-call SetUnitColor(PFGH1,JL)
-//call SetUnitColor(PFGH1TMP,JL)
-call SetUnitColor(PFDEMO[1],JL)
-call SetUnitColor(PFDEMO[2],JL)
-call SetUnitColor(PFDEMO[3],JL)
-call SetUnitColor(PFDEMO[4],JL)
-call SetUnitColor(PFDEMO[5],JL)
-//call SetUnitColor(PFDEMO[6],JL)
+// v6.9: legacy skin-shop display handles removed.
 call YT8(JW_1ST,true)
 call YT8(JW_1ZT,true)
 call YT8(JW_1XT,true)
@@ -243854,13 +240820,13 @@ set nSS=CreateUnit(C7,'n90B',6373.,5620.,270)
 set SHOPNM2=CreateUnit(C7,'n90C',6569.,6378.,270)
 set SHOPKG2=CreateUnit(C7,'n90D',6094.,6183.,270)
 set B964Shop2=CreateUnit(C7,'n9M0',6254.,6183.,270)
-set PFGH2=CreateUnit(C7,'n12B',5942.,6546.,300)
-//set PFGH2TMP=CreateUnit(C7,'n12D',5942.,6546.,300)
-set PFDEMO[7]=CreateUnit(C7,'h0GA',6370.,5175.,270)
-set PFDEMO[8]=CreateUnit(C7,'h0GB',6500.,5175.,270)
-set PFDEMO[9]=CreateUnit(C7,'h0GC',6630.,5175.,270)
-set PFDEMO[10]=CreateUnit(C7,'h0GD',6760.,5175.,270)
-set PFDEMO[11]=CreateUnit(C7,'h0GE',6890.,5175.,270)
+// v6.9: legacy skin shop removed.
+set PFGH2=null
+set PFDEMO[7]=null
+set PFDEMO[8]=null
+set PFDEMO[9]=null
+set PFDEMO[10]=null
+set PFDEMO[11]=null
 set VS=CreateUnit(C7,'n0HE',qq,Qq,0)
 set TZ_JD=CreateUnit(A7[0],'unpl',Sq,tq,220)
 set TZ_1ST=CreateUnit(A7[0],'u00M',Uq,zq,270)
@@ -243913,14 +240879,7 @@ call SetUnitColor(nSS,JL)
 call SetUnitColor(SHOPNM2,JL)
 call SetUnitColor(SHOPKG2,JL)
 call SetUnitColor(B964Shop2,JL)
-call SetUnitColor(PFGH2,JL)
-//call SetUnitColor(PFGH2TMP,JL)
-call SetUnitColor(PFDEMO[7],JL)
-call SetUnitColor(PFDEMO[8],JL)
-call SetUnitColor(PFDEMO[9],JL)
-call SetUnitColor(PFDEMO[10],JL)
-call SetUnitColor(PFDEMO[11],JL)
-//call SetUnitColor(PFDEMO[12],JL)
+// v6.9: legacy skin-shop display handles removed.
 call YT8(TZ_1ST,true)
 call YT8(TZ_1ZT,true)
 call YT8(TZ_1XT,true)
@@ -243942,6 +240901,108 @@ call YT8(KI4,true)
 call YT8(PS,true)
 call YT8(QS,true)
 call YT8(xt,true)
+// ART683-T5: runtime pure-visual faction model swap (Sentinel=night-elf / Scourge=undead).
+// Confirmed base live instances only; collision/pathTex/sight/range/selection/HP/armor/attack and coords untouched.
+// Models extracted+TEXS-closed from local game MPQ; engine-global, no import; BLOOM off; nAS6 untouched.
+// Scale baseline 1.0 (only proven anchor JW_JD=1.8 from T4 retained); no enlargement.
+// --- Sentinel (Z7[0]) night-elf ---
+call DzSetUnitModel(JW_1ST,"buildings\\nightelf\\AncientProtector\\AncientProtector.mdx")
+call SetUnitScale(JW_1ST,1.0,1.0,1.0)
+call DzSetUnitModel(JW_1ZT,"buildings\\nightelf\\AncientProtector\\AncientProtector.mdx")
+call SetUnitScale(JW_1ZT,1.0,1.0,1.0)
+call DzSetUnitModel(JW_1XT,"buildings\\nightelf\\AncientProtector\\AncientProtector.mdx")
+call SetUnitScale(JW_1XT,1.0,1.0,1.0)
+call DzSetUnitModel(JW_2ST,"buildings\\nightelf\\AncientProtector\\AncientProtector.mdx")
+call SetUnitScale(JW_2ST,1.0,1.0,1.0)
+call DzSetUnitModel(JW_2ZT,"buildings\\nightelf\\AncientProtector\\AncientProtector.mdx")
+call SetUnitScale(JW_2ZT,1.0,1.0,1.0)
+call DzSetUnitModel(JW_2XT,"buildings\\nightelf\\AncientProtector\\AncientProtector.mdx")
+call SetUnitScale(JW_2XT,1.0,1.0,1.0)
+call DzSetUnitModel(JW_3ST,"buildings\\nightelf\\AncientProtector\\AncientProtector.mdx")
+call SetUnitScale(JW_3ST,1.0,1.0,1.0)
+call DzSetUnitModel(JW_3ZT,"buildings\\nightelf\\AncientProtector\\AncientProtector.mdx")
+call SetUnitScale(JW_3ZT,1.0,1.0,1.0)
+call DzSetUnitModel(JW_3XT,"buildings\\nightelf\\AncientProtector\\AncientProtector.mdx")
+call SetUnitScale(JW_3XT,1.0,1.0,1.0)
+call DzSetUnitModel(JW_4LT,"buildings\\nightelf\\AncientProtector\\AncientProtector.mdx")
+call SetUnitScale(JW_4LT,1.0,1.0,1.0)
+call DzSetUnitModel(JW_4RT,"buildings\\nightelf\\AncientProtector\\AncientProtector.mdx")
+call SetUnitScale(JW_4RT,1.0,1.0,1.0)
+call DzSetUnitModel(JS4,"buildings\\nightelf\\AncientOfWar\\AncientofWar.mdx")
+call SetUnitScale(JS4,1.0,1.0,1.0)
+call DzSetUnitModel(JT4,"buildings\\nightelf\\AncientOfWar\\AncientofWar.mdx")
+call SetUnitScale(JT4,1.0,1.0,1.0)
+call DzSetUnitModel(JU4,"buildings\\nightelf\\AncientOfWar\\AncientofWar.mdx")
+call SetUnitScale(JU4,1.0,1.0,1.0)
+call DzSetUnitModel(JV4,"buildings\\nightelf\\MoonWell\\MoonWell.mdx")
+call SetUnitScale(JV4,1.0,1.0,1.0)
+call DzSetUnitModel(JW4,"buildings\\nightelf\\MoonWell\\MoonWell.mdx")
+call SetUnitScale(JW4,1.0,1.0,1.0)
+call DzSetUnitModel(JX4,"buildings\\nightelf\\MoonWell\\MoonWell.mdx")
+call SetUnitScale(JX4,1.0,1.0,1.0)
+call DzSetUnitModel(tP,"buildings\\nightelf\\AncientProtector\\AncientProtector.mdx")
+call SetUnitScale(tP,1.0,1.0,1.0)
+call DzSetUnitModel(WP,"buildings\\nightelf\\AncientProtector\\AncientProtector.mdx")
+call SetUnitScale(WP,1.0,1.0,1.0)
+call DzSetUnitModel(zP,"buildings\\nightelf\\AncientProtector\\AncientProtector.mdx")
+call SetUnitScale(zP,1.0,1.0,1.0)
+call DzSetUnitModel(IZ4,"buildings\\other\\FountainOfLife\\FountainOfHealth.mdx")
+call SetUnitScale(IZ4,1.0,1.0,1.0)
+call DzSetUnitModel(IZ4_MJ,"buildings\\other\\FountainOfLife\\FountainOfHealth.mdx")
+call SetUnitScale(IZ4_MJ,1.0,1.0,1.0)
+call DzSetUnitModel(I_4,"buildings\\nightelf\\AncientOfWonder\\AncientOfWonder.mdx")
+call SetUnitScale(I_4,1.0,1.0,1.0)
+// --- Scourge (A7[0]) undead ---
+call DzSetUnitModel(TZ_JD,"buildings\\undead\\Necropolis\\Necropolis.mdx")
+call SetUnitScale(TZ_JD,1.0,1.0,1.0)
+call DzSetUnitModel(TZ_1ST,"buildings\\undead\\Ziggurat\\Ziggurat.mdx")
+call SetUnitScale(TZ_1ST,1.0,1.0,1.0)
+call DzSetUnitModel(TZ_1ZT,"buildings\\undead\\Ziggurat\\Ziggurat.mdx")
+call SetUnitScale(TZ_1ZT,1.0,1.0,1.0)
+call DzSetUnitModel(TZ_1XT,"buildings\\undead\\Ziggurat\\Ziggurat.mdx")
+call SetUnitScale(TZ_1XT,1.0,1.0,1.0)
+call DzSetUnitModel(TZ_2ST,"buildings\\undead\\Ziggurat\\Ziggurat.mdx")
+call SetUnitScale(TZ_2ST,1.0,1.0,1.0)
+call DzSetUnitModel(TZ_2ZT,"buildings\\undead\\Ziggurat\\Ziggurat.mdx")
+call SetUnitScale(TZ_2ZT,1.0,1.0,1.0)
+call DzSetUnitModel(TZ_2XT,"buildings\\undead\\Ziggurat\\Ziggurat.mdx")
+call SetUnitScale(TZ_2XT,1.0,1.0,1.0)
+call DzSetUnitModel(TZ_3ST,"buildings\\undead\\Ziggurat\\Ziggurat.mdx")
+call SetUnitScale(TZ_3ST,1.0,1.0,1.0)
+call DzSetUnitModel(TZ_3ZT,"buildings\\undead\\Ziggurat\\Ziggurat.mdx")
+call SetUnitScale(TZ_3ZT,1.0,1.0,1.0)
+call DzSetUnitModel(TZ_3XT,"buildings\\undead\\Ziggurat\\Ziggurat.mdx")
+call SetUnitScale(TZ_3XT,1.0,1.0,1.0)
+call DzSetUnitModel(TZ_4LT,"buildings\\undead\\Ziggurat\\Ziggurat.mdx")
+call SetUnitScale(TZ_4LT,1.0,1.0,1.0)
+call DzSetUnitModel(TZ_4RT,"buildings\\undead\\Ziggurat\\Ziggurat.mdx")
+call SetUnitScale(TZ_4RT,1.0,1.0,1.0)
+call DzSetUnitModel(KD4,"buildings\\undead\\Crypt\\Crypt.mdx")
+call SetUnitScale(KD4,1.0,1.0,1.0)
+call DzSetUnitModel(KE4,"buildings\\undead\\Crypt\\Crypt.mdx")
+call SetUnitScale(KE4,1.0,1.0,1.0)
+call DzSetUnitModel(KF4,"buildings\\undead\\Crypt\\Crypt.mdx")
+call SetUnitScale(KF4,1.0,1.0,1.0)
+call DzSetUnitModel(KG4,"buildings\\undead\\TempleOfTheDamned\\TempleOfTheDamned.mdx")
+call SetUnitScale(KG4,1.0,1.0,1.0)
+call DzSetUnitModel(KH4,"buildings\\undead\\TempleOfTheDamned\\TempleOfTheDamned.mdx")
+call SetUnitScale(KH4,1.0,1.0,1.0)
+call DzSetUnitModel(KI4,"buildings\\undead\\TempleOfTheDamned\\TempleOfTheDamned.mdx")
+call SetUnitScale(KI4,1.0,1.0,1.0)
+call DzSetUnitModel(PS,"buildings\\undead\\Ziggurat\\Ziggurat.mdx")
+call SetUnitScale(PS,1.0,1.0,1.0)
+call DzSetUnitModel(QS,"buildings\\undead\\Ziggurat\\Ziggurat.mdx")
+call SetUnitScale(QS,1.0,1.0,1.0)
+call DzSetUnitModel(xt,"buildings\\undead\\Ziggurat\\Ziggurat.mdx")
+call SetUnitScale(xt,1.0,1.0,1.0)
+call DzSetUnitModel(JA4,"buildings\\other\\FountainOfLifeDefiled\\FountainOfLifeDefiled.mdx")
+call SetUnitScale(JA4,1.0,1.0,1.0)
+call DzSetUnitModel(JA4_MJ,"buildings\\other\\FountainOfLifeDefiled\\FountainOfLifeDefiled.mdx")
+call SetUnitScale(JA4_MJ,1.0,1.0,1.0)
+call DzSetUnitModel(JC4,"buildings\\undead\\TombOfRelics\\TombOfRelics.mdx")
+call SetUnitScale(JC4,1.0,1.0,1.0)
+// --- one-time per-faction summary diagnostic (counts only; no identity info) ---
+call DisplayTimedTextToForce(GetPlayersAll(),4.0,"[ART683-T5] 近卫已换模: 主基地1/防御塔11/兵营3/储藏3/炮塔3/泉水2/商店1; 天灾已换模: 主基地1/防御塔11/地穴3/神庙3/通灵塔3/泉水2/商店1")
 set LCG=GetUnitX(wJ)
 set L3G=GetUnitY(wJ)
 set L6G=GetUnitX(ZJ)
@@ -250396,7 +247457,7 @@ call B946DetectInit()
 call B957Init()
 endfunction
 function config takes nothing returns nothing
-call SetMapName("OMG IMBA v1.8.6-NOK")
+call SetMapName("Dota v6.90a OMG AI 1.0")
 call SetMapDescription("随机技能，强化AI，极限对抗。\n作者：小生我怕怕\n按F9查看地图信息。")
 call SetPlayers($A)
 call SetTeams($A)

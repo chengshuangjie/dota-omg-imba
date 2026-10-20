@@ -1,4 +1,4 @@
-﻿# ---- Local machine tool paths (absolute, do not commit) ----
+# ---- Local machine tool paths (absolute, do not commit) ----
 config/tool-paths.json
 
 # ---- War3 map binaries (built locally; remote repo has no LFS) ----
@@ -37,3 +37,11 @@ __pycache__/
 .netrc
 _kkauth/
 browser-profile/
+maps/release/*.w3x
+toolchain/
+backups/
+assets/environment/
+assets/reference-authorized/
+config/environment/
+reports/art683/
+reports/reference-art-migration/

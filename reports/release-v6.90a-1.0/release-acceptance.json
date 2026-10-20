@@ -1,0 +1,93 @@
+{
+  "meta": {
+    "stage": "v6.90a-1.0 final independent acceptance",
+    "executed_at": "2026-10-20T17:04:49.090+08:00",
+    "operator": "independent-acceptance-agent",
+    "executed_git": false,
+    "conclusion": "PASS",
+    "all_pass": true
+  },
+  "release": {
+    "path": "maps/release/Dota v6.90a OMG AI 1.0.w3x",
+    "bytes": 56712620,
+    "sha256": "DFD19F9BCB7C35A2050A512C072F968FDF803F4C32A4BCEB84C9924561F68C29"
+  },
+  "stable_deploy": {
+    "path": "D:\\游戏\\Warcraft III\\Maps\\omg\\稳定\\Dota v6.90a OMG AI 1.0.w3x",
+    "bytes": 56712620,
+    "sha256": "DFD19F9BCB7C35A2050A512C072F968FDF803F4C32A4BCEB84C9924561F68C29",
+    "build_stable_hash_identical": true
+  },
+  "gates": {
+    "stable_copy_match": true,
+    "v693a_unchanged": true,
+    "fissure_absent_stable": true,
+    "fissure_backup_ok": true,
+    "w3i_806": true,
+    "w3i_slotA": true,
+    "w3i_slotB": true,
+    "jass_xomg_x1": true,
+    "jass_smn_x1": true,
+    "jass_no_t10": true,
+    "jass_fffd": 0,
+    "doo_eq_T2": true,
+    "w3e_eq_T5": true,
+    "wpm_eq_FISSURE": true,
+    "title_128_256": true,
+    "old_96_gone": true,
+    "no_posunit": true,
+    "nas6_unique": true,
+    "lotopen": true,
+    "buttons": true,
+    "t5_47_47": true,
+    "t4_tree": true,
+    "manifest_release_match": true,
+    "readme_has_sha": true,
+    "readme_has_size": true,
+    "readme_has_path": true
+  },
+  "gates_total": 25,
+  "gates_passed": 25,
+  "labels": {
+    "slotA_12": {"literal": "v6.90a-OMG-AI-1.0", "ascii_bytes": 17, "pad_spaces": 7, "total": 24},
+    "slotB_234": {"literal": "Dota v6.90a OMG AI 1.0", "ascii_bytes": 22, "pad_spaces": 2, "total": 24}
+  },
+  "components": {
+    "war3map.doo": {"sha256": "F6EA5428531D04AC680F9D51B318BE5B65E776B58BC342BB5004E32B2F0BF915", "equals": "T2", "bytes": 269924},
+    "war3map.w3e": {"sha256": "55962DAE4021A0ECA6DAD6011E9A37B00459362BC062725260D6799FB8E9F593", "equals": "T5", "bytes": 116584},
+    "war3map.wpm": {"sha256": "61CCF7597378FDE26858B061AE174082543FBB25E07D0E4E3C91CB035A1F11A9", "equals": "FISSURE", "bytes": 262160}
+  },
+  "verification": {
+    "verify_v17": {"total": 122, "passed": 122, "failed": 0, "exit": 0, "fresh_run": true},
+    "pjass": {"allowed_only": "location_m5", "diagnostic": "war3map.j:155341", "new_errors": 0, "fresh_run": true}
+  },
+  "stable_dir": {
+    "entries": ["Dota v6.90a OMG AI 1.0.w3x", "Dota v6.93a OMG AI 1.0.w3x"],
+    "v690a_unique": true,
+    "v693a_protection_sha256": "BC7B71D74D96898AFBAA01C3BFC9D77FE637C88E9E0D941CD53170DEC1E94890",
+    "v693a_unchanged": true,
+    "old_fissure_backup": "backups/stable-pre-v6.90a-1.0-20261020-165433/DOTA-OMG-IMBA-v6.9-FISSURE-T1.w3x",
+    "old_fissure_sha256": "1847C96BF5201072A569CEC2ECC24E79ACA163CB4C852CEF95E4AF5087842195",
+    "old_fissure_absent_stable": true
+  },
+  "git_review": {
+    "sync_manifest_provided": true,
+    "manifest": "reports/release-v6.90a-1.0/git-sync-checklist.md/.json",
+    "executed_git": false,
+    "verdict": "SAFE",
+    "finding": "No wrongful inclusion of toolchain binaries, backups, game directory, reference assets, personal logs, or other-task v6.93a; A1 src hashes independently verified; maps/baseline/ explicitly forbidden.",
+    "recommended_upload": [
+      "README.md", "PROJECT_MANIFEST.json", ".gitignore",
+      "src/", "tools/build/", "config/tool-paths.json",
+      "assets/loading-screen/", "reports/release-v6.90a-1.0/"
+    ],
+    "forbidden_upload": [
+      "toolchain/", "backups/", "maps/build/", "maps/baseline/",
+      "maps/release/*.w3x", "assets/reference-authorized/", "assets/art683-t5/",
+      "assets/environment/", "reports/art683/", "reports/reference-art-migration/",
+      "D:\\游戏\\ (game dir, incl. other-task v6.93a protection file)",
+      "personal logs, __pycache__/, *.tmp, *.log"
+    ]
+  },
+  "ALL_PASS": true
+}

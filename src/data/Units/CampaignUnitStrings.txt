@@ -48,7 +48,7 @@ Revivetip=复活 月之骑士
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNHuntress.blp
 Specialart=Objects\Spawnmodels\NightElf\NightElfLargeDeathExplode\NightElfLargeDeathExplode.mdl
 Tip=月之骑士
-Ubertip=月之骑士是月神艾露恩坚定而又虔诚的信徒。在无尽的战争中，她加入达拉然势力竭尽全力净化被邪恶的黑暗势力所污染的土地。由于她的忠诚和勇敢，月神赐予了她一小部分神秘的力量。这份恩赐使得她能轻易打败敌人。据说月之骑士能够召唤最纯净的月光，而且永远被灼炽的光环所围绕，就好像身处在月光的照耀下。她是达拉然势力最明亮的灯塔和永不懈怠的守卫。|n|n|cff0042ff力量|r - 15 + 1.9|n|cffff0303敏捷|r - 18 + 2.8|n|cff0042ff智力|r - 16 + 1.85|n|n可以学习 月光、月刃、月之祝福和|cffff8000月蚀|r。|n|n攻击距离 425（远程）|n移动速度 330
+Ubertip=月之骑士是月神艾露恩坚定而又虔诚的信徒。在无尽的战争中，她加入近卫军团竭尽全力净化被邪恶的黑暗势力所污染的土地。由于她的忠诚和勇敢，月神赐予了她一小部分神秘的力量。这份恩赐使得她能轻易打败敌人。据说月之骑士能够召唤最纯净的月光，而且永远被灼炽的光环所围绕，就好像身处在月光的照耀下。她是近卫军团最明亮的灯塔和永不懈怠的守卫。|n|n|cff0042ff力量|r - 15 + 1.9|n|cffff0303敏捷|r - 18 + 2.8|n|cff0042ff智力|r - 16 + 1.85|n|n可以学习 月光、月刃、月之祝福和|cffff8000月蚀|r。|n|n攻击距离 425（远程）|n移动速度 330
 
 [E00P]
 Art=ReplaceableTextures\CommandButtons\BTNChimaera.blp
@@ -63,7 +63,7 @@ Propernames=杰奇洛,杰奇洛,杰奇洛,杰奇洛,杰奇洛,杰奇洛
 Revivetip=复活 双头龙
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNChimaera.blp
 Tip=双头龙
-Ubertip=当人们在一个大洞里找到它时，这头巨兽还在咬着世界之树的树根。而这头华丽的奇美拉的年龄，已经无从知晓。由于它的2个大脑袋和它那充满着攻击性和不确定性的行为，双头龙是只难以驯化的危险生物。不过现在它出于自身的原因，愿意效忠于达拉然势力。它对冰元素和火元素的奇异的亲和力，来自于它奇异的神秘天性。它毁灭眼前的一切，并且能够将敌人困在一条线上。黑暗势力最好对这条龙保持警惕，以免他们全被冻住并破碎，就像在他们眼前慢慢融化的寒冰王座一样。|n|n|cff0042ff力量|r - 25 + 2.3|n|cff0042ff敏捷|r - 10 + 1.2 |n|cffff0303智力|r - 28 + 2.8|n|n可以学习 冰火交加、冰封路径、液态火和|cffff8000烈焰焚身|r。|n|n攻击距离 400（远程）|n移动速度 290
+Ubertip=当人们在一个大洞里找到它时，这头巨兽还在咬着世界之树的树根。而这头华丽的奇美拉的年龄，已经无从知晓。由于它的2个大脑袋和它那充满着攻击性和不确定性的行为，双头龙是只难以驯化的危险生物。不过现在它出于自身的原因，愿意效忠于近卫军团。它对冰元素和火元素的奇异的亲和力，来自于它奇异的神秘天性。它毁灭眼前的一切，并且能够将敌人困在一条线上。黑暗势力最好对这条龙保持警惕，以免他们全被冻住并破碎，就像在他们眼前慢慢融化的寒冰王座一样。|n|n|cff0042ff力量|r - 25 + 2.3|n|cff0042ff敏捷|r - 10 + 1.2 |n|cffff0303智力|r - 28 + 2.8|n|n可以学习 冰火交加、冰封路径、液态火和|cffff8000烈焰焚身|r。|n|n攻击距离 400（远程）|n移动速度 290
 
 [E015]
 Art=ReplaceableTextures\CommandButtons\BTNDireWolf.blp
@@ -157,7 +157,7 @@ Revivetip=复活 圣堂刺客
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNAssassin.blp
 Specialart=Objects\Spawnmodels\NightElf\NightElfLargeDeathExplode\NightElfLargeDeathExplode.mdl
 Tip=圣堂刺客
-Ubertip=圣堂刺客师从于一位来自神族母星艾尔的传奇人物。她是一名使用精神力量的高手，并且在达拉然势力中专门负责进行战略性质的刺杀行动。她的心灵异能，能够让她随意的进入和脱离战斗，并且可以增强攻击时所造成的伤害，同时保护她不受敌人的袭击。或者在狩猎哪个不走运的路人之前给自己披上一件隐身衣。敌人在战场上发现这个圣堂武士时，往往也就是他们死亡并被埋葬之时，当他们的生命被终结后，她便再次潜入暗影，等待下一个猎物。 |n|n|cff0042ff力量|r - 18 + 2.1|n|cffff0303敏捷|r - 23 + 2.7|n|cff0042ff智力|r - 20 + 2.0|n|n可以学习 折光、隐匿、灵能之刃和|cffff8000灵能陷阱|r。|n|n攻击距离 240（远程）|n移动速度 305
+Ubertip=圣堂刺客师从于一位来自神族母星艾尔的传奇人物。她是一名使用精神力量的高手，并且在近卫军团中专门负责进行战略性质的刺杀行动。她的心灵异能，能够让她随意的进入和脱离战斗，并且可以增强攻击时所造成的伤害，同时保护她不受敌人的袭击。或者在狩猎哪个不走运的路人之前给自己披上一件隐身衣。敌人在战场上发现这个圣堂武士时，往往也就是他们死亡并被埋葬之时，当他们的生命被终结后，她便再次潜入暗影，等待下一个猎物。 |n|n|cff0042ff力量|r - 18 + 2.1|n|cffff0303敏捷|r - 23 + 2.7|n|cff0042ff智力|r - 20 + 2.0|n|n可以学习 折光、隐匿、灵能之刃和|cffff8000灵能陷阱|r。|n|n攻击距离 240（远程）|n移动速度 305
 
 [E021]
 Art=ReplaceableTextures\CommandButtons\BTNHeroDemonHunter.blp
@@ -253,7 +253,7 @@ Revivetip=复活 巨牙海民
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNTuskaarBrown.blp
 Specialart=Objects\Spawnmodels\Orc\OrcSmallDeathExplode\OrcSmallDeathExplode.mdl
 Tip=巨牙海民
-Ubertip=尤弥尔来自于北风冻原，是最聪明的巨牙海民战士之一。他所居住的村庄在他青年时期不断遭受冰原巨魔和地穴蜘蛛的劫掠，在长年的抵抗下他积累了众多战争经验，因此尤弥尔自愿加入达拉然势力的队列，以协助抵挡日益强大又臭名昭著的巫妖王。藉由冰元素专精的操控能力，尤弥尔他可以用冰霜魔法出其不意地打击敌人。他的武器不止有沉重又迅速的大雪球、飞快投掷的锋利冰片，还有魔术般的大暴雪，极大削弱敌人的战斗能力——当然，轻视他那强健身躯所蕴含的爆发力，同样是愚蠢至极。|n|n|c00ff0303力量|r - 23 + 2.3|n|c000042ff敏捷|r - 23 + 2.1|n|c000042ff智力|r - 18 + 1.7|n|n可以学习 寒冰片、雪球、冰封魔印和|c00ff8000海象挥击|r。|n|n攻击距离 150（近程）|n移动速度 305
+Ubertip=尤弥尔来自于北风冻原，是最聪明的巨牙海民战士之一。他所居住的村庄在他青年时期不断遭受冰原巨魔和地穴蜘蛛的劫掠，在长年的抵抗下他积累了众多战争经验，因此尤弥尔自愿加入近卫军团的队列，以协助抵挡日益强大又臭名昭著的巫妖王。藉由冰元素专精的操控能力，尤弥尔他可以用冰霜魔法出其不意地打击敌人。他的武器不止有沉重又迅速的大雪球、飞快投掷的锋利冰片，还有魔术般的大暴雪，极大削弱敌人的战斗能力——当然，轻视他那强健身躯所蕴含的爆发力，同样是愚蠢至极。|n|n|c00ff0303力量|r - 23 + 2.3|n|c000042ff敏捷|r - 23 + 2.1|n|c000042ff智力|r - 18 + 1.7|n|n可以学习 寒冰片、雪球、冰封魔印和|c00ff8000海象挥击|r。|n|n攻击距离 150（近程）|n移动速度 305
 
 [E02J]
 Art=ReplaceableTextures\CommandButtons\BTNThrall.blp
@@ -407,7 +407,7 @@ Revivetip=复活 大魔导师
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNMedivh.blp
 Specialart=Objects\Spawnmodels\NightElf\NightElfLargeDeathExplode\NightElfLargeDeathExplode.mdl
 Tip=大魔导师
-Ubertip=拉比克是阿哈利姆的儿子，一个不可忽视的战力。人们惊叹于他的能力，可以随心所欲抓起和投掷物体而仅仅只靠念力。许多巫师曾向他提出挑战，但都败给了他强大的弱化魔法。拥有无尽才能的大魔导师，绝不会因为敌人的出现而止步，无比智慧的他会运用一切方式，哪怕是施展敌人的魔法来击倒敌人。在只靠一想就能偷取技能方面享有盛誉的大魔导师，是达拉然势力对抗黑暗势力最无可争议的瑰宝。|n|n|c000042ff力量|r - 19 + 1.5|n|c000042ff敏捷|r - 14 + 1.6|n|c00ff0303智力|r - 27 + 2.6|n|n可以学习 隔空取物、弱化能流、至尊魔法和|c00ff8000斗转星移|r。|n|n攻击距离 600（远程）|n移动速度 300
+Ubertip=拉比克是阿哈利姆的儿子，一个不可忽视的战力。人们惊叹于他的能力，可以随心所欲抓起和投掷物体而仅仅只靠念力。许多巫师曾向他提出挑战，但都败给了他强大的弱化魔法。拥有无尽才能的大魔导师，绝不会因为敌人的出现而止步，无比智慧的他会运用一切方式，哪怕是施展敌人的魔法来击倒敌人。在只靠一想就能偷取技能方面享有盛誉的大魔导师，是近卫军团对抗黑暗势力最无可争议的瑰宝。|n|n|c000042ff力量|r - 19 + 1.5|n|c000042ff敏捷|r - 14 + 1.6|n|c00ff0303智力|r - 27 + 2.6|n|n可以学习 隔空取物、弱化能流、至尊魔法和|c00ff8000斗转星移|r。|n|n攻击距离 600（远程）|n移动速度 300
 
 [E031]
 Art=ReplaceableTextures\CommandButtons\BTNPriest.blp
@@ -437,7 +437,7 @@ Revivetip=复活 地精撕裂者
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNJunkGolem.blp
 Specialart=Objects\Spawnmodels\Orc\OrcSmallDeathExplode\OrcSmallDeathExplode.mdl
 Tip=地精撕裂者
-Ubertip=在遗忘森林的深处有着众多宝藏。没有人知道这件事情，也没有人意识到地精发明家瑞兹拉克的小小身体有多么的危险。瑞兹拉克通过将重型武器和能轻易砍倒一大片森林的伐木机结合，创造出了一个既致命又挣钱的伐木机。有着可拆分的锯刃，锋利的刀沿，能勾住树木的锁链，瑞兹拉克消灭敌人就如同砍伐一棵小树苗那样简单。尽管瑞兹拉克谈不上高尚，但是达拉然势力总是会付给他足够的金钱去完成任务，当然前提是他和他的伐木机得离生命古树远点！ |n|n|c00ff0303力量|r - 22 + 2.1|n|c000042ff敏捷|r - 16 + 1.3|n|c000042ff智力|r - 21 + 2.4|n|n可以学习 死亡旋风，伐木锯链，活性护甲以及|c00ff8000锯齿飞轮|r。|n|n攻击距离 150（近程）|n移动速度 290
+Ubertip=在遗忘森林的深处有着众多宝藏。没有人知道这件事情，也没有人意识到地精发明家瑞兹拉克的小小身体有多么的危险。瑞兹拉克通过将重型武器和能轻易砍倒一大片森林的伐木机结合，创造出了一个既致命又挣钱的伐木机。有着可拆分的锯刃，锋利的刀沿，能勾住树木的锁链，瑞兹拉克消灭敌人就如同砍伐一棵小树苗那样简单。尽管瑞兹拉克谈不上高尚，但是近卫军团总是会付给他足够的金钱去完成任务，当然前提是他和他的伐木机得离生命古树远点！ |n|n|c00ff0303力量|r - 22 + 2.1|n|c000042ff敏捷|r - 16 + 1.3|n|c000042ff智力|r - 21 + 2.4|n|n可以学习 死亡旋风，伐木锯链，活性护甲以及|c00ff8000锯齿飞轮|r。|n|n攻击距离 150（近程）|n移动速度 290
 
 [E115]
 Art=ReplaceableTextures\CommandButtons\BTNDireWolf.blp
@@ -550,7 +550,7 @@ Revivetip=复活 敌法师
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNHeroDemonHunter.blp
 Specialart=Objects\Spawnmodels\NightElf\NightElfLargeDeathExplode\NightElfLargeDeathExplode.mdl
 Tip=敌法师
-Ubertip=作为伟大先知的双胞胎儿子，灵魂守卫和敌法师从一出生开始就被赋予了神力：灵魂守卫获得了对生命力的非凡吸引力；敌法师则被赐予了对能量的操纵能力。敌法师对魔法的敏感度，能逐渐提高他的元素抗性，并给予他超光速移动的卓越能力。随着灵魂守卫的堕入邪道，现在的敌法师为了挽救他的哥哥，义无返顾地接受了达拉然势力的召唤。他的攻击撼动着黑暗势力群魔的根基，而他对敌人内部虚空力量的唤醒，则奏响了敌人崩塌的最终乐章。|n|n|cff0042ff力量|r - 22 + 1.7|n|cffff0303敏捷|r - 22 + 2.8|n|cff0042ff智力|r - 15 + 1.8|n|n可以学习 法力损毁、闪烁、法术护盾和|cffff8000法力虚空|r。|n|n攻击距离 150（近程）|n移动速度 315
+Ubertip=作为伟大先知的双胞胎儿子，灵魂守卫和敌法师从一出生开始就被赋予了神力：灵魂守卫获得了对生命力的非凡吸引力；敌法师则被赐予了对能量的操纵能力。敌法师对魔法的敏感度，能逐渐提高他的元素抗性，并给予他超光速移动的卓越能力。随着灵魂守卫的堕入邪道，现在的敌法师为了挽救他的哥哥，义无返顾地接受了近卫军团的召唤。他的攻击撼动着黑暗势力群魔的根基，而他对敌人内部虚空力量的唤醒，则奏响了敌人崩塌的最终乐章。|n|n|cff0042ff力量|r - 22 + 1.7|n|cffff0303敏捷|r - 22 + 2.8|n|cff0042ff智力|r - 15 + 1.8|n|n可以学习 法力损毁、闪烁、法术护盾和|cffff8000法力虚空|r。|n|n攻击距离 150（近程）|n移动速度 315
 
 [Edmm]
 animProps=alternateex
@@ -731,7 +731,7 @@ Revivetip=复活 先知
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNFurion.blp
 Specialart=Objects\Spawnmodels\NightElf\NightElfLargeDeathExplode\NightElfLargeDeathExplode.mdl
 Tip=先知
-Ubertip=“这片大地从来没有平静过。”因此，法里奥从来没有休息过。作为暗夜精灵的首领，法里奥永不疲倦的保护着他神圣的森林。作为曾经参与击败阿克蒙德的人，在达拉然势力需要的时候再次接受召唤自然是合情合理的。他能够支配自然的愤怒，能够命令树木恢复生机，能够让风把他带到很远的地方，能够让大自然打击那些违抗他意志的人。他不只是守护者或先知，他更是救世主。|n|n|cff0042ff力量|r - 19 + 1.8|n|cff0042ff敏捷|r - 18 + 1.9|n|cffff0303智力|r - 21 + 2.9|n|n可以学习 发芽、传送、自然之力和|cffff8000自然之怒|r。|n|n攻击距离 575（远程）|n移动速度 295
+Ubertip=“这片大地从来没有平静过。”因此，法里奥从来没有休息过。作为暗夜精灵的首领，法里奥永不疲倦的保护着他神圣的森林。作为曾经参与击败阿克蒙德的人，在近卫军团需要的时候再次接受召唤自然是合情合理的。他能够支配自然的愤怒，能够命令树木恢复生机，能够让风把他带到很远的地方，能够让大自然打击那些违抗他意志的人。他不只是守护者或先知，他更是救世主。|n|n|cff0042ff力量|r - 19 + 1.8|n|cff0042ff敏捷|r - 18 + 1.9|n|cffff0303智力|r - 21 + 2.9|n|n可以学习 发芽、传送、自然之力和|cffff8000自然之怒|r。|n|n攻击距离 575（远程）|n移动速度 295
 
 [Emoo]
 Art=ReplaceableTextures\CommandButtons\BTNDryad.blp
@@ -748,7 +748,7 @@ Revivetip=复活 魅惑魔女
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNDryad.blp
 Specialart=Objects\Spawnmodels\NightElf\NightElfLargeDeathExplode\NightElfLargeDeathExplode.mdl
 Tip=魅惑魔女
-Ubertip=尽管所有的树妖都是塞纳留斯的女儿，魅惑魔女因是他第一个女儿的原因倍受疼爱。由于身份特殊，她从父亲那里借来了许多的能力。具体来说，可以操纵羞涩的精灵来治疗她的伙伴，还能用她的能力来让敌人屈从达拉然势力的意志。与近距离肉搏相比，她更喜欢远距离的战斗，敌人距离越远，她的矛就有越强的穿透力。她的敏捷无人可比，任何试图杀死她的敌人都会发现她能轻而易举的在他们眼前跳开。|n|n|cff0042ff力量|r - 16 + 1.0|n|cff0042ff敏捷|r - 19 + 1.8|n|cffff0303智力|r - 16 + 2.8|n|n可以学习 不可侵犯、魅惑、自然之助和|cffff8000推进|r。|n|n攻击距离 550（远程）|n移动速度 335
+Ubertip=尽管所有的树妖都是塞纳留斯的女儿，魅惑魔女因是他第一个女儿的原因倍受疼爱。由于身份特殊，她从父亲那里借来了许多的能力。具体来说，可以操纵羞涩的精灵来治疗她的伙伴，还能用她的能力来让敌人屈从近卫军团的意志。与近距离肉搏相比，她更喜欢远距离的战斗，敌人距离越远，她的矛就有越强的穿透力。她的敏捷无人可比，任何试图杀死她的敌人都会发现她能轻而易举的在他们眼前跳开。|n|n|cff0042ff力量|r - 16 + 1.0|n|cff0042ff敏捷|r - 19 + 1.8|n|cffff0303智力|r - 16 + 2.8|n|n可以学习 不可侵犯、魅惑、自然之助和|cffff8000推进|r。|n|n攻击距离 550（远程）|n移动速度 335
 
 [Etyr]
 Art=ReplaceableTextures\CommandButtons\BTNPriestessOfTheMoon.blp
@@ -809,7 +809,7 @@ Revivetip=复活 半人马酋长
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNCentaurKhan.blp
 Specialart=Objects\Spawnmodels\Human\HumanLargeDeathExplode\HumanLargeDeathExplode.mdl
 Tip=半人马酋长
-Ubertip=天生的庞大身躯和无比的坚韧，半人马酋长拥有和他的身体所相称的勇气。作为部族先知所预言的救世主，他是半人马一族向达拉然势力效忠的象征。他挥舞战斧时总是拼尽全力，以至有时甚至伤到了自己。每次他的蹄子踏下都使大地为之颤动。他的反应速度快到一受到攻击便能立刻作出反击。半人马酋长决意去面对他的命运，而他已经知道，接下来的战斗，将成为他最终的挑战。|n|n|cffff0303力量|r - 23 + 3.8|n|cff0042ff敏捷|r - 15 + 2.0|n|cff0042ff智力|r - 15 + 1.6|n|n可以学习 马蹄践踏、双刃剑、反击和|cffff8000奔袭冲撞|r。|n|n攻击距离 150（近程）|n移动速度 300
+Ubertip=天生的庞大身躯和无比的坚韧，半人马酋长拥有和他的身体所相称的勇气。作为部族先知所预言的救世主，他是半人马一族向近卫军团效忠的象征。他挥舞战斧时总是拼尽全力，以至有时甚至伤到了自己。每次他的蹄子踏下都使大地为之颤动。他的反应速度快到一受到攻击便能立刻作出反击。半人马酋长决意去面对他的命运，而他已经知道，接下来的战斗，将成为他最终的挑战。|n|n|cffff0303力量|r - 23 + 3.8|n|cff0042ff敏捷|r - 15 + 2.0|n|cff0042ff智力|r - 15 + 1.6|n|n可以学习 马蹄践踏、双刃剑、反击和|cffff8000奔袭冲撞|r。|n|n攻击距离 150（近程）|n移动速度 300
 
 [H001]
 Art=ReplaceableTextures\CommandButtons\BTNFelGuardBlue.tga
@@ -839,7 +839,7 @@ Revivetip=复活 秀逗魔导士
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNSorceress.blp
 Specialart=Objects\Spawnmodels\Human\HumanLargeDeathExplode\HumanLargeDeathExplode.mdl
 Tip=秀逗魔导士
-Ubertip=秀逗魔导士原是周游各地的炎术师，加入达拉然势力的初衷完全是贪财。然而，日复一日地同众多无畏的战士们并肩作战，激发了她保卫世界之树的责任感。凭借极具破坏力的龙破斩，她能在敌群中宣泄自己的怒火。身陷险境时，她能让自己进入一种极端疯狂的情绪，甚至能产生一道巨大的闪电，据说能瞬间杀死任何敌人。她是黑暗势力最畏惧的敌人，达拉然势力最坚定的守护者。|n|n|c000042ff力量|r - 18 + 1.5|n|c000042ff敏捷|r - 16 + 1.5|n|c00ff0303智力|r - 27 + 3.2|n|n可以学习 龙破斩，光击阵，炽魂和|c00ff8000神灭斩|r。|n|n攻击距离 670（远程）|n移动速度 295
+Ubertip=秀逗魔导士原是周游各地的炎术师，加入近卫军团的初衷完全是贪财。然而，日复一日地同众多无畏的战士们并肩作战，激发了她保卫世界之树的责任感。凭借极具破坏力的龙破斩，她能在敌群中宣泄自己的怒火。身陷险境时，她能让自己进入一种极端疯狂的情绪，甚至能产生一道巨大的闪电，据说能瞬间杀死任何敌人。她是黑暗势力最畏惧的敌人，近卫军团最坚定的守护者。|n|n|c000042ff力量|r - 18 + 1.5|n|c000042ff敏捷|r - 16 + 1.5|n|c00ff0303智力|r - 27 + 3.2|n|n可以学习 龙破斩，光击阵，炽魂和|c00ff8000神灭斩|r。|n|n攻击距离 670（远程）|n移动速度 295
 
 [H008]
 Art=ReplaceableTextures\CommandButtons\BTNRazorback.blp
@@ -851,7 +851,7 @@ Revivetip=复活 刚背兽
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNRazorback.blp
 Specialart=Objects\Spawnmodels\Human\HumanLargeDeathExplode\HumanLargeDeathExplode.mdl
 Tip=刚背兽
-Ubertip=野猪人对其他种族之间的战斗是丝毫没有兴趣的，只有一个人知道，如果不遏制黑暗势力的话，终有一天黑暗势力将染指他们的土地。为了保护部族的安危，刚背兽带着原始的战斗本能加入达拉然势力。每次他挥出一蓬鬃毛或者甩出一滴鼻涕以后，他就变得更为狂热。当他陷入危险时，他坚硬的后背能帮助他抵挡伤害。刚背兽完美地展示了那些不起眼的生物所能爆发的力量。|n|n|cffff0303力量|r - 22 + 2.2|n|cff0042ff敏捷|r - 17 + 1.8|n|cff0042ff智力|r - 14 + 2.8|n|n可以学习 粘稠鼻液、刺针扫射、和刚毛后背|cffff8000战意|r。|n|n攻击距离 150（近程）|n移动速度 290
+Ubertip=野猪人对其他种族之间的战斗是丝毫没有兴趣的，只有一个人知道，如果不遏制黑暗势力的话，终有一天黑暗势力将染指他们的土地。为了保护部族的安危，刚背兽带着原始的战斗本能加入近卫军团。每次他挥出一蓬鬃毛或者甩出一滴鼻涕以后，他就变得更为狂热。当他陷入危险时，他坚硬的后背能帮助他抵挡伤害。刚背兽完美地展示了那些不起眼的生物所能爆发的力量。|n|n|cffff0303力量|r - 22 + 2.2|n|cff0042ff敏捷|r - 17 + 1.8|n|cff0042ff智力|r - 14 + 2.8|n|n可以学习 粘稠鼻液、刺针扫射、和刚毛后背|cffff8000战意|r。|n|n攻击距离 150（近程）|n移动速度 290
 
 [H00A]
 Art=ReplaceableTextures\CommandButtons\BTNHeroFarseer.blp
@@ -878,7 +878,7 @@ Revivetip=复活 兽王
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNBeastMaster.blp
 Specialart=Objects\Spawnmodels\Human\HumanLargeDeathExplode\HumanLargeDeathExplode.mdl
 Tip=兽王
-Ubertip=雷克萨来自传说中具有半兽半食人魔的血统的莫克纳萨族。原本是个四处漂泊的浪人，但为了更好的保护他身边的大自然，雷克萨还是提着他那两把充满力量的斧头加入了达拉然势力。作为野兽的朋友，雷克萨善于用他那令人不安的野性撕扯敌人，而且为了胜利，他甚至会将自己的斧头往敌人身上扔去。兽王雷克萨是天底下真正的勇士，并且在需要他的时候随时都可以挺身而出。|n|n|cffff0303力量|r - 23 + 2.2|n|cff0042ff敏捷|r - 18 + 1.6|n|cff0042ff智力|r - 16 + 1.9|n|n可以学习 野性之斧、野性呼唤、野性之心和|cffff8000原始咆哮|r。|n|n攻击距离 150（近程）|n移动速度 310
+Ubertip=雷克萨来自传说中具有半兽半食人魔的血统的莫克纳萨族。原本是个四处漂泊的浪人，但为了更好的保护他身边的大自然，雷克萨还是提着他那两把充满力量的斧头加入了近卫军团。作为野兽的朋友，雷克萨善于用他那令人不安的野性撕扯敌人，而且为了胜利，他甚至会将自己的斧头往敌人身上扔去。兽王雷克萨是天底下真正的勇士，并且在需要他的时候随时都可以挺身而出。|n|n|cffff0303力量|r - 23 + 2.2|n|cff0042ff敏捷|r - 18 + 1.6|n|cff0042ff智力|r - 16 + 1.9|n|n可以学习 野性之斧、野性呼唤、野性之心和|cffff8000原始咆哮|r。|n|n攻击距离 150（近程）|n移动速度 310
 
 [H00E]
 Art=ReplaceableTextures\CommandButtons\BTNRedDragon.blp
@@ -1038,7 +1038,7 @@ Revivetip=复活 神灵武士
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNHeadHunterBerserker.blp
 Specialart=Objects\Spawnmodels\Human\HumanLargeDeathExplode\HumanLargeDeathExplode.mdl
 Tip=神灵武士
-Ubertip=暗矛部落的巨魔们在很久以前就被从荆棘谷的原住地流放出来，他们是大多数人眼中最野蛮的种族，与他们相比，甚至连战场都显得优雅起来。这个“美誉”，更因他们在达拉然势力的代表，那个为了将敌人烧成碎片而不惜燃烧自己生命的神灵武士而名声大噪。在他的族人眼里，身为神灵武士的他，是被神祝福的烈士，从来不会畏惧死亡，情愿地（有时是绝望地）向死亡冲去，只是为了一个目标，将黑暗势力拖入坟墓。|n |n|n|cffff0303力量|r - 21 + 2.4|n|cff0042ff敏捷|r - 15 + 1.4|n|cff0042ff智力|r - 18 + 1.5|n|n可以学习 心炎、沸血之矛、狂战士之血和|cffff8000牺牲|r。|n|n攻击距离 450（远程）|n移动速度 300
+Ubertip=暗矛部落的巨魔们在很久以前就被从荆棘谷的原住地流放出来，他们是大多数人眼中最野蛮的种族，与他们相比，甚至连战场都显得优雅起来。这个“美誉”，更因他们在近卫军团的代表，那个为了将敌人烧成碎片而不惜燃烧自己生命的神灵武士而名声大噪。在他的族人眼里，身为神灵武士的他，是被神祝福的烈士，从来不会畏惧死亡，情愿地（有时是绝望地）向死亡冲去，只是为了一个目标，将黑暗势力拖入坟墓。|n |n|n|cffff0303力量|r - 21 + 2.4|n|cff0042ff敏捷|r - 15 + 1.4|n|cff0042ff智力|r - 18 + 1.5|n|n可以学习 心炎、沸血之矛、狂战士之血和|cffff8000牺牲|r。|n|n攻击距离 450（远程）|n移动速度 300
 
 [H00R]
 Art=ReplaceableTextures\CommandButtons\BTNZombie.blp
@@ -1065,7 +1065,7 @@ Revivetip=复活 风暴之灵
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNStorm.blp
 Specialart=Objects\Spawnmodels\Orc\OrcLargeDeathExplode\OrcLargeDeathExplode.mdl
 Tip=风暴之灵
-Ubertip=作为达拉然势力在最黑暗的年代所召唤的圣灵，风暴之灵决定在一个卑微的元素使身上证明自己的价值。由于熊猫人自身的灵魂已经在沛不可当的纯粹的电子精华的冲击下被毁灭，加上圣灵又无法使用自己的身体，就干脆降临至这个元素使的身上。尽管被凡人的躯体所束缚，风暴之灵仍然表现出极为强大的力量。通过以一种极为神秘的方式操纵广阔而无穷无尽的力之本源，在达拉然势力的敌人面前召唤出毁灭性的电子火花，碾碎所有敢于在它面前出现的敌人。|n|n|cff0042ff力量|r - 19 + 1.5|n|cff0042ff敏捷|r - 22 + 1.8|n|cffff0303智力|r - 23 + 3.0|n|n可以学习 残影、电子涡流、超负荷和|cffff8000球状闪电|r。|n|n攻击距离 480（远程）|n移动速度 295
+Ubertip=作为近卫军团在最黑暗的年代所召唤的圣灵，风暴之灵决定在一个卑微的元素使身上证明自己的价值。由于熊猫人自身的灵魂已经在沛不可当的纯粹的电子精华的冲击下被毁灭，加上圣灵又无法使用自己的身体，就干脆降临至这个元素使的身上。尽管被凡人的躯体所束缚，风暴之灵仍然表现出极为强大的力量。通过以一种极为神秘的方式操纵广阔而无穷无尽的力之本源，在近卫军团的敌人面前召唤出毁灭性的电子火花，碾碎所有敢于在它面前出现的敌人。|n|n|cff0042ff力量|r - 19 + 1.5|n|cff0042ff敏捷|r - 22 + 1.8|n|cffff0303智力|r - 23 + 3.0|n|n可以学习 残影、电子涡流、超负荷和|cffff8000球状闪电|r。|n|n攻击距离 480（远程）|n移动速度 295
 
 [H00T]
 Art=ReplaceableTextures\CommandButtons\BTNClockWerkGoblin.blp
@@ -1077,7 +1077,7 @@ Propernames=瑞托崔普
 Revivetip=复活 发条地精
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNClockWerkGoblin.blp
 Tip=发条地精
-Ubertip=发条地精是旧战时期地精武器工业的副产品，在战后被弃置多年，直到达拉然势力发现并重新启动了他。作战方面，发条地精的能力无可挑剔，他体内储藏的各式各样的弹药能轻而易举消灭任何方位的敌人。他的招牌扳手能如爪钩般伸长，即使针尖大小的东西，也手到擒来。|n|n|cffff0303力量|r - 24 + 2.7|n|cff0042ff敏捷|r - 13 + 2.3|n|cff0042ff智力|r - 17 + 1.7|n|n可以学习 弹幕冲击、能量齿轮、照明火箭和|c00ff8000发射钩爪|r。|n|n攻击距离 150（近程）|n移动速度 315
+Ubertip=发条地精是旧战时期地精武器工业的副产品，在战后被弃置多年，直到近卫军团发现并重新启动了他。作战方面，发条地精的能力无可挑剔，他体内储藏的各式各样的弹药能轻而易举消灭任何方位的敌人。他的招牌扳手能如爪钩般伸长，即使针尖大小的东西，也手到擒来。|n|n|cffff0303力量|r - 24 + 2.7|n|cff0042ff敏捷|r - 13 + 2.3|n|cff0042ff智力|r - 17 + 1.7|n|n可以学习 弹幕冲击、能量齿轮、照明火箭和|c00ff8000发射钩爪|r。|n|n攻击距离 150（近程）|n移动速度 315
 
 [H00U]
 Art=ReplaceableTextures\CommandButtons\BTNHeroBloodElfPrince.blp
@@ -1132,7 +1132,7 @@ Revivetip=复活 舰队统帅
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNProudmoore.blp
 Specialart=Objects\Spawnmodels\Human\HumanLargeDeathExplode\HumanLargeDeathExplode.mdl
 Tip=舰队统帅
-Ubertip=在所有达拉然势力的英雄中，只有一位，在许多大陆上以不同的名字被尊称。他的同伴叫他椰子船长，其他一些人叫他杰克斯派洛，另外一些人则称呼他为传奇的水手。但只有极少数人，才知道他的真名和其意义。他可以利用深渊的力量，制造出把敌人轰上天的洪流。他的优雅之刃效忠于大海，而他挥舞这把宝剑的威力强如潮汐。通过使用一种特殊的水魔法，他能够立刻把你带回你最初所处的位置。舰长现在直线航向黑暗势力的陆地，幽灵船上满载着用以鼓舞战友斗志的传奇朗姆酒，为达拉然势力的胜利铺平道路。他的真名是昆卡，全世界七大洋的主人和总指挥！|n|n|c00ff0303力量|r - 24 + 3.0|n|c000042ff敏捷|r - 14 + 1.3|n|c000042ff智力|r - 18 + 1.5|n|n可以学习 洪流、潮汐使者、X标记和|c00ff8000幽灵船|r。|n|n攻击距离 150（近战）|n移动速度 300
+Ubertip=在所有近卫军团的英雄中，只有一位，在许多大陆上以不同的名字被尊称。他的同伴叫他椰子船长，其他一些人叫他杰克斯派洛，另外一些人则称呼他为传奇的水手。但只有极少数人，才知道他的真名和其意义。他可以利用深渊的力量，制造出把敌人轰上天的洪流。他的优雅之刃效忠于大海，而他挥舞这把宝剑的威力强如潮汐。通过使用一种特殊的水魔法，他能够立刻把你带回你最初所处的位置。舰长现在直线航向黑暗势力的陆地，幽灵船上满载着用以鼓舞战友斗志的传奇朗姆酒，为近卫军团的胜利铺平道路。他的真名是昆卡，全世界七大洋的主人和总指挥！|n|n|c00ff0303力量|r - 24 + 3.0|n|c000042ff敏捷|r - 14 + 1.3|n|c000042ff智力|r - 18 + 1.5|n|n可以学习 洪流、潮汐使者、X标记和|c00ff8000幽灵船|r。|n|n攻击距离 150（近战）|n移动速度 300
 
 [H06W]
 Art=ReplaceableTextures\CommandButtons\BTNGhostMage.blp
@@ -1340,7 +1340,7 @@ Revivetip=复活 天怒法师
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNDragonHawk.blp
 Specialart=Objects\Spawnmodels\Human\HumanLargeDeathExplode\HumanLargeDeathExplode.mdl
 Tip=天怒法师
-Ubertip=扎贡纳斯是一名足智多谋的天怒法师，十分擅长魔法战斗。出于其神秘的天性和无法猜测的动机，他加入了达拉然势力对抗黑暗势力的战斗中。据说他来自血精灵族中一支非常古老的血脉，古老到已经完全达到了神秘魔法的最高造诣。有人怀疑扎贡纳斯和祈求者同样是上古时期的两位魔法天才，为了法师的最高荣誉而争斗。他对魔法超乎寻常的理解能够让他直接封印魔法，他强大的神秘之耀能够在短短几秒内将敌人化作灰烬。他的盟友都因为能和他站在同一战线而自豪无比，而他的敌人，则根本不能在他那强大的魔法下存活。|n|n|c000042ff力量|r - 19 + 1.5|n|c000042ff敏捷|r - 13 + 0.8|n|c00ff0303智力|r - 27 + 3.6|n|n可以学习 秘法鹰隼，震荡光弹，上古封印和|c00ff8000神秘之耀|r。|n|n攻击距离 600（远程）|n移动速度 325
+Ubertip=扎贡纳斯是一名足智多谋的天怒法师，十分擅长魔法战斗。出于其神秘的天性和无法猜测的动机，他加入了近卫军团对抗黑暗势力的战斗中。据说他来自血精灵族中一支非常古老的血脉，古老到已经完全达到了神秘魔法的最高造诣。有人怀疑扎贡纳斯和祈求者同样是上古时期的两位魔法天才，为了法师的最高荣誉而争斗。他对魔法超乎寻常的理解能够让他直接封印魔法，他强大的神秘之耀能够在短短几秒内将敌人化作灰烬。他的盟友都因为能和他站在同一战线而自豪无比，而他的敌人，则根本不能在他那强大的魔法下存活。|n|n|c000042ff力量|r - 19 + 1.5|n|c000042ff敏捷|r - 13 + 0.8|n|c00ff0303智力|r - 27 + 3.6|n|n可以学习 秘法鹰隼，震荡光弹，上古封印和|c00ff8000神秘之耀|r。|n|n攻击距离 600（远程）|n移动速度 325
 
 [H0E1]
 Art=ReplaceableTextures\CommandButtons\BTNMortarTeam.blp
@@ -1473,7 +1473,7 @@ Revivetip=复活 娜迦海妖
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNSeaWitch.blp
 Specialart=Objects\Spawnmodels\Human\HumanLargeDeathExplode\HumanLargeDeathExplode.mdl
 Tip=娜迦海妖
-Ubertip=娜迦海妖是娜迦一族中的漂泊者，早已习惯游荡在远离海边的地方，寻找新鲜事物。在她的冒险中，她遇到了一个梦想成为剑圣的兽人并同他坠入爱河。尽管年轻的兽人自己也没有什么实战经验，他还是教授了她许多半兽人故老相传的战斗技巧。在他们恋爱期间，当她正在从当地狼骑兵那里学习如何制造诱捕圈套的时候，蜂拥而来的黑暗势力前来入侵，她的爱人竟在她面前被杀。她使用娜迦魔法来让那些邪恶敌人睡着得以逃脱。现在的娜迦海妖，以爱之名全身心投入到达拉然势力中。|n|n|cff0042ff力量|r - 21 + 2.3|n|cffff0303敏捷|r - 21 + 2.75|n|cff0042ff智力|r - 21 + 2.0|n|n可以学习 镜像、诱捕、激流和|cffff8000海妖之歌|r。|n|n攻击距离 150（近程）|n移动速度 320
+Ubertip=娜迦海妖是娜迦一族中的漂泊者，早已习惯游荡在远离海边的地方，寻找新鲜事物。在她的冒险中，她遇到了一个梦想成为剑圣的兽人并同他坠入爱河。尽管年轻的兽人自己也没有什么实战经验，他还是教授了她许多半兽人故老相传的战斗技巧。在他们恋爱期间，当她正在从当地狼骑兵那里学习如何制造诱捕圈套的时候，蜂拥而来的黑暗势力前来入侵，她的爱人竟在她面前被杀。她使用娜迦魔法来让那些邪恶敌人睡着得以逃脱。现在的娜迦海妖，以爱之名全身心投入到近卫军团中。|n|n|cff0042ff力量|r - 21 + 2.3|n|cffff0303敏捷|r - 21 + 2.75|n|cff0042ff智力|r - 21 + 2.0|n|n可以学习 镜像、诱捕、激流和|cffff8000海妖之歌|r。|n|n攻击距离 150（近程）|n移动速度 320
 
 [HC92]
 Art=ReplaceableTextures\CommandButtons\BTNSatyrTrickster.blp
@@ -1516,7 +1516,7 @@ Revivetip=复活 树精卫士
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNTreant.blp
 Specialart=Objects\Spawnmodels\Human\HumanLargeDeathExplode\HumanLargeDeathExplode.mdl
 Tip=树精卫士
-Ubertip=在燃烧军团入侵的时候，树精卫士还只是棵幼小的树苗，而如今，他已成为经历了无穷岁月的树人智者。经过数千年的成长，现在他正在为达拉然势力贡献他的力量。借助伟大的森林，树精卫士可以运用森林之力隐藏他的盟友，他也可以制造藤蔓护甲给予己方以充分的保护，他还可以用枝蔓缠绕住对手，然后挥舞他沉重的树干将对手置于死地。|n|n|cffff0303力量|r - 25 + 3.3|n|cff0042ff敏捷|r - 15 + 2.0|n|cff0042ff智力|r - 17 + 1.8|n|n可以学习 大自然的掩护、寄生种子、活体护甲和|cffff8000疯狂生长|r。|n|n攻击距离 150（近程）|n移动速度 300
+Ubertip=在燃烧军团入侵的时候，树精卫士还只是棵幼小的树苗，而如今，他已成为经历了无穷岁月的树人智者。经过数千年的成长，现在他正在为近卫军团贡献他的力量。借助伟大的森林，树精卫士可以运用森林之力隐藏他的盟友，他也可以制造藤蔓护甲给予己方以充分的保护，他还可以用枝蔓缠绕住对手，然后挥舞他沉重的树干将对手置于死地。|n|n|cffff0303力量|r - 25 + 3.3|n|cff0042ff敏捷|r - 15 + 2.0|n|cff0042ff智力|r - 17 + 1.8|n|n可以学习 大自然的掩护、寄生种子、活体护甲和|cffff8000疯狂生长|r。|n|n攻击距离 150（近程）|n移动速度 300
 
 [Hant]
 Art=ReplaceableTextures\CommandButtons\BTNHeroArchMage.blp
@@ -1590,7 +1590,7 @@ Propernames=伊扎洛,伊扎洛,伊扎洛,伊扎洛,伊扎洛,伊扎洛,甘道�
 Revivetip=复活 光之守卫
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNHeroArchMage.blp
 Tip=光之守卫
-Ubertip=控制光与魔法的大师光之守卫，曾经是一位倍受尊敬的学者。但是在法师战争中，他背叛并出卖了他的同盟，因此被判流放到灵界，永世不得回来。当达拉然势力了解到他的强大能力后，给予他一个存活于凡间的肉身，但做为交换，他必须改变他的立场，加入达拉然势力来反击黑暗势力的冲击。伊扎洛负责给予同伴以无限能量的支持，而之前的背叛现在已经几乎没有人记得它了。|n|n|cff0042ff力量|r - 16 + 1.8|n|cff0042ff敏捷|r - 15 + 1.6|n|cffff0303智力|r - 22 + 2.8|n|n可以学习 启明、法力流失、查克拉魔法和|cffff8000灵魂形态|r。|n|n攻击距离 600（远程）|n移动速度 315
+Ubertip=控制光与魔法的大师光之守卫，曾经是一位倍受尊敬的学者。但是在法师战争中，他背叛并出卖了他的同盟，因此被判流放到灵界，永世不得回来。当近卫军团了解到他的强大能力后，给予他一个存活于凡间的肉身，但做为交换，他必须改变他的立场，加入近卫军团来反击黑暗势力的冲击。伊扎洛负责给予同伴以无限能量的支持，而之前的背叛现在已经几乎没有人记得它了。|n|n|cff0042ff力量|r - 16 + 1.8|n|cff0042ff敏捷|r - 15 + 1.6|n|cffff0303智力|r - 22 + 2.8|n|n可以学习 启明、法力流失、查克拉魔法和|cffff8000灵魂形态|r。|n|n攻击距离 600（远程）|n移动速度 315
 
 [Hdgo]
 Art=ReplaceableTextures\CommandButtons\BTNHeroPaladin.blp
@@ -1769,7 +1769,7 @@ Revivetip=复活 熊战士
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNFurbolgTracker.blp
 Specialart=Objects\Spawnmodels\NightElf\NightElfLargeDeathExplode\NightElfLargeDeathExplode.mdl
 Tip=熊战士
-Ubertip=在黑暗势力入侵以前，一群被称为毛皮兽的智慧熊族在艾萨拉的心脏地带建立了一个安宁而具灵性的社会。在大部分成员被不死族杀害或腐化以后，原本与世隔绝的熊族不得不向达拉然势力寻求庇护。作为回报，熊族派出了他们最强大的熊战士参加到达拉然势力。出于对玷污了他们圣地的敌人的愤怒，熊战士将他的怒火转化为一连串快速而残忍的攻击。他用他剃刀般的爪子击败敌人，将他们撕裂。|n|n|cff0042ff力量|r - 23 + 2.9|n|cffff0303敏捷|r - 18 + 2.1|n|cff0042ff智力|r - 16 + 1.5|n|n可以学习 震撼大地、超强力量、怒意狂击和|cffff8000激怒|r。|n|n攻击距离 150（近程）|n移动速度 310
+Ubertip=在黑暗势力入侵以前，一群被称为毛皮兽的智慧熊族在艾萨拉的心脏地带建立了一个安宁而具灵性的社会。在大部分成员被不死族杀害或腐化以后，原本与世隔绝的熊族不得不向近卫军团寻求庇护。作为回报，熊族派出了他们最强大的熊战士参加到近卫军团。出于对玷污了他们圣地的敌人的愤怒，熊战士将他的怒火转化为一连串快速而残忍的攻击。他用他剃刀般的爪子击败敌人，将他们撕裂。|n|n|cff0042ff力量|r - 23 + 2.9|n|cffff0303敏捷|r - 18 + 2.1|n|cff0042ff智力|r - 16 + 1.5|n|n可以学习 震撼大地、超强力量、怒意狂击和|cffff8000激怒|r。|n|n攻击距离 150（近程）|n移动速度 310
 
 [Hvsh]
 Art=ReplaceableTextures\CommandButtons\BTNShaman.blp
@@ -1798,7 +1798,7 @@ Revivetip=复活 复仇之魂
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNAvengingWatcher.tga
 Specialart=Objects\Spawnmodels\Human\HumanLargeDeathExplode\HumanLargeDeathExplode.mdl
 Tip=复仇之魂
-Ubertip=复仇之魂曾经是一位威严的典狱官，妹妹幻影刺客的狞笑以及滴血的圆环月刃的影像至死萦绕在她的心头。月神艾露恩听到她忠诚的女儿的哭泣后决定拯救她，并给予她可以使用冥界力量的新的躯体，以及亲临死亡的人才能拥有的斗志。饱含着前生可怕的热情的复仇之魂，现在率领着达拉然势力，无所畏惧迎接未来的挑战。|n|n|cff0042ff力量|r - 18 + 2.6|n|cffff0303敏捷|r - 27 + 3.3|n|cff0042ff智力|r - 15 + 1.75|n|n可以学习 魔法箭、恐怖波动、复仇光环和|cffff8000移形换位|r。|n|n攻击距离 425（远程）|n移动速度 300
+Ubertip=复仇之魂曾经是一位威严的典狱官，妹妹幻影刺客的狞笑以及滴血的圆环月刃的影像至死萦绕在她的心头。月神艾露恩听到她忠诚的女儿的哭泣后决定拯救她，并给予她可以使用冥界力量的新的躯体，以及亲临死亡的人才能拥有的斗志。饱含着前生可怕的热情的复仇之魂，现在率领着近卫军团，无所畏惧迎接未来的挑战。|n|n|cff0042ff力量|r - 18 + 2.6|n|cffff0303敏捷|r - 27 + 3.3|n|cff0042ff智力|r - 15 + 1.75|n|n可以学习 魔法箭、恐怖波动、复仇光环和|cffff8000移形换位|r。|n|n攻击距离 425（远程）|n移动速度 300
 
 [N00B]
 Art=ReplaceableTextures\CommandButtons\BTNFaerieDragon.blp
@@ -1814,7 +1814,7 @@ Requirescount=3
 Revivetip=复活 仙女龙
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNFaerieDragon.blp
 Tip=仙女龙
-Ubertip=达拉然势力一直在寻找能够帮助他们对抗黑暗势力的英雄，最终他们发现了生活在失落大陆上的神秘的仙女龙。在解释清楚同女王阿格雷斯的冲突后，她决定派出她的贴身侍卫仙女龙来扭转整个战争的局势。虽然仙女龙身材瘦小又爱搞恶作剧，不过在战场上却有着足以证明自己的表现。能穿过所有敌人的爆炸性魔法球，仙女粉尘，以及以无与伦比的幻术麻痹所有敌人的能力，给所有和他对抗的敌人上了一课，所谓不可以貌取人。在他们面前出现的，是无穷无尽的欺骗。|n|n|cff0042ff力量|r - 15 + 1.7|n|cff0042ff敏捷|r - 22 + 1.7|n|cffff0303智力|r - 25 + 2.4|n|n可以学习 幻象法球、新月之痕、相位转移和|cffff8000梦境缠绕|r。|n|n攻击距离 550（远程）|n移动速度 295
+Ubertip=近卫军团一直在寻找能够帮助他们对抗黑暗势力的英雄，最终他们发现了生活在失落大陆上的神秘的仙女龙。在解释清楚同女王阿格雷斯的冲突后，她决定派出她的贴身侍卫仙女龙来扭转整个战争的局势。虽然仙女龙身材瘦小又爱搞恶作剧，不过在战场上却有着足以证明自己的表现。能穿过所有敌人的爆炸性魔法球，仙女粉尘，以及以无与伦比的幻术麻痹所有敌人的能力，给所有和他对抗的敌人上了一课，所谓不可以貌取人。在他们面前出现的，是无穷无尽的欺骗。|n|n|cff0042ff力量|r - 15 + 1.7|n|cff0042ff敏捷|r - 22 + 1.7|n|cffff0303智力|r - 25 + 2.4|n|n可以学习 幻象法球、新月之痕、相位转移和|cffff8000梦境缠绕|r。|n|n攻击距离 550（远程）|n移动速度 295
 
 [N00R]
 Art=ReplaceableTextures\CommandButtons\BTNPitLord.blp
@@ -1896,7 +1896,7 @@ Revivetip=复活 巨魔战将
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNForestTroll.blp
 Specialart=Objects\Spawnmodels\Undead\UndeadLargeDeathExplode\UndeadLargeDeathExplode.mdl
 Tip=巨魔战将
-Ubertip=在达拉然势力第一次集结时，那些巨魔战士普遍被认为是不开化并且很不可靠的。他们的自尊心因此受到伤害，很多人拒绝加入，有些甚至考虑加入黑暗势力。只有一个被称为巨魔战将的年轻热血的巨魔加入了达拉然势力。他之所以被巨魔们称做眩目之斧，是因为他挥舞斧头的速度令人眩目，并且具有让敌人失明的招牌技能。他那不可阻挡的狂暴力量早已在他的盟友中成为一个传说。但是，巨魔战将不是为了达拉然势力而战斗，甚至不是为了守护世界之树，而仅仅是为了向精灵，人类，兽族以及其他一切种族证明，巨魔一族才是世界上最强的战士。|n|n|cff0042ff力量|r - 17 + 2.2|n|cffff0303敏捷|r - 21 + 2.75|n|cff0042ff智力|r - 13 + 1.4|n|n可以学习 狂战士之怒、旋风飞斧、热血战魂和|cffff8000战斗专注|r。|n|n攻击距离 500（远程）|n移动速度 300
+Ubertip=在近卫军团第一次集结时，那些巨魔战士普遍被认为是不开化并且很不可靠的。他们的自尊心因此受到伤害，很多人拒绝加入，有些甚至考虑加入黑暗势力。只有一个被称为巨魔战将的年轻热血的巨魔加入了近卫军团。他之所以被巨魔们称做眩目之斧，是因为他挥舞斧头的速度令人眩目，并且具有让敌人失明的招牌技能。他那不可阻挡的狂暴力量早已在他的盟友中成为一个传说。但是，巨魔战将不是为了近卫军团而战斗，甚至不是为了守护世界之树，而仅仅是为了向精灵，人类，兽族以及其他一切种族证明，巨魔一族才是世界上最强的战士。|n|n|cff0042ff力量|r - 17 + 2.2|n|cffff0303敏捷|r - 21 + 2.75|n|cff0042ff智力|r - 13 + 1.4|n|n可以学习 狂战士之怒、旋风飞斧、热血战魂和|cffff8000战斗专注|r。|n|n攻击距离 500（远程）|n移动速度 300
 
 [N017]
 Art=ReplaceableTextures\CommandButtons\BTNForestTroll.blp
@@ -1911,7 +1911,7 @@ Revivetip=复活 巨魔战将
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNForestTroll.blp
 Specialart=Objects\Spawnmodels\Undead\UndeadLargeDeathExplode\UndeadLargeDeathExplode.mdl
 Tip=巨魔战将
-Ubertip=在达拉然势力第一次集结时，那些巨魔战士普遍被认为是不开化并且很不可靠的。他们的自尊心因此受到伤害，很多人拒绝加入，有些甚至考虑加入黑暗势力。只有一个被称为巨魔战将的年轻热血的巨魔加入了达拉然势力。他之所以被巨魔们称做眩目之斧，是因为他挥舞斧头的速度令人眩目，并且具有让敌人失明的招牌技能。他那不可阻挡的狂暴力量早已在他的盟友中成为一个传说。但是，巨魔战将不是为了达拉然势力而战斗，甚至不是为了守护世界之树，而仅仅是为了向精灵，人类，兽族以及其他一切种族证明，巨魔一族才是世界上最强的战士。|n|n|cff0042ff力量|r - 17 + 2.2|n|cffff0303敏捷|r - 21 + 2.75|n|cff0042ff智力|r - 13 + 1.4|n|n可以学习 狂战士之怒、旋风飞斧、热血战魂和|cffff8000战斗专注|r。|n|n攻击距离 500（远程）|n移动速度 300
+Ubertip=在近卫军团第一次集结时，那些巨魔战士普遍被认为是不开化并且很不可靠的。他们的自尊心因此受到伤害，很多人拒绝加入，有些甚至考虑加入黑暗势力。只有一个被称为巨魔战将的年轻热血的巨魔加入了近卫军团。他之所以被巨魔们称做眩目之斧，是因为他挥舞斧头的速度令人眩目，并且具有让敌人失明的招牌技能。他那不可阻挡的狂暴力量早已在他的盟友中成为一个传说。但是，巨魔战将不是为了近卫军团而战斗，甚至不是为了守护世界之树，而仅仅是为了向精灵，人类，兽族以及其他一切种族证明，巨魔一族才是世界上最强的战士。|n|n|cff0042ff力量|r - 17 + 2.2|n|cffff0303敏捷|r - 21 + 2.75|n|cff0042ff智力|r - 13 + 1.4|n|n可以学习 狂战士之怒、旋风飞斧、热血战魂和|cffff8000战斗专注|r。|n|n攻击距离 500（远程）|n移动速度 300
 
 [N01A]
 Art=ReplaceableTextures\CommandButtons\BTNSpellBreaker.blp
@@ -1954,7 +1954,7 @@ Revivetip=复活 炼金术士
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNHeroAlchemist.blp
 Specialart=Objects\Spawnmodels\Human\HumanLargeDeathExplode\HumanLargeDeathExplode.mdl
 Tip=炼金术士
-Ubertip=炼金术士对于试验的态度是永不懈怠，加入达拉然势力的编制也纯粹为了个人财富，以补助研究。为了得到可观的赏金，这个没良心的地精才不管采取什么残忍的手段。在麻醉或者毒害敌人的同时，他还能保持着客观冷静的态度，面不改色心不跳地聆听敌人痛苦的哀嚎。他以残酷和非人道声名远扬，让那些强大的黑暗势力在他的小小药瓶前不寒而栗。|n|n|cffff0303力量|r - 25 + 2.3|n|cff0042ff敏捷|r - 11 + 1.5 |n|cff0042ff智力|r - 25 + 1.8|n|n可以学习 酸性喷雾、不稳定化合物、地精的贪婪和|cffff8000化学狂暴|r。|n|n攻击距离 150（近战）|n移动速度 295
+Ubertip=炼金术士对于试验的态度是永不懈怠，加入近卫军团的编制也纯粹为了个人财富，以补助研究。为了得到可观的赏金，这个没良心的地精才不管采取什么残忍的手段。在麻醉或者毒害敌人的同时，他还能保持着客观冷静的态度，面不改色心不跳地聆听敌人痛苦的哀嚎。他以残酷和非人道声名远扬，让那些强大的黑暗势力在他的小小药瓶前不寒而栗。|n|n|cffff0303力量|r - 25 + 2.3|n|cff0042ff敏捷|r - 11 + 1.5 |n|cff0042ff智力|r - 25 + 1.8|n|n可以学习 酸性喷雾、不稳定化合物、地精的贪婪和|cffff8000化学狂暴|r。|n|n攻击距离 150（近战）|n移动速度 295
 
 [N01J]
 Art=ReplaceableTextures\CommandButtons\BTNHeroAlchemist.blp
@@ -2014,7 +2014,7 @@ Revivetip=复活 月之女祭司
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNPriestessOfTheMoon.blp
 Specialart=Objects\Spawnmodels\NightElf\NightElfLargeDeathExplode\NightElfLargeDeathExplode.mdl
 Tip=月之女祭司
-Ubertip=作为月神艾露恩庇护下的长老和高等祭司，月之女祭司在达拉然势力中就如同那黑暗中的一线光明。她以雨点一般的箭矢和坠落的流星抵挡蜂拥而至的黑暗势力大军，而她神圣的存在，消除了四周友军的疲倦，让他们在战场上的速度得到极大的提升。在必要的时候，她还能以隐形掩护自己和其他伙伴，使她成为重要的支援力量。|n|n|cff0042ff力量|r - 17 + 1.85|n|cffff0303敏捷|r - 20 + 2.5|n|cff0042ff智力|r - 17 + 1.65 |n|n可以学习 群星坠落、月神之箭、虎跃和|cffff8000月之暗面|r。|n|n攻击距离 600（远程）|n移动速度 300
+Ubertip=作为月神艾露恩庇护下的长老和高等祭司，月之女祭司在近卫军团中就如同那黑暗中的一线光明。她以雨点一般的箭矢和坠落的流星抵挡蜂拥而至的黑暗势力大军，而她神圣的存在，消除了四周友军的疲倦，让他们在战场上的速度得到极大的提升。在必要的时候，她还能以隐形掩护自己和其他伙伴，使她成为重要的支援力量。|n|n|cff0042ff力量|r - 17 + 1.85|n|cffff0303敏捷|r - 20 + 2.5|n|cff0042ff智力|r - 17 + 1.65 |n|n可以学习 群星坠落、月神之箭、虎跃和|cffff8000月之暗面|r。|n|n攻击距离 600（远程）|n移动速度 300
 
 [N01W]
 Art=ReplaceableTextures\CommandButtons\BTNDarkTrollShadowPriest.blp
@@ -2044,7 +2044,7 @@ Revivetip=复活 巨魔战将
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNForestTroll.blp
 Specialart=Objects\Spawnmodels\Undead\UndeadLargeDeathExplode\UndeadLargeDeathExplode.mdl
 Tip=巨魔战将
-Ubertip=在达拉然势力第一次集结时，那些巨魔战士普遍被认为是不开化并且很不可靠的。他们的自尊心因此受到伤害，很多人拒绝加入，有些甚至考虑加入黑暗势力。只有一个被称为巨魔战将的年轻热血的巨魔加入了达拉然势力。他之所以被巨魔们称做眩目之斧，是因为他挥舞斧头的速度令人眩目，并且具有让敌人失明的招牌技能。他那不可阻挡的狂暴力量早已在他的盟友中成为一个传说。但是，巨魔战将不是为了达拉然势力而战斗，甚至不是为了守护世界之树，而仅仅是为了向精灵，人类，兽族以及其他一切种族证明，巨魔一族才是世界上最强的战士。|n|n|cff0042ff力量|r - 17 + 1.6|n|cffff0303敏捷|r - 21 + 2.75|n|cff0042ff智力|r - 13 + 1.4|n|n可以学习 狂战士之怒、旋风飞斧、热血战魂和|cffff8000战斗专注|r。|n|n攻击距离 500（远程）|n移动速度 300
+Ubertip=在近卫军团第一次集结时，那些巨魔战士普遍被认为是不开化并且很不可靠的。他们的自尊心因此受到伤害，很多人拒绝加入，有些甚至考虑加入黑暗势力。只有一个被称为巨魔战将的年轻热血的巨魔加入了近卫军团。他之所以被巨魔们称做眩目之斧，是因为他挥舞斧头的速度令人眩目，并且具有让敌人失明的招牌技能。他那不可阻挡的狂暴力量早已在他的盟友中成为一个传说。但是，巨魔战将不是为了近卫军团而战斗，甚至不是为了守护世界之树，而仅仅是为了向精灵，人类，兽族以及其他一切种族证明，巨魔一族才是世界上最强的战士。|n|n|cff0042ff力量|r - 17 + 1.6|n|cffff0303敏捷|r - 21 + 2.75|n|cff0042ff智力|r - 13 + 1.4|n|n可以学习 狂战士之怒、旋风飞斧、热血战魂和|cffff8000战斗专注|r。|n|n攻击距离 500（远程）|n移动速度 300
 
 [N0EG]
 Art=ReplaceableTextures\CommandButtons\BTNSylvanusWindrunner.blp
@@ -2062,7 +2062,7 @@ Revivetip=复活 风行者
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNSylvanusWindrunner.blp
 Specialart=Objects\Spawnmodels\Demon\DemonLargeDeathExplode\DemonLargeDeathExplode.mdl
 Tip=风行者
-Ubertip=在冬泉谷流域，森林中翠绿沼泽的深处，一个拥有风之力量的精灵在那里安了家。她在法师之战后不久，就以自由行动者的身份加入了达拉然势力。由于受到风之女神的宠爱，奥蕾莉亚得到了许多祝福。她射出的箭矢强劲且极具威力，能够穿透一条直线上的敌人；也可以射出蕴含风之魔力的箭矢，创造出桎梏将敌人牢牢束缚在一起；并且藉助风的力量，移动迅速。最令人称赞的是，她能以肉眼无法看清的速度射出暴风雨般的利箭，将一群群不知天高地厚的敌人瞬间杀死。奥蕾莉亚风行者，绝对是黑暗势力不能小瞧的敌人！|n|n|c000042ff力量|r - 15 + 2.5|n|c000042ff敏捷|r - 17 + 1.4|n|c00ff0303智力|r - 22 + 2.6|n|n可以学习 束缚击、强力击、风行者和|c00ff8000集中火力|r。|n|n攻击距离 600（远程）|n移动速度 295
+Ubertip=在冬泉谷流域，森林中翠绿沼泽的深处，一个拥有风之力量的精灵在那里安了家。她在法师之战后不久，就以自由行动者的身份加入了近卫军团。由于受到风之女神的宠爱，奥蕾莉亚得到了许多祝福。她射出的箭矢强劲且极具威力，能够穿透一条直线上的敌人；也可以射出蕴含风之魔力的箭矢，创造出桎梏将敌人牢牢束缚在一起；并且藉助风的力量，移动迅速。最令人称赞的是，她能以肉眼无法看清的速度射出暴风雨般的利箭，将一群群不知天高地厚的敌人瞬间杀死。奥蕾莉亚风行者，绝对是黑暗势力不能小瞧的敌人！|n|n|c000042ff力量|r - 15 + 2.5|n|c000042ff敏捷|r - 17 + 1.4|n|c00ff0303智力|r - 22 + 2.6|n|n可以学习 束缚击、强力击、风行者和|c00ff8000集中火力|r。|n|n攻击距离 600（远程）|n移动速度 295
 
 [N0EI]
 Art=ReplaceableTextures\CommandButtons\BTNSylvanusWindrunner.blp
@@ -2212,7 +2212,7 @@ Requirescount=3
 Revivetip=复活 寒冬飞龙
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNFrostWyrm.blp
 Tip=寒冬飞龙
-Ubertip=被诺森德的死灵法师复活并重塑为尸骨之龙之后，寒冬飞龙仍然拥有霜冻之力。为了歼灭世间一切闪耀着温暖生命光芒的事物，寒冬飞龙开始攻击达拉然势力。他有着最纯粹的冰川元素之力，其寒冷的呼吸能给盟友带去生命的活力，也能给敌人带去使人发狂的严寒，让他们自相残杀。他还能发射寒冰碎片，让敌人的整个军队都寸步难行。这样一种邪恶的、强大的、拥有致命冰霜之力的生物，就连黑暗势力都不知道这样的野兽当时是怎么死去的。|n|n|c000042ff力量|r - 24 + 1.8|n|c000042ff敏捷|r - 16 + 1.9|n|c00ff0303智力|r - 25 + 2.4 |n|n可以学习 严寒烧灼，碎裂冲击，寒冬之拥和|c00ff8000寒冬诅咒|r。|n|n攻击距离 425（远程）|n移动速度 285
+Ubertip=被诺森德的死灵法师复活并重塑为尸骨之龙之后，寒冬飞龙仍然拥有霜冻之力。为了歼灭世间一切闪耀着温暖生命光芒的事物，寒冬飞龙开始攻击近卫军团。他有着最纯粹的冰川元素之力，其寒冷的呼吸能给盟友带去生命的活力，也能给敌人带去使人发狂的严寒，让他们自相残杀。他还能发射寒冰碎片，让敌人的整个军队都寸步难行。这样一种邪恶的、强大的、拥有致命冰霜之力的生物，就连黑暗势力都不知道这样的野兽当时是怎么死去的。|n|n|c000042ff力量|r - 24 + 1.8|n|c000042ff敏捷|r - 16 + 1.9|n|c00ff0303智力|r - 25 + 2.4 |n|n可以学习 严寒烧灼，碎裂冲击，寒冬之拥和|c00ff8000寒冬诅咒|r。|n|n攻击距离 425（远程）|n移动速度 285
 
 [N0M9]
 Art=ReplaceableTextures\CommandButtons\BTNWyvernRider.blp
@@ -2449,7 +2449,7 @@ Revivetip=复活 巨魔战将
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNForestTroll.blp
 Specialart=Objects\Spawnmodels\Undead\UndeadLargeDeathExplode\UndeadLargeDeathExplode.mdl
 Tip=巨魔战将
-Ubertip=在达拉然势力第一次集结时，那些巨魔战士普遍被认为是不开化并且很不可靠的。他们的自尊心因此受到伤害，很多人拒绝加入，有些甚至考虑加入黑暗势力。只有一个被称为巨魔战将的年轻热血的巨魔加入了达拉然势力。他之所以被巨魔们称做眩目之斧，是因为他挥舞斧头的速度令人眩目，并且具有让敌人失明的招牌技能。他那不可阻挡的狂暴力量早已在他的盟友中成为一个传说。但是，巨魔战将不是为了达拉然势力而战斗，甚至不是为了守护世界之树，而仅仅是为了向精灵，人类，兽族以及其他一切种族证明，巨魔一族才是世界上最强的战士。|n|n|cff0042ff力量|r - 17 + 2.2|n|cffff0303敏捷|r - 21 + 2.75|n|cff0042ff智力|r - 13 + 1.4|n|n可以学习 狂战士之怒、旋风飞斧、热血战魂和|cffff8000战斗专注|r。|n|n攻击距离 500（远程）|n移动速度 300
+Ubertip=在近卫军团第一次集结时，那些巨魔战士普遍被认为是不开化并且很不可靠的。他们的自尊心因此受到伤害，很多人拒绝加入，有些甚至考虑加入黑暗势力。只有一个被称为巨魔战将的年轻热血的巨魔加入了近卫军团。他之所以被巨魔们称做眩目之斧，是因为他挥舞斧头的速度令人眩目，并且具有让敌人失明的招牌技能。他那不可阻挡的狂暴力量早已在他的盟友中成为一个传说。但是，巨魔战将不是为了近卫军团而战斗，甚至不是为了守护世界之树，而仅仅是为了向精灵，人类，兽族以及其他一切种族证明，巨魔一族才是世界上最强的战士。|n|n|cff0042ff力量|r - 17 + 2.2|n|cffff0303敏捷|r - 21 + 2.75|n|cff0042ff智力|r - 13 + 1.4|n|n可以学习 狂战士之怒、旋风飞斧、热血战魂和|cffff8000战斗专注|r。|n|n攻击距离 500（远程）|n移动速度 300
 
 [N201]
 Art=ReplaceableTextures\CommandButtons\BTNForestTroll.blp
@@ -2464,7 +2464,7 @@ Revivetip=复活 巨魔战将
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNForestTroll.blp
 Specialart=Objects\Spawnmodels\Undead\UndeadLargeDeathExplode\UndeadLargeDeathExplode.mdl
 Tip=巨魔战将
-Ubertip=在达拉然势力第一次集结时，那些巨魔战士普遍被认为是不开化并且很不可靠的。他们的自尊心因此受到伤害，很多人拒绝加入，有些甚至考虑加入黑暗势力。只有一个被称为巨魔战将的年轻热血的巨魔加入了达拉然势力。他之所以被巨魔们称做眩目之斧，是因为他挥舞斧头的速度令人眩目，并且具有让敌人失明的招牌技能。他那不可阻挡的狂暴力量早已在他的盟友中成为一个传说。但是，巨魔战将不是为了达拉然势力而战斗，甚至不是为了守护世界之树，而仅仅是为了向精灵，人类，兽族以及其他一切种族证明，巨魔一族才是世界上最强的战士。|n|n|cff0042ff力量|r - 17 + 2.2|n|cffff0303敏捷|r - 21 + 2.75|n|cff0042ff智力|r - 13 + 1.4|n|n可以学习 狂战士之怒、旋风飞斧、热血战魂和|cffff8000战斗专注|r。|n|n攻击距离 500（远程）|n移动速度 300
+Ubertip=在近卫军团第一次集结时，那些巨魔战士普遍被认为是不开化并且很不可靠的。他们的自尊心因此受到伤害，很多人拒绝加入，有些甚至考虑加入黑暗势力。只有一个被称为巨魔战将的年轻热血的巨魔加入了近卫军团。他之所以被巨魔们称做眩目之斧，是因为他挥舞斧头的速度令人眩目，并且具有让敌人失明的招牌技能。他那不可阻挡的狂暴力量早已在他的盟友中成为一个传说。但是，巨魔战将不是为了近卫军团而战斗，甚至不是为了守护世界之树，而仅仅是为了向精灵，人类，兽族以及其他一切种族证明，巨魔一族才是世界上最强的战士。|n|n|cff0042ff力量|r - 17 + 2.2|n|cffff0303敏捷|r - 21 + 2.75|n|cff0042ff智力|r - 13 + 1.4|n|n可以学习 狂战士之怒、旋风飞斧、热血战魂和|cffff8000战斗专注|r。|n|n攻击距离 500（远程）|n移动速度 300
 
 [N20R]
 Art=ReplaceableTextures\CommandButtons\BTNPitLord.blp
@@ -2691,7 +2691,7 @@ Revivetip=复活 卓尔游侠
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNBansheeRanger.tga
 Specialart=Objects\Spawnmodels\Demon\DemonLargeDeathExplode\DemonLargeDeathExplode.mdl
 Tip=卓尔游侠
-Ubertip=卓尔游侠曾是地底世界幽暗地狱的一名优秀的弓箭手。她对她的家族所走的邪路厌恶之极，便逃到了地表世界。她的坚毅，使她带着她那杰出的实战弓术加入了达拉然势力。她的技能包括剥夺魔法生物的嗓音，以及为她的箭矢附上寒冰魔法，还有她那每箭力求精准的成名技。她这些能力非常有价值，所以在其他人眼里，她的真实身世也就无足轻重了。|n|n|cff0042ff力量|r - 17 + 1.9|n|cffff0303敏捷|r - 26 + 1.9|n|cff0042ff智力|r - 15 + 1.4|n|n可以学习 霜冻之箭、强击光环、沉默魔法和|cffff8000射手天赋|r。|n|n攻击距离 625（远程）|n移动速度 300
+Ubertip=卓尔游侠曾是地底世界幽暗地狱的一名优秀的弓箭手。她对她的家族所走的邪路厌恶之极，便逃到了地表世界。她的坚毅，使她带着她那杰出的实战弓术加入了近卫军团。她的技能包括剥夺魔法生物的嗓音，以及为她的箭矢附上寒冰魔法，还有她那每箭力求精准的成名技。她这些能力非常有价值，所以在其他人眼里，她的真实身世也就无足轻重了。|n|n|cff0042ff力量|r - 17 + 1.9|n|cffff0303敏捷|r - 26 + 1.9|n|cff0042ff智力|r - 15 + 1.4|n|n可以学习 霜冻之箭、强击光环、沉默魔法和|cffff8000射手天赋|r。|n|n攻击距离 625（远程）|n移动速度 300
 
 [Nbst]
 Art=ReplaceableTextures\CommandButtons\BTNBeastMaster.blp
@@ -3099,7 +3099,7 @@ Revivetip=复活 斧王
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNChaosGrom.blp
 Specialart=Objects\Spawnmodels\Undead\UndeadLargeDeathExplode\UndeadLargeDeathExplode.mdl
 Tip=斧王
-Ubertip=在很久以前，还是人兽战争时期，许多兽族战士被恶魔影响而变得腐蚀，变成了那些最黑暗恶魔的工具。其中一个战士是血斧部落半支派的首领斧王。斧王被人族圣骑士所杀，但是诡异的是，在反抗阿克蒙德的战场上，斧王同亡灵军队一起协同作战，而那时候玛洛诺斯已经开始统领兽人了。斧王被恶魔复活，用他的反射和强大的打击来追捕达拉然势力的灵巧的战士并把他们打回原形，把他对战争的饥渴表现在他们身上。|n|n|cffff0303力量|r - 25 + 2.8|n|cff0042ff敏捷|r - 20 + 2.2|n|cff0042ff智力|r - 18 + 1.6|n|n可以学习 狂战士的怒吼、战斗饥渴、反击螺旋和|cffff8000淘汰之刃|r。|n|n攻击距离 150（近程）|n移动速度 290
+Ubertip=在很久以前，还是人兽战争时期，许多兽族战士被恶魔影响而变得腐蚀，变成了那些最黑暗恶魔的工具。其中一个战士是血斧部落半支派的首领斧王。斧王被人族圣骑士所杀，但是诡异的是，在反抗阿克蒙德的战场上，斧王同亡灵军队一起协同作战，而那时候玛洛诺斯已经开始统领兽人了。斧王被恶魔复活，用他的反射和强大的打击来追捕近卫军团的灵巧的战士并把他们打回原形，把他对战争的饥渴表现在他们身上。|n|n|cffff0303力量|r - 25 + 2.8|n|cff0042ff敏捷|r - 20 + 2.2|n|cff0042ff智力|r - 18 + 1.6|n|n可以学习 狂战士的怒吼、战斗饥渴、反击螺旋和|cffff8000淘汰之刃|r。|n|n攻击距离 150（近程）|n移动速度 290
 
 [Orex]
 Art=ReplaceableTextures\CommandButtons\BTNBeastmaster.blp
@@ -3132,7 +3132,7 @@ Revivetip=复活 暗影萨满
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNShadowHunter.blp
 Specialart=Objects\Spawnmodels\Orc\OrcLargeDeathExplode\OrcLargeDeathExplode.mdl
 Tip=暗影萨满
-Ubertip=作为巨魔中天赋异秉的巫医，罗斯塔在年轻就已经精通各种巫术的奥义。战争爆发以后，他化身为暗影萨满向达拉然势力效忠并投入战斗，并决心让黑暗势力万劫不复。作为一个有天赋的巫医的同时，他又是一个超越他老师的暗影猎手。他精通召唤出很多毒蛇守卫的技艺、能束缚敌人一段短暂的时间、还能够施放闪电链来打击多个目标。|n|n|cff0042ff力量|r - 21 + 1.8|n|cff0042ff敏捷|r - 16 + 1.6|n|cffff0303智力|r - 21 + 3.0|n|n可以学习 苍穹震击、妖术、枷锁和|cffff8000群蛇守卫|r。|n|n攻击距离 500（远程）|n移动速度 285
+Ubertip=作为巨魔中天赋异秉的巫医，罗斯塔在年轻就已经精通各种巫术的奥义。战争爆发以后，他化身为暗影萨满向近卫军团效忠并投入战斗，并决心让黑暗势力万劫不复。作为一个有天赋的巫医的同时，他又是一个超越他老师的暗影猎手。他精通召唤出很多毒蛇守卫的技艺、能束缚敌人一段短暂的时间、还能够施放闪电链来打击多个目标。|n|n|cff0042ff力量|r - 21 + 1.8|n|cff0042ff敏捷|r - 16 + 1.6|n|cffff0303智力|r - 21 + 3.0|n|n可以学习 苍穹震击、妖术、枷锁和|cffff8000群蛇守卫|r。|n|n攻击距离 500（远程）|n移动速度 285
 
 [Osam]
 Art=ReplaceableTextures\CommandButtons\BTNHeroBlademaster.blp
@@ -3737,7 +3737,7 @@ Revivetip=复活 秀逗魔导士
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNSorceress.blp
 Specialart=Objects\Spawnmodels\Human\HumanLargeDeathExplode\HumanLargeDeathExplode.mdl
 Tip=秀逗魔导士
-Ubertip=秀逗魔导士原是周游各地的炎术师，加入达拉然势力的初衷完全是贪财。然而，日复一日地同众多无畏的战士们并肩作战，激发了她保卫世界之树的责任感。凭借极具破坏力的龙破斩，她能在敌群中宣泄自己的怒火。身陷险境时，她能让自己进入一种极端疯狂的情绪，甚至能产生一道巨大的闪电，据说能瞬间杀死任何敌人。她是黑暗势力最畏惧的敌人，达拉然势力最坚定的守护者。|n|n|c000042ff力量|r - 18 + 1.5|n|c000042ff敏捷|r - 16 + 1.5|n|c00ff0303智力|r - 27 + 3.2|n|n可以学习 龙破斩，光击阵，炽魂和|c00ff8000神灭斩|r。|n|n攻击距离 670（远程）|n移动速度 295
+Ubertip=秀逗魔导士原是周游各地的炎术师，加入近卫军团的初衷完全是贪财。然而，日复一日地同众多无畏的战士们并肩作战，激发了她保卫世界之树的责任感。凭借极具破坏力的龙破斩，她能在敌群中宣泄自己的怒火。身陷险境时，她能让自己进入一种极端疯狂的情绪，甚至能产生一道巨大的闪电，据说能瞬间杀死任何敌人。她是黑暗势力最畏惧的敌人，近卫军团最坚定的守护者。|n|n|c000042ff力量|r - 18 + 1.5|n|c000042ff敏捷|r - 16 + 1.5|n|c00ff0303智力|r - 27 + 3.2|n|n可以学习 龙破斩，光击阵，炽魂和|c00ff8000神灭斩|r。|n|n攻击距离 670（远程）|n移动速度 295
 
 [Z005]
 Art=ReplaceableTextures\CommandButtons\BTNHuntress.blp
@@ -3754,7 +3754,7 @@ Revivetip=复活 月之骑士
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNHuntress.blp
 Specialart=Objects\Spawnmodels\NightElf\NightElfLargeDeathExplode\NightElfLargeDeathExplode.mdl
 Tip=月之骑士
-Ubertip=月之骑士是月神艾露恩坚定而又虔诚的信徒。在无尽的战争中，她加入达拉然势力竭尽全力净化被邪恶的黑暗势力所污染的土地。由于她的忠诚和勇敢，月神赐予了她一小部分神秘的力量。这份恩赐使得她能轻易打败敌人。据说月之骑士能够召唤最纯净的月光，而且永远被灼炽的光环所围绕，就好像身处在月光的照耀下。她是达拉然势力最明亮的灯塔和永不懈怠的守卫。|n|n|cff0042ff力量|r - 15 + 1.9|n|cffff0303敏捷|r - 18 + 2.8|n|cff0042ff智力|r - 16 + 1.85|n|n可以学习 月光、月刃、月之祝福和|cffff8000月蚀|r。|n|n攻击距离 425（远程）|n移动速度 330
+Ubertip=月之骑士是月神艾露恩坚定而又虔诚的信徒。在无尽的战争中，她加入近卫军团竭尽全力净化被邪恶的黑暗势力所污染的土地。由于她的忠诚和勇敢，月神赐予了她一小部分神秘的力量。这份恩赐使得她能轻易打败敌人。据说月之骑士能够召唤最纯净的月光，而且永远被灼炽的光环所围绕，就好像身处在月光的照耀下。她是近卫军团最明亮的灯塔和永不懈怠的守卫。|n|n|cff0042ff力量|r - 15 + 1.9|n|cffff0303敏捷|r - 18 + 2.8|n|cff0042ff智力|r - 16 + 1.85|n|n可以学习 月光、月刃、月之祝福和|cffff8000月蚀|r。|n|n攻击距离 425（远程）|n移动速度 330
 
 [Z008]
 Art=ReplaceableTextures\CommandButtons\BTNKiljaedin.blp
@@ -3930,7 +3930,7 @@ Revivetip=复活 风暴之灵
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNStorm.blp
 Specialart=Objects\Spawnmodels\Orc\OrcLargeDeathExplode\OrcLargeDeathExplode.mdl
 Tip=风暴之灵
-Ubertip=作为达拉然势力在最黑暗的年代所召唤的圣灵，风暴之灵决定在一个卑微的元素使身上证明自己的价值。由于熊猫人自身的灵魂已经在沛不可当的纯粹的电子精华的冲击下被毁灭，加上圣灵又无法使用自己的身体，就干脆降临至这个元素使的身上。尽管被凡人的躯体所束缚，风暴之灵仍然表现出极为强大的力量。通过以一种极为神秘的方式操纵广阔而无穷无尽的力之本源，在达拉然势力的敌人面前召唤出毁灭性的电子火花，碾碎所有敢于在它面前出现的敌人。|n|n|cff0042ff力量|r - 19 + 1.5|n|cff0042ff敏捷|r - 22 + 1.8|n|cffff0303智力|r - 23 + 3.0|n|n可以学习 残影、电子涡流、超负荷和|cffff8000球状闪电|r。|n|n攻击距离 480（远程）|n移动速度 295
+Ubertip=作为近卫军团在最黑暗的年代所召唤的圣灵，风暴之灵决定在一个卑微的元素使身上证明自己的价值。由于熊猫人自身的灵魂已经在沛不可当的纯粹的电子精华的冲击下被毁灭，加上圣灵又无法使用自己的身体，就干脆降临至这个元素使的身上。尽管被凡人的躯体所束缚，风暴之灵仍然表现出极为强大的力量。通过以一种极为神秘的方式操纵广阔而无穷无尽的力之本源，在近卫军团的敌人面前召唤出毁灭性的电子火花，碾碎所有敢于在它面前出现的敌人。|n|n|cff0042ff力量|r - 19 + 1.5|n|cff0042ff敏捷|r - 22 + 1.8|n|cffff0303智力|r - 23 + 3.0|n|n可以学习 残影、电子涡流、超负荷和|cffff8000球状闪电|r。|n|n攻击距离 480（远程）|n移动速度 295
 
 [Z00U]
 Art=ReplaceableTextures\CommandButtons\BTNHeroBloodElfPrince.blp
@@ -3959,7 +3959,7 @@ Revivetip=复活 刚背兽
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNRazorback.blp
 Specialart=Objects\Spawnmodels\Human\HumanLargeDeathExplode\HumanLargeDeathExplode.mdl
 Tip=刚背兽
-Ubertip=野猪人对其他种族之间的战斗是丝毫没有兴趣的，只有一个人知道，如果不遏制黑暗势力的话，终有一天黑暗势力将染指他们的土地。为了保护部族的安危，刚背兽带着原始的战斗本能加入达拉然势力。每次他挥出一蓬鬃毛或者甩出一滴鼻涕以后，他就变得更为狂热。当他陷入危险时，他坚硬的后背能帮助他抵挡伤害。刚背兽完美地展示了那些不起眼的生物所能爆发的力量。|n|n|cffff0303力量|r - 22 + 2.2|n|cff0042ff敏捷|r - 17 + 1.8|n|cff0042ff智力|r - 14 + 2.8|n|n可以学习 粘稠鼻液、刺针扫射、和刚毛后背|cffff8000战意|r。|n|n攻击距离 150（近程）|n移动速度 290
+Ubertip=野猪人对其他种族之间的战斗是丝毫没有兴趣的，只有一个人知道，如果不遏制黑暗势力的话，终有一天黑暗势力将染指他们的土地。为了保护部族的安危，刚背兽带着原始的战斗本能加入近卫军团。每次他挥出一蓬鬃毛或者甩出一滴鼻涕以后，他就变得更为狂热。当他陷入危险时，他坚硬的后背能帮助他抵挡伤害。刚背兽完美地展示了那些不起眼的生物所能爆发的力量。|n|n|cffff0303力量|r - 22 + 2.2|n|cff0042ff敏捷|r - 17 + 1.8|n|cff0042ff智力|r - 14 + 2.8|n|n可以学习 粘稠鼻液、刺针扫射、和刚毛后背|cffff8000战意|r。|n|n攻击距离 150（近程）|n移动速度 290
 
 [Z01B]
 Art=ReplaceableTextures\CommandButtons\BTNvengeanceincarnate.blp
@@ -4023,7 +4023,7 @@ Revivetip=复活 月之女祭司
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNPriestessOfTheMoon.blp
 Specialart=Objects\Spawnmodels\NightElf\NightElfLargeDeathExplode\NightElfLargeDeathExplode.mdl
 Tip=月之女祭司
-Ubertip=作为月神艾露恩庇护下的长老和高等祭司，月之女祭司在达拉然势力中就如同那黑暗中的一线光明。她以雨点一般的箭矢和坠落的流星抵挡蜂拥而至的黑暗势力大军，而她神圣的存在，消除了四周友军的疲倦，让他们在战场上的速度得到极大的提升。在必要的时候，她还能以隐形掩护自己和其他伙伴，使她成为重要的支援力量。|n|n|cff0042ff力量|r - 17 + 1.85|n|cffff0303敏捷|r - 20 + 2.5|n|cff0042ff智力|r - 17 + 1.65 |n|n可以学习 群星坠落、月神之箭、虎跃和|cffff8000月之暗面|r。|n|n攻击距离 600（远程）|n移动速度 300
+Ubertip=作为月神艾露恩庇护下的长老和高等祭司，月之女祭司在近卫军团中就如同那黑暗中的一线光明。她以雨点一般的箭矢和坠落的流星抵挡蜂拥而至的黑暗势力大军，而她神圣的存在，消除了四周友军的疲倦，让他们在战场上的速度得到极大的提升。在必要的时候，她还能以隐形掩护自己和其他伙伴，使她成为重要的支援力量。|n|n|cff0042ff力量|r - 17 + 1.85|n|cffff0303敏捷|r - 20 + 2.5|n|cff0042ff智力|r - 17 + 1.65 |n|n可以学习 群星坠落、月神之箭、虎跃和|cffff8000月之暗面|r。|n|n攻击距离 600（远程）|n移动速度 300
 
 [Z01X]
 animProps=upgrade
@@ -4054,7 +4054,7 @@ Revivetip=复活 圣堂刺客
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNAssassin.blp
 Specialart=Objects\Spawnmodels\NightElf\NightElfLargeDeathExplode\NightElfLargeDeathExplode.mdl
 Tip=圣堂刺客
-Ubertip=圣堂刺客师从于一位来自神族母星艾尔的传奇人物。她是一名使用精神力量的高手，并且在达拉然势力中专门负责进行战略性质的刺杀行动。她的心灵异能，能够让她随意的进入和脱离战斗，并且可以增强攻击时所造成的伤害，同时保护她不受敌人的袭击。或者在狩猎哪个不走运的路人之前给自己披上一件隐身衣。敌人在战场上发现这个圣堂武士时，往往也就是他们死亡并被埋葬之时，当他们的生命被终结后，她便再次潜入暗影，等待下一个猎物。 |n|n|cff0042ff力量|r - 18 + 2.1|n|cffff0303敏捷|r - 23 + 2.7|n|cff0042ff智力|r - 20 + 2.0|n|n可以学习 折光、隐匿、灵能之刃和|cffff8000灵能陷阱|r。|n|n攻击距离 240（远程）|n移动速度 305
+Ubertip=圣堂刺客师从于一位来自神族母星艾尔的传奇人物。她是一名使用精神力量的高手，并且在近卫军团中专门负责进行战略性质的刺杀行动。她的心灵异能，能够让她随意的进入和脱离战斗，并且可以增强攻击时所造成的伤害，同时保护她不受敌人的袭击。或者在狩猎哪个不走运的路人之前给自己披上一件隐身衣。敌人在战场上发现这个圣堂武士时，往往也就是他们死亡并被埋葬之时，当他们的生命被终结后，她便再次潜入暗影，等待下一个猎物。 |n|n|cff0042ff力量|r - 18 + 2.1|n|cffff0303敏捷|r - 23 + 2.7|n|cff0042ff智力|r - 20 + 2.0|n|n可以学习 折光、隐匿、灵能之刃和|cffff8000灵能陷阱|r。|n|n攻击距离 240（远程）|n移动速度 305
 
 [Z02X]
 Art=ReplaceableTextures\CommandButtons\BTNMedivh.blp
@@ -4070,7 +4070,7 @@ Revivetip=复活 大魔导师
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNMedivh.blp
 Specialart=Objects\Spawnmodels\NightElf\NightElfLargeDeathExplode\NightElfLargeDeathExplode.mdl
 Tip=大魔导师
-Ubertip=拉比克是阿哈利姆的儿子，一个不可忽视的战力。人们惊叹于他的能力，可以随心所欲抓起和投掷物体而仅仅只靠念力。许多巫师曾向他提出挑战，但都败给了他强大的弱化魔法。拥有无尽才能的大魔导师，绝不会因为敌人的出现而止步，无比智慧的他会运用一切方式，哪怕是施展敌人的魔法来击倒敌人。在只靠一想就能偷取技能方面享有盛誉的大魔导师，是达拉然势力对抗黑暗势力最无可争议的瑰宝。|n|n|c000042ff力量|r - 19 + 1.5|n|c000042ff敏捷|r - 14 + 1.6|n|c00ff0303智力|r - 27 + 2.6|n|n可以学习 隔空取物、弱化能流、至尊魔法和|c00ff8000斗转星移|r。|n|n攻击距离 600（远程）|n移动速度 300
+Ubertip=拉比克是阿哈利姆的儿子，一个不可忽视的战力。人们惊叹于他的能力，可以随心所欲抓起和投掷物体而仅仅只靠念力。许多巫师曾向他提出挑战，但都败给了他强大的弱化魔法。拥有无尽才能的大魔导师，绝不会因为敌人的出现而止步，无比智慧的他会运用一切方式，哪怕是施展敌人的魔法来击倒敌人。在只靠一想就能偷取技能方面享有盛誉的大魔导师，是近卫军团对抗黑暗势力最无可争议的瑰宝。|n|n|c000042ff力量|r - 19 + 1.5|n|c000042ff敏捷|r - 14 + 1.6|n|c00ff0303智力|r - 27 + 2.6|n|n可以学习 隔空取物、弱化能流、至尊魔法和|c00ff8000斗转星移|r。|n|n攻击距离 600（远程）|n移动速度 300
 
 [Z052]
 Art=ReplaceableTextures\CommandButtons\btnmonkey_king_full.blp
@@ -4174,7 +4174,7 @@ Revivetip=复活 月之骑士
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNHuntress.blp
 Specialart=Objects\Spawnmodels\NightElf\NightElfLargeDeathExplode\NightElfLargeDeathExplode.mdl
 Tip=月之骑士
-Ubertip=月之骑士是月神艾露恩坚定而又虔诚的信徒。在无尽的战争中，她加入达拉然势力竭尽全力净化被邪恶的黑暗势力所污染的土地。由于她的忠诚和勇敢，月神赐予了她一小部分神秘的力量。这份恩赐使得她能轻易打败敌人。据说月之骑士能够召唤最纯净的月光，而且永远被灼炽的光环所围绕，就好像身处在月光的照耀下。她是达拉然势力最明亮的灯塔和永不懈怠的守卫。|n|n|cff0042ff力量|r - 15 + 1.9|n|cffff0303敏捷|r - 18 + 2.8|n|cff0042ff智力|r - 16 + 1.85|n|n可以学习 月光、月刃、月之祝福和|cffff8000月蚀|r。|n|n攻击距离 425（远程）|n移动速度 330
+Ubertip=月之骑士是月神艾露恩坚定而又虔诚的信徒。在无尽的战争中，她加入近卫军团竭尽全力净化被邪恶的黑暗势力所污染的土地。由于她的忠诚和勇敢，月神赐予了她一小部分神秘的力量。这份恩赐使得她能轻易打败敌人。据说月之骑士能够召唤最纯净的月光，而且永远被灼炽的光环所围绕，就好像身处在月光的照耀下。她是近卫军团最明亮的灯塔和永不懈怠的守卫。|n|n|cff0042ff力量|r - 15 + 1.9|n|cffff0303敏捷|r - 18 + 2.8|n|cff0042ff智力|r - 16 + 1.85|n|n可以学习 月光、月刃、月之祝福和|cffff8000月蚀|r。|n|n攻击距离 425（远程）|n移动速度 330
 
 [Z10A]
 Art=ReplaceableTextures\CommandButtons\BTNChaosWarlord.blp
@@ -4233,7 +4233,7 @@ Revivetip=复活 风暴之灵
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNStorm.blp
 Specialart=Objects\Spawnmodels\Orc\OrcLargeDeathExplode\OrcLargeDeathExplode.mdl
 Tip=风暴之灵
-Ubertip=作为达拉然势力在最黑暗的年代所召唤的圣灵，风暴之灵决定在一个卑微的元素使身上证明自己的价值。由于熊猫人自身的灵魂已经在沛不可当的纯粹的电子精华的冲击下被毁灭，加上圣灵又无法使用自己的身体，就干脆降临至这个元素使的身上。尽管被凡人的躯体所束缚，风暴之灵仍然表现出极为强大的力量。通过以一种极为神秘的方式操纵广阔而无穷无尽的力之本源，在达拉然势力的敌人面前召唤出毁灭性的电子火花，碾碎所有敢于在它面前出现的敌人。|n|n|cff0042ff力量|r - 19 + 1.5|n|cff0042ff敏捷|r - 22 + 1.8|n|cffff0303智力|r - 23 + 3.0|n|n可以学习 残影、电子涡流、超负荷和|cffff8000球状闪电|r。|n|n攻击距离 480（远程）|n移动速度 295
+Ubertip=作为近卫军团在最黑暗的年代所召唤的圣灵，风暴之灵决定在一个卑微的元素使身上证明自己的价值。由于熊猫人自身的灵魂已经在沛不可当的纯粹的电子精华的冲击下被毁灭，加上圣灵又无法使用自己的身体，就干脆降临至这个元素使的身上。尽管被凡人的躯体所束缚，风暴之灵仍然表现出极为强大的力量。通过以一种极为神秘的方式操纵广阔而无穷无尽的力之本源，在近卫军团的敌人面前召唤出毁灭性的电子火花，碾碎所有敢于在它面前出现的敌人。|n|n|cff0042ff力量|r - 19 + 1.5|n|cff0042ff敏捷|r - 22 + 1.8|n|cffff0303智力|r - 23 + 3.0|n|n可以学习 残影、电子涡流、超负荷和|cffff8000球状闪电|r。|n|n攻击距离 480（远程）|n移动速度 295
 
 [Z10U]
 Art=ReplaceableTextures\CommandButtons\BTNHeroBloodElfPrince.blp
@@ -4283,7 +4283,7 @@ Revivetip=复活 月之女祭司
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNPriestessOfTheMoon.blp
 Specialart=Objects\Spawnmodels\NightElf\NightElfLargeDeathExplode\NightElfLargeDeathExplode.mdl
 Tip=月之女祭司
-Ubertip=作为月神艾露恩庇护下的长老和高等祭司，月之女祭司在达拉然势力中就如同那黑暗中的一线光明。她以雨点一般的箭矢和坠落的流星抵挡蜂拥而至的黑暗势力大军，而她神圣的存在，消除了四周友军的疲倦，让他们在战场上的速度得到极大的提升。在必要的时候，她还能以隐形掩护自己和其他伙伴，使她成为重要的支援力量。|n|n|cff0042ff力量|r - 17 + 1.85|n|cffff0303敏捷|r - 20 + 2.5|n|cff0042ff智力|r - 17 + 1.65 |n|n可以学习 群星坠落、月神之箭、虎跃和|cffff8000月之暗面|r。|n|n攻击距离 600（远程）|n移动速度 300
+Ubertip=作为月神艾露恩庇护下的长老和高等祭司，月之女祭司在近卫军团中就如同那黑暗中的一线光明。她以雨点一般的箭矢和坠落的流星抵挡蜂拥而至的黑暗势力大军，而她神圣的存在，消除了四周友军的疲倦，让他们在战场上的速度得到极大的提升。在必要的时候，她还能以隐形掩护自己和其他伙伴，使她成为重要的支援力量。|n|n|cff0042ff力量|r - 17 + 1.85|n|cffff0303敏捷|r - 20 + 2.5|n|cff0042ff智力|r - 17 + 1.65 |n|n可以学习 群星坠落、月神之箭、虎跃和|cffff8000月之暗面|r。|n|n攻击距离 600（远程）|n移动速度 300
 
 [Z11X]
 animProps=upgrade
@@ -4315,7 +4315,7 @@ Revivetip=复活 月之骑士
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNHuntress.blp
 Specialart=Objects\Spawnmodels\NightElf\NightElfLargeDeathExplode\NightElfLargeDeathExplode.mdl
 Tip=月之骑士
-Ubertip=月之骑士是月神艾露恩坚定而又虔诚的信徒。在无尽的战争中，她加入达拉然势力竭尽全力净化被邪恶的黑暗势力所污染的土地。由于她的忠诚和勇敢，月神赐予了她一小部分神秘的力量。这份恩赐使得她能轻易打败敌人。据说月之骑士能够召唤最纯净的月光，而且永远被灼炽的光环所围绕，就好像身处在月光的照耀下。她是达拉然势力最明亮的灯塔和永不懈怠的守卫。|n|n|cff0042ff力量|r - 15 + 1.9|n|cffff0303敏捷|r - 18 + 2.8|n|cff0042ff智力|r - 16 + 1.85|n|n可以学习 月光、月刃、月之祝福和|cffff8000月蚀|r。|n|n攻击距离 425（远程）|n移动速度 330
+Ubertip=月之骑士是月神艾露恩坚定而又虔诚的信徒。在无尽的战争中，她加入近卫军团竭尽全力净化被邪恶的黑暗势力所污染的土地。由于她的忠诚和勇敢，月神赐予了她一小部分神秘的力量。这份恩赐使得她能轻易打败敌人。据说月之骑士能够召唤最纯净的月光，而且永远被灼炽的光环所围绕，就好像身处在月光的照耀下。她是近卫军团最明亮的灯塔和永不懈怠的守卫。|n|n|cff0042ff力量|r - 15 + 1.9|n|cffff0303敏捷|r - 18 + 2.8|n|cff0042ff智力|r - 16 + 1.85|n|n可以学习 月光、月刃、月之祝福和|cffff8000月蚀|r。|n|n攻击距离 425（远程）|n移动速度 330
 
 [Z20E]
 Art=ReplaceableTextures\CommandButtons\BTNGhostOfKelThuzad.blp
@@ -4345,7 +4345,7 @@ Revivetip=复活 风暴之灵
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNStorm.blp
 Specialart=Objects\Spawnmodels\Orc\OrcLargeDeathExplode\OrcLargeDeathExplode.mdl
 Tip=风暴之灵
-Ubertip=作为达拉然势力在最黑暗的年代所召唤的圣灵，风暴之灵决定在一个卑微的元素使身上证明自己的价值。由于熊猫人自身的灵魂已经在沛不可当的纯粹的电子精华的冲击下被毁灭，加上圣灵又无法使用自己的身体，就干脆降临至这个元素使的身上。尽管被凡人的躯体所束缚，风暴之灵仍然表现出极为强大的力量。通过以一种极为神秘的方式操纵广阔而无穷无尽的力之本源，在达拉然势力的敌人面前召唤出毁灭性的电子火花，碾碎所有敢于在它面前出现的敌人。|n|n|cff0042ff力量|r - 19 + 1.5|n|cff0042ff敏捷|r - 22 + 1.8|n|cffff0303智力|r - 23 + 3.0|n|n可以学习 残影、电子涡流、超负荷和|cffff8000球状闪电|r。|n|n攻击距离 480（远程）|n移动速度 295
+Ubertip=作为近卫军团在最黑暗的年代所召唤的圣灵，风暴之灵决定在一个卑微的元素使身上证明自己的价值。由于熊猫人自身的灵魂已经在沛不可当的纯粹的电子精华的冲击下被毁灭，加上圣灵又无法使用自己的身体，就干脆降临至这个元素使的身上。尽管被凡人的躯体所束缚，风暴之灵仍然表现出极为强大的力量。通过以一种极为神秘的方式操纵广阔而无穷无尽的力之本源，在近卫军团的敌人面前召唤出毁灭性的电子火花，碾碎所有敢于在它面前出现的敌人。|n|n|cff0042ff力量|r - 19 + 1.5|n|cff0042ff敏捷|r - 22 + 1.8|n|cffff0303智力|r - 23 + 3.0|n|n可以学习 残影、电子涡流、超负荷和|cffff8000球状闪电|r。|n|n攻击距离 480（远程）|n移动速度 295
 
 [Z20U]
 Art=ReplaceableTextures\CommandButtons\BTNHeroBloodElfPrince.blp
@@ -4395,7 +4395,7 @@ Revivetip=复活 月之女祭司
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNPriestessOfTheMoon.blp
 Specialart=Objects\Spawnmodels\NightElf\NightElfLargeDeathExplode\NightElfLargeDeathExplode.mdl
 Tip=月之女祭司
-Ubertip=作为月神艾露恩庇护下的长老和高等祭司，月之女祭司在达拉然势力中就如同那黑暗中的一线光明。她以雨点一般的箭矢和坠落的流星抵挡蜂拥而至的黑暗势力大军，而她神圣的存在，消除了四周友军的疲倦，让他们在战场上的速度得到极大的提升。在必要的时候，她还能以隐形掩护自己和其他伙伴，使她成为重要的支援力量。|n|n|cff0042ff力量|r - 17 + 1.85|n|cffff0303敏捷|r - 20 + 2.5|n|cff0042ff智力|r - 17 + 1.65 |n|n可以学习 群星坠落、月神之箭、虎跃和|cffff8000月之暗面|r。|n|n攻击距离 600（远程）|n移动速度 300
+Ubertip=作为月神艾露恩庇护下的长老和高等祭司，月之女祭司在近卫军团中就如同那黑暗中的一线光明。她以雨点一般的箭矢和坠落的流星抵挡蜂拥而至的黑暗势力大军，而她神圣的存在，消除了四周友军的疲倦，让他们在战场上的速度得到极大的提升。在必要的时候，她还能以隐形掩护自己和其他伙伴，使她成为重要的支援力量。|n|n|cff0042ff力量|r - 17 + 1.85|n|cffff0303敏捷|r - 20 + 2.5|n|cff0042ff智力|r - 17 + 1.65 |n|n可以学习 群星坠落、月神之箭、虎跃和|cffff8000月之暗面|r。|n|n攻击距离 600（远程）|n移动速度 300
 
 [Z21X]
 animProps=upgrade
@@ -4460,7 +4460,7 @@ Revivetip=复活 月之女祭司
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNPriestessOfTheMoon.blp
 Specialart=Objects\Spawnmodels\NightElf\NightElfLargeDeathExplode\NightElfLargeDeathExplode.mdl
 Tip=月之女祭司
-Ubertip=作为月神艾露恩庇护下的长老和高等祭司，月之女祭司在达拉然势力中就如同那黑暗中的一线光明。她以雨点一般的箭矢和坠落的流星抵挡蜂拥而至的黑暗势力大军，而她神圣的存在，消除了四周友军的疲倦，让他们在战场上的速度得到极大的提升。在必要的时候，她还能以隐形掩护自己和其他伙伴，使她成为重要的支援力量。|n|n|cff0042ff力量|r - 17 + 1.85|n|cffff0303敏捷|r - 20 + 2.5|n|cff0042ff智力|r - 17 + 1.65 |n|n可以学习 群星坠落、月神之箭、虎跃和|cffff8000月之暗面|r。|n|n攻击距离 600（远程）|n移动速度 300
+Ubertip=作为月神艾露恩庇护下的长老和高等祭司，月之女祭司在近卫军团中就如同那黑暗中的一线光明。她以雨点一般的箭矢和坠落的流星抵挡蜂拥而至的黑暗势力大军，而她神圣的存在，消除了四周友军的疲倦，让他们在战场上的速度得到极大的提升。在必要的时候，她还能以隐形掩护自己和其他伙伴，使她成为重要的支援力量。|n|n|cff0042ff力量|r - 17 + 1.85|n|cffff0303敏捷|r - 20 + 2.5|n|cff0042ff智力|r - 17 + 1.65 |n|n可以学习 群星坠落、月神之箭、虎跃和|cffff8000月之暗面|r。|n|n攻击距离 600（远程）|n移动速度 300
 
 [Z41V]
 Art=ReplaceableTextures\CommandButtons\BTNPriestessOfTheMoon.blp
@@ -4477,7 +4477,7 @@ Revivetip=复活 月之女祭司
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNPriestessOfTheMoon.blp
 Specialart=Objects\Spawnmodels\NightElf\NightElfLargeDeathExplode\NightElfLargeDeathExplode.mdl
 Tip=月之女祭司
-Ubertip=作为月神艾露恩庇护下的长老和高等祭司，月之女祭司在达拉然势力中就如同那黑暗中的一线光明。她以雨点一般的箭矢和坠落的流星抵挡蜂拥而至的黑暗势力大军，而她神圣的存在，消除了四周友军的疲倦，让他们在战场上的速度得到极大的提升。在必要的时候，她还能以隐形掩护自己和其他伙伴，使她成为重要的支援力量。|n|n|cff0042ff力量|r - 17 + 1.85|n|cffff0303敏捷|r - 20 + 2.5|n|cff0042ff智力|r - 17 + 1.65 |n|n可以学习 群星坠落、月神之箭、虎跃和|cffff8000月之暗面|r。|n|n攻击距离 600（远程）|n移动速度 300
+Ubertip=作为月神艾露恩庇护下的长老和高等祭司，月之女祭司在近卫军团中就如同那黑暗中的一线光明。她以雨点一般的箭矢和坠落的流星抵挡蜂拥而至的黑暗势力大军，而她神圣的存在，消除了四周友军的疲倦，让他们在战场上的速度得到极大的提升。在必要的时候，她还能以隐形掩护自己和其他伙伴，使她成为重要的支援力量。|n|n|cff0042ff力量|r - 17 + 1.85|n|cffff0303敏捷|r - 20 + 2.5|n|cff0042ff智力|r - 17 + 1.65 |n|n可以学习 群星坠落、月神之箭、虎跃和|cffff8000月之暗面|r。|n|n攻击距离 600（远程）|n移动速度 300
 
 [ZC00]
 Art=ReplaceableTextures\CommandButtons\BTNSkeletonArcher.blp
@@ -4717,7 +4717,7 @@ Revivetip=复活 敌法师
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNHeroDemonHunter.blp
 Specialart=Objects\Spawnmodels\NightElf\NightElfLargeDeathExplode\NightElfLargeDeathExplode.mdl
 Tip=敌法师
-Ubertip=作为伟大先知的双胞胎儿子，灵魂守卫和敌法师从一出生开始就被赋予了神力：灵魂守卫获得了对生命力的非凡吸引力；敌法师则被赐予了对能量的操纵能力。敌法师对魔法的敏感度，能逐渐提高他的元素抗性，并给予他超光速移动的卓越能力。随着灵魂守卫的堕入邪道，现在的敌法师为了挽救他的哥哥，义无返顾地接受了达拉然势力的召唤。他的攻击撼动着黑暗势力群魔的根基，而他对敌人内部虚空力量的唤醒，则奏响了敌人崩塌的最终乐章。|n|n|cff0042ff力量|r - 22 + 1.5|n|cffff0303敏捷|r - 22 + 2.8|n|cff0042ff智力|r - 15 + 1.8|n|n可以学习 法力损毁、闪烁、法术护盾和|cffff8000法力虚空|r。|n|n攻击距离 150（近程）|n移动速度 315
+Ubertip=作为伟大先知的双胞胎儿子，灵魂守卫和敌法师从一出生开始就被赋予了神力：灵魂守卫获得了对生命力的非凡吸引力；敌法师则被赐予了对能量的操纵能力。敌法师对魔法的敏感度，能逐渐提高他的元素抗性，并给予他超光速移动的卓越能力。随着灵魂守卫的堕入邪道，现在的敌法师为了挽救他的哥哥，义无返顾地接受了近卫军团的召唤。他的攻击撼动着黑暗势力群魔的根基，而他对敌人内部虚空力量的唤醒，则奏响了敌人崩塌的最终乐章。|n|n|cff0042ff力量|r - 22 + 1.5|n|cffff0303敏捷|r - 22 + 2.8|n|cff0042ff智力|r - 15 + 1.8|n|n可以学习 法力损毁、闪烁、法术护盾和|cffff8000法力虚空|r。|n|n攻击距离 150（近程）|n移动速度 315
 
 [Zgir]
 Art=ReplaceableTextures\CommandButtons\BTNShade.blp
@@ -4747,7 +4747,7 @@ Revivetip=复活 敌法师
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNHeroDemonHunter.blp
 Specialart=Objects\Spawnmodels\NightElf\NightElfLargeDeathExplode\NightElfLargeDeathExplode.mdl
 Tip=敌法师
-Ubertip=作为伟大先知的双胞胎儿子，灵魂守卫和敌法师从一出生开始就被赋予了神力：灵魂守卫获得了对生命力的非凡吸引力；敌法师则被赐予了对能量的操纵能力。敌法师对魔法的敏感度，能逐渐提高他的元素抗性，并给予他超光速移动的卓越能力。随着灵魂守卫的堕入邪道，现在的敌法师为了挽救他的哥哥，义无返顾地接受了达拉然势力的召唤。他的攻击撼动着黑暗势力群魔的根基，而他对敌人内部虚空力量的唤醒，则奏响了敌人崩塌的最终乐章。|n|n|cff0042ff力量|r - 22 + 1.5|n|cffff0303敏捷|r - 22 + 2.8|n|cff0042ff智力|r - 15 + 1.8|n|n可以学习 法力损毁、闪烁、法术护盾和|cffff8000法力虚空|r。|n|n攻击距离 150（近程）|n移动速度 315
+Ubertip=作为伟大先知的双胞胎儿子，灵魂守卫和敌法师从一出生开始就被赋予了神力：灵魂守卫获得了对生命力的非凡吸引力；敌法师则被赐予了对能量的操纵能力。敌法师对魔法的敏感度，能逐渐提高他的元素抗性，并给予他超光速移动的卓越能力。随着灵魂守卫的堕入邪道，现在的敌法师为了挽救他的哥哥，义无返顾地接受了近卫军团的召唤。他的攻击撼动着黑暗势力群魔的根基，而他对敌人内部虚空力量的唤醒，则奏响了敌人崩塌的最终乐章。|n|n|cff0042ff力量|r - 22 + 1.5|n|cffff0303敏捷|r - 22 + 2.8|n|cff0042ff智力|r - 15 + 1.8|n|n可以学习 法力损毁、闪烁、法术护盾和|cffff8000法力虚空|r。|n|n攻击距离 150（近程）|n移动速度 315
 
 [Zhir]
 Art=ReplaceableTextures\CommandButtons\BTNShade.blp
@@ -4883,7 +4883,7 @@ Revivetip=复活 斧王
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNChaosGrom.blp
 Specialart=Objects\Spawnmodels\Undead\UndeadLargeDeathExplode\UndeadLargeDeathExplode.mdl
 Tip=斧王
-Ubertip=在很久以前，还是人兽战争时期，许多兽族战士被恶魔影响而变得腐蚀，变成了那些最黑暗恶魔的工具。其中一个战士是血斧部落半支派的首领斧王。斧王被人族圣骑士所杀，但是诡异的是，在反抗阿克蒙德的战场上，斧王同亡灵军队一起协同作战，而那时候玛洛诺斯已经开始统领兽人了。斧王被恶魔复活，用他的反射和强大的打击来追捕达拉然势力的灵巧的战士并把他们打回原形，把他对战争的饥渴表现在他们身上。|n|n|cffff0303力量|r - 25 + 2.8|n|cff0042ff敏捷|r - 20 + 2.2|n|cff0042ff智力|r - 18 + 1.6|n|n可以学习 狂战士的怒吼、战斗饥渴、反击螺旋和|cffff8000淘汰之刃|r。|n|n攻击距离 150（近程）|n移动速度 290
+Ubertip=在很久以前，还是人兽战争时期，许多兽族战士被恶魔影响而变得腐蚀，变成了那些最黑暗恶魔的工具。其中一个战士是血斧部落半支派的首领斧王。斧王被人族圣骑士所杀，但是诡异的是，在反抗阿克蒙德的战场上，斧王同亡灵军队一起协同作战，而那时候玛洛诺斯已经开始统领兽人了。斧王被恶魔复活，用他的反射和强大的打击来追捕近卫军团的灵巧的战士并把他们打回原形，把他对战争的饥渴表现在他们身上。|n|n|cffff0303力量|r - 25 + 2.8|n|cff0042ff敏捷|r - 20 + 2.2|n|cff0042ff智力|r - 18 + 1.6|n|n可以学习 狂战士的怒吼、战斗饥渴、反击螺旋和|cffff8000淘汰之刃|r。|n|n攻击距离 150（近程）|n移动速度 290
 
 [Zpgi]
 Art=ReplaceableTextures\CommandButtons\BTNChaosGrom.blp
@@ -4895,7 +4895,7 @@ Revivetip=复活 斧王
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNChaosGrom.blp
 Specialart=Objects\Spawnmodels\Undead\UndeadLargeDeathExplode\UndeadLargeDeathExplode.mdl
 Tip=斧王
-Ubertip=在很久以前，还是人兽战争时期，许多兽族战士被恶魔影响而变得腐蚀，变成了那些最黑暗恶魔的工具。其中一个战士是血斧部落半支派的首领斧王。斧王被人族圣骑士所杀，但是诡异的是，在反抗阿克蒙德的战场上，斧王同亡灵军队一起协同作战，而那时候玛洛诺斯已经开始统领兽人了。斧王被恶魔复活，用他的反射和强大的打击来追捕达拉然势力的灵巧的战士并把他们打回原形，把他对战争的饥渴表现在他们身上。|n|n|cffff0303力量|r - 25 + 2.8|n|cff0042ff敏捷|r - 20 + 2.2|n|cff0042ff智力|r - 18 + 1.6|n|n可以学习 狂战士的怒吼、战斗饥渴、反击螺旋和|cffff8000淘汰之刃|r。|n|n攻击距离 150（近程）|n移动速度 290
+Ubertip=在很久以前，还是人兽战争时期，许多兽族战士被恶魔影响而变得腐蚀，变成了那些最黑暗恶魔的工具。其中一个战士是血斧部落半支派的首领斧王。斧王被人族圣骑士所杀，但是诡异的是，在反抗阿克蒙德的战场上，斧王同亡灵军队一起协同作战，而那时候玛洛诺斯已经开始统领兽人了。斧王被恶魔复活，用他的反射和强大的打击来追捕近卫军团的灵巧的战士并把他们打回原形，把他对战争的饥渴表现在他们身上。|n|n|cffff0303力量|r - 25 + 2.8|n|cff0042ff敏捷|r - 20 + 2.2|n|cff0042ff智力|r - 18 + 1.6|n|n可以学习 狂战士的怒吼、战斗饥渴、反击螺旋和|cffff8000淘汰之刃|r。|n|n攻击距离 150（近程）|n移动速度 290
 
 [Zpgj]
 Art=ReplaceableTextures\CommandButtons\BTNChaosGrom.blp
@@ -4907,7 +4907,7 @@ Revivetip=复活 斧王
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNChaosGrom.blp
 Specialart=Objects\Spawnmodels\Undead\UndeadLargeDeathExplode\UndeadLargeDeathExplode.mdl
 Tip=斧王
-Ubertip=在很久以前，还是人兽战争时期，许多兽族战士被恶魔影响而变得腐蚀，变成了那些最黑暗恶魔的工具。其中一个战士是血斧部落半支派的首领斧王。斧王被人族圣骑士所杀，但是诡异的是，在反抗阿克蒙德的战场上，斧王同亡灵军队一起协同作战，而那时候玛洛诺斯已经开始统领兽人了。斧王被恶魔复活，用他的反射和强大的打击来追捕达拉然势力的灵巧的战士并把他们打回原形，把他对战争的饥渴表现在他们身上。|n|n|cffff0303力量|r - 25 + 2.8|n|cff0042ff敏捷|r - 20 + 2.2|n|cff0042ff智力|r - 18 + 1.6|n|n可以学习 狂战士的怒吼、战斗饥渴、反击螺旋和|cffff8000淘汰之刃|r。|n|n攻击距离 150（近程）|n移动速度 290
+Ubertip=在很久以前，还是人兽战争时期，许多兽族战士被恶魔影响而变得腐蚀，变成了那些最黑暗恶魔的工具。其中一个战士是血斧部落半支派的首领斧王。斧王被人族圣骑士所杀，但是诡异的是，在反抗阿克蒙德的战场上，斧王同亡灵军队一起协同作战，而那时候玛洛诺斯已经开始统领兽人了。斧王被恶魔复活，用他的反射和强大的打击来追捕近卫军团的灵巧的战士并把他们打回原形，把他对战争的饥渴表现在他们身上。|n|n|cffff0303力量|r - 25 + 2.8|n|cff0042ff敏捷|r - 20 + 2.2|n|cff0042ff智力|r - 18 + 1.6|n|n可以学习 狂战士的怒吼、战斗饥渴、反击螺旋和|cffff8000淘汰之刃|r。|n|n攻击距离 150（近程）|n移动速度 290
 
 [Zrkn]
 Art=ReplaceableTextures\CommandButtons\BTNShadowHunter.blp
@@ -4924,7 +4924,7 @@ Revivetip=复活 暗影萨满
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNShadowHunter.blp
 Specialart=Objects\Spawnmodels\Orc\OrcLargeDeathExplode\OrcLargeDeathExplode.mdl
 Tip=暗影萨满
-Ubertip=作为巨魔中天赋异秉的巫医，罗斯塔在年轻就已经精通各种巫术的奥义。战争爆发以后，他化身为暗影萨满向达拉然势力效忠并投入战斗，并决心让黑暗势力万劫不复。作为一个有天赋的巫医的同时，他又是一个超越他老师的暗影猎手。他精通召唤出很多毒蛇守卫的技艺、能束缚敌人一段短暂的时间、还能够施放闪电链来打击多个目标。|n|n|cff0042ff力量|r - 21 + 1.8|n|cff0042ff敏捷|r - 16 + 1.6|n|cffff0303智力|r - 21 + 3.0|n|n可以学习 苍穹震击、妖术、枷锁和|cffff8000群蛇守卫|r。|n|n攻击距离 500（远程）|n移动速度 285
+Ubertip=作为巨魔中天赋异秉的巫医，罗斯塔在年轻就已经精通各种巫术的奥义。战争爆发以后，他化身为暗影萨满向近卫军团效忠并投入战斗，并决心让黑暗势力万劫不复。作为一个有天赋的巫医的同时，他又是一个超越他老师的暗影猎手。他精通召唤出很多毒蛇守卫的技艺、能束缚敌人一段短暂的时间、还能够施放闪电链来打击多个目标。|n|n|cff0042ff力量|r - 21 + 1.8|n|cff0042ff敏捷|r - 16 + 1.6|n|cffff0303智力|r - 21 + 3.0|n|n可以学习 苍穹震击、妖术、枷锁和|cffff8000群蛇守卫|r。|n|n攻击距离 500（远程）|n移动速度 285
 
 [Zskn]
 Art=ReplaceableTextures\CommandButtons\BTNShadowHunter.blp
@@ -4941,7 +4941,7 @@ Revivetip=复活 暗影萨满
 ScoreScreenIcon=ReplaceableTextures\CommandButtons\BTNShadowHunter.blp
 Specialart=Objects\Spawnmodels\Orc\OrcLargeDeathExplode\OrcLargeDeathExplode.mdl
 Tip=暗影萨满
-Ubertip=作为巨魔中天赋异秉的巫医，罗斯塔在年轻就已经精通各种巫术的奥义。战争爆发以后，他化身为暗影萨满向达拉然势力效忠并投入战斗，并决心让黑暗势力万劫不复。作为一个有天赋的巫医的同时，他又是一个超越他老师的暗影猎手。他精通召唤出很多毒蛇守卫的技艺、能束缚敌人一段短暂的时间、还能够施放闪电链来打击多个目标。|n|n|cff0042ff力量|r - 21 + 1.8|n|cff0042ff敏捷|r - 16 + 1.6|n|cffff0303智力|r - 21 + 3.0|n|n可以学习 苍穹震击、妖术、枷锁和|cffff8000群蛇守卫|r。|n|n攻击距离 500（远程）|n移动速度 285
+Ubertip=作为巨魔中天赋异秉的巫医，罗斯塔在年轻就已经精通各种巫术的奥义。战争爆发以后，他化身为暗影萨满向近卫军团效忠并投入战斗，并决心让黑暗势力万劫不复。作为一个有天赋的巫医的同时，他又是一个超越他老师的暗影猎手。他精通召唤出很多毒蛇守卫的技艺、能束缚敌人一段短暂的时间、还能够施放闪电链来打击多个目标。|n|n|cff0042ff力量|r - 21 + 1.8|n|cff0042ff敏捷|r - 16 + 1.6|n|cffff0303智力|r - 21 + 3.0|n|n可以学习 苍穹震击、妖术、枷锁和|cffff8000群蛇守卫|r。|n|n攻击距离 500（远程）|n移动速度 285
 
 [Ztch]
 Art=ReplaceableTextures\CommandButtons\BTNTauren.blp
@@ -6105,7 +6105,7 @@ Missilespeed=1500,1500
 Name=知识古树
 Specialart=Objects\Spawnmodels\NightElf\NECancelDeath\NECancelDeath.mdl
 Tip=建造 知识古树(|cffffcc00L|r)
-Ubertip=达拉然势力建筑之一。
+Ubertip=近卫军团建筑之一。
 
 [eaom]
 Art=ReplaceableTextures\CommandButtons\BTNAncientOfTheEarth.blp
@@ -6119,7 +6119,7 @@ Missilespeed=1500,1500
 Name=战争古树
 Specialart=Objects\Spawnmodels\NightElf\NECancelDeath\NECancelDeath.mdl
 Tip=建造 战争古树(|cffffcc00R|r)
-Ubertip=达拉然势力建筑之一。
+Ubertip=近卫军团建筑之一。
 
 [eaow]
 Art=ReplaceableTextures\CommandButtons\BTNAncientOfTheMoon.blp
@@ -6133,7 +6133,7 @@ Missilespeed=1500,1500
 Name=风之古树
 Specialart=Objects\Spawnmodels\NightElf\NECancelDeath\NECancelDeath.mdl
 Tip=建造 风之古树(|cffffcc00W|r)
-Ubertip=达拉然势力建筑之一。
+Ubertip=近卫军团建筑之一。
 
 [earc]
 Art=ReplaceableTextures\CommandButtons\BTNArcher.blp
@@ -6303,7 +6303,7 @@ Missilespeed=900
 Name=猛禽德鲁伊
 Specialart=Objects\Spawnmodels\NightElf\NightElfLargeDeathExplode\NightElfLargeDeathExplode.mdl
 Tip=训练 猛禽德鲁伊
-Ubertip=达拉然势力远程单位。
+Ubertip=近卫军团远程单位。
 
 [edry]
 Art=ReplaceableTextures\CommandButtons\BTNDruidOfTheTalon.tga
@@ -6314,7 +6314,7 @@ Missilespeed=900
 Name=猛禽德鲁伊
 Specialart=Objects\Spawnmodels\NightElf\NightElfLargeDeathExplode\NightElfLargeDeathExplode.mdl
 Tip=训练 树妖(|cffffcc00D|r)
-Ubertip=达拉然势力远程单位。
+Ubertip=近卫军团远程单位。
 
 [edtm]
 animProps=alternateex
@@ -6332,7 +6332,7 @@ MissileHoming=1
 Missilespeed=900
 Name=猛禽德鲁伊
 Tip=训练 猛禽德鲁伊
-Ubertip=达拉然势力远程单位。
+Ubertip=近卫军团远程单位。
 
 [efdr]
 Art=ReplaceableTextures\CommandButtons\BTNFaerieDragon.blp
@@ -6442,7 +6442,7 @@ Hotkey=H
 Missilespeed=,
 Name=树人
 Tip=训练 女猎手(|cffffcc00H|r)
-Ubertip=达拉然势力近战单位
+Ubertip=近卫军团近战单位
 
 [eshd]
 Art=ReplaceableTextures\CommandButtons\BTNShandris.blp
@@ -6520,7 +6520,7 @@ Missilespeed=750
 Name=世界之树
 Specialart=Objects\Spawnmodels\NightElf\NECancelDeath\NECancelDeath.mdl
 Tip=建造 世界之树(|cffffcc00T|r)
-Ubertip=达拉然势力的终极建筑
+Ubertip=近卫军团的终极建筑
 
 [etrp]
 Art=ReplaceableTextures\CommandButtons\BTNTreant.blp
@@ -12240,7 +12240,7 @@ Ubertip=强大的舰船，能够有效地攻击地面建筑物。|n|n|cffffcc00�
 
 [hcas]
 animProps=upgrade,second
-Art=ReplaceableTextures\CommandButtons\BTNCastle.blp
+Art=ReplaceableTextures\CommandButtons\BTNTreeOfEternity.blp
 Attachmentanimprops=large
 BuildingSoundLabel=BuildingConstructionLoop
 Buttonpos=,2
@@ -12777,7 +12777,7 @@ Ubertip=小型近战单位。|n|n|cffffcc00攻击地面和空中单位。|r
 Art=ReplaceableTextures\CommandButtons\BTNTavern.blp
 Description=Allows you to hire various Heroes.
 Missilespeed=1500,1500
-Name=敏捷（达拉然势力 - 2）
+Name=敏捷（近卫军团 - 2）
 Sellunits=Huth,E01Y,Nbrn,Naka,Hvwd,N0M0,Z052,Z060
 Tip=建造酒馆
 Ubertip=,
@@ -12786,7 +12786,7 @@ Ubertip=,
 Art=ReplaceableTextures\CommandButtons\BTNTavern.blp
 Description=Allows you to hire various Heroes.
 Missilespeed=1500,1500
-Name=智力（达拉然势力 - 1）
+Name=智力（近卫军团 - 1）
 Sellunits=Hmbr,Hjai,H004,Hblm,N00B,N0EG,H00A,Emoo,Emns,H00S,N01A,E02J
 Tip=建造酒馆
 Ubertip=,
@@ -13030,7 +13030,7 @@ Ubertip=小型近战单位。|n|n|cffffcc00攻击地面单位。|r
 Art=ReplaceableTextures\CommandButtons\BTNTavern.blp
 Description=Allows you to hire various Heroes.
 Missilespeed=1500,1500
-Name=力量（达拉然势力 - 1）
+Name=力量（近卫军团 - 1）
 Sellunits=Hamg,Ucrl,Harf,H000,Otch,H00D,H06S,H001,Npbm,O015,N01I,O01F
 Tip=建造酒馆
 Ubertip=,
@@ -13101,7 +13101,7 @@ Ubertip=,
 Art=ReplaceableTextures\CommandButtons\BTNTavern.blp
 Description=Allows you to hire various Heroes.
 Missilespeed=1500,1500
-Name=敏捷（达拉然势力 - 1）
+Name=敏捷（近卫军团 - 1）
 Sellunits=N01V,E005,Edem,N01O,Nbbc,Ogrh,N016,HC92,HC49,O00P,Usyl,E02N
 Tip=建造酒馆
 Ubertip=,
@@ -13110,7 +13110,7 @@ Ubertip=,
 Art=ReplaceableTextures\CommandButtons\BTNTavern.blp
 Description=Allows you to hire various Heroes.
 Missilespeed=1500,1500
-Name=力量（达拉然势力 - 2）
+Name=力量（近卫军团 - 2）
 Sellunits=Hlgr,H00Q,H00T,E02I,E02F,H008,E02K,E032,N0MU
 Tip=建造酒馆
 Ubertip=,
@@ -13499,7 +13499,7 @@ Ubertip=,
 
 [n03N]
 Missilespeed=1500,1500
-Name=达拉然势力
+Name=近卫军团
 Ubertip=,
 
 [n03O]
@@ -13684,7 +13684,7 @@ Ubertip=,
 
 [n04O]
 Missilespeed=1500,1500
-Name=达拉然势力摧毁了黑暗势力所有的生产建筑
+Name=近卫军团摧毁了黑暗势力所有的生产建筑
 Ubertip=,
 
 [n04P]
@@ -13709,7 +13709,7 @@ Ubertip=,
 
 [n04T]
 Missilespeed=1500,1500
-Name=一头|cff0000ff远古九头蛇|r现在效忠|cffff0000达拉然势力|r，向中路进发！
+Name=一头|cff0000ff远古九头蛇|r现在效忠|cffff0000近卫军团|r，向中路进发！
 Ubertip=,
 
 [n04U]
@@ -13729,7 +13729,7 @@ Ubertip=,
 
 [n04X]
 Missilespeed=1500,1500
-Name=黑暗势力摧毁了达拉然势力所有的生产建筑
+Name=黑暗势力摧毁了近卫军团所有的生产建筑
 Ubertip=,
 
 [n04Y]
@@ -13739,7 +13739,7 @@ Ubertip=,
 
 [n04Z]
 Missilespeed=1500,1500
-Name=一条|cff0000ff恐怖怪鱼|r现在效忠于|cffff0000达拉然势力|r，向中路进发！
+Name=一条|cff0000ff恐怖怪鱼|r现在效忠于|cffff0000近卫军团|r，向中路进发！
 Ubertip=,
 
 [n050]
@@ -13749,22 +13749,22 @@ Ubertip=,
 
 [n051]
 Missilespeed=1500,1500
-Name=一只|cff0000ff攻城傀儡|r现在效忠于|cffff0000达拉然势力|r，向上路进发！
+Name=一只|cff0000ff攻城傀儡|r现在效忠于|cffff0000近卫军团|r，向上路进发！
 Ubertip=,
 
 [n052]
 Missilespeed=1500,1500
-Name=一只|cff0000ff攻城傀儡|r现在效忠于|cffff0000达拉然势力|r，向中路进发！
+Name=一只|cff0000ff攻城傀儡|r现在效忠于|cffff0000近卫军团|r，向中路进发！
 Ubertip=,
 
 [n053]
 Missilespeed=1500,1500
-Name=一只|cff0000ff攻城傀儡|r现在效忠于|cffff0000达拉然势力|r，向下路进发！
+Name=一只|cff0000ff攻城傀儡|r现在效忠于|cffff0000近卫军团|r，向下路进发！
 Ubertip=,
 
 [n054]
 Missilespeed=1500,1500
-Name=获得了胜利！|c008600FF作者：本喵是萌新|r
+Name=获得了胜利！|c008600FF作者：小生我怕怕|r
 Ubertip=,
 
 [n055]
@@ -13774,17 +13774,17 @@ Ubertip=,
 
 [n056]
 Missilespeed=1500,1500
-Name=一头|cff0000ff远古九头蛇|r现在效忠于|cffff0000达拉然势力|r，向上路进发！
+Name=一头|cff0000ff远古九头蛇|r现在效忠于|cffff0000近卫军团|r，向上路进发！
 Ubertip=,
 
 [n057]
 Missilespeed=1500,1500
-Name=一条|cff0000ff恐怖怪鱼|r现在效忠于|cffff0000达拉然势力|r，向下路进发！
+Name=一条|cff0000ff恐怖怪鱼|r现在效忠于|cffff0000近卫军团|r，向下路进发！
 Ubertip=,
 
 [n058]
 Missilespeed=1500,1500
-Name=一条|cff0000ff恐怖怪鱼|r现在效忠于|cffff0000达拉然势力|r，向上路进发！
+Name=一条|cff0000ff恐怖怪鱼|r现在效忠于|cffff0000近卫军团|r，向上路进发！
 Ubertip=,
 
 [n059]
@@ -13804,7 +13804,7 @@ Ubertip=,
 
 [n05C]
 Missilespeed=1500,1500
-Name=一头|cff0000ff远古九头蛇|r现在效忠于|cffff0000达拉然势力|r，向下路进发！
+Name=一头|cff0000ff远古九头蛇|r现在效忠于|cffff0000近卫军团|r，向下路进发！
 Ubertip=,
 
 [n05D]
@@ -13949,7 +13949,7 @@ Ubertip=,
 
 [n065]
 Missilespeed=1500,1500
-Name=达拉然势力
+Name=近卫军团
 Ubertip=,
 
 [n066]
@@ -13989,7 +13989,7 @@ Ubertip=,
 
 [n06D]
 Missilespeed=1500,1500
-Name=达拉然势力将会拥有选项中第一套英雄阵容，它是随机的
+Name=近卫军团将会拥有选项中第一套英雄阵容，它是随机的
 Ubertip=,
 
 [n06E]
@@ -15039,7 +15039,7 @@ Ubertip=,
 
 [n0C7]
 Missilespeed=1500,1500
-Name=现在达拉然势力的兵力将远远超过对手并会出动超级士兵
+Name=现在近卫军团的兵力将远远超过对手并会出动超级士兵
 Ubertip=,
 
 [n0C8]
@@ -15286,7 +15286,7 @@ Ubertip=,
 
 [n0DK]
 Missilespeed=1500,1500
-Name=达拉然势力
+Name=近卫军团
 Ubertip=,
 
 [n0DL]
@@ -15479,7 +15479,7 @@ Ubertip=,
 
 [n0ER]
 Missilespeed=1500,1500
-Name=输入 |c006699CC-cm 1|r 让达拉然势力先选，或者输入 |c006699CC-cm 2|r 让黑暗势力先选
+Name=输入 |c006699CC-cm 1|r 让近卫军团先选，或者输入 |c006699CC-cm 2|r 让黑暗势力先选
 Ubertip=,
 
 [n0ES]
@@ -15841,7 +15841,7 @@ Ubertip=,
 Art=ReplaceableTextures\CommandButtons\BTNTavern.blp
 Description=Allows you to hire various Heroes.
 Missilespeed=1500,1500
-Name=智力（达拉然势力 - 2）
+Name=智力（近卫军团 - 2）
 Sellunits=Ntin,H00K,Hmkg,E00P,Orkn,E02X,H0DO,N0MD
 Tip=建造酒馆
 Ubertip=,
@@ -17253,7 +17253,7 @@ Description=一种由竹子做成的小型了望塔。
 Missilespeed=1500,1500
 Name=抽奖屋
 Tip=抽奖屋
-Ubertip=抽奖屋：幸运大抽奖（每局一次领1-1000金币）、1000抽属性（无限次，每次1000金币抽全属性）、梭哈抽属性（投入全部本局金币成功后三属性同增）。操作完重显本屋，主动关闭才隐藏；个人存档请另输入 -archive。
+Ubertip=抽奖屋：幸运大抽奖（每局一次领1-1000金币）、1000抽属性（无限次，每次1000金币抽全属性）、梭哈抽属性（投入全部本局金币成功后三属性同增）。操作完重显本屋，主动关闭才隐藏。以上均为当局玩法，不读写KK存档。
 
 [nC0G]
 Art=ReplaceableTextures\CommandButtons\BTNObsidianStatue.blp
@@ -26173,7 +26173,7 @@ Missilespeed=1500,1500
 Name=[Small Skill] 沟壑
 Specialart=Objects\Spawnmodels\Human\HumanLargeDeathExplode\HumanLargeDeathExplode.mdl
 Tip=Select [Small Skill]: 沟壑
-Ubertip=用图腾猛击地面，将前方的大地撕裂形成沟壑并且对敌方单位造成眩晕和伤害。同时在一定时间内无法通过沟壑。|n|n|cff99ccff冷却时间： |r14 |n|cff99ccff魔法消耗： |r120/130/140/150 |n|cff99ccff施法距离：|r1400|n|n|cffffcc00等级 1|r - 造成110伤害，1秒眩晕。 |n|cffffcc00等级 2|r - 造成160伤害，1.25秒眩晕。 |n|cffffcc00等级 3|r - 造成210伤害，1.5秒眩晕。 |n|cffffcc00等级 4|r - 造成260伤害，1.75秒眩晕。
+Ubertip=|cFF66CCFF[IMBA实际值]|r 用图腾猛击地面，将前方的大地撕裂形成沟壑并且对敌方单位造成眩晕和伤害。同时在一定时间内无法通过沟壑。|n|n|cff99ccff冷却时间： |r14 |n|cff99ccff魔法消耗： |r120/130/140/150 |n|cff99ccff施法距离：|r1400|n|n|cffffcc00等级 1|r - 造成220伤害，1秒眩晕。 |n|cffffcc00等级 2|r - 造成320伤害，1.25秒眩晕。 |n|cffffcc00等级 3|r - 造成420伤害，1.5秒眩晕。 |n|cffffcc00等级 4|r - 造成520伤害，1.75秒眩晕。
 
 [v026]
 Art=ReplaceableTextures\CommandButtons\BTNSmash.blp

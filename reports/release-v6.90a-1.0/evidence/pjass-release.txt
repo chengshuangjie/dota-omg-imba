@@ -1,0 +1,5 @@
+Parse successful:     2445 lines: D:\Dota_OMG\toolchain\jass\24\common.j
+Parse successful:    10230 lines: D:\Dota_OMG\toolchain\jass\24\blizzard.j
+D:\Dota_OMG\src\war3map.j:155341: 变量 location_m5 没有初始化
+D:\Dota_OMG\src\war3map.j failed with 1 error
+Parse failed: 1 error total

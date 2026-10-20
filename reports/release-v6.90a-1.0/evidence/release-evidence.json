@@ -1,0 +1,102 @@
+{
+  "stage": "v6.90a 1.0 formal release",
+  "generatedAt": "2026-10-20T17:01:24+08:00",
+  "releaseMap": {
+    "path": "maps/release/Dota v6.90a OMG AI 1.0.w3x",
+    "bytes": 56712620,
+    "sha256": "dfd19f9bcb7c35a2050a512c072f968fdf803f4c32a4bceb84c9924561f68c29"
+  },
+  "stableDeploy": {
+    "path": "D:\\游戏\\Warcraft III\\Maps\\omg\\稳定\\Dota v6.90a OMG AI 1.0.w3x",
+    "bytes": 56712620,
+    "sha256": "dfd19f9bcb7c35a2050a512c072f968fdf803f4c32a4bceb84c9924561f68c29",
+    "buildStableHashIdentical": true
+  },
+  "labels": {
+    "versionLabel": {
+      "value": "v6.90a-OMG-AI-1.0",
+      "asciiBytes": 17,
+      "padTo": 24,
+      "paddingSpaces": 7,
+      "w3iSlot": "A@12"
+    },
+    "displayName": {
+      "value": "Dota v6.90a OMG AI 1.0",
+      "asciiBytes": 22,
+      "padTo": 24,
+      "paddingSpaces": 2,
+      "w3iSlot": "B@234"
+    }
+  },
+  "src": {
+    "war3map.j": {
+      "bytes": 8581369,
+      "sha256": "7248db967b02863b000cb671a126a036c401fc78c541c07f943b18e25b712dda"
+    },
+    "war3map.w3i": {
+      "bytes": 806,
+      "sha256": "2d29ecaf9c819d9c5eb14f6ad081c2974a9eb09524c94dabb611901fffd43ea0"
+    }
+  },
+  "frozenInjected": {
+    "war3map.doo": "f6ea5428531d04ac680f9d51b318be5b65e776b58bc342bb5004e32b2f0bf915",
+    "war3map.w3e": "55962dae4021a0eca6dad6011e9a37b00459362bc062725260d6799fb8e9f593",
+    "war3map.wpm": "61ccf7597378fde26858b061ae174082543fbb25e07d0e4e3c91cb035a1f11a9"
+  },
+  "verify": {
+    "verify_v17_preinject": {
+      "total": 122,
+      "passed": 122,
+      "failed": 0
+    },
+    "verify_v17_postreinject": {
+      "total": 122,
+      "passed": 122,
+      "failed": 0
+    },
+    "pjass": {
+      "allowedOnly": "location_m5",
+      "diagnostic": "war3map.j:155341"
+    }
+  },
+  "anchors": {
+    "packed_j_equals_src": true,
+    "packed_w3i_equals_src": true,
+    "doo_match_t2": true,
+    "w3e_match_t5": true,
+    "title_x1": true,
+    "pos128_256_exact": true,
+    "pos96_256_gone": true,
+    "no_posunit": true,
+    "permanent": true,
+    "lifespan0": true,
+    "fadepoint0": true,
+    "visible": true,
+    "xomg_v690a": true,
+    "setmapname_v690a": true,
+    "no_t10_residue": true,
+    "nas6_frozen": true,
+    "t5_dzsetmodel": 47,
+    "t5_setunitscale": 47,
+    "t4_tree": true,
+    "buttons": true,
+    "fffd": 0
+  },
+  "stableDir": {
+    "fissurePresent": false,
+    "v690aPresent": true,
+    "v693a": {
+      "bytes": 82298058,
+      "sha256": "bc7b71d74d96898afbaa01c3bfc9d77fe637c88e9e0d941cd53170dec1e94890",
+      "unchanged": true
+    }
+  },
+  "oldFissureBackup": {
+    "dir": "D:\\Dota_OMG\\backups\\stable-pre-v6.90a-1.0-20261020-165433",
+    "file": "D:\\Dota_OMG\\backups\\stable-pre-v6.90a-1.0-20261020-165433\\DOTA-OMG-IMBA-v6.9-FISSURE-T1.w3x",
+    "bytes": 56602080,
+    "sha256": "1847c96bf5201072a569cec2ecc24e79aca163cb4c852cef95e4af5087842195",
+    "matchesOriginal": true
+  },
+  "ALL_PASS": true
+}

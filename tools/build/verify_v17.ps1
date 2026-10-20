@@ -11,6 +11,8 @@ if ([string]::IsNullOrWhiteSpace($MapPath)) {
     $MapPath = if ([IO.Path]::IsPathRooted($config.baselineMap)) { $config.baselineMap } else { Join-Path $root $config.baselineMap }
 }
 $MapPath = [IO.Path]::GetFullPath($MapPath)
+$baselineMap = if ([IO.Path]::IsPathRooted($config.baselineMap)) { $config.baselineMap } else { Join-Path $root $config.baselineMap }
+$baselineMap = [IO.Path]::GetFullPath($baselineMap)
 $verifyDir = Join-Path ([IO.Path]::GetTempPath()) ('nokverify-' + [guid]::NewGuid().ToString('N'))
 [IO.Directory]::CreateDirectory($verifyDir) | Out-Null
 
@@ -40,14 +42,14 @@ $textPairs = @(
     @{arc='war3map.j'; src='src\war3map.j'},
     @{arc='war3map.w3i'; src='src\war3map.w3i'},
     @{arc='war3map.imp'; src='src\war3map.imp'},
-    @{arc='Units\CampaignAbilityStrings.txt'; src='src\data\Units\CampaignAbilityStrings.txt'},
-    @{arc='Units\CampaignUnitStrings.txt'; src='src\data\Units\CampaignUnitStrings.txt'},
-    @{arc='Units\UnitAbilities.slk'; src='src\data\Units\UnitAbilities.slk'},
-    @{arc='Units\UnitBalance.slk'; src='src\data\Units\UnitBalance.slk'},
-    @{arc='Units\UnitData.slk'; src='src\data\Units\UnitData.slk'},
-    @{arc='Units\UnitUI.slk'; src='src\data\Units\UnitUI.slk'},
-    @{arc='Units\UnitWeapons.slk'; src='src\data\Units\UnitWeapons.slk'},
-    @{arc='Units\AbilityData.slk'; src='src\data\Units\AbilityData.slk'}
+    @{arc='units\campaignabilitystrings.txt'; src='src\data\Units\CampaignAbilityStrings.txt'},
+    @{arc='units\campaignunitstrings.txt'; src='src\data\Units\CampaignUnitStrings.txt'},
+    @{arc='units\unitabilities.slk'; src='src\data\Units\UnitAbilities.slk'},
+    @{arc='units\unitbalance.slk'; src='src\data\Units\UnitBalance.slk'},
+    @{arc='units\unitdata.slk'; src='src\data\Units\UnitData.slk'},
+    @{arc='units\unitui.slk'; src='src\data\Units\UnitUI.slk'},
+    @{arc='units\unitweapons.slk'; src='src\data\Units\UnitWeapons.slk'},
+    @{arc='units\abilitydata.slk'; src='src\data\Units\AbilityData.slk'}
 )
 foreach ($p in $textPairs) {
     $local = Extract-FromMpq $p.arc
@@ -58,18 +60,36 @@ foreach ($p in $textPairs) {
 
 $jass = [IO.File]::ReadAllText((Extract-FromMpq 'war3map.j'), [Text.Encoding]::UTF8)
 $jass = $jass -replace "`r`n","`n"
-$abilData = [IO.File]::ReadAllText((Extract-FromMpq 'Units\AbilityData.slk'), [Text.Encoding]::UTF8)
-$uiSlk = [IO.File]::ReadAllText((Extract-FromMpq 'Units\UnitUI.slk'), [Text.Encoding]::UTF8)
-$unitStr = [IO.File]::ReadAllText((Extract-FromMpq 'Units\CampaignUnitStrings.txt'), [Text.Encoding]::UTF8)
-$abilStr = [IO.File]::ReadAllText((Extract-FromMpq 'Units\CampaignAbilityStrings.txt'), [Text.Encoding]::UTF8)
+$abilData = [IO.File]::ReadAllText((Extract-FromMpq 'units\abilitydata.slk'), [Text.Encoding]::UTF8)
+$uiSlk = [IO.File]::ReadAllText((Extract-FromMpq 'units\unitui.slk'), [Text.Encoding]::UTF8)
+$unitStr = [IO.File]::ReadAllText((Extract-FromMpq 'units\campaignunitstrings.txt'), [Text.Encoding]::UTF8)
+$abilStr = [IO.File]::ReadAllText((Extract-FromMpq 'units\campaignabilitystrings.txt'), [Text.Encoding]::UTF8)
 $abilStr = $abilStr -replace "`r`n","`n"
 $impBytes = [IO.File]::ReadAllBytes((Extract-FromMpq 'war3map.imp'))
 
-# ---- 2. w3i binary: fixed 806B, exact 24B NOK label x2, prior labels x0, outside slots == HEAD ----
+# SLK tail-deletion safety: declared B;Y must exactly match the largest actual C;...;Y row.
+# Warcraft III 1.27 may exit during object preload before map logging when these diverge.
+function Test-SlkDeclaredMaxY([string]$archive) {
+    $bytes = [IO.File]::ReadAllBytes((Extract-FromMpq $archive))
+    $text = [Text.Encoding]::ASCII.GetString($bytes)
+    $decl = [regex]::Match($text, '(?m)^B;[^\r\n]*;Y(\d+);')
+    $actual = [regex]::Matches($text, '(?m)^C;[^\r\n]*;Y(\d+)(?:;|$)')
+    if (-not $decl.Success -or $actual.Count -eq 0) { return $false }
+    $maxY = 0
+    foreach ($m in $actual) { $y = [int]$m.Groups[1].Value; if ($y -gt $maxY) { $maxY = $y } }
+    return ([int]$decl.Groups[1].Value -eq $maxY) -and ($text -match '(?m)^E\s*$')
+}
+foreach ($arc in @('units\abilitydata.slk','units\unitabilities.slk','units\unitbalance.slk','units\unitdata.slk','units\unitui.slk','units\unitweapons.slk')) {
+    $checks["slk:declared-maxY:$arc"] = Test-SlkDeclaredMaxY $arc
+}
+
+# ---- 2. w3i binary: fixed 806B, exact 24B label x2, prior labels x0,
+# and every byte outside the two fixed name slots equal to the project-local noskin19 baseline. ----
 $w3iBytes = [IO.File]::ReadAllBytes((Extract-FromMpq 'war3map.w3i'))
 $checks['w3i:fixed-806'] = ($w3iBytes.Length -eq 806)
-$nokLabel = [Text.Encoding]::ASCII.GetBytes('OMG IMBA v1.8.6-NOK     ')
-$checks['w3i:nok-label-24b-x2'] = ($nokLabel.Length -eq 24)
+$slotALabel = [Text.Encoding]::ASCII.GetBytes(('v6.90a-OMG-AI-1.0').PadRight(24,' '))
+$slotBLabel = [Text.Encoding]::ASCII.GetBytes(('Dota v6.90a OMG AI 1.0').PadRight(24,' '))
+$checks['w3i:art683-slots-24b'] = ($slotALabel.Length -eq 24) -and ($slotBLabel.Length -eq 24)
 function Count-Sub($hay, $needle) {
     $c = 0; $i = 0
     while ($i -le ($hay.Length - $needle.Length)) {
@@ -80,35 +100,67 @@ function Count-Sub($hay, $needle) {
     }
     return $c
 }
-$checks['w3i:nok-label-x2'] = ((Count-Sub $w3iBytes $nokLabel) -eq 2)
-foreach ($pl in @('OMG IMBA v1.8.5-SYNCF001','OMG IMBA v1.7.1-W3IFix','v1.6-K','K-W3IFix','v1.7.1-K')) {
+function Compare-Slot($hay, $off, $expect) {
+    for ($k = 0; $k -lt 24; $k++) { if ($hay[$off + $k] -ne $expect[$k]) { return $false } }
+    return $true
+}
+$checks['w3i:slotA-12-art683'] = (Compare-Slot $w3iBytes 12 $slotALabel)
+$checks['w3i:slotB-234-art683'] = (Compare-Slot $w3iBytes 234 $slotBLabel)
+foreach ($pl in @('OMG IMBA v1.8.5-SYNCF001','OMG IMBA v1.7.1-W3IFix','v1.6-K','K-W3IFix','v1.7.1-K','v6.9-ART683-T10','6.9 OMG IMBA ART683-T10')) {
     $pb = [Text.Encoding]::ASCII.GetBytes($pl)
     $checks["w3i:prior-x0:$pl"] = ((Count-Sub $w3iBytes $pb) -eq 0)
 }
-$tmpBlob = Join-Path $verifyDir 'head-w3i.bin'
-$gitInfo = New-Object Diagnostics.ProcessStartInfo
-$gitInfo.FileName = 'git'; $gitInfo.WorkingDirectory = $root
-$gitInfo.Arguments = 'show HEAD:src/war3map.w3i'
-$gitInfo.UseShellExecute = $false; $gitInfo.RedirectStandardOutput = $true
-$gitProc = [Diagnostics.Process]::Start($gitInfo)
-$gitOut = [IO.File]::Create($tmpBlob)
-$gitProc.StandardOutput.BaseStream.CopyTo($gitOut); $gitOut.Close(); $gitProc.WaitForExit()
-$headW3i = $null
-if ($gitProc.ExitCode -eq 0 -and (Test-Path $tmpBlob)) { $headW3i = [IO.File]::ReadAllBytes($tmpBlob) }
+$baselineExtractDir = Join-Path $verifyDir 'baseline'
+[IO.Directory]::CreateDirectory($baselineExtractDir) | Out-Null
+$baselineW3iPath = Join-Path $baselineExtractDir 'war3map.w3i'
+& $config.mpqEditor extract $baselineMap 'war3map.w3i' $baselineExtractDir /fp | Out-Null
+if (-not (Test-Path -LiteralPath $baselineW3iPath -PathType Leaf)) { throw "无法从项目内稳定基线回读 war3map.w3i: $baselineMap" }
+$baselineW3i = [IO.File]::ReadAllBytes($baselineW3iPath)
 $allow = New-Object System.Collections.Generic.HashSet[int]
 foreach ($s in 12,234) { for ($k = 0; $k -lt 24; $k++) { [void]$allow.Add($s + $k) } }
 $diffOk = $false
-if ($headW3i -and $headW3i.Length -eq 806) {
+if ($baselineW3i.Length -eq 806) {
     $diffOk = $true
     for ($i = 0; $i -lt 806; $i++) {
-        if ($w3iBytes[$i] -ne $headW3i[$i] -and -not $allow.Contains($i)) { $diffOk = $false; break }
+        if ($w3iBytes[$i] -ne $baselineW3i[$i] -and -not $allow.Contains($i)) { $diffOk = $false; break }
     }
 }
-$checks['w3i:byte-equal-head-outside-slots'] = $diffOk
+$checks['w3i:byte-equal-baseline-outside-slots'] = $diffOk
 
-# ---- 3. version: both XOMG_VERSION and SetMapName carry NOK; no K-era name ----
-$checks['version:xomg-nok'] = (([regex]::Matches($jass,'constant string XOMG_VERSION="v1\.8\.6-NOK"')).Count -eq 1)
-$checks['version:setmapname-nok'] = (([regex]::Matches($jass,'SetMapName\("OMG IMBA v1\.8\.6-NOK"\)')).Count -eq 1)
+# ---- 3. version, clean-system and lottery-house gates ----
+$checks['version:xomg-v690a'] = (([regex]::Matches($jass,'constant string XOMG_VERSION="v6\.90a-OMG-AI-1\.0"')).Count -eq 1)
+$checks['version:setmapname-v690a'] = (([regex]::Matches($jass,'SetMapName\("Dota v6\.90a OMG AI 1\.0"\)')).Count -eq 1)
+$checks['version:no-art683-t10-xomg'] = ($jass -notmatch [regex]::Escape('XOMG_VERSION="v6.9-ART683-T10"'))
+$checks['version:no-art683-t10-setmapname'] = ($jass -notmatch [regex]::Escape('SetMapName("6.9 OMG IMBA ART683-T10")'))
+$checks['ui:fissure-selection-actual-damage'] = ($unitStr -match '(?s)\[v025\].*?\[IMBA实际值\].*?造成220伤害，1秒眩晕.*?造成320伤害，1\.25秒眩晕.*?造成420伤害，1\.5秒眩晕.*?造成520伤害，1\.75秒眩晕')
+$checks['ui:fissure-selection-no-base-damage'] = ($unitStr -notmatch '(?s)\[v025\].*?造成110伤害，1秒眩晕.*?\[v026\]')
+$checks['ui:broadcast-message'] = (([regex]::Matches($jass,'开局可免费幸运大抽奖，打野10%概率掉装备')).Count -eq 2) -and ($jass -match '可鼠标左键双击快速售出，多余的钱可用来抽英雄全属性')
+$checks['ui:no-old-broadcast-message'] = ($jass -notmatch '游戏最重要的是抱团防守，抱团杀人的经验和经济')
+$checks['lottery:init-call'] = ($jass -match '(?m)^\s*call LOTTERY_Init\(\)')
+$checks['lottery:house-created'] = ($jass -match "CreateUnit\(Player\(PLAYER_NEUTRAL_PASSIVE\),'nAS6',-5728\.,-6816\.,270\.\)")
+$checks['lottery:selection-sync'] = ($jass -match 'DzSyncData\("LOTOPEN",""\)') -and ($jass -match 'DzTriggerRegisterSyncData\(lotOpenTrigger,"LOTOPEN",false\)')
+$checks['lottery:three-buttons'] = ($jass -match '幸运大抽奖（免费1次）') -and ($jass -match '1000抽属性（无限次）') -and ($jass -match '梭哈抽属性')
+$checks['lottery:handlers'] = ($jass -match 'TriggerAddAction\(lotDialogTrigger,function LOTTERY_Click\)') -and ($jass -match 'TriggerAddAction\(lotSelectTrigger,function LOTTERY_Selected\)')
+# ---- ART683-T6 permanent colored floating title above nAS6 (visual, sync-safe, once) ----
+$checks['t6:title-text-x1'] = (([regex]::Matches($jass,[regex]::Escape('|cffff66cc抽|r|cffffff66奖|r|cff66ffff屋|r'))).Count -eq 1)
+$checks['t6:title-create-once'] = (([regex]::Matches($jass,'B836LotteryTitle=CreateTextTag\(\)')).Count -eq 1)
+$checks['t6:title-positioned'] = ($jass -match [regex]::Escape('call SetTextTagPos(B836LotteryTitle,GetUnitX(B836ArcHut)-128.,GetUnitY(B836ArcHut),256.)')) -and ($jass -notmatch 'SetTextTagPosUnit\(B836LotteryTitle') -and ($jass -notmatch [regex]::Escape('GetUnitX(B836ArcHut)-96.,GetUnitY(B836ArcHut),256.)'))
+$checks['t6:title-permanent'] = ($jass -match 'SetTextTagPermanent\(B836LotteryTitle,true\)') -and ($jass -match 'SetTextTagLifespan\(B836LotteryTitle,0\)') -and ($jass -match 'SetTextTagFadepoint\(B836LotteryTitle,0\)')
+$checks['t6:title-all-visible'] = ($jass -match 'SetTextTagVisibility\(B836LotteryTitle,true\)')
+$t6block = [regex]::Match($jass,'if B836LotteryTitle==null then(.*?)endif','Singleline').Groups[1].Value
+$checks['t6:title-no-local-branch'] = ($t6block -notmatch 'GetLocalPlayer')
+$checks['lottery:no-archive-chat'] = ($jass -notmatch 'TriggerRegisterPlayerChatEvent\([^\r\n]*"-archive"')
+$checks['clean:no-archive-init-call'] = ($jass -notmatch '(?m)^\s*call B836ArcInit\(\)')
+$checks['clean:no-mastery-init-call'] = ($jass -notmatch '(?m)^\s*call B1031Init\(\)')
+$checks['clean:no-skin-init-call'] = ($jass -notmatch '(?m)^\s*call B1032Init\(\)')
+$checks['clean:no-realm-init-call'] = ($jass -notmatch '(?m)^\s*call B1035Init\(\)')
+$checks['clean:no-tip-init-call'] = ($jass -notmatch '(?m)^\s*call B1042Init\(\)')
+$checks['clean:no-recharge-routing'] = ($jass -notmatch 'ExecuteFunc\("B1131Recharge"\)')
+$checks['clean:no-old-debug-account'] = ($jass -notmatch '狂扁大帅比#2254|狂扁AI')
+$checks['clean:give-current-gold'] = ($jass -match 'function B1043Give') -and ($jass -match 'AdjustPlayerStateBJ\(giveGold1043,givePlayer1043,PLAYER_STATE_RESOURCE_GOLD\)') -and ($jass -notmatch 'B894PlayerIdentity\[giveAuthor1043\]!="小生我怕怕#7351"')
+$checks['clean:xiaosheng-prefix'] = ($jass -match 'function B1132StartsWithXiaoSheng') -and ($jass -match 'SubString\(fuzzyText1132,0,StringLength\("小生"\)\)=="小生"')
+$checks['clean:no-entry-gift-write'] = ($jass -notmatch 'GIFT_CANDIDATE|giftCoins1130|15\*86400')
+$checks['clean:no-legacy-skin-download-write'] = ($jass -notmatch 'PreloadGenEnd\("save\\\\DotaAI6\.9_Download\.txt"\)')
 $checks['version:no-k-w3ifix'] = ($jass -notmatch 'v1\.7\.1-K-W3IFix')
 
 # ---- 4. NOK zero residue (active jass / SLK / Campaign / imp only) ----
@@ -169,19 +221,25 @@ $checks['retain:xomg1'] = ($jass -match 'XOMG1')
 $checks['cs:lion-50-x16'] = (([regex]::Matches($abilStr,'基础命中敌方英雄\+50点额外伤害')).Count -eq 16)
 $checks['cs:sven-200-300-400'] = ($abilStr -match '增加自身200%的基础攻击力') -and ($abilStr -match '增加自身300%的基础攻击力') -and ($abilStr -match '增加自身400%的基础攻击力')
 
+$checks['ui:lottery-title-short'] = (([regex]::Matches($jass,'DialogSetMessage\(LOTTERY_DIALOG\[lotPid\],"抽奖屋"\)')).Count -eq 1)
+$checks['ui:lottery-free-label'] = (([regex]::Matches($jass,'幸运大抽奖（免费1次）')).Count -eq 1)
+$checks['ui:no-old-faction-name'] = ($jass -notmatch '达拉然势力') -and ($abilStr -notmatch '达拉然势力') -and ($unitStr -notmatch '达拉然势力')
+$checks['ui:new-faction-name'] = ($jass -match '近卫军团') -and ($abilStr -match '近卫军团') -and ($unitStr -match '近卫军团')
+
 # ---- report ----
 $rows = foreach ($k in $checks.Keys) {
     [PSCustomObject]@{ check=$k; pass=[bool]$checks[$k] }
 }
-$failed = $rows | Where-Object { -not $_.pass }
+$failed = @($rows | Where-Object { -not $_.pass })
+$failedCount = $failed.Count
 $report = [PSCustomObject]@{
-    map=$MapPath; time=(Get-Date).ToString('o'); passed=($failed.Count -eq 0)
-    total=$rows.Count; failedCount=$failed.Count; failures=($failed.check -join '; ')
+    map=$MapPath; time=(Get-Date).ToString('o'); passed=($failedCount -eq 0)
+    total=$rows.Count; failedCount=$failedCount; failures=($failed.check -join '; ')
 }
 New-Item -ItemType Directory -Force (Join-Path $root 'reports') | Out-Null
 $report | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $root 'reports\verification-v17.json') -Encoding UTF8
 $rows | Export-Csv -Path (Join-Path $root 'reports\verification-v17.csv') -NoTypeInformation -Encoding UTF8
 
 $rows | ForEach-Object { '{0,-38} {1}' -f $_.check, $(if($_.pass){'PASS'}else{'FAIL'}) } | Write-Output
-Write-Output ("v1.8.6-NOK checks: {0} pass, {1} fail" -f ($rows.Count-$failed.Count), $failed.Count)
-if ($failed.Count -gt 0) { exit 1 }
+Write-Output ("v6.90a 1.0 checks: {0} pass, {1} fail" -f ($rows.Count-$failedCount), $failedCount)
+if ($failedCount -gt 0) { exit 1 }

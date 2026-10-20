@@ -37,6 +37,13 @@ function Invoke-MpqAdd([string]$mapPath, [string]$sourcePath, [string]$archivePa
     Wait-FileStable $mapPath 60
 }
 
+function Invoke-MpqDelete([string]$mapPath, [string]$archivePath) {
+    $args = @('delete', ('"' + $mapPath + '"'), ('"' + $archivePath + '"'))
+    $process = Start-Process -FilePath $config.mpqEditor -ArgumentList $args -Wait -PassThru
+    if ($process.ExitCode -ne 0) { throw "MPQEditor 删除失败: $archivePath，退出码 $($process.ExitCode)" }
+    Wait-FileStable $mapPath 60
+}
+
 $baseline = Resolve-ProjectPath $config.baselineMap
 $output = if ($OutputMap) { Resolve-ProjectPath $OutputMap } else { Resolve-ProjectPath $config.outputMap }
 if (Test-Path -LiteralPath $output -PathType Leaf) { Remove-Item -LiteralPath $output -Force }
@@ -49,6 +56,11 @@ $stageDir = Join-Path $tempRoot 'stage'
 $asciiMap = Join-Path $tempRoot 'map_work.w3x'
 
 if (-not (Test-Path -LiteralPath $baseline -PathType Leaf)) { throw "缺少基线地图: $baseline" }
+$expectedBaselineSha256 = '93C1DF91B954022A8CF454D9B42C2B3D36ED5A13AD3D35E37418FA6B5A52D7A7'
+$actualBaselineSha256 = (Get-FileHash -LiteralPath $baseline -Algorithm SHA256).Hash
+if ($actualBaselineSha256 -ne $expectedBaselineSha256) {
+    throw "构建基线不是noskin19实机稳定包：expected=$expectedBaselineSha256 actual=$actualBaselineSha256 path=$baseline"
+}
 if (-not (Test-Path -LiteralPath $src -PathType Leaf)) { throw "缺少主源码: $src" }
 if (-not (Test-Path -LiteralPath $config.mpqEditor -PathType Leaf)) { throw "缺少 MPQEditor: $($config.mpqEditor)" }
 
@@ -59,14 +71,14 @@ $sourceEntries = @(
     @{ Source = $src; Stage = 'war3map.j'; Archive = 'war3map.j' },
     @{ Source = (Join-Path $root 'src\war3map.w3i'); Stage = 'war3map.w3i'; Archive = 'war3map.w3i' },
     @{ Source = $imp; Stage = 'war3map.imp'; Archive = 'war3map.imp' },
-    @{ Source = (Join-Path $unitDir 'CampaignAbilityStrings.txt'); Stage = 'CampaignAbilityStrings.txt'; Archive = 'Units\CampaignAbilityStrings.txt' },
-    @{ Source = (Join-Path $unitDir 'CampaignUnitStrings.txt'); Stage = 'CampaignUnitStrings.txt'; Archive = 'Units\CampaignUnitStrings.txt' },
-    @{ Source = (Join-Path $unitDir 'UnitAbilities.slk'); Stage = 'UnitAbilities.slk'; Archive = 'Units\UnitAbilities.slk' },
-    @{ Source = (Join-Path $unitDir 'UnitBalance.slk'); Stage = 'UnitBalance.slk'; Archive = 'Units\UnitBalance.slk' },
-    @{ Source = (Join-Path $unitDir 'UnitData.slk'); Stage = 'UnitData.slk'; Archive = 'Units\UnitData.slk' },
-    @{ Source = (Join-Path $unitDir 'UnitUI.slk'); Stage = 'UnitUI.slk'; Archive = 'Units\UnitUI.slk' },
-    @{ Source = (Join-Path $unitDir 'UnitWeapons.slk'); Stage = 'UnitWeapons.slk'; Archive = 'Units\UnitWeapons.slk' },
-    @{ Source = (Join-Path $unitDir 'AbilityData.slk'); Stage = 'AbilityData.slk'; Archive = 'Units\AbilityData.slk' },
+    @{ Source = (Join-Path $unitDir 'CampaignAbilityStrings.txt'); Stage = 'CampaignAbilityStrings.txt'; Archive = 'units\campaignabilitystrings.txt' },
+    @{ Source = (Join-Path $unitDir 'CampaignUnitStrings.txt'); Stage = 'CampaignUnitStrings.txt'; Archive = 'units\campaignunitstrings.txt' },
+    @{ Source = (Join-Path $unitDir 'UnitAbilities.slk'); Stage = 'UnitAbilities.slk'; Archive = 'units\unitabilities.slk' },
+    @{ Source = (Join-Path $unitDir 'UnitBalance.slk'); Stage = 'UnitBalance.slk'; Archive = 'units\unitbalance.slk' },
+    @{ Source = (Join-Path $unitDir 'UnitData.slk'); Stage = 'UnitData.slk'; Archive = 'units\unitdata.slk' },
+    @{ Source = (Join-Path $unitDir 'UnitUI.slk'); Stage = 'UnitUI.slk'; Archive = 'units\unitui.slk' },
+    @{ Source = (Join-Path $unitDir 'UnitWeapons.slk'); Stage = 'UnitWeapons.slk'; Archive = 'units\unitweapons.slk' },
+    @{ Source = (Join-Path $unitDir 'AbilityData.slk'); Stage = 'AbilityData.slk'; Archive = 'units\abilitydata.slk' },
     @{ Source = (Join-Path $assetDir 'LoadingScreenTL.blp'); Stage = 'LoadingScreenTL.blp'; Archive = 'LoadingScreenTL.blp' },
     @{ Source = (Join-Path $assetDir 'LoadingScreenTR.blp'); Stage = 'LoadingScreenTR.blp'; Archive = 'LoadingScreenTR.blp' },
     @{ Source = (Join-Path $assetDir 'LoadingScreenBL.blp'); Stage = 'LoadingScreenBL.blp'; Archive = 'LoadingScreenBL.blp' },
@@ -108,8 +120,9 @@ if (-not $SkipSyntaxCheck) {
 $w3iSrc = Join-Path $root 'src\war3map.w3i'
 $w3iBytes = [IO.File]::ReadAllBytes($w3iSrc)
 if ($w3iBytes.Length -ne 806) { throw "war3map.w3i 必须为固定 806B，当前 $($w3iBytes.Length)B（禁止变长替换）" }
-$nokLabel = [Text.Encoding]::ASCII.GetBytes('OMG IMBA v1.8.6-NOK     ')
-if ($nokLabel.Length -ne 24) { throw "NOK 标签必须精确 24B，当前 $($nokLabel.Length)B" }
+$slotALabel = [Text.Encoding]::ASCII.GetBytes(('v6.90a-OMG-AI-1.0').PadRight(24,' '))
+$slotBLabel = [Text.Encoding]::ASCII.GetBytes(('Dota v6.90a OMG AI 1.0').PadRight(24,' '))
+if ($slotALabel.Length -ne 24 -or $slotBLabel.Length -ne 24) { throw "v6.90a 1.0 正式版标签必须精确 24B" }
 $priorLabels = @('OMG IMBA v1.8.5-SYNCF001', 'OMG IMBA v1.7.1-W3IFix', 'v1.6-K', 'K-W3IFix')
 function Count-Bytes($hay, $needle) {
     $c = 0; $i = 0
@@ -121,7 +134,12 @@ function Count-Bytes($hay, $needle) {
     }
     return $c
 }
-if ((Count-Bytes $w3iBytes $nokLabel) -ne 2) { throw 'w3i NOK 24B 标签必须精确出现 2 次' }
+function Compare-Slot($hay, $off, $expect) {
+    for ($k = 0; $k -lt 24; $k++) { if ($hay[$off + $k] -ne $expect[$k]) { return $false } }
+    return $true
+}
+if (-not (Compare-Slot $w3iBytes 12 $slotALabel)) { throw 'w3i 槽A@12 必须为 v6.90a-OMG-AI-1.0 24B 标签' }
+if (-not (Compare-Slot $w3iBytes 234 $slotBLabel)) { throw 'w3i 槽B@234 必须为 Dota v6.90a OMG AI 1.0 24B 标签' }
 foreach ($pl in $priorLabels) {
     $pb = [Text.Encoding]::ASCII.GetBytes($pl)
     if ((Count-Bytes $w3iBytes $pb) -ne 0) { throw "w3i 旧标签 $pl 必须为 0 次" }
@@ -130,7 +148,30 @@ foreach ($pl in $priorLabels) {
 Copy-Item -LiteralPath $baseline -Destination $asciiMap -Force
 Wait-FileStable $asciiMap 30
 foreach ($entry in $sourceEntries) {
+    if ($entry.Archive -match '^(?i:war3map\.(j|w3i|imp)|units\\)') {
+        Invoke-MpqDelete $asciiMap $entry.Archive
+    }
     Invoke-MpqAdd $asciiMap (Join-Path $stageDir $entry.Stage) $entry.Archive
+}
+
+$kArchiveEntries = @(
+    'war3mapimported\K\K_final.mdx',
+    'war3mapimported\K\K_body.blp',
+    'war3mapimported\K\K_final_portrait.mdx',
+    'war3mapimported\K\K_final_v2.mdx',
+    'replaceabletextures\commandbuttons\BTNK_Hero.blp',
+    'replaceabletextures\commandbuttons\BTNKMarksmanship.blp',
+    'replaceabletextures\commandbuttons\BTNKCriticalStrike.blp',
+    'replaceabletextures\commandbuttons\BTNKBattleRoar.blp',
+    'replaceabletextures\commandbuttons\BTNKChemicalRage.blp',
+    'replaceabletextures\commandbuttonsdisabled\DISBTNK_Hero.blp',
+    'replaceabletextures\commandbuttonsdisabled\DISBTNKMarksmanship.blp',
+    'replaceabletextures\commandbuttonsdisabled\DISBTNKCriticalStrike.blp',
+    'replaceabletextures\commandbuttonsdisabled\DISBTNKBattleRoar.blp',
+    'replaceabletextures\commandbuttonsdisabled\DISBTNKChemicalRage.blp'
+)
+foreach ($archivePath in $kArchiveEntries) {
+    Invoke-MpqDelete $asciiMap $archivePath
 }
 
 Copy-Item -LiteralPath $asciiMap -Destination $output -Force
